@@ -1,0 +1,17 @@
+---
+alwaysApply: false
+---
+
+# Handling SVGs guidelines
+
+This project is currently using vite-plugin-svgr v4.3.0
+
+When given an SVG to import into the app:
+
+- Optimise the SVG with SVGO.
+- Place them in the src/assets folder, unless asked otherwise.
+- If the SVG in question is stated to be a static icon, place it in the public/ directory.
+- Prefer using SVGs as a react component if either asked to use an SVG or when an SVG import is needed, unless it is not possible to do so.
+- All SVGs should use `currentColor` instead of hardcoded colors
+- Replace attributes like `stroke="#666666"` with `stroke="currentColor"`
+- Replace attributes like `fill="#666666"` with `fill="currentColor"`

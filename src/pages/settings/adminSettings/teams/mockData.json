@@ -1,0 +1,37 @@
+[
+  {
+    "id": "team-general",
+    "teamName": "General",
+    "teamDescription": "Default Team",
+    "metrics": { "openJobs": 0, "closedJobs": 0, "archivedJobs": 0 },
+    "members": [
+      { "id": "u1", "name": "Pankaj Kumar", "title": "Chief Executive Officer", "role": "Administrator", "status": "Active" },
+      { "id": "u2", "name": "Aisha Thompson", "title": "Operations Manager", "role": "Manager", "status": "Active" },
+      { "id": "u3", "name": "Daniel Reyes", "title": "HR Specialist", "role": "Recruiter", "status": "Active" }
+    ]
+  },
+  {
+    "id": "team-se-hiring",
+    "teamName": "Software Engineer Hiring",
+    "teamDescription": "",
+    "metrics": { "openJobs": 3, "closedJobs": 5, "archivedJobs": 1 },
+    "members": [
+      { "id": "u4", "name": "Sophia Lee", "title": "Senior Technical Recruiter", "role": "Recruiter", "status": "Active" },
+      { "id": "u5", "name": "Marcus Chen", "title": "Engineering Manager", "role": "Hiring Manager", "status": "Active" },
+      { "id": "u6", "name": "Priya Patel", "title": "Software Engineer", "role": "Interviewer", "status": "Active" },
+      { "id": "u7", "name": "Jamal Robinson", "title": "Staff Engineer", "role": "Interviewer", "status": "Active" }
+    ]
+  },
+  {
+    "id": "team-sales-hiring",
+    "teamName": "Sales Hiring",
+    "teamDescription": "",
+    "metrics": { "openJobs": 2, "closedJobs": 8, "archivedJobs": 0 },
+    "members": [
+      { "id": "u8", "name": "Elena Garcia", "title": "Sales Recruiter", "role": "Recruiter", "status": "Active" },
+      { "id": "u9", "name": "Robert King", "title": "Head of Sales", "role": "Hiring Manager", "status": "Active" },
+      { "id": "u10", "name": "Grace Kim", "title": "Account Executive", "role": "Interviewer", "status": "Active" }
+    ]
+  }
+]
+

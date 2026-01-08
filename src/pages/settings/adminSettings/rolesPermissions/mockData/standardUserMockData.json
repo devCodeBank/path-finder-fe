@@ -1,0 +1,158 @@
+{
+  "module": {
+    "dashboard": {
+      "name": "Dashboard",
+      "canView": "Everything",
+      "canCreate": null,
+      "canEdit": null,
+      "canDelete": null,
+      "changeOwnership": null,
+      "fileAccess": null
+    },
+    "candidates": {
+      "name": "Candidates",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Nothing",
+      "changeOwnership": "Owned Only",
+      "fileAccess": "Everything"
+    },
+    "jobs": {
+      "name": "Jobs",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Nothing",
+      "changeOwnership": "Owned Only",
+      "fileAccess": "Everything"
+    },
+    "companies": {
+      "name": "Companies",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Nothing",
+      "changeOwnership": "Owned Only",
+      "fileAccess": "Everything"
+    },
+    "contacts": {
+      "name": "Contacts",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Nothing",
+      "changeOwnership": "Owned Only",
+      "fileAccess": "Everything"
+    },
+    "deals": {
+      "name": "Deals",
+      "canView": "Owned Only",
+      "canCreate": true,
+      "canEdit": "Owned Only",
+      "canDelete": "Owned Only",
+      "changeOwnership": "Owned Only",
+      "fileAccess": "Everything"
+    },
+    "folders": {
+      "name": "Folders",
+      "canView": "Owned Only",
+      "canCreate": true,
+      "canEdit": "Owned Only",
+      "canDelete": "Owned Only",
+      "changeOwnership": "Owned Only",
+      "fileAccess": "Everything"
+    },
+    "placementandbilling": {
+      "name": "Placement and Billing",
+      "canView": "Nothing",
+      "canCreate": false,
+      "canEdit": "Nothing",
+      "canDelete": "Nothing",
+      "changeOwnership": null,
+      "fileAccess": null
+    },
+    "interviews": {
+      "name": "Interviews",
+      "canView": "Owned Only",
+      "canCreate": true,
+      "canEdit": "Owned Only",
+      "canDelete": "Owned Only",
+      "changeOwnership": null,
+      "fileAccess": null
+    }
+  },
+  "userSettings": [
+    { "id": "profile", "enabled": true },
+    { "id": "notifications", "enabled": true },
+    { "id": "privacySecurity", "enabled": true },
+    { "id": "emailConfiguration", "enabled": true },
+    { "id": "calendarConfiguration", "enabled": true },
+    { "id": "meetingAppsConfiguration", "enabled": true }
+  ],
+  "adminSettings": [
+    { "id": "adminSettings", "enabled": false },
+    { "id": "users", "enabled": false },
+    { "id": "rolesPermissions", "enabled": false },
+    { "id": "teams", "enabled": false },
+    { "id": "locations", "enabled": false },
+    { "id": "subscriptionBilling", "enabled": false },
+    { "id": "auditLog", "enabled": false }
+  ],
+  "jobSettings": [
+    { "id": "careerPage", "enabled": false },
+    { "id": "applicationForm", "enabled": false },
+    { "id": "quickApply", "enabled": true },
+    { "id": "jobBoards", "enabled": true }
+  ],
+  "reports": [
+    { "id": "teamPerformance", "enabled": true, "access": "Owned Only", "accessOptions": ["Everything", "Owned Only", "None"] },
+    { "id": "timeToHire", "enabled": false },
+    { "id": "advancedAnalytics", "enabled": false },
+    { "id": "recurringRevenue", "enabled": false }
+  ],
+  "customization": [
+    { "id": "candidateFields", "enabled": false },
+    { "id": "companyFields", "enabled": false },
+    { "id": "contactFields", "enabled": false },
+    { "id": "jobFields", "enabled": false },
+    { "id": "jobStatus", "enabled": false },
+    { "id": "jobTemplates", "enabled": false },
+    { "id": "emailTemplates", "enabled": false },
+    { "id": "hiringPipeline", "enabled": false },
+    { "id": "dealsPipeline", "enabled": false },
+    { "id": "dealFields", "enabled": false },
+    { "id": "contactStage", "enabled": false },
+    { "id": "meetingType", "enabled": false },
+    { "id": "taskType", "enabled": false },
+    { "id": "tags", "enabled": false },
+    { "id": "skillSet", "enabled": false }
+  ],
+  "automation": [
+    { "id": "emailTriggers", "enabled": false }
+  ],
+  "portalSettings": [
+    { "id": "clientPortal", "enabled": false }
+  ],
+  "dataAdmin": [
+    { "id": "dataMigration", "enabled": false },
+    { "id": "exportData", "enabled": false },
+    { "id": "recycleBin", "enabled": false },
+    { "id": "bulkUpdateFields", "enabled": false },
+    { "id": "bulkDeleteFields", "enabled": false }
+  ],
+  "developerSpace": [
+    { "id": "apis", "enabled": false }
+  ],
+  "compliance": [
+    { "id": "gdpr", "enabled": false }
+  ],
+  "pac": [
+    { "id": "pacAiAssist", "enabled": true }
+  ],
+  "generalPermissions": [
+    { "id": "shareFolders", "enabled": true }
+  ]
+}
+
+

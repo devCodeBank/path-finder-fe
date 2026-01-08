@@ -1,0 +1,15 @@
+---
+description:
+globs: src/**/*.tsx
+alwaysApply: false
+---
+
+This rule defines the structure for React components:
+
+React components should follow this layout:
+
+- Props interface at the top
+- Component as named export
+- Prefer the use of const variables rather than function() definitions for React components
+- Styles should be in their respective components, unless the component grows large (over 350+ lines of code). If the file has too many lines of code, styles should then be placed in it's own styles file with the naming convention `<component>.styles.tsx`
+- When importing components, always use the aliases found in tsconfig.app.json rather than relative imports, unless it is in a child directory to the current file or otherwise suggested

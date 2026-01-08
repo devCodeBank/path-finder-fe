@@ -1,0 +1,158 @@
+{
+  "module": {
+    "dashboard": {
+      "name": "Dashboard",
+      "canView": "Everything",
+      "canCreate": null,
+      "canEdit": null,
+      "canDelete": null,
+      "changeOwnership": null,
+      "fileAccess": null
+    },
+    "candidates": {
+      "name": "Candidates",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Everything",
+      "changeOwnership": "Everything",
+      "fileAccess": "Everything"
+    },
+    "jobs": {
+      "name": "Jobs",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Everything",
+      "changeOwnership": "Everything",
+      "fileAccess": "Everything"
+    },
+    "companies": {
+      "name": "Companies",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Everything",
+      "changeOwnership": "Everything",
+      "fileAccess": "Everything"
+    },
+    "contacts": {
+      "name": "Contacts",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Everything",
+      "changeOwnership": "Everything",
+      "fileAccess": "Everything"
+    },
+    "deals": {
+      "name": "Deals",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Everything",
+      "changeOwnership": "Everything",
+      "fileAccess": "Everything"
+    },
+    "folders": {
+      "name": "Folders",
+      "canView": "Owned Only",
+      "canCreate": true,
+      "canEdit": "Owned Only",
+      "canDelete": "Owned Only",
+      "changeOwnership": null,
+      "fileAccess": null
+    },
+    "placementandbilling": {
+      "name": "Placement and Billing",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Everything",
+      "canDelete": "Everything",
+      "changeOwnership": null,
+      "fileAccess": null
+    },
+    "interviews": {
+      "name": "Interviews",
+      "canView": "Everything",
+      "canCreate": true,
+      "canEdit": "Owned Only",
+      "canDelete": "Owned Only",
+      "changeOwnership": null,
+      "fileAccess": null
+    }
+  },
+  "userSettings": [
+    { "id": "profile", "enabled": true },
+    { "id": "notifications", "enabled": true },
+    { "id": "privacySecurity", "enabled": true },
+    { "id": "emailConfiguration", "enabled": true },
+    { "id": "calendarConfiguration", "enabled": true },
+    { "id": "meetingAppsConfiguration", "enabled": true }
+  ],
+  "adminSettings": [
+    { "id": "adminSettings", "enabled": true },
+    { "id": "users", "enabled": true },
+    { "id": "rolesPermissions", "enabled": true },
+    { "id": "teams", "enabled": true },
+    { "id": "locations", "enabled": true },
+    { "id": "subscriptionBilling", "enabled": true },
+    { "id": "auditLog", "enabled": true }
+  ],
+  "jobSettings": [
+    { "id": "careerPage", "enabled": true },
+    { "id": "applicationForm", "enabled": true },
+    { "id": "quickApply", "enabled": true },
+    { "id": "jobBoards", "enabled": true }
+  ],
+  "reports": [
+    { "id": "teamPerformance", "enabled": true, "access": "Everything", "accessOptions": ["Everything", "Owned Only", "None"] },
+    { "id": "timeToHire", "enabled": true },
+    { "id": "advancedAnalytics", "enabled": true },
+    { "id": "recurringRevenue", "enabled": true }
+  ],
+  "customization": [
+    { "id": "candidateFields", "enabled": true },
+    { "id": "companyFields", "enabled": true },
+    { "id": "contactFields", "enabled": true },
+    { "id": "jobFields", "enabled": true },
+    { "id": "jobStatus", "enabled": true },
+    { "id": "jobTemplates", "enabled": true },
+    { "id": "emailTemplates", "enabled": true },
+    { "id": "hiringPipeline", "enabled": true },
+    { "id": "dealsPipeline", "enabled": true },
+    { "id": "dealFields", "enabled": true },
+    { "id": "contactStage", "enabled": true },
+    { "id": "meetingType", "enabled": true },
+    { "id": "taskType", "enabled": true },
+    { "id": "tags", "enabled": true },
+    { "id": "skillSet", "enabled": true }
+  ],
+  "automation": [
+    { "id": "emailTriggers", "enabled": true }
+  ],
+  "portalSettings": [
+    { "id": "clientPortal", "enabled": true }
+  ],
+  "dataAdmin": [
+    { "id": "dataMigration", "enabled": true },
+    { "id": "exportData", "enabled": true },
+    { "id": "recycleBin", "enabled": true },
+    { "id": "bulkUpdateFields", "enabled": true },
+    { "id": "bulkDeleteFields", "enabled": true }
+  ],
+  "developerSpace": [
+    { "id": "apis", "enabled": true }
+  ],
+  "compliance": [
+    { "id": "gdpr", "enabled": true }
+  ],
+  "pac": [
+    { "id": "pacAiAssist", "enabled": true }
+  ],
+  "generalPermissions": [
+    { "id": "shareFolders", "enabled": true }
+  ]
+}
+
+

@@ -1,0 +1,75 @@
+{
+  "userSettings": [
+    { "id": "profile", "name": "Profile", "description": "Can a user view and edit his own profile" },
+    { "id": "notifications", "name": "Notifications", "description": "Can a user view and edit his own notifications settings" },
+    { "id": "privacySecurity", "name": "Privacy & Security", "description": "Can a user view and edit his own privacy & security settings" },
+    { "id": "emailConfiguration", "name": "Email Configuration", "description": "Can a user configure and remove his own email account with pathfinder ats crm" },
+    { "id": "calendarConfiguration", "name": "Calendar Configuration", "description": "Can a user configure and remove his own calendar with pathfinder ats crm" },
+    { "id": "meetingAppsConfiguration", "name": "Meeting Apps Configuration", "description": "Can a user configure and remove meeting apps with pathfinder ats crm" }
+  ],
+  "adminSettings": [
+    { "id": "adminSettings", "name": "Admin Settings", "description": "Should a user with this role has access to view admin settings" },
+    { "id": "users", "name": "Users", "description": "Should a user with this role be able to manage other users" },
+    { "id": "rolesPermissions", "name": "Roles & Permissions", "description": "Should a user with this role be able to manage roles & permissions" },
+    { "id": "teams", "name": "Teams", "description": "Should a user with this role be able to create, edit and delete teams" },
+    { "id": "locations", "name": "Locations", "description": "Should a user with this role be able to add, edit and delete locations" },
+    { "id": "subscriptionBilling", "name": "Subscription & Billing", "description": "Should a user with this role be able to access subscription & billing" },
+    { "id": "auditLog", "name": "Audit Log", "description": "Should a user with this role be able to access audit logs" }
+  ],
+  "jobSettings": [
+    { "id": "careerPage", "name": "Career Page", "description": "Should a user with this role be able to manage career page" },
+    { "id": "applicationForm", "name": "Application Form", "description": "Should a user with this role be able to manage application form" },
+    { "id": "quickApply", "name": "Quick Apply", "description": "Should a user with this role be able to manage quick apply" },
+    { "id": "jobBoards", "name": "Job Boards", "description": "Should a user with this role be able to manage own credential external job boards credentials" }
+  ],
+  "reports": [
+    { "id": "teamPerformance", "name": "Team Performance Report", "description": "Can a user with this role be able to monitor teams and team members KPIs" },
+    { "id": "timeToHire", "name": "Time to Hire Report", "description": "Can a user with this role measure how long it takes to hire" },
+    { "id": "advancedAnalytics", "name": "Advance Analytics", "description": "Can a user view and create custom reports and dashboards" },
+    { "id": "recurringRevenue", "name": "Recurring Revenue Report", "description": "Can a user view actual revenue over time" }
+  ],
+  "customization": [
+    { "id": "candidateFields", "name": "Candidate Fields", "description": "Should a user with this role be able to manage candidate fields" },
+    { "id": "companyFields", "name": "Company Fields", "description": "Should a user with this role be able to manage company fields" },
+    { "id": "contactFields", "name": "Contact Fields", "description": "Should a user with this role be able to manage contact fields" },
+    { "id": "jobFields", "name": "Job Fields", "description": "Should a user with this role be able to manage job fields" },
+    { "id": "jobStatus", "name": "Job Status", "description": "Should a user with this role be able to manage job status" },
+    { "id": "jobTemplates", "name": "Job Templates", "description": "Should a user with this role be able to manage job templates" },
+    { "id": "emailTemplates", "name": "Email Templates", "description": "Should a user with this role be able to manage email templates" },
+    { "id": "hiringPipeline", "name": "Hiring Pipeline", "description": "Should a user with this role be able to manage hiring pipeline" },
+    { "id": "dealsPipeline", "name": "Deals Pipeline", "description": "Should a user with this role be able to manage deals pipeline" },
+    { "id": "dealFields", "name": "Deal Fields", "description": "Should a user with this role be able to manage deals fields" },
+    { "id": "contactStage", "name": "Contact Stage", "description": "Should a user with this role be able to manage contact stage" },
+    { "id": "meetingType", "name": "Meeting Type", "description": "Should a user with this role be able to manage meeting type" },
+    { "id": "taskType", "name": "Task Type", "description": "Should a user with this role be able to manage task type" },
+    { "id": "tags", "name": "Tags", "description": "Should a user with this role be able to manage tags" },
+    { "id": "skillSet", "name": "Skill Set", "description": "Should a user with this role be able to manage skill set" }
+  ],
+  "automation": [
+    { "id": "emailTriggers", "name": "Email Triggers", "description": "Should a user with this role be able to manage email trigger" }
+  ],
+  "portalSettings": [
+    { "id": "clientPortal", "name": "Client Portal", "description": "Should a user with this role be able to manage client portal" }
+  ],
+  "dataAdmin": [
+    { "id": "dataMigration", "name": "Data Migration", "description": "Should a user with this role be able to manage data migration" },
+    { "id": "exportData", "name": "Export Data", "description": "Should a user with this role export data to a spreadsheet" },
+    { "id": "recycleBin", "name": "Recycle Bin", "description": "Should a user with this role be able to manage recycle bin" },
+    { "id": "bulkUpdateFields", "name": "Bulk Update Fields", "description": "Can a user with this role bulk update data they can view" },
+    { "id": "bulkDeleteFields", "name": "Bulk Delete Fields", "description": "Can a user with this role bulk delete data they can view" }
+  ],
+  "developerSpace": [
+    { "id": "apis", "name": "APIs", "description": "Should a user with this role be able to manage APIs token" }
+  ],
+  "compliance": [
+    { "id": "gdpr", "name": "GDPR", "description": "Can a user with this role be able to manage compliance" }
+  ],
+  "pac": [
+    { "id": "pacAiAssist", "name": "PAC AI Assist", "description": "Can a user with this role link OpenAI account with pathfinder ats crm to activate PAC AI Assist" }
+  ],
+  "generalPermissions": [
+    { "id": "shareFolders", "name": "Share Folders", "description": "Can a user with this role share own folders with others" }
+  ]
+}
+
+

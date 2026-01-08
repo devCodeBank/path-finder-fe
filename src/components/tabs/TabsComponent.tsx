@@ -1,0 +1,52 @@
+import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import React, { useState } from "react";
+import styled from "styled-components";
+
+interface TabsComponentProps {
+  tabs: {
+    label: string;
+    value: string;
+    content: React.ReactNode;
+  }[];
+  defaultTab?: string;
+}
+
+const StyledTabs = styled(Tabs)`
+  background-color: ${({ theme }) => theme.tokens.color.background.secondary};
+  color: ${({ theme }) => theme.tokens.color.text.primary};
+  margin-bottom: ${({ theme }) => theme.spacing(2)};
+  width: 100%;
+  .MuiTab-root {
+    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.semibold};
+    color: ${({ theme }) => theme.tokens.color.text.primary};
+    text-transform: capitalize;
+    &.Mui-selected {
+      background-color: ${({ theme }) => theme.tokens.color.background.primary};
+    }
+  }
+  .MuiTabs-indicator {
+    height: 0.25rem;
+    border-radius: 4px;
+  }
+`;
+
+export default function TabsComponent(props: TabsComponentProps) {
+  const [value, setValue] = useState(props.defaultTab || props.tabs[0].value);
+
+  const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
+    setValue(newValue);
+  };
+
+  return (
+    <Box sx={{ width: "100%", typography: "body1" }}>
+      <StyledTabs value={value} onChange={handleChange} aria-label="lab API tabs example">
+        {props.tabs.map((tab) => (
+          <Tab key={tab.value} label={tab.label} value={tab.value} />
+        ))}
+      </StyledTabs>
+      <Box>{props.tabs.find((tab) => tab.value === value)?.content || "No content"}</Box>
+    </Box>
+  );
+}

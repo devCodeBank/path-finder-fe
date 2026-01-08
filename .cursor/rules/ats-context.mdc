@@ -1,0 +1,31 @@
+---
+alwaysApply: false
+---
+
+# Applicant Tracking System (ATS) Platform Context
+
+This front-end repository is the UI for an **Applicant Tracking System (ATS) platform** that is currently being built.
+
+## Platform Overview
+
+- **Purpose**: Applicant Tracking System for managing job applications, candidates, and recruitment workflows
+- **Current Hosting**: Home server configured with Nginx
+- **Future Hosting**: Planned migration to AWS
+- **Tech Stack**: React 19.x with TypeScript, Material-UI, Redux Toolkit
+
+## Key Features (Expected)
+
+- **Candidate Management**: Track and manage job applicants
+- **Job Posting Management**: Create and manage job listings
+- **Application Workflow**: Streamline the hiring process
+- **User Authentication**: Secure access for HR teams and recruiters
+- **Dashboard & Analytics**: Insights into recruitment metrics
+
+## Development Context
+
+- This is a **work-in-progress** ATS platform
+- Currently in active development phase
+- Front-end focused with planned backend integration
+- Designed for scalability and enterprise use
+
+When working on this codebase, consider the ATS domain context and typical recruitment workflow requirements.

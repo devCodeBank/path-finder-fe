@@ -1,0 +1,220 @@
+---
+alwaysApply: false
+---
+
+# Pathfinder Frontend - Project Structure
+
+## Tech Stack
+
+- **Frontend Framework**: React 19.x with TypeScript 5.x
+- **Build Tool**: Vite 7.x and yarn
+- **UI Library**: Material-UI 7.x with Styled Components 5.x
+- **State Management**: Redux Toolkit 2.x with React Redux 9.x
+- **Routing**: React Router DOM 7.x
+- **Code Quality**: ESLint + Prettier
+
+## Source Code Organization (`src/`)
+
+### Core Directories
+
+```
+src/
+├── api/                   # API service functions and HTTP clients
+├── assets/                # Static assets (images, fonts, etc.)
+├── components/            # Reusable UI components
+├── hooks/                 # Custom React hooks
+├── pages/                 # Page components (route-level)
+├── redux/                 # Redux store and slices
+├── theme/                 # Material-UI theme configuration
+├── utils/                 # Utility functions and helpers
+├── main.tsx              # Application entry point
+├── App.tsx               # Root App component
+└── vite-env.d.ts         # Vite type definitions
+```
+
+## Component Architecture (`src/components/`)
+
+### Component File Structure
+
+Each component follows this pattern:
+
+```
+componentName/
+├── ComponentName.tsx     # Main component file (PascalCase)
+└── index.ts             # Export file (optional)
+```
+
+## Page Architecture (`src/pages/`)
+
+### Feature-Based Organization
+
+```
+pages/
+└── authentication/       # Authentication flow
+    ├── login/
+    │   └── Login.tsx
+    ├── signup/
+    │   └── Signup.tsx
+    ├── forgotPassword/
+    │   └── ForgotPassword.tsx
+    ├── resetPassword/
+    │   └── ResetPassword.tsx
+    └── emailVerification/
+        └── EmailVerification.tsx
+```
+
+## Redux Architecture (`src/redux/`)
+
+### State Management Structure
+
+```
+redux/
+├── store.ts             # Redux store configuration
+└── slices/              # Redux Toolkit slices
+    └── authSlice.ts     # Authentication state slice
+```
+
+## Naming Conventions
+
+### Files
+
+- **Components**: `PascalCase.tsx` (e.g., `Login.tsx`, `TextInput.tsx`)
+- **Utilities**: `camelCase.ts` (e.g., `utilityFunction.ts`)
+- **Directories**: `kebab-case/` (e.g., `text-input/`, `forgot-password/`)
+
+### Code Structure
+
+- **Interfaces**: `PascalCase` with `Props` suffix (e.g., `TextInputProps`)
+- **Components**: `PascalCase` (e.g., `TextInput`, `AuthLayout`)
+- **Functions**: `camelCase` (e.g., `handleSubmit`, `toggleVisibility`)
+
+## Import/Export Patterns
+
+### Component Exports
+
+```typescript
+// Named export
+export const ComponentName: React.FC<ComponentNameProps> = () => { ... };
+
+// Default export
+export default ComponentName;
+
+// Type exports
+export type { ComponentNameProps };
+```
+
+### Import Patterns
+
+```typescript
+// React imports
+import React from "react";
+
+// Third-party imports
+import { Box, Typography } from "@mui/material";
+import styled from "styled-components";
+
+// Internal imports
+import TextInput from "../../../components/input/textInput";
+import type { ComponentProps } from "./types";
+```
+
+## Styling Architecture
+
+### Styled Components Pattern
+
+```typescript
+const StyledComponent = styled(MuiComponent)`
+  // Theme-based styling
+  padding: ${({ theme }) => theme.spacing(2)};
+  color: ${({ theme }) => theme.palette.primary.main};
+
+  // Responsive breakpoints
+  ${({ theme }) => theme.breakpoints.up("md")} {
+    padding: ${({ theme }) => theme.spacing(4)};
+  }
+`;
+```
+
+### Theme Integration
+
+- Use Material-UI theme system for spacing, colors, and breakpoints
+- Integrate styled-components with MUI theme
+- Follow Material Design principles
+
+## Component Template
+
+### Standard Component Structure
+
+```typescript
+import React from "react";
+import { /* MUI imports */ } from "@mui/material";
+import styled from "styled-components";
+
+// Styled components
+const StyledContainer = styled(Box)`
+  // Styling here
+`;
+
+// Props interface
+export interface ComponentNameProps {
+  /** Prop description */
+  prop1: string;
+  /** Optional prop description */
+  prop2?: boolean;
+}
+
+// Component implementation
+export const ComponentName: React.FC<ComponentNameProps> = ({
+  prop1,
+  prop2 = false,
+}) => {
+  return (
+    <StyledContainer>
+      {/* Component content */}
+    </StyledContainer>
+  );
+};
+
+export default ComponentName;
+```
+
+## Development Guidelines
+
+### Component Creation Process
+
+1. **Choose appropriate category** under `src/components/`
+2. **Create kebab-case folder** (e.g., `text-input/`)
+3. **Create PascalCase component** (e.g., `TextInput.tsx`)
+4. **Follow component template** with proper TypeScript interfaces
+5. **Create index.ts** for clean exports (optional)
+6. **Use Material-UI + styled-components** for styling
+
+### Page Creation Process
+
+1. **Organize by feature** under `src/pages/`
+2. **Use feature folders** (e.g., `authentication/`)
+3. **Create page components** (e.g., `Login.tsx`)
+4. **Utilize layout components** (e.g., `AuthLayout`, `PlatformLayout`)
+
+## Quality Standards
+
+### TypeScript
+
+- **Strict mode enabled** - No implicit any types
+- **Interface definitions** for all props and complex objects
+- **Type exports** for reusable interfaces
+- **Generic types** where appropriate
+
+### Code Organization
+
+- **Single responsibility** - One component per file
+- **Consistent structure** - Follow established patterns
+- **Clean imports** - Group and order imports logically
+- **Proper exports** - Both named and default exports
+
+### Testing & Linting
+
+- **ESLint compliance** - Follow configured rules
+- **Prettier formatting** - Consistent code style
+- **TypeScript checks** - No type errors
+- **Component isolation** - Independent, reusable components
