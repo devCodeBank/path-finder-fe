@@ -7,19 +7,23 @@ import { useSidebarContext } from "../platformLayout/SidebarContext";
 
 const NavigationContainer = styled(Box)<{ $sidebarWidth: number }>`
   width: 230px;
-  height: calc(100vh - 212px);
+  height: calc(100vh - 140px);
   background: white;
   // border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
   border-top: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
   display: flex;
   flex-direction: column;
   position: fixed;
-  left: ${({ $sidebarWidth }) => `${$sidebarWidth}px`};
-  top: 212px; /* Account for top nav height */
+  left: ${({ $sidebarWidth }) => `${$sidebarWidth + 25}px`};
+  top: 140px; /* Account for top nav height */
   z-index: ${({ theme }) => theme.tokens.zIndex.fixed};
   overflow-y: auto;
   transition: left 0.3s ease;
   border-top-left-radius: 20px;
+  border-left: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
+   border-right: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
+  right: 12;
+  padding: 12px;
 `;
 
 

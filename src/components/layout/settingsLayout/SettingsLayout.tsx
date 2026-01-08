@@ -13,10 +13,18 @@ const LayoutContainer = styled(Box)`
 
 const ContentArea = styled(Box)`
   flex: 1;
-  margin-left: 230px;
+  margin-left: 255px;
   background: ${({ theme }) => theme.tokens.color.background.primary};
   display: flex;
   flex-direction: column;
+  border-right: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
+  margin-horizontal: 12px;
+  // border-radius: 12px;
+  border-left: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
+  border-top: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
+  margin-top: 28px;
+  margin-right: 20px;
+  border-top-right-radius: 20px;
 `;
 
 const MainContent = styled(Box)`
@@ -26,16 +34,16 @@ const MainContent = styled(Box)`
 
 export const SettingsLayout: React.FC = () => {
   return (
-      <div style={{background: "white" }}>
-    <LayoutContainer>
+    <div style={{ background: "white" }}>
+      <LayoutContainer>
         <SettingsNavigation />
-      <ContentArea>
-        <MainContent>
-          <Outlet />
-        </MainContent>
-      </ContentArea>
-    </LayoutContainer>
-      </div>
+        <ContentArea>
+          <MainContent>
+            <Outlet />
+          </MainContent>
+        </ContentArea>
+      </LayoutContainer>
+    </div>
   );
 };
 
