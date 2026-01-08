@@ -134,9 +134,9 @@ const AuthLayout: React.FC = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoading = useSelector(selectIsLoading);
 
-  if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // if (isAuthenticated) {
+  //   return <Navigate to="/dashboard" replace />;
+  // }
 
   return (
     <MainContainer>
