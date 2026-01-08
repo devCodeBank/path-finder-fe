@@ -24,6 +24,7 @@ const BreadcrumbContainer = styled(Box)<{ $sidebarWidth: number }>`
   transition: left 0.3s ease;
   justify-content: space-between;
   z-index: ${({ theme }) => theme.tokens?.zIndex?.navbar ? theme.tokens.zIndex.navbar - 1 : 1049};
+  border-top-left-radius: 20px;
 `;
 
 const BreadcrumbContent = styled(Box)`

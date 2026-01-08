@@ -7,24 +7,22 @@ import { useSidebarContext } from "../platformLayout/SidebarContext";
 
 const NavigationContainer = styled(Box)<{ $sidebarWidth: number }>`
   width: 230px;
-  height: calc(100vh - 64px);
-  background: ${({ theme }) => theme.tokens.color.background.primary};
+  height: calc(100vh - 212px);
+  background: white;
   // border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
   border-top: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
   display: flex;
   flex-direction: column;
   position: fixed;
   left: ${({ $sidebarWidth }) => `${$sidebarWidth}px`};
-  top: 110px; /* Account for top nav height */
+  top: 212px; /* Account for top nav height */
   z-index: ${({ theme }) => theme.tokens.zIndex.fixed};
   overflow-y: auto;
   transition: left 0.3s ease;
+  border-top-left-radius: 20px;
 `;
 
-const Header = styled(Box)`
-  padding: ${({ theme }) => theme.spacing(3, 3, 4, 2)};
-  background: ${({ theme }) => theme.tokens.color.background.primary};
-`;
+
 
 const NavigationContent = styled(Box)`
   flex: 1;
@@ -139,6 +137,7 @@ export const SettingsNavigation: React.FC = () => {
   };
 
   return (
+    
     <NavigationContainer $sidebarWidth={sidebarWidth}>
 
       <NavigationContent>

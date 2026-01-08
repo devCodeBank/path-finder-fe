@@ -16,6 +16,7 @@ import { SidebarContext } from "./SidebarContext";
 const PlatformContainer = styled(Box)`
   height: 100vh;
   overflow: hidden;
+  background:#eaeaea;
 `;
 
 const ContentArea = styled(Box)<{ $sidebarWidth: number }>`

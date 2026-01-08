@@ -26,14 +26,16 @@ const MainContent = styled(Box)`
 
 export const SettingsLayout: React.FC = () => {
   return (
+      <div style={{background: "white" }}>
     <LayoutContainer>
-      <SettingsNavigation />
+        <SettingsNavigation />
       <ContentArea>
         <MainContent>
           <Outlet />
         </MainContent>
       </ContentArea>
     </LayoutContainer>
+      </div>
   );
 };
 
