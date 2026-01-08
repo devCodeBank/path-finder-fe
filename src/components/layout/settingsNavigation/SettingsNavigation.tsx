@@ -9,12 +9,13 @@ const NavigationContainer = styled(Box)<{ $sidebarWidth: number }>`
   width: 230px;
   height: calc(100vh - 64px);
   background: ${({ theme }) => theme.tokens.color.background.primary};
-  border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
+  // border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
+  border-top: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
   display: flex;
   flex-direction: column;
   position: fixed;
   left: ${({ $sidebarWidth }) => `${$sidebarWidth}px`};
-  top: 64px; /* Account for top nav height */
+  top: 110px; /* Account for top nav height */
   z-index: ${({ theme }) => theme.tokens.zIndex.fixed};
   overflow-y: auto;
   transition: left 0.3s ease;
@@ -139,11 +140,6 @@ export const SettingsNavigation: React.FC = () => {
 
   return (
     <NavigationContainer $sidebarWidth={sidebarWidth}>
-      <Header>
-        <Typography variant="h3" component="h2" fontWeight={500} fontSize={20}>
-          Settings
-        </Typography>
-      </Header>
 
       <NavigationContent>
         {navigationSections.map((section) => (

@@ -27,7 +27,7 @@ const SidebarContainer = styled(Box)<{ $isExpanded: boolean }>`
     $isExpanded ? theme.tokens.component.sidebar.width.expanded : theme.tokens.component.sidebar.width.collapsed};
   height: 100vh;
   border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
-  background: ${({ theme }) => theme.tokens.color.background.primary};
+  background:#EAEAEA;
   transition: width 300ms ease-in-out;
   display: flex;
   flex-direction: column;
@@ -95,6 +95,7 @@ export interface MenuItem {
 }
 
 interface SidebarProps {
+  isExpanded?: boolean;
   onToggleExpand?: (expanded: boolean) => void;
 }
 
@@ -125,15 +126,13 @@ const isRouteSelected = (currentPath: string, itemPath: string): boolean => {
   return currentPath === itemPath;
 };
 
-export const Sidebar: FC<SidebarProps> = ({ onToggleExpand }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const toggleExpanded = () => {
     const newExpandedState = !isExpanded;
-    setIsExpanded(newExpandedState);
     onToggleExpand?.(newExpandedState);
   };
 
@@ -167,10 +166,14 @@ export const Sidebar: FC<SidebarProps> = ({ onToggleExpand }) => {
     });
   };
 
+  const isSettingsPage = location.pathname.startsWith('/settings');
+
   return (
     <SidebarContainer $isExpanded={isExpanded}>
       <SidebarHeader $isExpanded={isExpanded}>
-        <ExpandButton onClick={toggleExpanded}>{isExpanded ? <CollapseIcon /> : <ExpandIcon />}</ExpandButton>
+        {!isSettingsPage && (
+          <ExpandButton onClick={toggleExpanded}>{isExpanded ? <CollapseIcon /> : <ExpandIcon />}</ExpandButton>
+        )}
       </SidebarHeader>
 
       <MenuSection>

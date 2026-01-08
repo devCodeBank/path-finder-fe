@@ -13,17 +13,20 @@ const MenuItemButton = styled(IconButton)<{ $isSelected?: boolean; $isExpanded: 
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.brand.primary : theme.tokens.color.overlay.transparent)};
+  background: ${({ $isSelected, theme }) => ($isSelected ? "#666666" : theme.tokens.color.overlay.transparent)};
   color: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.text.inverse : theme.tokens.color.text.secondary)};
   transition: all 200ms ease-in-out;
 
   &:hover {
-    background: ${({ $isSelected, theme }) =>
-      $isSelected ? theme.tokens.color.brand.primaryHover : theme.tokens.color.background.secondary};
-    color: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.text.inverse : theme.tokens.color.brand.primary)};
+    background: #666666;
+    color: white;
+
+    svg {
+      color: white;
+    }
 
     .menu-text {
-      color: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.text.inverse : theme.tokens.color.brand.primary)};
+      color: white;
     }
   }
 `;

@@ -47,7 +47,7 @@ interface LogoTextProps {
 
 const LogoText = styled(Typography)<LogoTextProps>`
   font-weight: 600;
-  color: ${({ theme }) => theme.tokens.color.text.primary};
+  color: #666666;
   font-size: ${({ $size }) => {
     switch ($size) {
       case "small":

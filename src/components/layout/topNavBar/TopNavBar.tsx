@@ -19,8 +19,8 @@ const NavBarContainer = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: ${({ theme }) => theme.tokens.color.background.primary};
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
+  background: #EAEAEA;
+  // border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
   padding: 0 24px;
 
   @media (max-width: 600px) {
@@ -52,8 +52,8 @@ const HideOnMobile = styled(Box)`
 
 const AppName = styled(Typography)`
   font-weight: 600;
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.tokens.color.neutral.gray950};
+  font-size: 18px;
+  color: #666666;
 
   @media (max-width: 600px) {
     display: none;
@@ -104,10 +104,10 @@ export const TopNavBar: React.FC = () => {
   return (
     <NavBarContainer>
       <LeftSection>
-        <LogoIcon width={36} height={36} />
+        <LogoIcon width={23} height={23} />
         <AppName variant="h6">pathfinder ats crm</AppName>
       </LeftSection>
-      <RightSection>
+      {/* <RightSection>
         <HideOnMobile>
           <CircularIconButton onClick={handleClick("search")} aria-label="search">
             <SearchIcon width={20} height={20} />
@@ -131,7 +131,7 @@ export const TopNavBar: React.FC = () => {
           <UserName>{displayName}</UserName>
           <ChevronDownIcon width={20} height={20} />
         </IconButton>
-      </RightSection>
+      </RightSection> */}
     </NavBarContainer>
   );
 };
