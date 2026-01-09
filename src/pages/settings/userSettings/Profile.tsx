@@ -106,8 +106,8 @@ export const Profile: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-[600] text-[#717171]">{label}</label>
-          <div className="text-[#333333] text-[16px] font-[500] min-h-6">{displayValue || "-"}</div>
+          <label className="text-[#333333] text-[14px] font-[500]">{label}</label>
+          <div className="text-[#333333] text-[13px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
     }
@@ -116,7 +116,7 @@ export const Profile: React.FC = () => {
     if (options.length > 0) {
       return (
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-500">{label}</label>
+          <label className="text-[#333333] text-[14px] font-[500]">{label}</label>
           <Select
             value={value}
             onChange={handleSelectChange(fieldKey)}

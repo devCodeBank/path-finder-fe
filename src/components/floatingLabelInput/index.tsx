@@ -8,7 +8,17 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 
 const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
     ({ className, ...props }, ref) => {
-        return <Input placeholder=" " className={cn('peer', className)} ref={ref} {...props} />;
+        return (
+            <Input
+                placeholder=" "
+                className={cn(
+                    'peer border-[#CCCCCC] shadow-[0px_4px_4px_0px_#00000014] text-[#333333] font-[500] text-[16px] focus-visible:ring-0 focus-visible:border-[#6E41E2]',
+                    className
+                )}
+                ref={ref}
+                {...props}
+            />
+        );
     },
 );
 FloatingInput.displayName = 'FloatingInput';
@@ -20,7 +30,8 @@ const FloatingLabel = React.forwardRef<
     return (
         <Label
             className={cn(
-                'peer-focus:text-primary absolute start-2 top-2 z-10 origin-[0] -translate-y-4 scale-75 transform bg-background px-2 text-sm text-muted-foreground duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 cursor-text',
+                'absolute start-2 top-2 z-10 origin-[0] -translate-y-4 scale-75 transform px-2 text-sm text-[#717171] font-[500] duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:px-2 cursor-text pointer-events-none',
+                'bg-white peer-disabled:bg-[#F3F4F6] peer-focus:text-[#717171]',
                 className,
             )}
             ref={ref}
@@ -35,9 +46,9 @@ type FloatingLabelInputProps = InputProps & { label?: string };
 const FloatingLabelInput = React.forwardRef<
     HTMLInputElement,
     FloatingLabelInputProps
->(({ id, label, ...props }, ref) => {
+>(({ id, label, className, ...props }, ref) => {
     return (
-        <div className="relative">
+        <div className={cn("relative", className)}>
             <FloatingInput ref={ref} id={id} {...props} />
             <FloatingLabel htmlFor={id}>{label}</FloatingLabel>
         </div>
