@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { Button, MenuItem, Select } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
 import type { SelectChangeEvent } from "@mui/material";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import { cn } from "@/lib/utils";
 
 interface ProfileFormData {
   firstName: string;
@@ -64,7 +66,6 @@ export const Profile: React.FC = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  // Added this function which was missing in previous attempt but used in JSX
   const handleInputChange = (field: keyof ProfileFormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -78,7 +79,6 @@ export const Profile: React.FC = () => {
       [field]: event.target.value,
     }));
   };
-
 
   const handleSaveChanges = () => {
     console.warn("Saving profile data:", formData);
@@ -106,8 +106,8 @@ export const Profile: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold text-gray-500">{label}</label>
-          <div className="text-gray-900 text-base font-medium min-h-6">{displayValue || "-"}</div>
+          <label className="text-sm font-[600] text-[#717171]">{label}</label>
+          <div className="text-[#333333] text-[16px] font-[500] min-h-6">{displayValue || "-"}</div>
         </div>
       );
     }
@@ -139,22 +139,17 @@ export const Profile: React.FC = () => {
     }
 
     return (
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-gray-500">{label}</label>
-        <TextField
-          value={value}
-          onChange={handleInputChange(fieldKey)}
-          variant="outlined"
-          size="small"
-          fullWidth
-          disabled={fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency'}
-          sx={{
-            backgroundColor: (fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency') ? '#F3F4F6' : '#fff',
-            '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
-            '& .MuiInputBase-input': { fontSize: '0.95rem' }
-          }}
-        />
-      </div>
+      <FloatingLabelInput
+        id={fieldKey}
+        label={label}
+        value={value}
+        onChange={handleInputChange(fieldKey)}
+        disabled={fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency'}
+        className={cn(
+          "w-full h-[48px]",
+          (fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency') && "bg-[#F3F4F6]"
+        )}
+      />
     );
   };
 
@@ -162,24 +157,29 @@ export const Profile: React.FC = () => {
     <div className="flex flex-col gap-6 w-full max-w-full pb-10 font-sans">
       {/* Top Profile Card */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col md:flex-row items-start md:items-center justify-between shadow-sm">
-        <div className="flex items-center gap-6">
-          {/* Avatar */}
-          <div className="h-20 w-20 rounded-full bg-[#f8f9fa] flex items-center justify-center text-xl font-bold text-gray-800 border-none">
-            PK
+        <div className="flex items-start gap-6">
+          <div className="flex flex-col gap-2">
+            {/* Avatar Box */}
+            <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center border-none">
+              <div className="text-[#333333] bg-white flex items-center justify-center rounded-full w-[47px] h-[47px] text-center text-xl font-bold">
+                PK
+              </div>
+            </div>
+            {/* Upload Photo below avatar */}
+            <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group">
+              <span className="text-[12px] text-[#333333] font-[500] group-hover:text-purple-600">Upload Photo</span>
+              <InfoOutlined sx={{ fontSize: 13, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
+            </div>
           </div>
 
           {/* Info */}
-          <div className="flex flex-col gap-1">
-            <h2 className="text-xl font-bold text-gray-900 leading-tight">
+          <div className="flex flex-col gap-1 mt-2">
+            <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
               {formData.firstName} {formData.lastName}
             </h2>
-            <p className="text-gray-500 font-medium text-sm">
+            <p className="text-[13px] font-[400] text-[#717171]">
               {formData.jobTitle || "Account Manager"}
             </p>
-            <div className="flex items-center gap-1 mt-0.5 cursor-pointer hover:text-purple-600 transition-colors group">
-              <span className="text-xs text-gray-400 font-medium group-hover:text-purple-600">Upload Photo</span>
-              <InfoOutlined sx={{ fontSize: 13, color: '#9CA3AF' }} className="group-hover:!text-purple-600" />
-            </div>
           </div>
         </div>
 
@@ -189,16 +189,27 @@ export const Profile: React.FC = () => {
             variant="contained"
             onClick={() => isEditing ? handleSaveChanges() : setIsEditing(true)}
             sx={{
+              width: '110px',
+              height: '36px',
               backgroundColor: '#6E41E2',
               textTransform: 'none',
               fontWeight: 500,
-              padding: '8px 32px',
-              borderRadius: '6px',
+              fontSize: '12px',
+              padding: '8px 12px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '18px',
               boxShadow: 'none',
               '&:hover': {
-                backgroundColor: '#5b35d0',
+                backgroundColor: '#9A77F0',
                 boxShadow: 'none',
-              }
+              },
+              '&:active': {
+                boxShadow: 'none',
+              },
+              color: "white",
             }}
           >
             {isEditing ? "Save" : "Edit"}

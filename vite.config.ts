@@ -17,6 +17,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@mui/styled-engine": "@mui/styled-engine-sc",
+      "@": "/src",
       "@components": "/src/components",
       "@pages": "/src/pages",
       "@api": "/src/api",
@@ -27,6 +28,7 @@ export default defineConfig({
       "@assets": "/src/assets",
       "@services": "/src/services",
       "@config": "/src/config",
+      "react-is": "react-is",
     },
   },
   build: {
