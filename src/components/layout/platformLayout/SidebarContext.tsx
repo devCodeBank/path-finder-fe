@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 interface SidebarContextType {
   sidebarExpanded: boolean;
   sidebarWidth: number;
+  onToggleExpand: (expanded: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);

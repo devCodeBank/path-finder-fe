@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import { selectIsLoading } from "@redux/selectors/authSelectors";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 import { Footer } from "../footer";
@@ -19,9 +19,9 @@ const PlatformContainer = styled(Box)`
   background:#eaeaea;
 `;
 
-const ContentArea = styled(Box)<{ $sidebarWidth: number }>`
+const ContentArea = styled(Box) <{ $sidebarWidth: number; $top: number }>`
   position: absolute;
-  top: 112px; /* 64px (top nav) + 48px (breadcrumb) */
+  top: ${({ $top }) => `${$top}px`};
   bottom: 0;
   left: ${({ $sidebarWidth }) => `${$sidebarWidth}px`};
   right: 0;
@@ -46,6 +46,8 @@ export const PlatformLayout: React.FC = () => {
   const isLoading = useSelector(selectIsLoading);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
   const sidebarWidth = sidebarExpanded ? 240 : 68;
+  const location = useLocation();
+  const isSettingsPage = location.pathname.includes("/settings");
 
   const handleSidebarToggle = (expanded: boolean) => {
     setSidebarExpanded(expanded);
@@ -60,17 +62,19 @@ export const PlatformLayout: React.FC = () => {
   // }
 
   return (
-    <SidebarContext.Provider value={{ sidebarExpanded, sidebarWidth }}>
+    <SidebarContext.Provider value={{ sidebarExpanded, sidebarWidth, onToggleExpand: handleSidebarToggle }}>
       <PlatformContainer>
         <TopNavBar />
         <Sidebar isExpanded={sidebarExpanded} onToggleExpand={handleSidebarToggle} />
-        <RouteBreadcrumb
-          sidebarWidth={sidebarWidth}
-          sidebarExpanded={sidebarExpanded}
-          onSidebarToggle={() => handleSidebarToggle(!sidebarExpanded)}
-          onMenuItemClick={(label) => console.log("TO BE IMPLEMENTED: " + label)}
-        />
-        <ContentArea $sidebarWidth={sidebarWidth}>
+        {!isSettingsPage && (
+          <RouteBreadcrumb
+            sidebarWidth={sidebarWidth}
+            sidebarExpanded={sidebarExpanded}
+            onSidebarToggle={() => handleSidebarToggle(!sidebarExpanded)}
+            onMenuItemClick={(label) => console.log("TO BE IMPLEMENTED: " + label)}
+          />
+        )}
+        <ContentArea $sidebarWidth={sidebarWidth} $top={isSettingsPage ? 64 : 112}>
           <MainContent>
             <Box sx={{ flex: 1 }}>
               <Outlet />

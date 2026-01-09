@@ -7,9 +7,9 @@ interface FooterContainerProps {
   $isSettingsPage: boolean;
 }
 
-const FooterContainer = styled(Box)<FooterContainerProps>`
+const FooterContainer = styled(Box) <FooterContainerProps>`
   margin-bottom: 48px;
-  border-top: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
+  // border-top: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
   background: ${({ theme }) => theme.tokens.color.background.primary};
   margin-left: ${({ $isSettingsPage }) => ($isSettingsPage ? "230px" : "0")};
 `;

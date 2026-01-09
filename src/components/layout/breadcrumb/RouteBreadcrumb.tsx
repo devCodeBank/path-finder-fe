@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-const BreadcrumbContainer = styled(Box)<{ $sidebarWidth: number }>`
+const BreadcrumbContainer = styled(Box) <{ $sidebarWidth: number }>`
   position: fixed;
   top: 64px;
   left: ${({ $sidebarWidth }) => `${$sidebarWidth}px`};
@@ -33,7 +33,7 @@ const BreadcrumbContent = styled(Box)`
   gap: 8px;
 `;
 
-const BreadcrumbText = styled(Typography)<{ $isActive?: boolean }>`
+const BreadcrumbText = styled(Typography) <{ $isActive?: boolean }>`
   font-size: 16px;
   font-weight: 400;
   color: ${({ $isActive }) => ($isActive ? "#333333" : "#717171")};
@@ -140,11 +140,11 @@ const routeLabels: Record<string, string> = {
 
 const getBreadcrumbPath = (pathname: string): string[] => {
   const segments = pathname.split("/").filter(Boolean);
-  
+
   if (segments.length === 0) {
     return ["Dashboard"];
   }
-  
+
   // Map each segment to its label
   return segments.map(segment => {
     return routeLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " ");
@@ -168,9 +168,22 @@ export const RouteBreadcrumb: React.FC<RouteBreadcrumbProps> = ({
   const displayName: string = useSelector(selectFullName) || "";
 
   const breadcrumbPath = getBreadcrumbPath(location.pathname);
+  const isSettingsPage = location.pathname.includes("/settings");
 
   return (
-    <BreadcrumbContainer $sidebarWidth={sidebarWidth}>
+    <BreadcrumbContainer
+      $sidebarWidth={sidebarWidth}
+      sx={isSettingsPage ? {
+        left: `${sidebarWidth + 24}px !important`,
+        right: '24px !important',
+        background: '#FFFFFF !important',
+        borderTopLeftRadius: '20px',
+        borderTopRightRadius: '20px',
+        border: '1px solid #E0E0E0',
+        borderBottom: '1px solid #E0E0E0',
+        zIndex: 100
+      } : {}}
+    >
       <BreadcrumbContent>
         <SidebarToggleButton
           onClick={onSidebarToggle}
@@ -190,12 +203,12 @@ export const RouteBreadcrumb: React.FC<RouteBreadcrumbProps> = ({
             {index < breadcrumbPath.length - 1 && (
               <BreadcrumbSeparator>
                 <svg
-                style={{
-                    position:"relative",
-                    top:"2px",
-                }} width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                
-                  <path d="M12 1L19 6.54167M19 6.54167L12 12.0833M19 6.54167L1 6.54167" stroke="#CCCCCC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  style={{
+                    position: "relative",
+                    top: "2px",
+                  }} width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                  <path d="M12 1L19 6.54167M19 6.54167L12 12.0833M19 6.54167L1 6.54167" stroke="#CCCCCC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </BreadcrumbSeparator>
             )}
@@ -213,7 +226,7 @@ export const RouteBreadcrumb: React.FC<RouteBreadcrumbProps> = ({
         <CircularIconButton onClick={() => onMenuItemClick?.("notifications")} aria-label="notifications">
           <BellIcon width={20} height={20} />
         </CircularIconButton>
-       
+
       </RightSection>
     </BreadcrumbContainer>
   );

@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 import "@config/amplify";
+import "./index.css";
 
 import App from "./App.tsx";
 import store from "./redux/store";

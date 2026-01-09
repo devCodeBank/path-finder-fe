@@ -1,72 +1,5 @@
-import { Box, Typography } from "@mui/material";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-
-import { useSidebarContext } from "../platformLayout/SidebarContext";
-
-const NavigationContainer = styled(Box)<{ $sidebarWidth: number }>`
-  width: 230px;
-  height: calc(100vh - 140px);
-  background: white;
-  // border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
-  border-top: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: ${({ $sidebarWidth }) => `${$sidebarWidth + 25}px`};
-  top: 140px; /* Account for top nav height */
-  z-index: ${({ theme }) => theme.tokens.zIndex.fixed};
-  overflow-y: auto;
-  transition: left 0.3s ease;
-  border-top-left-radius: 20px;
-  border-left: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
-   border-right: 1px solid var(--color-medium-light-gray-boarder, #CCCCCC);
-  right: 12;
-  padding: 12px;
-`;
-
-
-
-const NavigationContent = styled(Box)`
-  flex: 1;
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-
-const Section = styled(Box)`
-  padding: ${({ theme }) => theme.spacing(0, 1, 0, 1)};
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const SectionHeader = styled(Typography)`
-  padding: ${({ theme }) => theme.spacing(0, 1, 0.75, 1)};
-  font-weight: 600;
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-`;
-
-const MenuItem = styled(Box)<{ $isSelected?: boolean }>`
-  cursor: pointer;
-  transition: all 0.1s ease;
-  background: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.brand.primary : theme.tokens.color.overlay.transparent)};
-  color: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.neutral.white : theme.tokens.color.text.primary)};
-  border-radius: 4px;
-
-  &:hover {
-    background: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.brand.primary : theme.tokens.color.neutral.gray50)};
-    color: ${({ $isSelected, theme }) => ($isSelected ? theme.tokens.color.neutral.white : theme.tokens.color.brand.primary)};
-  }
-`;
-
-const MenuText = styled(Typography)`
-  font-size: 16px;
-  font-weight: 400;
-  padding: ${({ theme }) => theme.spacing(1, 1)};
-`;
 
 interface NavigationItem {
   id: string;
@@ -91,6 +24,8 @@ const navigationSections: NavigationSection[] = [
       { id: "email", label: "Email", path: "/settings/user/email" },
       { id: "calendar", label: "Calendar", path: "/settings/user/calendar" },
       { id: "meeting-apps", label: "Meeting Apps", path: "/settings/user/meeting-apps" },
+      { id: "preferences", label: "Preferences", path: "/settings/user/preferences" },
+      { id: "activity-history", label: "Activity History", path: "/settings/user/activity-history" },
     ],
   },
   {
@@ -102,7 +37,7 @@ const navigationSections: NavigationSection[] = [
       { id: "roles-permissions", label: "Roles & Permissions", path: "/settings/admin/roles-permissions" },
       { id: "teams", label: "Teams", path: "/settings/admin/teams" },
       { id: "locations", label: "Locations", path: "/settings/admin/locations" },
-      { id: "billing", label: "Billing", path: "/settings/admin/billing" },
+      { id: "billing", label: "Subscription & Billing", path: "/settings/admin/billing" },
       { id: "audit-log", label: "Audit Log", path: "/settings/admin/audit-log" },
     ],
   },
@@ -110,12 +45,8 @@ const navigationSections: NavigationSection[] = [
     id: "job-settings",
     title: "Job Settings",
     items: [
-      { id: "layout", label: "Layout", path: "/settings/job/layout" },
-      { id: "fields", label: "Fields", path: "/settings/job/fields" },
-      { id: "status", label: "Status", path: "/settings/job/status" },
-      { id: "tags", label: "Tags", path: "/settings/job/tags" },
-      { id: "skill-set", label: "Skill Set", path: "/settings/job/skill-set" },
-      { id: "page", label: "Page", path: "/settings/job/page" },
+      { id: "career-page", label: "Career Page", path: "/settings/job/career-page" },
+      { id: "application-form", label: "Application Form", path: "/settings/job/application-form" },
     ],
   },
 ];
@@ -123,7 +54,6 @@ const navigationSections: NavigationSection[] = [
 export const SettingsNavigation: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { sidebarWidth } = useSidebarContext();
 
   const handleItemClick = (path: string) => {
     navigate(path);
@@ -141,22 +71,37 @@ export const SettingsNavigation: React.FC = () => {
   };
 
   return (
-    
-    <NavigationContainer $sidebarWidth={sidebarWidth}>
-
-      <NavigationContent>
+    <div className="w-full h-full bg-white border-t border-l border-r border-b border-[#CCCCCC] rounded-tl-[20px] rounded-bl-[20px] px-2 py-4 flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+      <div className="flex-1 flex flex-col gap-6">
         {navigationSections.map((section) => (
-          <Section key={section.id}>
-            <SectionHeader variant="lg">{section.title}</SectionHeader>
-            {section.items.map((item) => (
-              <MenuItem key={item.id} $isSelected={isPathActive(item.path)} onClick={() => handleItemClick(item.path)}>
-                <MenuText>{item.label}</MenuText>
-              </MenuItem>
-            ))}
-          </Section>
+          <div key={section.id} className="px-2 flex flex-col gap-1">
+            <h3 className=" pb-2 px-2 text-gray-800 text-[#333333] text-[16px] font-[500]">
+              {section.title}
+            </h3>
+            {section.items.map((item) => {
+              const isSelected = isPathActive(item.path);
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => handleItemClick(item.path)}
+                  className={`
+                    cursor-pointer transition-all duration-200 rounded-md
+                    ${isSelected
+                      ? 'bg-[#EAEAEA] text-[#333333] '
+                      : 'bg-transparent text-[#333333] hover:bg-[#EAEAEA] hover:text-[#333333]'
+                    }
+                  `}
+                >
+                  <div className={`text-[14px] py-2 px-2 text-[#333333] font-[400]`}>
+                    {item.label}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         ))}
-      </NavigationContent>
-    </NavigationContainer>
+      </div>
+    </div>
   );
 };
 

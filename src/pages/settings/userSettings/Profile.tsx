@@ -1,42 +1,7 @@
-import { Button } from "@components/buttons/button/Button";
-import { HeaderWithUpload } from "@components/headerWithUpload";
-import { FormInput, FormSelect } from "@components/input/formInput";
-import { SettingsHeader } from "@components/settingsHeader";
-import type { SelectChangeEvent } from "@mui/material";
-import { Box } from "@mui/material";
 import React, { useState } from "react";
-import styled from "styled-components";
-
-const Container = styled(Box)`
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-`;
-
-const FormContainer = styled(Box)`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
-`;
-
-const FormRow = styled(Box)`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${({ theme }) => theme.spacing(8)};
-  width: 100%;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const ButtonContainer = styled(Box)`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: ${({ theme }) => theme.spacing(3)};
-`;
+import { Button, MenuItem, Select, TextField } from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
+import type { SelectChangeEvent } from "@mui/material";
 
 interface ProfileFormData {
   firstName: string;
@@ -54,14 +19,14 @@ interface ProfileFormData {
 }
 
 const timeZoneOptions = [
-  { value: "auckland", label: "Auckland Time +12:00" },
-  { value: "sydney", label: "Sydney Time +11:00" },
-  { value: "tokyo", label: "Tokyo Time +9:00" },
-  { value: "utc", label: "UTC +0:00" },
+  { value: "auckland", label: "(GMT +13) New Zealand Daylight Time" },
+  { value: "sydney", label: "(GMT +11) Sydney Time" },
+  { value: "tokyo", label: "(GMT +9) Tokyo Time" },
+  { value: "utc", label: "(GMT +0) UTC" },
 ];
 
 const roleOptions = [
-  { value: "super_admin", label: "Account Owner - Super Admin" },
+  { value: "super_admin", label: "Account Owner / Super Admin" },
   { value: "admin", label: "Admin" },
   { value: "user", label: "User" },
   { value: "viewer", label: "Viewer" },
@@ -83,13 +48,13 @@ const currencyOptions = [
 
 export const Profile: React.FC = () => {
   const [formData, setFormData] = useState<ProfileFormData>({
-    firstName: "Pankaj",
-    lastName: "Kumar",
-    email: "pankaj.kumar@pathfinderatscrm.com",
-    jobTitle: "",
-    companyName: "pathfinderatscrm",
+    firstName: "John",
+    lastName: "Doe",
+    email: "john.d@example.com",
+    jobTitle: "Account Manager",
+    companyName: "Acme Limited",
     role: "super_admin",
-    contactNumber: "123-5678900",
+    contactNumber: "12-345663321",
     timeZone: "auckland",
     city: "Auckland",
     state: "auckland",
@@ -98,7 +63,9 @@ export const Profile: React.FC = () => {
   });
 
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isEditing, setIsEditing] = useState(false);
 
+  // Added this function which was missing in previous attempt but used in JSX
   const handleInputChange = (field: keyof ProfileFormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
@@ -121,13 +88,8 @@ export const Profile: React.FC = () => {
   };
 
   const handleSaveChanges = () => {
-    // TODO: Implement save functionality
     console.warn("Saving profile data:", formData);
-  };
-
-  const handlePhotoUpload = () => {
-    // TODO: Implement photo upload functionality
-    console.warn("Photo upload clicked");
+    setIsEditing(false);
   };
 
   const getRoleLabel = (roleValue: string) => {
@@ -140,133 +102,148 @@ export const Profile: React.FC = () => {
     return currency ? currency.label : currencyValue;
   };
 
+  const renderField = (label: string, value: string, fieldKey: keyof ProfileFormData, type: string = "text", options: any[] = []) => {
+    if (!isEditing) {
+      // View Mode
+      let displayValue = value;
+      if (fieldKey === "role") displayValue = getRoleLabel(value);
+      if (fieldKey === "currency") displayValue = getCurrencyLabel(value);
+      if (fieldKey === "timeZone") displayValue = timeZoneOptions.find(o => o.value === value)?.label || value;
+      if (fieldKey === "state") displayValue = stateOptions.find(o => o.value === value)?.label || value;
+
+      return (
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold text-gray-500">{label}</label>
+          <div className="text-gray-900 text-base font-medium min-h-6">{displayValue || "-"}</div>
+        </div>
+      );
+    }
+
+    // Edit Mode
+    if (options.length > 0) {
+      return (
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold text-gray-500">{label}</label>
+          <Select
+            value={value}
+            onChange={handleSelectChange(fieldKey)}
+            onBlur={handleBlur(fieldKey)}
+            size="small"
+            fullWidth
+            sx={{
+              backgroundColor: '#fff',
+              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
+              fontSize: '0.95rem'
+            }}
+          >
+            {options.map((opt) => (
+              <MenuItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </div>
+      )
+    }
+
+    return (
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-semibold text-gray-500">{label}</label>
+        <TextField
+          value={value}
+          onChange={handleInputChange(fieldKey)}
+          onBlur={handleBlur(fieldKey)}
+          variant="outlined"
+          size="small"
+          fullWidth
+          disabled={fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency'}
+          sx={{
+            backgroundColor: (fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency') ? '#F3F4F6' : '#fff',
+            '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
+            '& .MuiInputBase-input': { fontSize: '0.95rem' }
+          }}
+        />
+      </div>
+    );
+  };
+
   return (
-    <Container>
-      <SettingsHeader title="Profile" />
+    <div className="flex flex-col gap-6 w-full max-w-full pb-10 font-sans">
+      {/* Top Profile Card */}
+      <div className="bg-white border border-gray-200 rounded-lg p-6 flex flex-col md:flex-row items-start md:items-center justify-between shadow-sm">
+        <div className="flex items-center gap-6">
+          {/* Avatar */}
+          <div className="h-20 w-20 rounded-full bg-[#f8f9fa] flex items-center justify-center text-xl font-bold text-gray-800 border-none">
+            PK
+          </div>
 
-      <HeaderWithUpload
-        name={`${formData.firstName} ${formData.lastName}`}
-        subtitle={formData.jobTitle || "Job Title"}
-        onUpload={handlePhotoUpload}
-      />
+          {/* Info */}
+          <div className="flex flex-col gap-1">
+            <h2 className="text-xl font-bold text-gray-900 leading-tight">
+              {formData.firstName} {formData.lastName}
+            </h2>
+            <p className="text-gray-500 font-medium text-sm">
+              {formData.jobTitle || "Account Manager"}
+            </p>
+            <div className="flex items-center gap-1 mt-0.5 cursor-pointer hover:text-purple-600 transition-colors group">
+              <span className="text-xs text-gray-400 font-medium group-hover:text-purple-600">Upload Photo</span>
+              <InfoOutlined sx={{ fontSize: 13, color: '#9CA3AF' }} className="group-hover:!text-purple-600" />
+            </div>
+          </div>
+        </div>
 
-      <FormContainer>
-        <FormRow>
-          <FormInput
-            label="First Name"
-            value={formData.firstName}
-            onChange={handleInputChange("firstName")}
-            onBlur={handleBlur("firstName")}
-            touched={touched.firstName}
-          />
-          <FormInput
-            label="Last Name"
-            value={formData.lastName}
-            onChange={handleInputChange("lastName")}
-            onBlur={handleBlur("lastName")}
-            touched={touched.lastName}
-          />
-        </FormRow>
+        {/* Edit Button */}
+        <div className="mt-4 md:mt-0">
+          <Button
+            variant="contained"
+            onClick={() => isEditing ? handleSaveChanges() : setIsEditing(true)}
+            sx={{
+              backgroundColor: '#6E41E2',
+              textTransform: 'none',
+              fontWeight: 500,
+              padding: '8px 32px',
+              borderRadius: '6px',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#5b35d0',
+                boxShadow: 'none',
+              }
+            }}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </Button>
+        </div>
+      </div>
 
-        <FormRow>
-          <FormInput
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange("email")}
-            onBlur={handleBlur("email")}
-            touched={touched.email}
-            disabled
-          />
-          <FormInput
-            label="Job Title"
-            placeholder="Add Job Title"
-            value={formData.jobTitle}
-            onChange={handleInputChange("jobTitle")}
-            onBlur={handleBlur("jobTitle")}
-            touched={touched.jobTitle}
-          />
-        </FormRow>
+      {/* Details Grid Card */}
+      <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-sm">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-20">
+          {/* Row 1 */}
+          {renderField("First Name", formData.firstName, "firstName")}
+          {renderField("Last Name", formData.lastName, "lastName")}
 
-        <FormRow>
-          <FormInput
-            label="Company Name"
-            value={formData.companyName}
-            onChange={handleInputChange("companyName")}
-            onBlur={handleBlur("companyName")}
-            touched={touched.companyName}
-            disabled
-          />
-          <FormInput
-            label="Role"
-            value={getRoleLabel(formData.role)}
-            onChange={handleInputChange("role")}
-            onBlur={handleBlur("role")}
-            touched={touched.role}
-            disabled
-          />
-        </FormRow>
+          {/* Row 2 */}
+          {renderField("Email", formData.email, "email")}
+          {renderField("Job Title", formData.jobTitle, "jobTitle")}
 
-        <FormRow>
-          <FormInput
-            label="Contact Number"
-            type="tel"
-            value={formData.contactNumber}
-            onChange={handleInputChange("contactNumber")}
-            onBlur={handleBlur("contactNumber")}
-            touched={touched.contactNumber}
-          />
-          <FormSelect
-            label="Time Zone"
-            value={formData.timeZone}
-            options={timeZoneOptions}
-            onChange={handleSelectChange("timeZone")}
-            onBlur={handleBlur("timeZone")}
-            touched={touched.timeZone}
-          />
-        </FormRow>
+          {/* Row 3 */}
+          {renderField("Company Name", formData.companyName, "companyName")}
+          {renderField("Role", formData.role, "role")}
 
-        <FormRow>
-          <FormInput
-            label="City"
-            value={formData.city}
-            onChange={handleInputChange("city")}
-            onBlur={handleBlur("city")}
-            touched={touched.city}
-          />
-          <FormSelect
-            label="State"
-            value={formData.state}
-            options={stateOptions}
-            onChange={handleSelectChange("state")}
-            onBlur={handleBlur("state")}
-            touched={touched.state}
-          />
-        </FormRow>
+          {/* Row 4 */}
+          {renderField("Contact Number", formData.contactNumber, "contactNumber")}
+          {renderField("Time Zone", formData.timeZone, "timeZone", "text", timeZoneOptions)}
 
-        <FormRow>
-          <FormInput
-            label="Country"
-            value={formData.country}
-            onChange={handleInputChange("country")}
-            onBlur={handleBlur("country")}
-            touched={touched.country}
-          />
-          <FormInput
-            label="Currency"
-            value={getCurrencyLabel(formData.currency)}
-            onChange={handleInputChange("currency")}
-            onBlur={handleBlur("currency")}
-            touched={touched.currency}
-            disabled
-          />
-        </FormRow>
-      </FormContainer>
+          {/* Row 5 */}
+          {renderField("City", formData.city, "city")}
+          {renderField("State", formData.state, "state", "text", stateOptions)}
 
-      <ButtonContainer>
-        <Button onClick={handleSaveChanges}>Save Changes</Button>
-      </ButtonContainer>
-    </Container>
+          {/* Row 6 */}
+          {renderField("Country", formData.country, "country")}
+          {renderField("Currency", formData.currency, "currency")}
+        </div>
+      </div>
+    </div>
   );
 };
 
