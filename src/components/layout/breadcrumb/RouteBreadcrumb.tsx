@@ -4,9 +4,7 @@ import ExpandIcon from "@assets/icons/expand.svg?react";
 import QuestionIcon from "@assets/icons/question.svg?react";
 import SearchIcon from "@assets/icons/search.svg?react";
 import { Box, IconButton, Typography } from "@mui/material";
-import { selectFullName } from "@redux/selectors/authSelectors";
 import React from "react";
-import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 
@@ -68,16 +66,6 @@ const CircularIconButton = styled(IconButton)`
   }
 `;
 
-const UserIconWrapper = styled(Box)`
-  background-color: ${({ theme }) => theme.tokens.color.overlay.brandLight};
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  padding: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 const SidebarToggleButton = styled(IconButton)`
   background-color: transparent;
@@ -165,7 +153,6 @@ export const RouteBreadcrumb: React.FC<RouteBreadcrumbProps> = ({
   onMenuItemClick
 }) => {
   const location = useLocation();
-  const displayName: string = useSelector(selectFullName) || "";
 
   const breadcrumbPath = getBreadcrumbPath(location.pathname);
   const isSettingsPage = location.pathname.includes("/settings");

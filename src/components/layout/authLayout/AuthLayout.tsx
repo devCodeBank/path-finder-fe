@@ -4,10 +4,10 @@ import LoadingSpinner from "@components/loading";
 import Logo from "@components/logo/Logo";
 import { Box } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
-import { selectIsLoading, selectIsAuthenticated } from "@redux/selectors/authSelectors";
+import { selectIsLoading } from "@redux/selectors/authSelectors";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { Outlet, Navigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
 const MainContainer = styled(Box)`
@@ -131,12 +131,7 @@ const slides: Slide[] = [
 
 const AuthLayout: React.FC = () => {
   const [current, setCurrent] = useState(0);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoading = useSelector(selectIsLoading);
-
-  // if (isAuthenticated) {
-  //   return <Navigate to="/dashboard" replace />;
-  // }
 
   return (
     <MainContainer>

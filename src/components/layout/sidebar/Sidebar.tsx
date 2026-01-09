@@ -15,14 +15,14 @@ import SettingsIcon from "@assets/icons/settings.svg?react";
 import { Box, IconButton } from "@mui/material";
 import { signOut } from "@redux/slices/authSlice";
 import type { AppDispatch } from "@redux/store";
-import { useState, useEffect, type FC, type ComponentType } from "react";
+import { useEffect, type FC, type ComponentType } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import SidebarMenuItem from "./SidebarMenuItem";
 
-const SidebarContainer = styled(Box)<{ $isExpanded: boolean }>`
+const SidebarContainer = styled(Box) <{ $isExpanded: boolean }>`
   width: ${({ $isExpanded, theme }) =>
     $isExpanded ? theme.tokens.component.sidebar.width.expanded : theme.tokens.component.sidebar.width.collapsed};
   height: 100vh;
@@ -38,7 +38,7 @@ const SidebarContainer = styled(Box)<{ $isExpanded: boolean }>`
   padding-top: ${({ theme }) => theme.tokens.component.topNav.height};
 `;
 
-const SidebarHeader = styled(Box)<{ $isExpanded: boolean }>`
+const SidebarHeader = styled(Box) <{ $isExpanded: boolean }>`
   padding: ${({ theme }) => theme.spacing(1.5, 0.75)};
   display: flex;
   align-items: center;

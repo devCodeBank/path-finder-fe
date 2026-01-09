@@ -62,7 +62,6 @@ export const Profile: React.FC = () => {
     currency: "nzd",
   });
 
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isEditing, setIsEditing] = useState(false);
 
   // Added this function which was missing in previous attempt but used in JSX
@@ -80,12 +79,6 @@ export const Profile: React.FC = () => {
     }));
   };
 
-  const handleBlur = (field: keyof ProfileFormData) => () => {
-    setTouched((prev) => ({
-      ...prev,
-      [field]: true,
-    }));
-  };
 
   const handleSaveChanges = () => {
     console.warn("Saving profile data:", formData);
@@ -102,7 +95,7 @@ export const Profile: React.FC = () => {
     return currency ? currency.label : currencyValue;
   };
 
-  const renderField = (label: string, value: string, fieldKey: keyof ProfileFormData, type: string = "text", options: any[] = []) => {
+  const renderField = (label: string, value: string, fieldKey: keyof ProfileFormData, options: any[] = []) => {
     if (!isEditing) {
       // View Mode
       let displayValue = value;
@@ -127,7 +120,6 @@ export const Profile: React.FC = () => {
           <Select
             value={value}
             onChange={handleSelectChange(fieldKey)}
-            onBlur={handleBlur(fieldKey)}
             size="small"
             fullWidth
             sx={{
@@ -152,7 +144,6 @@ export const Profile: React.FC = () => {
         <TextField
           value={value}
           onChange={handleInputChange(fieldKey)}
-          onBlur={handleBlur(fieldKey)}
           variant="outlined"
           size="small"
           fullWidth
@@ -232,11 +223,11 @@ export const Profile: React.FC = () => {
 
           {/* Row 4 */}
           {renderField("Contact Number", formData.contactNumber, "contactNumber")}
-          {renderField("Time Zone", formData.timeZone, "timeZone", "text", timeZoneOptions)}
+          {renderField("Time Zone", formData.timeZone, "timeZone", timeZoneOptions)}
 
           {/* Row 5 */}
           {renderField("City", formData.city, "city")}
-          {renderField("State", formData.state, "state", "text", stateOptions)}
+          {renderField("State", formData.state, "state", stateOptions)}
 
           {/* Row 6 */}
           {renderField("Country", formData.country, "country")}
