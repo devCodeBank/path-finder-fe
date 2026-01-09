@@ -28,7 +28,6 @@ export default defineConfig({
       "@assets": "/src/assets",
       "@services": "/src/services",
       "@config": "/src/config",
-      "react-is": "react-is",
     },
   },
   build: {
