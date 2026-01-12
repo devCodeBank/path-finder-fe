@@ -1,10 +1,8 @@
 import CalendarIcon from "@assets/icons/calendar.svg?react";
 import CandidatesIcon from "@assets/icons/candidates.svg?react";
-import CollapseIcon from "@assets/icons/collapse.svg?react";
 import CompanyIcon from "@assets/icons/company.svg?react";
 import ContactsIcon from "@assets/icons/contacts.svg?react";
 import DashboardIcon from "@assets/icons/dashboard.svg?react";
-import ExpandIcon from "@assets/icons/expand.svg?react";
 import FolderIcon from "@assets/icons/folder.svg?react";
 import JobsIcon from "@assets/icons/jobs.svg?react";
 import LogoutIcon from "@assets/icons/logout.svg?react";
@@ -28,7 +26,6 @@ export interface MenuItem {
 
 interface SidebarProps {
   isExpanded?: boolean;
-  onToggleExpand?: (expanded: boolean) => void;
 }
 
 const mainMenuItems: MenuItem[] = [
@@ -58,15 +55,12 @@ const isRouteSelected = (currentPath: string, itemPath: string): boolean => {
   return currentPath === itemPath;
 };
 
-export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }) => {
+export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const toggleExpanded = () => {
-    const newExpandedState = !isExpanded;
-    onToggleExpand?.(newExpandedState);
-  };
+
 
   const handleLogout = async () => {
     await dispatch(signOut());
@@ -119,7 +113,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }
     });
   };
 
-  const isSettingsPage = location.pathname.startsWith("/settings");
+
 
   return (
     <aside

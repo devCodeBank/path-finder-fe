@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
-import { Footer } from "../footer";
 import { Sidebar } from "../sidebar";
 import { TopNavBar } from "../topNavBar";
 import PageLayout from "./PageLayout";
@@ -63,7 +62,7 @@ export const PlatformLayout: React.FC = () => {
     <SidebarContext.Provider value={{ sidebarExpanded, sidebarWidth, onToggleExpand: handleSidebarToggle }}>
       <PlatformContainer>
         <TopNavBar />
-        <Sidebar isExpanded={sidebarExpanded} onToggleExpand={handleSidebarToggle} />
+        <Sidebar isExpanded={sidebarExpanded} />
 
         <ContentArea $sidebarWidth={sidebarWidth} $top={64}>
           <MainContent>
@@ -74,7 +73,6 @@ export const PlatformLayout: React.FC = () => {
                 <Outlet />
               </PageLayout>
             )}
-            <Footer />
           </MainContent>
         </ContentArea>
       </PlatformContainer>
