@@ -7,8 +7,6 @@ import { cn } from "@/lib/utils";
 
 // Icons
 import BellIcon from "@assets/icons/bell.svg?react";
-import CollapseIcon from "@assets/icons/collapse.svg?react";
-import ExpandIcon from "@assets/icons/expand.svg?react";
 import QuestionIcon from "@assets/icons/question.svg?react";
 import SearchIcon from "@assets/icons/search.svg?react";
 
@@ -78,6 +76,26 @@ const getBreadcrumbPath = (pathname: string): string[] => {
     return segments.map(segment => routeLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, " "));
 };
 
+const SidebarToggleIcon = ({ expanded, ...props }: { expanded: boolean } & React.SVGProps<SVGSVGElement>) => (
+    <svg
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.3s ease" }}
+        {...props}
+    >
+        <path
+            d="M6.547 0.75V17.25M12.04 11.25L14.25 9M14.25 9L12.04 6.75M14.25 9H9.55M0.75 4.25C0.75 3.32174 1.11875 2.4315 1.77513 1.77513C2.4315 1.11875 3.32174 0.75 4.25 0.75H13.75C14.6783 0.75 15.5685 1.11875 16.2249 1.77513C16.8813 2.4315 17.25 3.32174 17.25 4.25V13.75C17.25 14.6783 16.8813 15.5685 16.2249 16.2249C15.5685 16.8813 14.6783 17.25 13.75 17.25H4.25C3.32174 17.25 2.4315 16.8813 1.77513 16.2249C1.11875 15.5685 0.75 14.6783 0.75 13.75V4.25Z"
+            stroke="#666666"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </svg>
+);
+
 interface PageLayoutProps {
     children: React.ReactNode;
     sidebar?: React.ReactNode;
@@ -100,11 +118,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                             onClick={() => onToggleExpand(!sidebarExpanded)}
                             style={{ flexShrink: 0 }}
                         >
-                            {sidebarExpanded ? (
-                                <CollapseIcon width={20} height={20} style={{ color: '#717171' }} />
-                            ) : (
-                                <ExpandIcon width={20} height={20} style={{ color: '#717171' }} />
-                            )}
+                            <SidebarToggleIcon expanded={sidebarExpanded} />
                         </CircularIconButton>
 
                         <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide no-scrollbar">

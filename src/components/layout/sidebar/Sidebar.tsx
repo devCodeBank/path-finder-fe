@@ -1,6 +1,5 @@
 import CalendarIcon from "@assets/icons/calendar.svg?react";
 import CandidatesIcon from "@assets/icons/candidates.svg?react";
-import ChatIcon from "@assets/icons/chat.svg?react";
 import CollapseIcon from "@assets/icons/collapse.svg?react";
 import CompanyIcon from "@assets/icons/company.svg?react";
 import ContactsIcon from "@assets/icons/contacts.svg?react";
@@ -14,7 +13,7 @@ import ReportsIcon from "@assets/icons/reports.svg?react";
 import SettingsIcon from "@assets/icons/settings.svg?react";
 import { signOut } from "@redux/slices/authSlice";
 import type { AppDispatch } from "@redux/store";
-import { useEffect, type FC, type ComponentType } from "react";
+import { type FC, type ComponentType } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -46,8 +45,8 @@ const mainMenuItems: MenuItem[] = [
 
 const bottomMenuItems: MenuItem[] = [
   { id: "settings", icon: SettingsIcon, label: "Settings", path: "/settings" },
-  { id: "chat", icon: ChatIcon, label: "Chat", path: "/chat" },
   { id: "logout", icon: LogoutIcon, label: "Logout", path: "/logout" },
+  { id: "user-avatar", icon: DashboardIcon, label: "User Profile", path: "#" },
 ];
 
 const routesWithNestedPages = ["/settings"];
@@ -68,11 +67,6 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }
     const newExpandedState = !isExpanded;
     onToggleExpand?.(newExpandedState);
   };
-
-  useEffect(() => {
-    onToggleExpand?.(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const handleLogout = async () => {
     await dispatch(signOut());
@@ -95,6 +89,24 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }
     return items.map((item) => {
       const isSelected = isRouteSelected(location.pathname, item.path);
 
+      if (item.id === "user-avatar") {
+        return (
+          <div key={item.id} className={cn(
+            "flex items-center h-[34px] mx-[6px] rounded-[4px] mb-2",
+            isExpanded ? "w-[calc(100%-12px)] px-3 justify-start" : "w-[56px] justify-center"
+          )}>
+            <div className="w-[24px] h-[24px] rounded-full bg-[#666666] flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+              PK
+            </div>
+            {isExpanded && (
+              <span className="text-[14px] font-medium text-[#333333] ml-3">
+                User Profile
+              </span>
+            )}
+          </div>
+        );
+      }
+
       return (
         <SidebarMenuItem
           key={item.id}
@@ -112,26 +124,10 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen  transition-all duration-300 ease-in-out z-[1040] pt-16 flex flex-col",
+        "fixed left-0 top-0 h-screen transition-[width] duration-300 ease-in-out z-[1040] pt-16 flex flex-col bg-[#eaeaea]",
         isExpanded ? "w-[240px]" : "w-[68px]"
       )}
     >
-      <div
-        className={cn(
-          "px-3 py-1.5 flex items-center",
-          isExpanded ? "justify-end" : "justify-center"
-        )}
-      >
-        {!isSettingsPage && (
-          <button
-            onClick={toggleExpanded}
-            className="w-14 h-8 flex items-center justify-center text-gray-500 hover:text-[#6E41E2] hover:bg-[#F9FAFB] transition-all rounded-md"
-          >
-            {isExpanded ? <CollapseIcon className="w-6 h-6" /> : <ExpandIcon className="w-6 h-6" />}
-          </button>
-        )}
-      </div>
-
       <nav className="flex-1 flex flex-col pt-2">
         <div className="flex flex-col mt-[55px]">
           {renderMenuItems(mainMenuItems)}

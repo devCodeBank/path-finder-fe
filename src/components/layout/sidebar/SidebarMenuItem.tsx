@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { type FC } from "react";
+import { memo } from "react";
 import { cn } from "@/lib/utils";
 import type { MenuItem } from "./Sidebar";
 
@@ -10,7 +10,7 @@ interface MenuItemProps {
   onItemClick: (item: MenuItem) => void;
 }
 
-const SidebarMenuItem: FC<MenuItemProps> = ({ item, isSelected, isExpanded, onItemClick }) => {
+const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onItemClick }) => {
   const IconComponent = item.icon;
 
   const handleClick = () => {
@@ -22,7 +22,8 @@ const SidebarMenuItem: FC<MenuItemProps> = ({ item, isSelected, isExpanded, onIt
       <button
         onClick={handleClick}
         className={cn(
-          "group relative flex items-center h-[34px] mx-[6px] rounded-[4px] transition-all duration-200 ease-in-out mb-2",
+          "group relative flex items-center h-[34px] mx-[6px] rounded-[4px] mb-2",
+          "transition-[background-color,color,width,padding] duration-200 ease-in-out",
           isExpanded ? "w-[calc(100%-12px)] px-3 justify-start" : "w-[56px] justify-center",
           isSelected
             ? "bg-[#666666] text-white"
@@ -53,6 +54,8 @@ const SidebarMenuItem: FC<MenuItemProps> = ({ item, isSelected, isExpanded, onIt
       </button>
     </Tooltip>
   );
-};
+});
+
+SidebarMenuItem.displayName = "SidebarMenuItem";
 
 export default SidebarMenuItem;
