@@ -18,7 +18,9 @@ export const Footer: React.FC = () => {
   const location = useLocation();
   const isSettingsPage = location.pathname.startsWith("/settings");
 
-  return <FooterContainer $isSettingsPage={isSettingsPage}></FooterContainer>;
+  return (
+    <></>
+  )
 };
 
 export default Footer;

@@ -1,235 +1,191 @@
-import { Button } from "@components/buttons/button/Button";
-import { ToggleSwitch } from "@components/input/toggleSwitch";
-import { SettingsHeader } from "@components/settingsHeader";
-import { Box, Typography } from "@mui/material";
-import React, { useMemo, useState } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
+import { Button } from "@mui/material";
+import { cn } from "@/lib/utils";
 
-const Container = styled(Box)`
-  width: 100%;
-  box-sizing: border-box;
-`;
-
-const Card = styled(Box)`
-  background: ${({ theme }) => theme.tokens.color.background.primary};
-  border: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
-  border-radius: ${({ theme }) => theme.tokens.radius.md};
-  overflow: hidden;
-  margin-top: ${({ theme }) => theme.spacing(3)};
-`;
-
-const CardHeader = styled(Box)`
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.medium};
-  padding: ${({ theme }) => theme.spacing(1.5, 2)};
-`;
-
-const CardHeaderText = styled(Typography)`
-  font-size: 16px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-`;
-
-const Row = styled(Box)`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: ${({ theme }) => theme.spacing(2)};
-  padding: ${({ theme }) => theme.spacing(2)};
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.medium};
-
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const RowLeft = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`;
-
-const Label = styled(Typography)`
-  font-size: 16px;
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-`;
-
-const Description = styled(Typography)`
-  font-size: 14px;
-  color: ${({ theme }) => theme.tokens.color.text.secondary};
-`;
-
-const ValueText = styled(Typography)`
-  font-size: 14px;
-  color: ${({ theme }) => theme.tokens.color.text.secondary};
-`;
-
-const LinkText = styled.a`
-  font-size: 14px;
-  color: ${({ theme }) => theme.tokens.color.text.link};
-  text-decoration: none;
-  cursor: pointer;
-  &:hover {
-    color: ${({ theme }) => theme.tokens.color.text.linkHover};
-    text-decoration: underline;
-  }
-`;
-
-const InlineGroup = styled(Box)`
-  display: inline-flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(1)};
-`;
+const Toggle = ({
+  enabled,
+  onChange,
+  label,
+  description
+}: {
+  enabled: boolean;
+  onChange: (val: boolean) => void;
+  label: string;
+  description?: string;
+}) => {
+  return (
+    <div className="flex items-start justify-between py-4 border-b border-[#F0F0F0] last:border-0">
+      <div className="flex flex-col gap-1 pr-4">
+        <span className="text-[14px] font-[500] text-[#333333]">{label}</span>
+        {description && (
+          <p className="text-[13px] font-[400] text-[#717171] leading-relaxed">
+            {description}
+          </p>
+        )}
+      </div>
+      <div
+        className={cn(
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none mt-1",
+          enabled ? "bg-[#6E41E2]" : "bg-[#CCCCCC]"
+        )}
+        onClick={() => onChange(!enabled)}
+      >
+        <span
+          className={cn(
+            "inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200",
+            enabled ? "translate-x-[18px]" : "translate-x-[3px]"
+          )}
+        />
+      </div>
+    </div>
+  );
+};
 
 export const PrivacySecurity: React.FC = () => {
-  const [primaryEmail] = useState<string>("pksaucklandnz@cns.com");
-  const [newDeviceVerification, setNewDeviceVerification] = useState<boolean>(false);
-  const [twoStepVerification, setTwoStepVerification] = useState<boolean>(false);
-  const [phoneNumbers, setPhoneNumbers] = useState<string[]>(["64123456789"]);
-
-  const hasPhoneNumbers = useMemo(() => phoneNumbers.length > 0, [phoneNumbers.length]);
-
-  const handleChangePassword = () => {
-    console.warn("Change Password clicked");
-  };
-
-  const handleShowRecoveryCodes = () => {
-    console.warn("Show Recovery Codes clicked");
-  };
-
-  const handleAddPhone = () => {
-    console.warn("Add Phone clicked");
-  };
-
-  const handleDeletePhone = (index: number) => () => {
-    setPhoneNumbers((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleAddEmail = () => {
-    console.warn("Add Email clicked");
-  };
-
-  const handleSetupApp = () => {
-    console.warn("Set Up App clicked");
-  };
+  const [newDeviceVerification, setNewDeviceVerification] = useState(false);
+  const [twoStepVerification, setTwoStepVerification] = useState(false);
+  const [primaryEmail] = useState("username@example.com");
 
   return (
-    <Container>
-      <SettingsHeader title="Privacy & Security" />
+    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
 
-      {/* Default Security */}
-      <Card>
-        <CardHeader>
-          <CardHeaderText>Default Security</CardHeaderText>
-        </CardHeader>
+      {/* Breadcrumbs */}
+      <div className="flex items-center gap-2 text-[13px] font-[400] text-[#717171] mb-2 px-1">
+        <span>Settings</span>
+        <span className="text-[10px]">→</span>
+        <span>User Settings</span>
+        <span className="text-[10px]">→</span>
+        <span className="text-[#333333] font-[500]">Privacy & Security</span>
+      </div>
 
-        <Row>
-          <RowLeft>
-            <Label>Primary Email</Label>
-            <ValueText>{primaryEmail}</ValueText>
-          </RowLeft>
-          <Box />
-        </Row>
+      {/* Default Security Card */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014]">
+        <div className="px-5 py-4 border-b border-[#CCCCCC]">
+          <h3 className="text-[15px] font-[500] text-[#333333]">Default Security</h3>
+        </div>
 
-        <Row>
-          <RowLeft>
-            <Label>Password</Label>
-            <Description>Change your password</Description>
-          </RowLeft>
-          <Button variant="neutral" size="sm" onClick={handleChangePassword}>
-            Change Password
-          </Button>
-        </Row>
+        <div className="p-5 flex flex-col gap-6">
+          {/* Email Row */}
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] font-[500] text-[#333333]">Primary Email</span>
+              <span className="text-[13px] font-[400] text-[#717171]">{primaryEmail}</span>
+            </div>
+          </div>
 
-        <Row>
-          <RowLeft>
-            <Label>Recovery Codes</Label>
-            <Description>
-              If you lose access to your password or verification methods, you will be able to log in with a recovery code.
-            </Description>
-            <InlineGroup>
-              <LinkText>Learn More About Recovery Codes</LinkText>
-            </InlineGroup>
-          </RowLeft>
-          <Button variant="neutral" size="sm" onClick={handleShowRecoveryCodes}>
-            Show Codes
-          </Button>
-        </Row>
-      </Card>
+          {/* Password Row */}
+          <div className="flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] font-[500] text-[#333333]">Password</span>
+              <p className="text-[13px] font-[400] text-[#717171]">Change your password</p>
+            </div>
+            <Button
+              variant="outlined"
+              sx={{
+                height: '32px',
+                borderColor: '#CCCCCC',
+                color: '#333333',
+                textTransform: 'none',
+                fontSize: '12px',
+                fontWeight: 500,
+                '&:hover': {
+                  borderColor: '#6E41E2',
+                  backgroundColor: 'rgba(110, 65, 226, 0.04)',
+                }
+              }}
+            >
+              Change Password
+            </Button>
+          </div>
 
-      {/* Login Security */}
-      <Card>
-        <CardHeader>
-          <CardHeaderText>Login Security</CardHeaderText>
-        </CardHeader>
+          {/* Recovery Codes Row */}
+          <div className="flex items-start justify-between border-t border-[#F0F0F0] pt-6">
+            <div className="flex flex-col gap-1 max-w-[70%]">
+              <span className="text-[14px] font-[500] text-[#333333]">Recovery Codes</span>
+              <p className="text-[13px] font-[400] text-[#717171]">
+                If you lose access to your password or verification methods, you will be able to log in with a recovery code.
+              </p>
+              <a href="#" className="text-[13px] text-[#6E41E2] hover:underline mt-1">Learn More About Recovery Codes</a>
+            </div>
+            <Button
+              variant="outlined"
+              sx={{
+                height: '32px',
+                borderColor: '#CCCCCC',
+                color: '#333333',
+                textTransform: 'none',
+                fontSize: '12px',
+                fontWeight: 500,
+                '&:hover': {
+                  borderColor: '#6E41E2',
+                  backgroundColor: 'rgba(110, 65, 226, 0.04)',
+                }
+              }}
+            >
+              Show Codes
+            </Button>
+          </div>
+        </div>
+      </div>
 
-        <Row>
-          <RowLeft>
-            <Label>New Device Verification</Label>
-            <Description>
-              Require additional verification step for logins from a new device or browser. <LinkText>Learn More</LinkText>
-            </Description>
-          </RowLeft>
-          <ToggleSwitch checked={newDeviceVerification} onChange={setNewDeviceVerification} label="" />
-        </Row>
+      {/* Login Security Card */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014]">
+        <div className="px-5 py-4 border-b border-[#CCCCCC]">
+          <h3 className="text-[15px] font-[500] text-[#333333]">Login Security</h3>
+        </div>
+        <div className="px-5">
+          <Toggle
+            label="New Device Verification"
+            description="Require additional verification step for logins from a new device or browser. Learn More"
+            enabled={newDeviceVerification}
+            onChange={setNewDeviceVerification}
+          />
+          <Toggle
+            label="Two-Step Verification"
+            description="Require a verification code when you log in with a password. Learn More"
+            enabled={twoStepVerification}
+            onChange={setTwoStepVerification}
+          />
+        </div>
+      </div>
 
-        <Row>
-          <RowLeft>
-            <Label>Two-Step Verification</Label>
-            <Description>
-              Require a verification code when you log in with a password. <LinkText>Learn More</LinkText>
-            </Description>
-          </RowLeft>
-          <ToggleSwitch checked={twoStepVerification} onChange={setTwoStepVerification} label="" />
-        </Row>
-      </Card>
+      {/* Verification Methods Card */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014]">
+        <div className="px-5 py-4 border-b border-[#CCCCCC]">
+          <h3 className="text-[15px] font-[500] text-[#333333]">Verification Methods</h3>
+        </div>
+        <div className="p-5 flex flex-col gap-6">
+          {/* Phone Number */}
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] font-[500] text-[#333333]">Phone Number</span>
+              <p className="text-[13px] font-[400] text-[#717171]">Require additional verification step for logins from a new device or browser.</p>
+              <span className="text-[13px] font-[500] text-[#333333] mt-2">64123456789</span>
+            </div>
+            <button className="text-[13px] font-[500] text-[#6E41E2] hover:underline">Add Phone</button>
+          </div>
 
-      {/* Verification Methods */}
-      <Card>
-        <CardHeader>
-          <CardHeaderText>Verification Methods</CardHeaderText>
-        </CardHeader>
+          {/* Alternate Emails */}
+          <div className="flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] font-[500] text-[#333333]">Alternate Emails</span>
+              <p className="text-[13px] font-[400] text-[#717171]">Add alternate emails in addition to your default email to receive a verification code.</p>
+            </div>
+            <button className="text-[13px] font-[500] text-[#6E41E2] hover:underline">Add Email</button>
+          </div>
 
-        <Row>
-          <RowLeft>
-            <Label>Phone Numbers</Label>
-            <Description>Add a phone number to receive code via TEXT message.</Description>
-            {hasPhoneNumbers && (
-              <Box style={{ marginTop: 8 }}>
-                {phoneNumbers.map((phone, index) => (
-                  <InlineGroup key={phone} style={{ marginTop: index === 0 ? 0 : 6 }}>
-                    <ValueText>{phone}</ValueText>
-                    <LinkText onClick={handleDeletePhone(index)}>Delete</LinkText>
-                  </InlineGroup>
-                ))}
-              </Box>
-            )}
-          </RowLeft>
-          <Button variant="neutral" size="sm" onClick={handleAddPhone}>
-            Add Phone
-          </Button>
-        </Row>
+          {/* Authenticator App */}
+          <div className="flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+            <div className="flex flex-col gap-1">
+              <span className="text-[14px] font-[500] text-[#333333]">Authenticator App</span>
+              <p className="text-[13px] font-[400] text-[#717171]">Set up an authenticator on your mobile device to receive verification code.</p>
+            </div>
+            <button className="text-[13px] font-[500] text-[#6E41E2] hover:underline">Set Up App</button>
+          </div>
+        </div>
+      </div>
 
-        <Row>
-          <RowLeft>
-            <Label>Alternate Emails</Label>
-            <Description>Add alternate emails in addition to your default email to receive a verification code.</Description>
-          </RowLeft>
-          <Button variant="neutral" size="sm" onClick={handleAddEmail}>
-            Add Email
-          </Button>
-        </Row>
-
-        <Row>
-          <RowLeft>
-            <Label>Authenticator App</Label>
-            <Description>Set up an authenticator on your mobile device to receive verification code.</Description>
-          </RowLeft>
-          <Button variant="neutral" size="sm" onClick={handleSetupApp}>
-            Set Up App
-          </Button>
-        </Row>
-      </Card>
-    </Container>
+    </div>
   );
 };
 

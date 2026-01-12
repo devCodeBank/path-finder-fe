@@ -1,85 +1,81 @@
-import EnvelopeIcon from "@assets/icons/envelope.svg";
-import { IntegrationCard } from "@components/integrationCard";
-import { SettingsHeader } from "@components/settingsHeader";
-import { Box, Typography } from "@mui/material";
-import type { TypographyProps } from "@mui/material/Typography";
 import React from "react";
-import styled from "styled-components";
+import { Button } from "@mui/material";
 
-const Container = styled(Box)`
-  width: 100%;
-  box-sizing: border-box;
-`;
+const CheckIcon = () => (
+  <svg width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1 5.5L4.5 9L12.5 1" stroke="#57CC4D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
-const SectionTitle = styled(Typography)<TypographyProps>`
-  font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.semibold};
-  padding-bottom: ${({ theme }) => theme.spacing(2)};
-`;
-
-const ListHeading = styled(Typography)<TypographyProps>`
-  padding-top: ${({ theme }) => theme.spacing(3)};
-`;
-
-const Benefits = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(3)};
-  list-style: none;
-  margin: ${({ theme }) => theme.spacing(3, 0)};
-  padding: 0;
-`;
-
-const BenefitItem = styled.li`
-  display: flex;
-  align-items: center;
-  font-weight: 400;
-  gap: ${({ theme }) => theme.spacing(1.5)};
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-  font-size: 14px;
-
-  &::before {
-    content: "✓";
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    color: ${({ theme }) => theme.tokens.color.brand.primary};
-    font-weight: 700;
-  }
-`;
+const EnvelopeIcon = () => (
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 12C8 9.79086 9.79086 8 12 8H36C38.2091 8 40 9.79086 40 12V36C40 38.2091 38.2091 40 36 40H12C9.79086 40 8 38.2091 8 36V12Z" fill="#F4F0FF" stroke="#6E41E2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M8 12L24 24L40 12" stroke="#6E41E2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 export const Email: React.FC = () => {
-  const handleConnect = () => {
-    console.warn("Connect email clicked");
-  };
-
   return (
-    <Container>
-      <SettingsHeader title="Email" />
+    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
 
-      <SectionTitle variant="lg" component="h3">
-        Connect Your Email Account
-      </SectionTitle>
-      <IntegrationCard
-        iconSrc={EnvelopeIcon}
-        iconAlt="Email icon"
-        title="Email"
-        subtitle="Connect your email with pathfinder ats crm"
-        buttonText="Connect"
-        onClick={handleConnect}
-      />
+      {/* Breadcrumbs */}
+      <div className="flex items-center gap-2 text-[13px] font-[400] text-[#717171] mb-2 px-1">
+        <span>Settings</span>
+        <span className="text-[10px]">→</span>
+        <span>User Settings</span>
+        <span className="text-[10px]">→</span>
+        <span className="text-[#333333] font-[500]">Email Connection</span>
+      </div>
 
-      <ListHeading variant="lg">Why you should connect your email account to Pathfinder ATS CRM?</ListHeading>
-      <Benefits>
-        <BenefitItem>Manage all your communication directly from one platform.</BenefitItem>
-        <BenefitItem>Emails auto-link to profiles.</BenefitItem>
-        <BenefitItem>Parse resumes from email.</BenefitItem>
-        <BenefitItem>Get email open notifications.</BenefitItem>
-        <BenefitItem>Emails sync automatically (e.g., every couple of hours).</BenefitItem>
-        <BenefitItem>Full control, disconnect anytime.</BenefitItem>
-      </Benefits>
-    </Container>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014] p-10 flex flex-col items-center text-center">
+        <div className="mb-6">
+          <EnvelopeIcon />
+        </div>
+
+        <h2 className="text-[20px] font-[600] text-[#333333] mb-2">Connect Your Email Account</h2>
+        <p className="text-[14px] text-[#717171] mb-8">Connect your email with pathfinder ats crm</p>
+
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: '#6E41E2',
+            textTransform: 'none',
+            px: 4,
+            py: 1,
+            fontSize: '14px',
+            fontWeight: 500,
+            borderRadius: '6px',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: '#5A35B8',
+              boxShadow: 'none',
+            }
+          }}
+        >
+          Connect Your Email
+        </Button>
+
+        <div className="mt-12 w-full max-w-[500px] text-left">
+          <h3 className="text-[15px] font-[500] text-[#333333] mb-6">Why you should connect your email account to Pathfinder ATS CRM?</h3>
+
+          <ul className="flex flex-col gap-5">
+            {[
+              "Manage all your communication directly from one platform.",
+              "Emails auto-link to profiles.",
+              "Parse resumes from email.",
+              "Get email open notifications.",
+              "Emails sync automatically (e.g., every couple of hours).",
+              "Full control, disconnect anytime."
+            ].map((benefit, i) => (
+              <li key={i} className="flex items-center gap-3 text-[13px] text-[#333333]">
+                <CheckIcon />
+                {benefit}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 

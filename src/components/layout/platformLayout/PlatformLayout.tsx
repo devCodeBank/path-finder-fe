@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { Footer } from "../footer";
 import { Sidebar } from "../sidebar";
 import { TopNavBar } from "../topNavBar";
-import { RouteBreadcrumb } from "../breadcrumb";
+import PageLayout from "./PageLayout";
 
 import { SidebarContext } from "./SidebarContext";
 
@@ -35,11 +35,9 @@ const ContentArea = styled(Box) <{ $sidebarWidth: number; $top: number }>`
 
 const MainContent = styled(Box)`
   flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  // padding: 24px;
+  overflow: hidden;
 `;
 
 export const PlatformLayout: React.FC = () => {
@@ -66,19 +64,16 @@ export const PlatformLayout: React.FC = () => {
       <PlatformContainer>
         <TopNavBar />
         <Sidebar isExpanded={sidebarExpanded} onToggleExpand={handleSidebarToggle} />
-        {!isSettingsPage && (
-          <RouteBreadcrumb
-            sidebarWidth={sidebarWidth}
-            sidebarExpanded={sidebarExpanded}
-            onSidebarToggle={() => handleSidebarToggle(!sidebarExpanded)}
-            onMenuItemClick={(label) => console.log("TO BE IMPLEMENTED: " + label)}
-          />
-        )}
-        <ContentArea $sidebarWidth={sidebarWidth} $top={isSettingsPage ? 64 : 112}>
+
+        <ContentArea $sidebarWidth={sidebarWidth} $top={64}>
           <MainContent>
-            <Box sx={{ flex: 1 }}>
+            {isSettingsPage ? (
               <Outlet />
-            </Box>
+            ) : (
+              <PageLayout>
+                <Outlet />
+              </PageLayout>
+            )}
             <Footer />
           </MainContent>
         </ContentArea>

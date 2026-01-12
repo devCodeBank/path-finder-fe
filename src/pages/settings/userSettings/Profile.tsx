@@ -162,7 +162,7 @@ export const Profile: React.FC = () => {
           </div>
 
           {/* Info */}
-          <div className="flex flex-col gap-1 mt-2">
+          <div className="flex flex-col gap-1 justify-center mt-5">
             <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
               {formData.firstName} {formData.lastName}
             </h2>

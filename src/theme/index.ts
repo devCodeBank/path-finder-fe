@@ -384,12 +384,16 @@ const theme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: colorTokens.neutral.gray800,
-          color: colorTokens.text.inverse,
-          borderRadius: radiusTokens.sm,
-          fontSize: typographyTokens.fontSize.md,
-          padding: "8px 12px",
-          boxShadow: shadowTokens.md,
+          backgroundColor: "#777777",
+          color: "#FFFFFF",
+          borderRadius: "4px",
+          fontSize: "12px",
+          fontWeight: 400,
+          padding: "6px 12px",
+          boxShadow: "none",
+        },
+        arrow: {
+          color: "#777777",
         },
       },
     },
