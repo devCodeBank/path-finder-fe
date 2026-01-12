@@ -18,14 +18,7 @@ export const Email: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
 
-      {/* Breadcrumbs */}
-      <div className="flex items-center gap-2 text-[13px] font-[400] text-[#717171] mb-2 px-1">
-        <span>Settings</span>
-        <span className="text-[10px]">→</span>
-        <span>User Settings</span>
-        <span className="text-[10px]">→</span>
-        <span className="text-[#333333] font-[500]">Email Connection</span>
-      </div>
+
 
       <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014] p-10 flex flex-col items-center text-center">
         <div className="mb-6">
