@@ -98,7 +98,7 @@ export const SettingsLayout: React.FC = () => {
   const breadcrumbPath = getBreadcrumbPath(location.pathname);
 
   return (
-    <div className="h-full flex flex-col px-6 pb-6">
+    <div className="h-full flex flex-col pr-2 pb-6">
       {/* Main Card with Shadow and Border */}
       <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[20px] overflow-hidden shadow-sm">
 
@@ -142,7 +142,7 @@ export const SettingsLayout: React.FC = () => {
 
           {/* Main Content Area */}
           <div className="my-3 mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border rounded-tr-[20px] rounded-br-[20px] shadow-[0px_4px_4px_0px_#00000014]">
-            <div className="flex-1 overflow-y-auto px-8 py-8">
+            <div className="flex-1 overflow-y-auto px-4 py-4">
               <Outlet />
             </div>
           </div>

@@ -1,50 +1,17 @@
 import LogoIcon from "@assets/logos/company-logo.svg?react";
-import { Box, Typography } from "@mui/material";
 import React from "react";
-import styled from "styled-components";
-
-const NavBarContainer = styled(Box)`
-  position: fixed;
-  top: 0;
-  z-index: ${({ theme }) => theme.tokens.zIndex.navbar};
-  width: 100%;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #EAEAEA;
-  // border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
-  padding: 0 24px;
-
-  @media (max-width: 600px) {
-    padding: 0 4px 0 16px;
-  }
-`;
-
-const LeftSection = styled(Box)`
-  display: flex;
-  align-items: center;
-  gap: 16px;
-`;
-
-const AppName = styled(Typography)`
-  font-weight: 600;
-  font-size: 18px;
-  color: #666666;
-
-  @media (max-width: 600px) {
-    display: none;
-  }
-`;
+import { cn } from "@/lib/utils";
 
 export const TopNavBar: React.FC = () => {
   return (
-    <NavBarContainer>
-      <LeftSection>
+    <header className="fixed top-0 left-0 w-full h-16 flex items-center justify-between bg-[#EAEAEA] px-4 sm:px-6 z-[1050]">
+      <div className="flex items-center">
         <LogoIcon width={23} height={23} />
-        <AppName variant="h6">pathfinder ats crm</AppName>
-      </LeftSection>
-    </NavBarContainer>
+        <h1 className=" text-[18px] text-[#666666] lowercase font-[500] ml-[10px]">
+          pathfinder ats crm
+        </h1>
+      </div>
+    </header>
   );
 };
 

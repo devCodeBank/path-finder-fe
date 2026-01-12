@@ -12,84 +12,17 @@ import LogoutIcon from "@assets/icons/logout.svg?react";
 import MailIcon from "@assets/icons/mail-close.svg?react";
 import ReportsIcon from "@assets/icons/reports.svg?react";
 import SettingsIcon from "@assets/icons/settings.svg?react";
-import { Box, IconButton } from "@mui/material";
 import { signOut } from "@redux/slices/authSlice";
 import type { AppDispatch } from "@redux/store";
 import { useEffect, type FC, type ComponentType } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-
+import { cn } from "@/lib/utils";
 import SidebarMenuItem from "./SidebarMenuItem";
-
-const SidebarContainer = styled(Box) <{ $isExpanded: boolean }>`
-  width: ${({ $isExpanded, theme }) =>
-    $isExpanded ? theme.tokens.component.sidebar.width.expanded : theme.tokens.component.sidebar.width.collapsed};
-  height: 100vh;
-  border-right: 1px solid ${({ theme }) => theme.tokens.color.border.light};
-  background:#EAEAEA;
-  transition: width 300ms ease-in-out;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: ${({ theme }) => theme.tokens.zIndex.sidebar};
-  padding-top: ${({ theme }) => theme.tokens.component.topNav.height};
-`;
-
-const SidebarHeader = styled(Box) <{ $isExpanded: boolean }>`
-  padding: ${({ theme }) => theme.spacing(1.5, 0.75)};
-  display: flex;
-  align-items: center;
-  justify-content: ${({ $isExpanded }) => ($isExpanded ? "flex-end" : "center")};
-`;
-
-const MenuSection = styled(Box)`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
-
-const MainMenuItems = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(1.5)};
-`;
-
-const BottomMenuItems = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(1.5)};
-  margin-top: auto;
-  padding: ${({ theme }) => theme.spacing(0, 0, 3)};
-`;
-
-const ExpandButton = styled(IconButton)`
-  width: 56px;
-  height: 32px;
-  color: ${({ theme }) => theme.tokens.color.text.secondary};
-  transition: color 200ms ease-in-out;
-
-  svg {
-    width: 24px;
-    height: 24px;
-    color: inherit;
-  }
-
-  &:hover {
-    color: ${({ theme }) => theme.tokens.color.brand.primary};
-    background: ${({ theme }) => theme.tokens.color.background.secondary};
-
-    svg {
-      color: ${({ theme }) => theme.tokens.color.brand.primary};
-    }
-  }
-`;
 
 export interface MenuItem {
   id: string;
-  icon: ComponentType;
+  icon: ComponentType<{ className?: string }>;
   label: string;
   path: string;
 }
@@ -162,27 +95,54 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false, onToggleExpand }
     return items.map((item) => {
       const isSelected = isRouteSelected(location.pathname, item.path);
 
-      return <SidebarMenuItem key={item.id} item={item} isSelected={isSelected} isExpanded={isExpanded} onItemClick={handleItemClick} />;
+      return (
+        <SidebarMenuItem
+          key={item.id}
+          item={item}
+          isSelected={isSelected}
+          isExpanded={isExpanded}
+          onItemClick={handleItemClick}
+        />
+      );
     });
   };
 
-  const isSettingsPage = location.pathname.startsWith('/settings');
+  const isSettingsPage = location.pathname.startsWith("/settings");
 
   return (
-    <SidebarContainer $isExpanded={isExpanded}>
-      <SidebarHeader $isExpanded={isExpanded}>
-        {!isSettingsPage && (
-          <ExpandButton onClick={toggleExpanded}>{isExpanded ? <CollapseIcon /> : <ExpandIcon />}</ExpandButton>
+    <aside
+      className={cn(
+        "fixed left-0 top-0 h-screen  transition-all duration-300 ease-in-out z-[1040] pt-16 flex flex-col",
+        isExpanded ? "w-[240px]" : "w-[68px]"
+      )}
+    >
+      <div
+        className={cn(
+          "px-3 py-1.5 flex items-center",
+          isExpanded ? "justify-end" : "justify-center"
         )}
-      </SidebarHeader>
+      >
+        {!isSettingsPage && (
+          <button
+            onClick={toggleExpanded}
+            className="w-14 h-8 flex items-center justify-center text-gray-500 hover:text-[#6E41E2] hover:bg-[#F9FAFB] transition-all rounded-md"
+          >
+            {isExpanded ? <CollapseIcon className="w-6 h-6" /> : <ExpandIcon className="w-6 h-6" />}
+          </button>
+        )}
+      </div>
 
-      <MenuSection>
-        <MainMenuItems>{renderMenuItems(mainMenuItems)}</MainMenuItems>
+      <nav className="flex-1 flex flex-col pt-2">
+        <div className="flex flex-col mt-[55px]">
+          {renderMenuItems(mainMenuItems)}
+        </div>
 
-        <BottomMenuItems>{renderMenuItems(bottomMenuItems)}</BottomMenuItems>
-      </MenuSection>
-    </SidebarContainer>
+        <div className="flex flex-col mt-auto pb-[50px] gap-2">
+          {renderMenuItems(bottomMenuItems)}
+        </div>
+      </nav>
+    </aside>
   );
 };
 
-export default Sidebar;
+export default Sidebar
