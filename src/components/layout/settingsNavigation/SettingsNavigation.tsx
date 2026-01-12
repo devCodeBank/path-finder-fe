@@ -36,7 +36,6 @@ const navigationSections: NavigationSection[] = [
       { id: "users", label: "Users", path: "/settings/admin/users" },
       { id: "roles-permissions", label: "Roles & Permissions", path: "/settings/admin/roles-permissions" },
       { id: "teams", label: "Teams", path: "/settings/admin/teams" },
-      { id: "locations", label: "Locations", path: "/settings/admin/locations" },
       { id: "billing", label: "Subscription & Billing", path: "/settings/admin/billing" },
       { id: "audit-log", label: "Audit Log", path: "/settings/admin/audit-log" },
     ],

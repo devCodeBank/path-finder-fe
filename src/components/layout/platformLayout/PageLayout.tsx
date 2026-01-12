@@ -147,7 +147,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                 <div className="flex-1 flex overflow-hidden">
                     {/* Optional Sidebar */}
                     {sidebar && (
-                        <div className="w-[260px] flex-shrink-0 h-full overflow-y-auto bg-white pl-4 py-3 border-r border-[#F0F0F0]">
+                        <div className="w-[260px] flex-shrink-0 h-full overflow-y-auto bg-white pl-4 py-3 ">
                             {sidebar}
                         </div>
                     )}
@@ -157,7 +157,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                         "my-3 mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border shadow-[0px_4px_4px_0px_#00000014]",
                         sidebar ? "rounded-tr-[20px] rounded-br-[20px]" : "rounded-[20px] ml-4"
                     )}>
-                        <div className="flex-1 overflow-y-auto px-6 py-6 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
                             {children}
                         </div>
                     </div>
