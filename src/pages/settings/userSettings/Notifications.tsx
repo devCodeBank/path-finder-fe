@@ -1,73 +1,19 @@
-import { Button } from "@components/buttons/button/Button";
-import { DaySelector } from "@components/input/daySelector";
-import { FormInput } from "@components/input/formInput";
-import { TimeInput } from "@components/input/timeInput";
-import { ToggleSwitch } from "@components/input/toggleSwitch";
-import { SettingsHeader } from "@components/settingsHeader";
-import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
 import React, { useState } from "react";
-import styled from "styled-components";
+import { Button } from "@mui/material";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import { cn } from "@/lib/utils";
 
-const Container = styled(Box)`
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-`;
-
-const Section = styled(Box)`
-  margin-bottom: ${({ theme }) => theme.spacing(4)};
-`;
-
-const SectionTitle = styled(Typography)`
-  font-size: 18px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
-`;
-
-const DoNotDisturbContainer = styled(Box)`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(2)};
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
-  flex-wrap: wrap;
-`;
-
-const TimeRangeContainer = styled(Box)`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(1)};
-`;
-
-const DaysOffSection = styled(Box)`
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
-`;
-
-const DaysOffLabel = styled(Typography)`
-  font-size: 14px;
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-  margin-bottom: ${({ theme }) => theme.spacing(1.5)};
-`;
-
-const EmailSection = styled(Box)`
-  margin-bottom: ${({ theme }) => theme.spacing(4)};
-`;
-
-const NotificationItem = styled(Box)`
-  margin-bottom: ${({ theme }) => theme.spacing(1.5)};
-`;
-
-const ButtonContainer = styled(Box)`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: ${({ theme }) => theme.spacing(3)};
-`;
+const NotificationIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12.0893 7.33301C12.4767 10.9163 14 11.9997 14 11.9997H2C2 11.9997 4 10.5777 4 5.59967C4 4.46834 4.42133 3.38301 5.17133 2.58301C5.92133 1.78301 6.94 1.33301 8 1.33301C8.22533 1.33301 8.44756 1.35301 8.66667 1.39301M9.15333 13.9997C9.03613 14.2017 8.8679 14.3694 8.66548 14.486C8.46307 14.6026 8.23359 14.664 8 14.664C7.76641 14.664 7.53693 14.6026 7.33452 14.486C7.13211 14.3694 6.96387 14.2017 6.84667 13.9997M12.6667 5.33301C13.1971 5.33301 13.7058 5.12229 14.0809 4.74722C14.456 4.37215 14.6667 3.86344 14.6667 3.33301C14.6667 2.80257 14.456 2.29387 14.0809 1.91879C13.7058 1.54372 13.1971 1.33301 12.6667 1.33301C12.1362 1.33301 11.6275 1.54372 11.2525 1.91879C10.8774 2.29387 10.6667 2.80257 10.6667 3.33301C10.6667 3.86344 10.8774 4.37215 11.2525 4.74722C11.6275 5.12229 12.1362 5.33301 12.6667 5.33301Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
 
 interface NotificationSettings {
   doNotDisturb: boolean;
   doNotDisturbFrom: string;
   doNotDisturbTo: string;
-  selectedDaysOff: number[];
+  selectedDaysOff: string[];
   preferredEmail: string;
   notifications: {
     newJobPosted: boolean;
@@ -87,238 +33,313 @@ interface NotificationSettings {
   };
 }
 
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+const Toggle = ({
+  enabled,
+  onChange,
+  label
+}: {
+  enabled: boolean;
+  onChange: (val: boolean) => void;
+  label: string
+}) => {
+  return (
+    <div className="flex items-center gap-3 cursor-pointer group" onClick={() => onChange(!enabled)}>
+      <div
+        className={cn(
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none",
+          enabled ? "bg-[#6E41E2]" : "bg-[#CCCCCC]"
+        )}
+      >
+        <span
+          className={cn(
+            "inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform duration-200",
+            enabled ? "translate-x-[18px]" : "translate-x-[3px]"
+          )}
+        />
+      </div>
+      <span className="text-[13px] font-[400] text-[#333333] group-hover:text-[#000000] transition-colors">
+        {label}
+      </span>
+    </div>
+  );
+};
+
 export const Notifications: React.FC = () => {
   const [settings, setSettings] = useState<NotificationSettings>({
-    doNotDisturb: false,
-    doNotDisturbFrom: "00:00",
-    doNotDisturbTo: "00:00",
-    selectedDaysOff: [],
-    preferredEmail: "abc@pathfinderatscrm.com",
+    doNotDisturb: true,
+    doNotDisturbFrom: "17:00",
+    doNotDisturbTo: "08:00",
+    selectedDaysOff: ["Sat", "Sun"],
+    preferredEmail: "username@example.com",
     notifications: {
-      newJobPosted: true,
-      newApplicant: true,
-      mentionedInNote: true,
-      noteAdded: true,
-      addedToTeam: true,
-      candidateBookedEvent: true,
-      upcomingEventReminders: true,
-      eventAccepted: true,
-      eventDeclined: true,
-      eventUpdated: true,
-      eventDeleted: true,
-      eventActivated: true,
-      offerAccepted: true,
-      offerDeclined: true,
+      newJobPosted: false,
+      newApplicant: false,
+      mentionedInNote: false,
+      noteAdded: false,
+      addedToTeam: false,
+      candidateBookedEvent: false,
+      upcomingEventReminders: false,
+      eventAccepted: false,
+      eventDeclined: false,
+      eventUpdated: false,
+      eventDeleted: false,
+      eventActivated: false,
+      offerAccepted: false,
+      offerDeclined: false,
     },
   });
 
-  const handleDoNotDisturbChange = (checked: boolean) => {
-    setSettings((prev) => ({
+  const handleToggle = (key: keyof NotificationSettings["notifications"]) => (val: boolean) => {
+    setSettings(prev => ({
       ...prev,
-      doNotDisturb: checked,
+      notifications: { ...prev.notifications, [key]: val }
     }));
   };
 
-  const handleTimeChange = (field: "doNotDisturbFrom" | "doNotDisturbTo") => (value: string) => {
-    setSettings((prev) => ({
+  const toggleDay = (day: string) => {
+    setSettings(prev => ({
       ...prev,
-      [field]: value,
+      selectedDaysOff: prev.selectedDaysOff.includes(day)
+        ? prev.selectedDaysOff.filter(d => d !== day)
+        : [...prev.selectedDaysOff, day]
     }));
-  };
-
-  const handleDaysOffChange = (selectedDays: number[]) => {
-    setSettings((prev) => ({
-      ...prev,
-      selectedDaysOff: selectedDays,
-    }));
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSettings((prev) => ({
-      ...prev,
-      preferredEmail: event.target.value,
-    }));
-  };
-
-  const handleNotificationToggle = (key: keyof NotificationSettings["notifications"]) => (checked: boolean) => {
-    setSettings((prev) => ({
-      ...prev,
-      notifications: {
-        ...prev.notifications,
-        [key]: checked,
-      },
-    }));
-  };
-
-  const handleSaveChanges = () => {
-    // TODO: Implement save functionality
-    console.warn("Saving notification settings:", settings);
   };
 
   return (
-    <Container>
-      <SettingsHeader title="Notifications" />
+    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
+      {/* Do Not Disturb Section */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 shadow-[0px_4px_4px_0px_#00000014]">
+        <h3 className="text-[14px] font-[500] text-[#333333] mb-2">Do Not Disturb</h3>
 
-      <Section>
-        <SectionTitle>Do Not Disturb</SectionTitle>
-        <DoNotDisturbContainer>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={settings.doNotDisturb}
-                onChange={(e) => handleDoNotDisturbChange(e.target.checked)}
-                sx={{ "& .MuiSvgIcon-root": { fontSize: 20 } }}
-              />
-            }
-            label="Do not notify me from:"
-            sx={{ marginRight: 0 }}
-          />
-          <TimeRangeContainer>
-            <TimeInput
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-4">
+          <div className="flex items-center gap-2">
+            <div
+              onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
+              className={cn(
+                "w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors",
+                settings.doNotDisturb
+                  ? "bg-[#57CC4D] border-[#57CC4D]"
+                  : "bg-white border-[#CCCCCC]"
+              )}
+            >
+              {settings.doNotDisturb && (
+                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </div>
+            <label
+              onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
+              className="text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
+            >
+              Do not notify me from:
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
               value={settings.doNotDisturbFrom}
-              onChange={handleTimeChange("doNotDisturbFrom")}
-              disabled={!settings.doNotDisturb}
+              onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
+              className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2]"
             />
-            <Typography variant="md">To:</Typography>
-            <TimeInput value={settings.doNotDisturbTo} onChange={handleTimeChange("doNotDisturbTo")} disabled={!settings.doNotDisturb} />
-          </TimeRangeContainer>
-        </DoNotDisturbContainer>
-
-        <DaysOffSection>
-          <DaysOffLabel>Do not disturb me on my days off</DaysOffLabel>
-          <DaySelector selectedDays={settings.selectedDaysOff} onChange={handleDaysOffChange} />
-        </DaysOffSection>
-      </Section>
-
-      <Section>
-        <SectionTitle>Email Notifications</SectionTitle>
-        <Box style={{ marginBottom: 24, width: "400px" }}>
-          <FormInput label="Preferred email" value={settings.preferredEmail} onChange={handleEmailChange} type="email" />
-        </Box>
-
-        <EmailSection>
-          <Typography variant="lg" style={{ marginBottom: 16, fontWeight: 500 }}>
-            Send email and push notifications for:
-          </Typography>
-
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.newJobPosted}
-              onChange={handleNotificationToggle("newJobPosted")}
-              label="Receive emails when a new job is posted in a team you are a member of."
+            <span className="text-[13px] font-[400] text-[#333333]">To:</span>
+            <input
+              type="text"
+              value={settings.doNotDisturbTo}
+              onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
+              className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2]"
             />
-          </NotificationItem>
+          </div>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.newApplicant}
-              onChange={handleNotificationToggle("newApplicant")}
-              label="Receive emails when you get a new applicant for a job within a team you are a member of."
-            />
-          </NotificationItem>
+          <p className="text-[13px] font-[400] text-[#333333] ml-auto lg:ml-0">
+            Notifications paused until tomorrow at 08:00
+          </p>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.mentionedInNote}
-              onChange={handleNotificationToggle("mentionedInNote")}
-              label="Receive emails when when you are mentioned by a team member in a note."
-            />
-          </NotificationItem>
+          <div className="ml-auto">
+            <Button
+              variant="outlined"
+              sx={{
+                height: '36px',
+                borderColor: '#CCCCCC',
+                color: '#333333',
+                textTransform: 'none',
+                fontSize: '12px',
+                fontWeight: 500,
+                gap: '8px',
+                '&:hover': {
+                  borderColor: '#6E41E2',
+                  backgroundColor: 'rgba(110, 65, 226, 0.04)',
+                }
+              }}
+              startIcon={<NotificationIcon />}
+            >
+              Resume Notifications
+            </Button>
+          </div>
+        </div>
+      </div>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.noteAdded}
-              onChange={handleNotificationToggle("noteAdded")}
-              label="Receive emails when a team member adds a note."
-            />
-          </NotificationItem>
+      {/* Days Off Section */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014]">
+        <h3 className="text-[14px] font-[500] text-[#333333] mb-5">Do not disturb me on my days off</h3>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.addedToTeam}
-              onChange={handleNotificationToggle("addedToTeam")}
-              label="Receive emails when you are added to a new team."
-            />
-          </NotificationItem>
+        <div className="flex gap-[2px]">
+          {DAYS.map(day => (
+            <button
+              key={day}
+              onClick={() => toggleDay(day)}
+              className={cn(
+                "w-[62px] h-[28px] rounded-md border text-[13px] font-[500] transition-colors",
+                settings.selectedDaysOff.includes(day)
+                  ? "border-[#6E41E2] bg-[#6E41E2] text-white"
+                  : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#6E41E2]"
+              )}
+            >
+              {day}
+            </button>
+          ))}
+        </div>
+      </div>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.candidateBookedEvent}
-              onChange={handleNotificationToggle("candidateBookedEvent")}
-              label="Receive emails when a candidate books an event slot for an event you are attending."
-            />
-          </NotificationItem>
+      {/* Email Notifications Section */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014]">
+        <h3 className="text-[14px] font-[500] text-[#333333] mb-5">Email Notifications</h3>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.upcomingEventReminders}
-              onChange={handleNotificationToggle("upcomingEventReminders")}
-              label="Receive email reminders for upcoming events you are attending."
-            />
-          </NotificationItem>
+        <div className="max-w-[400px]">
+          <FloatingLabelInput
+            label="Preferred Email"
+            value={settings.preferredEmail}
+            onChange={(e) => setSettings(prev => ({ ...prev, preferredEmail: e.target.value }))}
+            className="w-full"
+          />
+        </div>
+      </div>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.eventAccepted}
-              onChange={handleNotificationToggle("eventAccepted")}
-              label="Receive emails when an event you are attending is accepted by a candidate."
-            />
-          </NotificationItem>
+      {/* List Preferences Card */}
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014]">
+        <p className="text-[14px] font-[500] text-[#333333] mb-6">
+          Send email and push notifications for:
+        </p>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.eventDeclined}
-              onChange={handleNotificationToggle("eventDeclined")}
-              label="Receive emails when an event you are attending is declined by a candidate."
-            />
-          </NotificationItem>
+        <div className="flex flex-col gap-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+          <Toggle
+            enabled={settings.notifications.newJobPosted}
+            onChange={handleToggle("newJobPosted")}
+            label="Receive emails when a new job is posted in a team you are a member of."
+          />
+          <Toggle
+            enabled={settings.notifications.newApplicant}
+            onChange={handleToggle("newApplicant")}
+            label="Receive emails when you get a new applicant for a job within a team you are a member of."
+          />
+          <Toggle
+            enabled={settings.notifications.mentionedInNote}
+            onChange={handleToggle("mentionedInNote")}
+            label="Receive emails when when you are mentioned by a team member in a note."
+          />
+          <Toggle
+            enabled={settings.notifications.noteAdded}
+            onChange={handleToggle("noteAdded")}
+            label="Receive emails when a team member adds a note."
+          />
+          <Toggle
+            enabled={settings.notifications.addedToTeam}
+            onChange={handleToggle("addedToTeam")}
+            label="Receive emails when you are added to a new team."
+          />
+          <Toggle
+            enabled={settings.notifications.candidateBookedEvent}
+            onChange={handleToggle("candidateBookedEvent")}
+            label="Receive emails when a candidate books an event slot for an event you are attending."
+          />
+          <Toggle
+            enabled={settings.notifications.upcomingEventReminders}
+            onChange={handleToggle("upcomingEventReminders")}
+            label="Receive email reminders for upcoming events you are attending."
+          />
+          <Toggle
+            enabled={settings.notifications.eventAccepted}
+            onChange={handleToggle("eventAccepted")}
+            label="Receive emails when an event you are attending is accepted by a candidate."
+          />
+          <Toggle
+            enabled={settings.notifications.eventDeclined}
+            onChange={handleToggle("eventDeclined")}
+            label="Receive emails when an event you are attending is declined by a candidate."
+          />
+          <Toggle
+            enabled={settings.notifications.eventUpdated}
+            onChange={handleToggle("eventUpdated")}
+            label="Receive emails when an event is updated."
+          />
+          <Toggle
+            enabled={settings.notifications.eventDeleted}
+            onChange={handleToggle("eventDeleted")}
+            label="Receive emails when an event you are attending is deleted."
+          />
+          <Toggle
+            enabled={settings.notifications.eventActivated}
+            onChange={handleToggle("eventActivated")}
+            label="Receive emails when an event you are attending is activated."
+          />
+          <Toggle
+            enabled={settings.notifications.offerAccepted}
+            onChange={handleToggle("offerAccepted")}
+            label="Receive emails when an offer is accepted by a candidate within a team you are a member of."
+          />
+          <Toggle
+            enabled={settings.notifications.offerDeclined}
+            onChange={handleToggle("offerDeclined")}
+            label="Receive emails when an offer is declined by a candidate within a team you are a member of."
+          />
+        </div>
+      </div>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.eventUpdated}
-              onChange={handleNotificationToggle("eventUpdated")}
-              label="Receive emails when an event is updated."
-            />
-          </NotificationItem>
+      {/* Save Button Container */}
+      <div className="flex justify-end pr-1 mt-4">
+        <Button
+          variant="contained"
+          sx={{
+            width: '110px',
+            height: '36px',
+            backgroundColor: '#6E41E2',
+            textTransform: 'none',
+            fontWeight: 500,
+            fontSize: '12px',
+            padding: '8px 12px',
+            borderRadius: '4px',
+            boxShadow: 'none',
+            '&:hover': {
+              backgroundColor: '#9A77F0',
+              boxShadow: 'none',
+            },
+            color: "white",
+          }}
+        >
+          Save
+        </Button>
+      </div>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.eventDeleted}
-              onChange={handleNotificationToggle("eventDeleted")}
-              label="Receive emails when an event you are attending is deleted."
-            />
-          </NotificationItem>
+      <style>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #CCCCCC;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #aaaaaa;
+        }
+      `}</style>
 
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.eventActivated}
-              onChange={handleNotificationToggle("eventActivated")}
-              label="Receive emails when an event you are attending is activated."
-            />
-          </NotificationItem>
-
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.offerAccepted}
-              onChange={handleNotificationToggle("offerAccepted")}
-              label="Receive emails when an offer is accepted by a candidate within a team you are a member of."
-            />
-          </NotificationItem>
-
-          <NotificationItem>
-            <ToggleSwitch
-              checked={settings.notifications.offerDeclined}
-              onChange={handleNotificationToggle("offerDeclined")}
-              label="Receive emails when an offer is declined by a candidate within a team you are a member of."
-            />
-          </NotificationItem>
-        </EmailSection>
-      </Section>
-
-      <ButtonContainer>
-        <Button onClick={handleSaveChanges}>Save Changes</Button>
-      </ButtonContainer>
-    </Container>
+    </div>
   );
 };
 
