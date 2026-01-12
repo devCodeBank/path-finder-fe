@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Button, MenuItem, Select } from "@mui/material";
+import { Button } from "@mui/material";
 import { InfoOutlined } from "@mui/icons-material";
-import type { SelectChangeEvent } from "@mui/material";
-import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
 
 interface ProfileFormData {
@@ -73,10 +72,10 @@ export const Profile: React.FC = () => {
     }));
   };
 
-  const handleSelectChange = (field: keyof ProfileFormData) => (event: SelectChangeEvent<string>) => {
+  const handleSelectChange = (field: keyof ProfileFormData) => (value: string) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: event.target.value,
+      [field]: value,
     }));
   };
 
@@ -115,27 +114,18 @@ export const Profile: React.FC = () => {
     // Edit Mode
     if (options.length > 0) {
       return (
-        <div className="flex flex-col gap-2">
-          <label className="text-[#333333] text-[14px] font-[500]">{label}</label>
-          <Select
-            value={value}
-            onChange={handleSelectChange(fieldKey)}
-            size="small"
-            fullWidth
-            sx={{
-              backgroundColor: '#fff',
-              '& .MuiOutlinedInput-notchedOutline': { borderColor: '#E5E7EB' },
-              fontSize: '0.95rem'
-            }}
-          >
-            {options.map((opt) => (
-              <MenuItem key={opt.value} value={opt.value}>
-                {opt.label}
-              </MenuItem>
-            ))}
-          </Select>
-        </div>
-      )
+        <FloatingLabelSelect
+          id={fieldKey}
+          label={label}
+          value={value}
+          onValueChange={handleSelectChange(fieldKey)}
+          options={options}
+          disabled={fieldKey === 'role' || fieldKey === 'currency'}
+          className={cn(
+            "w-full h-[56px]",
+          )}
+        />
+      );
     }
 
     return (
@@ -144,10 +134,9 @@ export const Profile: React.FC = () => {
         label={label}
         value={value}
         onChange={handleInputChange(fieldKey)}
-        disabled={fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency'}
+        disabled={fieldKey === 'email' || fieldKey === 'companyName'}
         className={cn(
-          "w-full h-[48px]",
-          (fieldKey === 'email' || fieldKey === 'companyName' || fieldKey === 'role' || fieldKey === 'currency') && "bg-[#F3F4F6]"
+          "w-full h-[56px]",
         )}
       />
     );
@@ -218,8 +207,8 @@ export const Profile: React.FC = () => {
       </div>
 
       {/* Details Grid Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014] h-[100%]">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-20">
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 shadow-[0px_4px_4px_0px_#00000014] h-[100%]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {/* Row 1 */}
           {renderField("First Name", formData.firstName, "firstName")}
           {renderField("Last Name", formData.lastName, "lastName")}
@@ -230,7 +219,7 @@ export const Profile: React.FC = () => {
 
           {/* Row 3 */}
           {renderField("Company Name", formData.companyName, "companyName")}
-          {renderField("Role", formData.role, "role")}
+          {renderField("Role", formData.role, "role", roleOptions)}
 
           {/* Row 4 */}
           {renderField("Contact Number", formData.contactNumber, "contactNumber")}
@@ -242,7 +231,7 @@ export const Profile: React.FC = () => {
 
           {/* Row 6 */}
           {renderField("Country", formData.country, "country")}
-          {renderField("Currency", formData.currency, "currency")}
+          {renderField("Currency", formData.currency, "currency", currencyOptions)}
         </div>
       </div>
     </div>
