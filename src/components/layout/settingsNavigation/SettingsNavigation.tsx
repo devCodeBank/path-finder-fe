@@ -149,7 +149,7 @@ export const SettingsNavigation: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[20px] rounded-bl-[20px] px-1 py-4 flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] shadow-[0px_4px_4px_0px_#00000014]">
+    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[20px] rounded-bl-[20px] px-1 py-4 flex flex-col overflow-y-auto shadow-[0px_4px_4px_0px_#00000014]">
       <div className="flex-1 flex flex-col gap-4">
         {navigationSections.map((section) => (
           <div key={section.id} className="px-1 flex flex-col gap-1">
