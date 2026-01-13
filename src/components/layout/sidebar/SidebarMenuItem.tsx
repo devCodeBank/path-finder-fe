@@ -17,13 +17,20 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
     onItemClick(item);
   };
 
+  const bottomMenuItems: string[] = [
+    "settings",
+    "logout",
+    "user-avatar",
+  ];
+
   return (
     <Tooltip title={item.label} placement="right" arrow disableHoverListener={isExpanded}>
       <button
         onClick={handleClick}
         className={cn(
-          "group relative flex items-center h-[34px] mx-[6px] rounded-[4px] mb-2",
+          "group relative flex items-center mx-[6px] rounded-[4px] h-[36px] w-[56px]",
           "transition-[background-color,color,width,padding] duration-200 ease-in-out",
+          `${!bottomMenuItems.includes(item.id) ? "mb-[16px]" : `${item.id === "user-avatar" ? "pt-[47px]" : ""}`}`,
           isExpanded ? "w-[calc(100%-12px)] px-3 justify-start" : "w-[56px] justify-center",
           isSelected
             ? "bg-[#666666] text-white"
@@ -32,7 +39,7 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
       >
         <div
           className={cn(
-            "flex items-center justify-center w-10 h-[34px] shrink-0 transition-all duration-300 ease-in-out",
+            "flex items-center justify-center w-[24px] h-[24px] shrink-0 transition-all duration-300 ease-in-out",
             !isExpanded && "ml-0"
           )}
         >
@@ -45,7 +52,7 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
         <span
           className={cn(
             "text-[14px] font-medium whitespace-nowrap overflow-hidden transition-all duration-300 ease-in-out",
-            isExpanded ? "opacity-100 visible max-w-[calc(100%-40px)] ml-2" : "opacity-0 invisible max-w-0 ml-0",
+            isExpanded ? "opacity-100 visible max-w-[calc(100%-40px)] ml-[16px]" : "opacity-0 invisible max-w-0 ml-0",
             isSelected ? "text-white" : "text-[#333333] group-hover:text-white"
           )}
         >

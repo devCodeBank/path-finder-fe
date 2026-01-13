@@ -86,16 +86,31 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       if (item.id === "user-avatar") {
         return (
           <div key={item.id} className={cn(
-            "flex items-center h-[34px] mx-[6px] rounded-[4px] mb-2",
-            isExpanded ? "w-[calc(100%-12px)] px-3 justify-start" : "w-[56px] justify-center"
+            "flex items-center h-[36px] mx-[6px] rounded-[4px] mt-3",
+            isExpanded ? "w-[calc(100%-12px)] px-3 justify-start bg-[#666666] h-[44px]" : "w-[56px] justify-center"
           )}>
-            <div className="w-[24px] h-[24px] rounded-full bg-[#666666] flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+            <div className={cn(`w-[24px] h-[24px] rounded-full  flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${isExpanded ? "bg-[#CCCCCC]" : "bg-[#666666]"}`)}>
               PK
             </div>
             {isExpanded && (
-              <span className="text-[14px] font-medium text-[#333333] ml-3">
-                User Profile
-              </span>
+              <>
+                <div className="flex flex-col ml-[18px]">
+                  <span className="text-[10px] font-medium text-[#FFFFFF]">
+                    Pankaj Kumar
+                  </span>
+                  <span className="text-[10px] font-medium text-[#FFFFFF]">
+                    Pathfinder ats crm
+                  </span>
+
+                </div>
+                <div className="ml-[18px]">
+                  <svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.83333 9.50781L5.16667 14.1745L0.5 9.50781" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M0.502605 5.16808L5.16921 0.501359L9.83594 5.16797" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+              </>
+
             )}
           </div>
         );
@@ -118,8 +133,8 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen transition-[width] duration-300 ease-in-out z-[1040] pt-16 flex flex-col bg-[#eaeaea]",
-        isExpanded ? "w-[240px]" : "w-[68px]"
+        "fixed left-0 top-0 h-screen transition-[width] duration-300 ease-in-out z-[1040] pt-[80px] flex flex-col bg-[#eaeaea] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']",
+        isExpanded ? "w-[219px]" : "w-[68px]"
       )}
     >
       <nav className="flex-1 flex flex-col pt-2">
@@ -127,7 +142,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
           {renderMenuItems(mainMenuItems)}
         </div>
 
-        <div className="flex flex-col mt-auto pb-[50px] gap-2">
+        <div className="flex flex-col mt-auto pt-[144px] gap-[32px] pb-[97px]">
           {renderMenuItems(bottomMenuItems)}
         </div>
       </nav>

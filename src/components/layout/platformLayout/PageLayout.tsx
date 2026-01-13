@@ -15,7 +15,7 @@ const BreadcrumbSeparator = () => (
         style={{
             position: "relative",
             top: "2px",
-            margin: "0 3px"
+            margin: "0 8px"
         }} width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M12 1L19 6.54167M19 6.54167L12 12.0833M19 6.54167L1 6.54167" stroke="#CCCCCC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
@@ -26,6 +26,16 @@ const CircularIconButton = styled(IconButton)`
   width: 32px;
   height: 32px;
   padding: 6px;
+  margin-inline: 24px;
+  background-color: #F3F4F6;
+`;
+
+const CircularIconButton1 = styled(IconButton)`
+  background-color: transparent;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  margin-inline: 24px;
   &:hover { background-color: #F3F4F6; }
 `;
 
@@ -107,21 +117,21 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
     const breadcrumbPath = getBreadcrumbPath(location.pathname);
 
     return (
-        <div className="h-full flex flex-col pr-2 pb-6 overflow-hidden">
+        <div className="h-full flex flex-col pr-2 pb-[14px] overflow-hidden">
             {/* Main Card with Shadow and Border */}
-            <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[20px] overflow-hidden shadow-sm">
+            <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[14px] overflow-hidden shadow-sm">
 
                 {/* Card Header (Breadcrumb) */}
-                <div className="h-14 border-b border-[#CCCCCC] flex items-center justify-between px-4 bg-white flex-shrink-0">
+                <div className="h-[56px] border-b border-[#CCCCCC] flex items-center justify-between  bg-white flex-shrink-0">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <CircularIconButton
+                        <CircularIconButton1
                             onClick={() => onToggleExpand(!sidebarExpanded)}
                             style={{ flexShrink: 0 }}
                         >
                             <SidebarToggleIcon expanded={sidebarExpanded} />
-                        </CircularIconButton>
+                        </CircularIconButton1>
 
-                        <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap scrollbar-hide no-scrollbar">
+                        <div className="flex items-center mx-[8px] overflow-x-auto whitespace-nowrap scrollbar-hide no-scrollbar">
                             {breadcrumbPath.map((label, index) => (
                                 <React.Fragment key={index}>
                                     <span className={cn(
@@ -147,17 +157,17 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                 <div className="flex-1 flex overflow-hidden">
                     {/* Optional Sidebar */}
                     {sidebar && (
-                        <div className="w-[260px] flex-shrink-0 h-full overflow-y-auto bg-white pl-4 py-3 ">
+                        <div className="w-[260px] flex-shrink-0 h-full overflow-y-auto bg-white pl-[18px] py-[18px] ">
                             {sidebar}
                         </div>
                     )}
 
                     {/* Main Content Area */}
                     <div className={cn(
-                        "my-3 mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border shadow-[0px_4px_4px_0px_#00000014]",
-                        sidebar ? "rounded-tr-[20px] rounded-br-[20px]" : "rounded-[20px] ml-4"
+                        "my-[18px] mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border shadow-[0px_4px_4px_0px_#00000014]",
+                        sidebar ? "rounded-tr-[14px] rounded-br-[14px]" : "rounded-[14px] ml-4"
                     )}>
-                        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
+                        <div className="flex-1 overflow-y-auto px-[18px] my-[18px] custom-scrollbar">
                             {children}
                         </div>
                     </div>

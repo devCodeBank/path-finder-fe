@@ -42,7 +42,7 @@ const MainContent = styled(Box)`
 export const PlatformLayout: React.FC = () => {
   const isLoading = useSelector(selectIsLoading);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
-  const sidebarWidth = sidebarExpanded ? 240 : 68;
+  const sidebarWidth = sidebarExpanded ? 219 : 68;
   const location = useLocation();
   const isSettingsPage = location.pathname.includes("/settings");
 
@@ -64,7 +64,7 @@ export const PlatformLayout: React.FC = () => {
         <TopNavBar />
         <Sidebar isExpanded={sidebarExpanded} />
 
-        <ContentArea $sidebarWidth={sidebarWidth} $top={64}>
+        <ContentArea $sidebarWidth={sidebarWidth} $top={56}>
           <MainContent>
             {isSettingsPage ? (
               <Outlet />
@@ -76,7 +76,7 @@ export const PlatformLayout: React.FC = () => {
           </MainContent>
         </ContentArea>
       </PlatformContainer>
-    </SidebarContext.Provider>
+    </SidebarContext.Provider >
   );
 };
 
