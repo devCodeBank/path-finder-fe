@@ -135,7 +135,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                             {breadcrumbPath.map((label, index) => (
                                 <React.Fragment key={index}>
                                     <span className={cn(
-                                        "text-[16px] font-[400]",
+                                        "text-[16px] font-[500]",
                                         index === breadcrumbPath.length - 1 ? "text-[#333333]" : "text-[#717171]"
                                     )}>
                                         {label}
@@ -146,10 +146,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 flex-shrink-0 ml-4">
-                        <CircularIconButton><SearchIcon width={20} height={20} /></CircularIconButton>
-                        <CircularIconButton><QuestionIcon width={20} height={20} /></CircularIconButton>
-                        <CircularIconButton><BellIcon width={20} height={20} /></CircularIconButton>
+                    <div className="flex items-centerflex-shrink-0 ml-4">
+                        <CircularIconButton><SearchIcon width={16} height={16} /></CircularIconButton>
+                        <CircularIconButton><QuestionIcon width={16} height={16} /></CircularIconButton>
+                        <CircularIconButton><BellIcon width={16} height={16} /></CircularIconButton>
                     </div>
                 </div>
 

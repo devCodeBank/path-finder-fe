@@ -145,7 +145,7 @@ export const Profile: React.FC = () => {
   return (
     <div className="flex flex-col w-full max-w-full  font-sans h-[100%]">
       {/* Top Profile Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between shadow-[0px_4px_4px_0px_#00000014]  mx-[18px] my-[24px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between shadow-[0px_4px_4px_0px_#00000014]  mx-[18px] my-[0px]">
         <div className="flex items-start gap-6">
           <div className="flex flex-col gap-2">
             {/* Avatar Box */}
