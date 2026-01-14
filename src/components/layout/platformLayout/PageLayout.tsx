@@ -26,7 +26,7 @@ const CircularIconButton = styled(IconButton)`
   width: 32px;
   height: 32px;
   padding: 6px;
-  margin-inline: 24px;
+  margin-inline: 8px;
   background-color: #F3F4F6;
 `;
 
@@ -35,7 +35,7 @@ const CircularIconButton1 = styled(IconButton)`
   width: 32px;
   height: 32px;
   padding: 6px;
-  margin-inline: 24px;
+  margin-inline: 8px;
   &:hover { background-color: #F3F4F6; }
 `;
 

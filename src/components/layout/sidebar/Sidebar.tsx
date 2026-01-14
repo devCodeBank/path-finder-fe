@@ -86,8 +86,8 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       if (item.id === "user-avatar") {
         return (
           <div key={item.id} className={cn(
-            "flex items-center h-[36px] mx-[6px] rounded-[4px] mt-3",
-            isExpanded ? "w-[calc(100%-12px)] px-3 justify-start bg-[#666666] h-[44px]" : "w-[56px] justify-center"
+            "flex items-center h-[32px] mx-[6px] rounded-[4px] mt-2",
+            isExpanded ? "w-[calc(100%-12px)] px-3 justify-start bg-[#666666] h-[36px]" : "w-[56px] justify-center"
           )}>
             <div className={cn(`w-[24px] h-[24px] rounded-full  flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${isExpanded ? "bg-[#CCCCCC]" : "bg-[#666666]"}`)}>
               PK
@@ -133,16 +133,17 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen transition-[width] duration-300 ease-in-out z-[1040] pt-[80px] flex flex-col bg-[#eaeaea] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']",
+        "fixed left-0 top-0 h-screen transition-[width] duration-300 ease-in-out z-[1040] pt-[24px] flex flex-col bg-[#eaeaea] overflow-hidden",
         isExpanded ? "w-[219px]" : "w-[68px]"
       )}
+      style={{ willChange: "width" }}
     >
-      <nav className="flex-1 flex flex-col pt-2">
-        <div className="flex flex-col mt-[55px]">
+      <nav className="flex-1 flex flex-col">
+        <div className="flex flex-col mt-[55px] gap-[4px]">
           {renderMenuItems(mainMenuItems)}
         </div>
 
-        <div className="flex flex-col mt-auto pt-[144px] gap-[32px] pb-[97px]">
+        <div className="flex flex-col mt-auto  gap-[18px] pb-[16px]">
           {renderMenuItems(bottomMenuItems)}
         </div>
       </nav>

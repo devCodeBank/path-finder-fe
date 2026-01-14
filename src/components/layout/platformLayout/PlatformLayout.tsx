@@ -24,7 +24,8 @@ const ContentArea = styled(Box) <{ $sidebarWidth: number; $top: number }>`
   bottom: 0;
   left: ${({ $sidebarWidth }) => `${$sidebarWidth}px`};
   right: 0;
-  transition: left 0.3s ease;
+  transition: left 0.3s ease-in-out;
+  will-change: left;
   display: flex;
   flex-direction: column;
   overflow: hidden;

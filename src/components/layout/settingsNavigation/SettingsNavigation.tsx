@@ -149,11 +149,11 @@ export const SettingsNavigation: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[14px] rounded-bl-[14px] px-1 py-4 flex flex-col overflow-y-auto shadow-[0px_4px_4px_0px_#00000014]">
-      <div className="flex-1 flex flex-col gap-4">
+    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[14px] rounded-bl-[14px] px-1 py-3 flex flex-col overflow-y-auto shadow-[0px_4px_4px_0px_#00000014]">
+      <div className="flex-1 flex flex-col gap-3">
         {navigationSections.map((section) => (
-          <div key={section.id} className="px-1 flex flex-col gap-1">
-            <h3 className=" pt-[0px] px-[8px] text-gray-800 text-[#333333] text-[16px] font-[500]">
+          <div key={section.id} className="px-1 flex flex-col gap-1.5">
+            <h3 className="px-[8px] text-[#666666] text-[12px] font-[500] leading-[18px]">
               {section.title}
             </h3>
             {section.items.map((item) => {
@@ -165,12 +165,12 @@ export const SettingsNavigation: React.FC = () => {
                   className={`
                     cursor-pointer transition-all duration-200 rounded-md
                     ${isSelected
-                      ? 'bg-[#EAEAEA] text-[#333333] '
-                      : 'bg-transparent text-[#333333] hover:bg-[#EAEAEA] hover:text-[#333333]'
+                      ? 'bg-[#EAEAEA] text-[#666666]'
+                      : 'bg-transparent text-[#666666] hover:bg-[#EAEAEA] hover:text-[#666666]'
                     }
                   `}
                 >
-                  <div className={`text-[14px] py-[10px] px-[8px] text-[#333333] font-[400]`}>
+                  <div className="text-[12px] leading-[18px] py-[6px] px-[8px] text-[#666666] font-[400]">
                     {item.label}
                   </div>
                 </div>

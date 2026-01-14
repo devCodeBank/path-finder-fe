@@ -104,9 +104,9 @@ export const Profile: React.FC = () => {
       if (fieldKey === "state") displayValue = stateOptions.find(o => o.value === value)?.label || value;
 
       return (
-        <div className="flex flex-col gap-2">
-          <label className="text-[#333333] text-[14px] font-[500]">{label}</label>
-          <div className="text-[#333333] text-[13px] font-[400]">{displayValue || "-"}</div>
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[#8A8A8A] text-[12px] leading-[18px] font-[500]">{label}</label>
+          <div className="text-[#4B4B4B] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
     }
