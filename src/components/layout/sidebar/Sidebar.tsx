@@ -86,8 +86,8 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       if (item.id === "user-avatar") {
         return (
           <div key={item.id} className={cn(
-            "flex items-center h-[32px] mx-[6px] rounded-[4px] mt-2",
-            isExpanded ? "w-[calc(100%-12px)] px-3 justify-start bg-[#666666] h-[36px]" : "w-[56px] justify-center"
+            "flex items-center h-[36px] w-[calc(100%-12px)] mx-[6px] rounded-[4px] mt-2 px-3 justify-start transition-[background-color] ",
+            isExpanded ? "bg-[#666666]" : ""
           )}>
             <div className={cn(`w-[24px] h-[24px] rounded-full  flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${isExpanded ? "bg-[#CCCCCC]" : "bg-[#666666]"}`)}>
               PK
@@ -139,7 +139,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       style={{ willChange: "width" }}
     >
       <nav className="flex-1 flex flex-col">
-        <div className="flex flex-col mt-[55px] gap-[4px]">
+        <div className="flex flex-col mt-[85px] gap-[4px]">
           {renderMenuItems(mainMenuItems)}
         </div>
 

@@ -49,7 +49,7 @@ const Toggle = ({
       <div
         className={cn(
           "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none",
-          enabled ? "bg-[#6E41E2]" : "bg-[#CCCCCC]"
+          enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]"
         )}
       >
         <span
@@ -108,123 +108,141 @@ export const Notifications: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
+    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-[0px]">
       {/* Do Not Disturb Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 shadow-[0px_4px_4px_0px_#00000014]">
-        <h3 className="text-[14px] font-[500] text-[#333333] mb-2">Do Not Disturb</h3>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
+        </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-4">
-          <div className="flex items-center gap-2">
-            <div
-              onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
-              className={cn(
-                "w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors",
-                settings.doNotDisturb
-                  ? "bg-[#57CC4D] border-[#57CC4D]"
-                  : "bg-white border-[#CCCCCC]"
-              )}
-            >
-              {settings.doNotDisturb && (
-                <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+        <div className="px-4 py-4">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            <div className="flex items-center gap-2">
+              <div
+                onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
+                className={cn(
+                  "w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors",
+                  settings.doNotDisturb
+                    ? "bg-[#57CC4D] border-[#57CC4D]"
+                    : "bg-white border-[#CCCCCC]"
+                )}
+              >
+                {settings.doNotDisturb && (
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </div>
+              <label
+                onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
+                className="text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
+              >
+                Do not notify me from:
+              </label>
             </div>
-            <label
-              onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
-              className="text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
-            >
-              Do not notify me from:
-            </label>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={settings.doNotDisturbFrom}
-              onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
-              className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2]"
-            />
-            <span className="text-[13px] font-[400] text-[#333333]">To:</span>
-            <input
-              type="text"
-              value={settings.doNotDisturbTo}
-              onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
-              className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2]"
-            />
-          </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={settings.doNotDisturbFrom}
+                onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
+                className="w-[70px] h-[32px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2] hover:border-[#CCCCCC]"
+              />
+              <span className="text-[13px] font-[400] text-[#333333]">To:</span>
+              <input
+                type="text"
+                value={settings.doNotDisturbTo}
+                onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
+                className="w-[70px] h-[32px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2] hover:border-[#CCCCCC]"
+              />
+            </div>
 
-          <p className="text-[13px] font-[400] text-[#333333] ml-auto lg:ml-0">
-            Notifications paused until tomorrow at 08:00
-          </p>
+            {settings.doNotDisturb && (
+              <p className="text-[13px] font-[400] text-[#333333]">
+                Notifications paused until tomorrow at 08:00
+              </p>
+            )}
 
-          <div className="ml-auto">
-            <Button
-              variant="outlined"
-              sx={{
-                height: '36px',
-                borderColor: '#CCCCCC',
-                color: '#333333',
-                textTransform: 'none',
-                fontSize: '12px',
-                fontWeight: 500,
-                gap: '8px',
-                '&:hover': {
-                  borderColor: '#6E41E2',
-                  backgroundColor: 'rgba(110, 65, 226, 0.04)',
-                }
-              }}
-              startIcon={<NotificationIcon />}
-            >
-              Resume Notifications
-            </Button>
+            {settings.doNotDisturb && (
+              <div className="ml-auto">
+                <Button
+                  variant="outlined"
+                  sx={{
+                    height: '32px',
+                    borderColor: '#CCCCCC',
+                    color: '#333333',
+                    textTransform: 'none',
+                    fontSize: '13px',
+                    fontWeight: 400,
+                    gap: '8px',
+                    '&:hover': {
+                      borderColor: '#6E41E2',
+                      backgroundColor: 'rgba(110, 65, 226, 0.04)',
+                    }
+                  }}
+                  startIcon={<NotificationIcon />}
+                >
+                  Resume Notifications
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Days Off Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014]">
-        <h3 className="text-[14px] font-[500] text-[#333333] mb-5">Do not disturb me on my days off</h3>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
+        </div>
 
-        <div className="flex gap-[2px]">
-          {DAYS.map(day => (
-            <button
-              key={day}
-              onClick={() => toggleDay(day)}
-              className={cn(
-                "w-[62px] h-[28px] rounded-md border text-[13px] font-[500] transition-colors",
-                settings.selectedDaysOff.includes(day)
-                  ? "border-[#6E41E2] bg-[#6E41E2] text-white"
-                  : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#6E41E2]"
-              )}
-            >
-              {day}
-            </button>
-          ))}
+        <div className="p-4">
+          <div className="flex gap-[2px]">
+            {DAYS.map(day => (
+              <button
+                key={day}
+                onClick={() => toggleDay(day)}
+                className={cn(
+                  "w-[62px] h-[28px] rounded-md border text-[13px] font-[400] transition-colors",
+                  settings.selectedDaysOff.includes(day)
+                    ? "border-[#57CC4D] bg-[#57CC4D] text-white"
+                    : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#57CC4D]"
+                )}
+              >
+                {day}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Email Notifications Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014]">
-        <h3 className="text-[14px] font-[500] text-[#333333] mb-5">Email Notifications</h3>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
+        </div>
 
-        <div className="max-w-[400px]">
-          <FloatingLabelInput
-            label="Preferred Email"
-            value={settings.preferredEmail}
-            onChange={(e) => setSettings(prev => ({ ...prev, preferredEmail: e.target.value }))}
-            className="w-full"
-          />
+        <div className="p-4">
+          <div className="max-w-[400px]">
+            <FloatingLabelInput
+              label="Preferred Email"
+              value={settings.preferredEmail}
+              onChange={(e) => setSettings(prev => ({ ...prev, preferredEmail: e.target.value }))}
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
 
       {/* List Preferences Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-5 shadow-[0px_4px_4px_0px_#00000014]">
-        <p className="text-[14px] font-[500] text-[#333333] mb-6">
-          Send email and push notifications for:
-        </p>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+          <p className="text-[14px] font-[500] text-[#333333]">
+            Send email and push notifications for:
+          </p>
+        </div>
 
-        <div className="flex flex-col gap-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+        <div className="p-4 flex flex-col gap-6 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
           <Toggle
             enabled={settings.notifications.newJobPosted}
             onChange={handleToggle("newJobPosted")}
@@ -307,8 +325,8 @@ export const Notifications: React.FC = () => {
             height: '36px',
             backgroundColor: '#6E41E2',
             textTransform: 'none',
-            fontWeight: 500,
-            fontSize: '12px',
+            fontWeight: 400,
+            fontSize: '13px',
             padding: '8px 12px',
             borderRadius: '4px',
             boxShadow: 'none',

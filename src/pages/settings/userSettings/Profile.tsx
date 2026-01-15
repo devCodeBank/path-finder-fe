@@ -105,8 +105,8 @@ export const Profile: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#8A8A8A] text-[12px] leading-[18px] font-[500]">{label}</label>
-          <div className="text-[#4B4B4B] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
+          <label className="text-[#333333] text-[14px] leading-[18px] font-[500]">{label}</label>
+          <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
     }
@@ -145,7 +145,7 @@ export const Profile: React.FC = () => {
   return (
     <div className="flex flex-col w-full max-w-full  font-sans h-[100%]">
       {/* Top Profile Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between shadow-[0px_4px_4px_0px_#00000014]   my-[0px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between    my-[0px]">
         <div className="flex items-start gap-6">
           <div className="flex flex-col gap-2">
             {/* Avatar Box */}
@@ -156,7 +156,7 @@ export const Profile: React.FC = () => {
             </div>
             {/* Upload Photo below avatar */}
             <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group">
-              <span className="text-[12px] text-[#333333] font-[500] group-hover:text-purple-600">Upload Photo</span>
+              <span className="text-[13px] text-[#333333] font-[400] group-hover:text-purple-600">Upload Photo</span>
               <InfoOutlined sx={{ fontSize: 13, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
             </div>
           </div>
@@ -166,7 +166,7 @@ export const Profile: React.FC = () => {
             <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
               {formData.firstName} {formData.lastName}
             </h2>
-            <p className="text-[13px] font-[400] text-[#717171]">
+            <p className="text-[13px] font-[400] text-[#333333]">
               {formData.jobTitle || "Account Manager"}
             </p>
           </div>
@@ -207,7 +207,7 @@ export const Profile: React.FC = () => {
       </div>
 
       {/* Details Grid Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 shadow-[0px_4px_4px_0px_#00000014] h-[100%]  my-[18px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4   my-[18px]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {/* Row 1 */}
           {renderField("First Name", formData.firstName, "firstName")}

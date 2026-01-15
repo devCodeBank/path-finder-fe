@@ -19,7 +19,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
             <Input
                 placeholder=" "
                 className={cn(
-                    'h-[56px] peer border-[#CCCCCC] bg-white  pb-1 shadow-[0px_4px_4px_0px_#00000014] text-[#333333] font-[400] !text-[13px] focus-visible:ring-0 focus-visible:border-[#6E41E2] disabled:bg-white disabled:opacity-100',
+                    'h-[56px] peer border-[#CCCCCC] bg-white pb-1 shadow-[0px_4px_4px_0px_#00000014] text-[#333333]/70 hover:text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/70 hover:placeholder:text-[#333333] focus-visible:ring-0 focus-visible:border-[#6E41E2] hover:border-[#CCCCCC] disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100',
                     className
                 )}
                 ref={ref}
@@ -37,7 +37,7 @@ const FloatingLabel = React.forwardRef<
     return (
         <Label
             className={cn(
-                'absolute start-2 z-10 origin-[0] transform px-2 text-[14px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333]',
+                'absolute start-2 z-10 origin-[0] transform px-2 text-[16px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333]',
                 className,
             )}
             ref={ref}
@@ -105,7 +105,7 @@ const FloatingLabelSelect = ({
                 <SelectTrigger
                     id={id}
                     className={cn(
-                        'h-[56px] w-full peer border-[#CCCCCC] bg-white rounded-md px-3  pb-1 shadow-[0px_4px_4px_0px_#00000014] text-[#333333] font-[400] !text-[13px] focus:ring-0 focus:border-[#6E41E2] disabled:bg-white disabled:opacity-100 [&>span]:mt-1.5',
+                        'h-[56px] w-full peer border-[#CCCCCC] bg-white rounded-md px-3 pb-1 shadow-[0px_4px_4px_0px_#00000014] text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] focus:ring-0 focus:border-[#6E41E2] hover:border-[#CCCCCC] disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100 [&>span]:mt-1.5',
                         className
                     )}
                 >

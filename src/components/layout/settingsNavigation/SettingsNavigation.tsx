@@ -149,11 +149,11 @@ export const SettingsNavigation: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[14px] rounded-bl-[14px] px-1 py-3 flex flex-col overflow-y-auto shadow-[0px_4px_4px_0px_#00000014]">
+    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[14px] rounded-bl-[14px] px-1 py-3 flex flex-col overflow-y-auto ">
       <div className="flex-1 flex flex-col gap-3">
         {navigationSections.map((section) => (
           <div key={section.id} className="px-1 flex flex-col gap-1.5">
-            <h3 className="px-[8px] text-[#666666] text-[12px] font-[500] leading-[18px]">
+            <h3 className="px-[8px] text-[#666666] text-[16px] font-[500] leading-[18px] py-[10px]">
               {section.title}
             </h3>
             {section.items.map((item) => {
@@ -170,7 +170,7 @@ export const SettingsNavigation: React.FC = () => {
                     }
                   `}
                 >
-                  <div className="text-[12px] leading-[18px] py-[6px] px-[8px] text-[#666666] font-[400]">
+                  <div className="text-[14px] leading-[18px] py-[10px] px-[10px] text-[#666666] font-[400]">
                     {item.label}
                   </div>
                 </div>

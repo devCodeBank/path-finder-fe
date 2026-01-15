@@ -119,7 +119,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
     return (
         <div className="h-full flex flex-col pr-2 pb-[14px] overflow-hidden">
             {/* Main Card with Shadow and Border */}
-            <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[14px] overflow-hidden shadow-sm">
+            <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[14px] overflow-hidden ">
 
                 {/* Card Header (Breadcrumb) */}
                 <div className="h-[56px] border-b border-[#CCCCCC] flex items-center justify-between  bg-white flex-shrink-0">
@@ -164,7 +164,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
 
                     {/* Main Content Area */}
                     <div className={cn(
-                        "my-[18px] mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border shadow-[0px_4px_4px_0px_#00000014]",
+                        "my-[18px] mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border ",
                         sidebar ? "rounded-tr-[14px] rounded-br-[14px]" : "rounded-[14px] ml-4"
                     )}>
                         <div className="flex-1 overflow-y-auto px-[18px] my-[18px] custom-scrollbar">

@@ -91,12 +91,8 @@ const App: React.FC = () => {
 
         {/* PROTECTED ROUTES - Authentication handled by PlatformLayout */}
         <Route path="/" element={<PlatformLayout />}>
+          <Route index element={<Navigate to="/dashboard" replace />} />
           {/* <Route index element={<Navigate to="/dashboard" replace />} /> */}
-          <Route
-            path="/dashboard"
-            element={<Navigate to="/settings/user/profile" replace />}
-          />
-
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="candidates" element={<CandidatesPage />} />
           <Route path="jobs" element={<JobsPage />} />
@@ -111,11 +107,11 @@ const App: React.FC = () => {
           {/* Settings Routes with nested structure */}
           <Route path="settings" element={<SettingsLayout />}>
             {/* <Route index element={<Navigate to="/settings/user/profile" replace />} /> */}
-              <Route index element={<Navigate to="/settings/user/profile" replace />} />
-  <Route path="user/profile" element={<ProfilePage />} />
+            {/* <Route index element={<Navigate to="/settings/user/profile" replace />} /> */}
+            {/* <Route path="user/profile" element={<ProfilePage />} /> */}
 
             {/* User Settings Routes */}
-            {/* <Route path="user/profile" element={<ProfilePage />} /> */}
+            <Route path="user/profile" element={<ProfilePage />} />
             <Route path="user/notifications" element={<NotificationsPage />} />
             <Route path="user/privacy-security" element={<PrivacySecurityPage />} />
             <Route path="user/email" element={<EmailPage />} />
