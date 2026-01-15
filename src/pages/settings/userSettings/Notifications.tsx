@@ -115,8 +115,8 @@ export const Notifications: React.FC = () => {
           <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
         </div>
 
-        <div className="px-4 py-4">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+        <div className="px-4 min-h-[95px] flex items-center">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4 w-full">
             <div className="flex items-center gap-2">
               <div
                 onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
@@ -196,8 +196,8 @@ export const Notifications: React.FC = () => {
           <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
 
-        <div className="p-4">
-          <div className="flex gap-[2px]">
+        <div className="p-4 min-h-[95px] flex items-center">
+          <div className="flex gap-[2px] w-full">
             {DAYS.map(day => (
               <button
                 key={day}
@@ -222,8 +222,8 @@ export const Notifications: React.FC = () => {
           <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
         </div>
 
-        <div className="p-4">
-          <div className="max-w-[400px]">
+        <div className="p-4 min-h-[95px] flex items-center">
+          <div className="max-w-[400px] w-full">
             <FloatingLabelInput
               label="Preferred Email"
               value={settings.preferredEmail}
