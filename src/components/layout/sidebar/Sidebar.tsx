@@ -101,7 +101,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
                     Pankaj Kumar
                   </span>
                   <span className="text-[10px] font-medium text-[#FFFFFF]">
-                    Pathfinder ats crm
+                    Pathfinder ats CRM
                   </span>
 
                 </div>
