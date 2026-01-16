@@ -35,6 +35,7 @@ const PrivacySecurityPage = React.lazy(() => import("./pages/settings/userSettin
 const EmailPage = React.lazy(() => import("./pages/settings/userSettings/Email"));
 const CalendarPage = React.lazy(() => import("./pages/settings/userSettings/Calendar"));
 const MeetingAppsPage = React.lazy(() => import("./pages/settings/userSettings/MeetingApps"));
+const PrefrencePage = React.lazy(() => import("./pages/settings/userSettings/Prefrence"));
 
 // Admin Settings Pages
 const CompanyDetailsPage = React.lazy(() => import("./pages/settings/adminSettings/CompanyDetails"));
@@ -117,6 +118,7 @@ const App: React.FC = () => {
             <Route path="user/email" element={<EmailPage />} />
             <Route path="user/calendar" element={<CalendarPage />} />
             <Route path="user/meeting-apps" element={<MeetingAppsPage />} />
+            <Route path="user/preferences" element={<PrefrencePage />} />
 
             {/* Admin Settings Routes */}
             <Route path="admin/company-details" element={<CompanyDetailsPage />} />
