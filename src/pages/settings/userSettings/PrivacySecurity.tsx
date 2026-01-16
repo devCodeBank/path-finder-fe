@@ -1,32 +1,42 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
 import { cn } from "@/lib/utils";
+import { AlignCenter } from "lucide-react";
 
 const Toggle = ({
   enabled,
   onChange,
   label,
-  description
+  description,
+  linkLabel,
+  linkHref = "#"
 }: {
   enabled: boolean;
   onChange: (val: boolean) => void;
   label: string;
   description?: string;
+  linkLabel?: string;
+  linkHref?: string;
 }) => {
   return (
     <div className="flex items-start justify-between py-4 border-b border-[#F0F0F0] last:border-0">
       <div className="flex flex-col gap-1 pr-4">
         <span className="text-[14px] font-[500] text-[#333333]">{label}</span>
         {description && (
-          <p className="text-[13px] font-[400] text-[#717171] leading-relaxed">
+          <p className="text-[13px] font-[400] text-[#333333] leading-relaxed">
             {description}
           </p>
+        )}
+        {linkLabel && (
+          <a href={linkHref} className="text-[13px] text-[#6E41E2] hover:underline">
+            {linkLabel}
+          </a>
         )}
       </div>
       <div
         className={cn(
           "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none mt-1",
-          enabled ? "bg-[#6E41E2]" : "bg-[#CCCCCC]"
+          enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]"
         )}
         onClick={() => onChange(!enabled)}
       >
@@ -45,74 +55,78 @@ export const PrivacySecurity: React.FC = () => {
   const [newDeviceVerification, setNewDeviceVerification] = useState(false);
   const [twoStepVerification, setTwoStepVerification] = useState(false);
   const [primaryEmail] = useState("username@example.com");
+  const [phoneNumber, setPhoneNumber] = useState("64123456789");
+  const [phoneInput, setPhoneInput] = useState("");
+  const outlineButtonSx = {
+    height: "36px",
+    borderColor: "#CCCCCC",
+    color: "#333333",
+    textTransform: "none",
+    fontSize: "12px",
+    width: "128px",
+    fontWeight: 400,
+    padding: "inherit",
+    boxShadow: "none",
+
+    "&.Mui-disabled": {
+      color: "#CCCCCC",
+      boxShadow: "none",
+      opacity: 1
+    },
+    "&.MuiButton-outlined.Mui-disabled": {
+      borderColor: "#CCCCCC !important",
+      border: "1px solid #CCCCCC"
+    },
+    "&:hover": {
+      borderColor: "#CCCCCC",
+      backgroundColor: "#EAEAEA",
+      boxShadow: "none"
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
-
-
+    <div className="flex flex-col gap-6 w-full max-w-full font-sans ">
       {/* Default Security Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014]">
-        <div className="px-5 py-4 border-b border-[#CCCCCC]">
-          <h3 className="text-[15px] font-[500] text-[#333333]">Default Security</h3>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg ">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Default Security</h3>
         </div>
 
-        <div className="p-5 flex flex-col gap-6">
+        <div className="px-5">
           {/* Email Row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Primary Email</span>
-              <span className="text-[13px] font-[400] text-[#717171]">{primaryEmail}</span>
+              <span className="text-[13px] font-[400] text-[#333333]">{primaryEmail}</span>
             </div>
           </div>
 
           {/* Password Row */}
-          <div className="flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Password</span>
-              <p className="text-[13px] font-[400] text-[#717171]">Change your password</p>
+              <p className="text-[13px] font-[400] text-[#333333]">*#0!x%&</p>
             </div>
             <Button
               variant="outlined"
-              sx={{
-                height: '32px',
-                borderColor: '#CCCCCC',
-                color: '#333333',
-                textTransform: 'none',
-                fontSize: '12px',
-                fontWeight: 500,
-                '&:hover': {
-                  borderColor: '#6E41E2',
-                  backgroundColor: 'rgba(110, 65, 226, 0.04)',
-                }
-              }}
+              sx={outlineButtonSx}
             >
               Change Password
             </Button>
           </div>
 
           {/* Recovery Codes Row */}
-          <div className="flex items-start justify-between border-t border-[#F0F0F0] pt-6">
+          <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1 max-w-[70%]">
               <span className="text-[14px] font-[500] text-[#333333]">Recovery Codes</span>
-              <p className="text-[13px] font-[400] text-[#717171]">
+              <p className="text-[13px] font-[400] text-[#333333]">
                 If you lose access to your password or verification methods, you will be able to log in with a recovery code.
               </p>
-              <a href="#" className="text-[13px] text-[#6E41E2] hover:underline mt-1">Learn More About Recovery Codes</a>
+              <a href="#" className="text-[13px] text-[#333333] hover:underline mt-1">Learn More About Recovery Codes</a>
             </div>
             <Button
               variant="outlined"
-              sx={{
-                height: '32px',
-                borderColor: '#CCCCCC',
-                color: '#333333',
-                textTransform: 'none',
-                fontSize: '12px',
-                fontWeight: 500,
-                '&:hover': {
-                  borderColor: '#6E41E2',
-                  backgroundColor: 'rgba(110, 65, 226, 0.04)',
-                }
-              }}
+              sx={outlineButtonSx}
             >
               Show Codes
             </Button>
@@ -121,20 +135,22 @@ export const PrivacySecurity: React.FC = () => {
       </div>
 
       {/* Login Security Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014]">
-        <div className="px-5 py-4 border-b border-[#CCCCCC]">
-          <h3 className="text-[15px] font-[500] text-[#333333]">Login Security</h3>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg ">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Login Security</h3>
         </div>
         <div className="px-5">
           <Toggle
             label="New Device Verification"
-            description="Require additional verification step for logins from a new device or browser. Learn More"
+            description="Require additional verification step for logins from a new device or browser."
+            linkLabel="Learn More"
             enabled={newDeviceVerification}
             onChange={setNewDeviceVerification}
           />
           <Toggle
             label="Two-Step Verification"
-            description="Require a verification code when you log in with a password. Learn More"
+            description="Require a verification code when you log in with a password."
+            linkLabel="Learn More"
             enabled={twoStepVerification}
             onChange={setTwoStepVerification}
           />
@@ -142,37 +158,79 @@ export const PrivacySecurity: React.FC = () => {
       </div>
 
       {/* Verification Methods Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg shadow-[0px_4px_4px_0px_#00000014]">
-        <div className="px-5 py-4 border-b border-[#CCCCCC]">
-          <h3 className="text-[15px] font-[500] text-[#333333]">Verification Methods</h3>
+      <div className="bg-white border border-[#CCCCCC] rounded-lg ">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Verification Methods</h3>
         </div>
-        <div className="p-5 flex flex-col gap-6">
+        <div className="px-5">
           {/* Phone Number */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Phone Number</span>
-              <p className="text-[13px] font-[400] text-[#717171]">Require additional verification step for logins from a new device or browser.</p>
-              <span className="text-[13px] font-[500] text-[#333333] mt-2">64123456789</span>
+              <p className="text-[13px] font-[400] text-[#333333]">Require additional verification step for logins from a new device or browser.</p>
+              {phoneNumber ? (
+                <div className="flex items-center gap-4 mt-2">
+                  <span className="text-[13px] font-[500] text-[#333333]">{phoneNumber}</span>
+                  <button
+                    className="text-[13px] font-[500] text-[#6E41E2] hover:underline"
+                    onClick={() => setPhoneNumber("")}
+                  >
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <input
+                  type="text"
+                  value={phoneInput}
+                  onChange={(event) => setPhoneInput(event.target.value)}
+                  placeholder="Enter phone number"
+                  className="mt-2 w-[200px] h-[36px] rounded-md border border-[#CCCCCC] px-3 text-[12px] text-[#333333] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
+                />
+              )}
             </div>
-            <button className="text-[13px] font-[500] text-[#6E41E2] hover:underline">Add Phone</button>
+            <Button
+              variant="outlined"
+              sx={outlineButtonSx}
+              disabled={Boolean(phoneNumber)}
+              onClick={() => {
+                const nextPhone = phoneInput.trim();
+                if (!nextPhone) {
+                  return;
+                }
+                setPhoneNumber(nextPhone);
+                setPhoneInput("");
+              }}
+            >
+              Add Phone
+            </Button>
           </div>
 
           {/* Alternate Emails */}
-          <div className="flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Alternate Emails</span>
-              <p className="text-[13px] font-[400] text-[#717171]">Add alternate emails in addition to your default email to receive a verification code.</p>
+              <p className="text-[13px] font-[400] text-[#333333]">Add alternate emails in addition to your default email to receive a verification code.</p>
             </div>
-            <button className="text-[13px] font-[500] text-[#6E41E2] hover:underline">Add Email</button>
+            <Button
+              variant="outlined"
+              sx={outlineButtonSx}
+            >
+              Add Email
+            </Button>
           </div>
 
           {/* Authenticator App */}
-          <div className="flex items-center justify-between border-t border-[#F0F0F0] pt-6">
+          <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Authenticator App</span>
-              <p className="text-[13px] font-[400] text-[#717171]">Set up an authenticator on your mobile device to receive verification code.</p>
+              <p className="text-[13px] font-[400] text-[#333333]">Set up an authenticator on your mobile device to receive verification code.</p>
             </div>
-            <button className="text-[13px] font-[500] text-[#6E41E2] hover:underline">Set Up App</button>
+            <Button
+              variant="outlined"
+              sx={outlineButtonSx}
+            >
+              Set Up App
+            </Button>
           </div>
         </div>
       </div>
