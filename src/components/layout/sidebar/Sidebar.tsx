@@ -147,7 +147,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
         {isExpanded ? (
           <div className="flex items-center gap-[10px]">
             <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px]" />
-            <img src={BrandName} alt="Pathfinder ATS CRM" className="h-[24px] w-auto" />
+            <img src={BrandName} alt="Pathfinder ATS CRM" className="h-[30px] w-[80px]" />
           </div>
         ) : (
           <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px]" />
