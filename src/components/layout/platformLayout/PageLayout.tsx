@@ -122,7 +122,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
             <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[14px] overflow-hidden ">
 
                 {/* Card Header (Breadcrumb) */}
-                <div className="h-[56px] border-b border-[#CCCCCC] flex items-center justify-between  bg-white flex-shrink-0">
+                <div className="h-[50px] border-b border-[#CCCCCC] flex items-center justify-between bg-white flex-shrink-0 ">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
                         <CircularIconButton1
                             onClick={() => onToggleExpand(!sidebarExpanded)}

@@ -108,10 +108,10 @@ export const Notifications: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-[0px]">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-[0px]">
       {/* Do Not Disturb Section */}
       <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
         </div>
 
@@ -146,14 +146,14 @@ export const Notifications: React.FC = () => {
                 type="text"
                 value={settings.doNotDisturbFrom}
                 onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
-                className="w-[70px] h-[32px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2] hover:border-[#CCCCCC]"
+                className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
               />
               <span className="text-[13px] font-[400] text-[#333333]">To:</span>
               <input
                 type="text"
                 value={settings.doNotDisturbTo}
                 onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
-                className="w-[70px] h-[32px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#6E41E2] hover:border-[#CCCCCC]"
+                className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
               />
             </div>
 
@@ -168,7 +168,7 @@ export const Notifications: React.FC = () => {
                 <Button
                   variant="outlined"
                   sx={{
-                    height: '32px',
+                    height: '36px',
                     borderColor: '#CCCCCC',
                     color: '#333333',
                     textTransform: 'none',
@@ -176,7 +176,7 @@ export const Notifications: React.FC = () => {
                     fontWeight: 400,
                     gap: '8px',
                     '&:hover': {
-                      borderColor: '#6E41E2',
+                      borderColor: '#CCCCCC',
                       backgroundColor: 'rgba(110, 65, 226, 0.04)',
                     }
                   }}
@@ -203,10 +203,10 @@ export const Notifications: React.FC = () => {
                 key={day}
                 onClick={() => toggleDay(day)}
                 className={cn(
-                  "w-[62px] h-[28px] rounded-md border text-[13px] font-[400] transition-colors",
+                  "w-[62px] h-[36px] rounded-md border text-[13px] font-[400] transition-colors",
                   settings.selectedDaysOff.includes(day)
                     ? "border-[#57CC4D] bg-[#57CC4D] text-white"
-                    : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#57CC4D]"
+                    : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#666666]"
                 )}
               >
                 {day}
@@ -317,7 +317,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Save Button Container */}
-      <div className="flex justify-end pr-1 mt-4">
+      <div className="flex justify-start pr-1 mt-2">
         <Button
           variant="contained"
           sx={{
@@ -327,7 +327,7 @@ export const Notifications: React.FC = () => {
             textTransform: 'none',
             fontWeight: 400,
             fontSize: '13px',
-            padding: '8px 12px',
+            // padding: '8px 12px',
             borderRadius: '4px',
             boxShadow: 'none',
             '&:hover': {

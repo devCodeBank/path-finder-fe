@@ -170,7 +170,7 @@ export const SettingsNavigation: React.FC = () => {
                     }
                   `}
                 >
-                  <div className="text-[14px] leading-[18px] py-[10px] px-[10px] text-[#666666] font-[400]">
+                  <div className="text-[14px] leading-[18px] py-[10px] px-[10px] text-[#333333] font-[400]">
                     {item.label}
                   </div>
                 </div>

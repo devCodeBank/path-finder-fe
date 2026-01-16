@@ -107,7 +107,7 @@ const App: React.FC = () => {
           {/* Settings Routes with nested structure */}
           <Route path="settings" element={<SettingsLayout />}>
             {/* <Route index element={<Navigate to="/settings/user/profile" replace />} /> */}
-            {/* <Route index element={<Navigate to="/settings/user/profile" replace />} /> */}
+            <Route index element={<Navigate to="/settings/user/profile" replace />} />
             {/* <Route path="user/profile" element={<ProfilePage />} /> */}
 
             {/* User Settings Routes */}

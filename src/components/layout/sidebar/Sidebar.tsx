@@ -16,6 +16,8 @@ import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import SidebarMenuItem from "./SidebarMenuItem";
+import BrandLogo from "@assets/logos/brand-logo.png";
+import BrandName from "@assets/logos/brand-name.png";
 
 export interface MenuItem {
   id: string;
@@ -86,7 +88,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       if (item.id === "user-avatar") {
         return (
           <div key={item.id} className={cn(
-            "flex items-center h-[36px] w-[calc(100%-12px)] mx-[6px] rounded-[4px] mt-2 px-3 justify-start transition-[background-color] ",
+            "flex items-center h-[36px] w-[calc(100%-12px)] mx-[6px] rounded-[4px]  px-3 justify-start transition-[background-color] ",
             isExpanded ? "bg-[#666666]" : ""
           )}>
             <div className={cn(`w-[24px] h-[24px] rounded-full  flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${isExpanded ? "bg-[#CCCCCC]" : "bg-[#666666]"}`)}>
@@ -133,13 +135,26 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 h-screen transition-[width] duration-300 ease-in-out z-[1040] pt-[24px] flex flex-col bg-[#eaeaea] overflow-hidden",
+        "fixed left-0 top-[13px] h-[calc(100vh-13px)] transition-[width] duration-300 ease-in-out z-[1040] flex flex-col bg-[#eaeaea] overflow-hidden",
         isExpanded ? "w-[219px]" : "w-[68px]"
       )}
       style={{ willChange: "width" }}
     >
+      <div className={cn(
+        "h-[56px] flex items-center px-[12px] border-[#CCCCCC] bg-[#EAEAEA]",
+        isExpanded ? "justify-start" : "justify-center"
+      )}>
+        {isExpanded ? (
+          <div className="flex items-center gap-[10px]">
+            <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px]" />
+            <img src={BrandName} alt="Pathfinder ATS CRM" className="h-[24px] w-auto" />
+          </div>
+        ) : (
+          <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px]" />
+        )}
+      </div>
       <nav className="flex-1 flex flex-col">
-        <div className="flex flex-col mt-[85px] gap-[4px]">
+        <div className="flex flex-col mt-[12px] gap-[5px] justify-center">
           {renderMenuItems(mainMenuItems)}
         </div>
 

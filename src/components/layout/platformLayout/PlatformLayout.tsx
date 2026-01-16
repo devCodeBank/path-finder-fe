@@ -13,9 +13,9 @@ import PageLayout from "./PageLayout";
 import { SidebarContext } from "./SidebarContext";
 
 const PlatformContainer = styled(Box)`
-  height: 100vh;
+  height: 20px;
   overflow: hidden;
-  background:#eaeaea;
+  background:#eaeaea 25%;
 `;
 
 const ContentArea = styled(Box) <{ $sidebarWidth: number; $top: number }>`
@@ -38,6 +38,7 @@ const MainContent = styled(Box)`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  background: #EAEAEA;
 `;
 
 export const PlatformLayout: React.FC = () => {
@@ -62,10 +63,10 @@ export const PlatformLayout: React.FC = () => {
   return (
     <SidebarContext.Provider value={{ sidebarExpanded, sidebarWidth, onToggleExpand: handleSidebarToggle }}>
       <PlatformContainer>
-        <TopNavBar />
+        {/* <TopNavBar /> */}
         <Sidebar isExpanded={sidebarExpanded} />
 
-        <ContentArea $sidebarWidth={sidebarWidth} $top={56}>
+        <ContentArea $sidebarWidth={sidebarWidth} $top={18}>
           <MainContent>
             {isSettingsPage ? (
               <Outlet />
