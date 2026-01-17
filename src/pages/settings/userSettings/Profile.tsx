@@ -19,12 +19,30 @@ interface ProfileFormData {
   currency: string;
 }
 
-const timeZoneOptions = [
-  { value: "auckland", label: "(GMT +13) New Zealand Daylight Time" },
-  { value: "sydney", label: "(GMT +11) Sydney Time" },
-  { value: "tokyo", label: "(GMT +9) Tokyo Time" },
-  { value: "utc", label: "(GMT +0) UTC" },
-];
+const getTimeZoneOffsetLabel = (timeZone: string) => {
+  const now = new Date();
+  const local = new Date(now.toLocaleString("en-US", { timeZone }));
+  const utc = new Date(now.toLocaleString("en-US", { timeZone: "UTC" }));
+  const offsetMinutes = Math.round((local.getTime() - utc.getTime()) / 60000);
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const absMinutes = Math.abs(offsetMinutes);
+  const hours = String(Math.floor(absMinutes / 60)).padStart(2, "0");
+  const minutes = String(absMinutes % 60).padStart(2, "0");
+  return `(GMT ${sign}${hours}:${minutes})`;
+};
+
+const timeZoneOptions = (() => {
+  const zones =
+    typeof Intl !== "undefined" && "supportedValuesOf" in Intl
+      ? Intl.supportedValuesOf("timeZone")
+      : ["UTC"];
+  return zones
+    .map((zone) => ({
+      value: zone,
+      label: `${getTimeZoneOffsetLabel(zone)} ${zone}`,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+})();
 
 const roleOptions = [
   { value: "super_admin", label: "Account Owner / Super Admin" },
@@ -56,7 +74,7 @@ export const Profile: React.FC = () => {
     companyName: "Acme Limited",
     role: "super_admin",
     contactNumber: "12-345663321",
-    timeZone: "auckland",
+    timeZone: "Pacific/Auckland",
     city: "Auckland",
     state: "auckland",
     country: "New Zealand",

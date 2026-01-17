@@ -53,7 +53,7 @@ const getMockUsers = (): UserRow[] => {
   return [
     {
       id: "1",
-      name: "Pankaj Kumar",
+      name: "John Doe",
       email: "pankaj.kumar@pathfinderatscrm.com",
       role: "Account Owner/Admin",
       jobTitle: "Account Manager",
@@ -62,7 +62,7 @@ const getMockUsers = (): UserRow[] => {
     },
     {
       id: "2",
-      name: "Pankaj Kumar",
+      name: "John Doe",
       email: "pankaj.kumar@pathfinderatscrm.com",
       role: "Standard User",
       jobTitle: "Not Available",
@@ -71,7 +71,7 @@ const getMockUsers = (): UserRow[] => {
     },
     {
       id: "3",
-      name: "Pankaj Kumar",
+      name: "John Doe",
       email: "pankaj.kumar@pathfinderatscrm.com",
       role: "Collaborator",
       jobTitle: "Not Available",
@@ -80,7 +80,7 @@ const getMockUsers = (): UserRow[] => {
     },
     {
       id: "4",
-      name: "Pankaj Kumar",
+      name: "John Doe",
       email: "pankaj.kumar@pathfinderatscrm.com",
       role: "Admin",
       jobTitle: "Not Available",
@@ -89,7 +89,7 @@ const getMockUsers = (): UserRow[] => {
     },
     {
       id: "5",
-      name: "Pankaj Kumar",
+      name: "John Doe",
       email: "pankaj.kumar@pathfinderatscrm.com",
       role: "Admin",
       jobTitle: "Not Available",

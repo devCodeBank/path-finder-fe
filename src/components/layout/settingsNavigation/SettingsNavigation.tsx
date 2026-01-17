@@ -24,7 +24,7 @@ const navigationSections: NavigationSection[] = [
       { id: "email", label: "Email", path: "/settings/user/email" },
       { id: "calendar", label: "Calendar", path: "/settings/user/calendar" },
       { id: "meeting-apps", label: "Meeting Apps", path: "/settings/user/meeting-apps" },
-      { id: "preferences", label: "Preferences", path: "/settings/user/preferences" },
+      // { id: "preferences", label: "Preferences", path: "/settings/user/preferences" },
       { id: "activity-history", label: "Activity History", path: "/settings/user/activity-history" },
     ],
   },

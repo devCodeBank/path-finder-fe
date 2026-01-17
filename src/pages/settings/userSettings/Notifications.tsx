@@ -175,9 +175,11 @@ export const Notifications: React.FC = () => {
                     fontSize: '13px',
                     fontWeight: 400,
                     gap: '8px',
+                    boxShadow: 'none',
                     '&:hover': {
                       borderColor: '#CCCCCC',
                       backgroundColor: 'rgba(110, 65, 226, 0.04)',
+                      boxShadow: 'none',
                     }
                   }}
                   startIcon={<NotificationIcon />}
@@ -317,7 +319,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Save Button Container */}
-      <div className="flex justify-start pr-1 mt-2">
+      <div className="flex justify-end pr-1 mt-2">
         <Button
           variant="contained"
           sx={{

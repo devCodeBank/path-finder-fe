@@ -384,7 +384,7 @@ const theme = createTheme({
     MuiTooltip: {
       styleOverrides: {
         tooltip: {
-          backgroundColor: "#777777",
+          backgroundColor: "#6E41E2",
           color: "#FFFFFF",
           borderRadius: "4px",
           fontSize: "12px",
@@ -393,7 +393,7 @@ const theme = createTheme({
           boxShadow: "none",
         },
         arrow: {
-          color: "#777777",
+          color: "#6E41E2",
         },
       },
     },

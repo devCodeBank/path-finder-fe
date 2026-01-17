@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import styled from "styled-components";
 import { useSidebarContext } from "./SidebarContext";
 import { cn } from "@/lib/utils";
@@ -22,12 +22,16 @@ const BreadcrumbSeparator = () => (
 );
 
 const CircularIconButton = styled(IconButton)`
-  background-color: transparent;
   width: 32px;
   height: 32px;
-  padding: 6px;
-  margin-inline: 8px;
+  padding: 8px;
   background-color: #F3F4F6;
+  color: #333333;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  &:hover {
+    background-color: #666666;
+    color: #FFFFFF;
+  }
 `;
 
 const CircularIconButton1 = styled(IconButton)`
@@ -146,10 +150,22 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                         </div>
                     </div>
 
-                    <div className="flex items-centerflex-shrink-0 ml-4">
-                        <CircularIconButton><SearchIcon width={16} height={16} /></CircularIconButton>
-                        <CircularIconButton><QuestionIcon width={16} height={16} /></CircularIconButton>
-                        <CircularIconButton><BellIcon width={16} height={16} /></CircularIconButton>
+                    <div className="flex items-center flex-shrink-0 ml-2 mr-6 gap-6">
+                        <Tooltip title="Search" arrow>
+                            <CircularIconButton>
+                                <SearchIcon width={16} height={16} />
+                            </CircularIconButton>
+                        </Tooltip>
+                        <Tooltip title="Help" arrow>
+                            <CircularIconButton>
+                                <QuestionIcon width={16} height={16} />
+                            </CircularIconButton>
+                        </Tooltip>
+                        <Tooltip title="Notifications" arrow>
+                            <CircularIconButton>
+                                <BellIcon width={16} height={16} />
+                            </CircularIconButton>
+                        </Tooltip>
                     </div>
                 </div>
 

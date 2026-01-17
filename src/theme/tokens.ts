@@ -197,7 +197,7 @@ export const componentTokens = {
     height: "64px",
   },
   tooltip: {
-    backgroundColor: "#5c657c",
+    backgroundColor: "#6E41E2",
   },
 } as const;
 

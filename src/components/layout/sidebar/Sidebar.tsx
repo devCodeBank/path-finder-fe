@@ -88,32 +88,33 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       if (item.id === "user-avatar") {
         return (
           <div key={item.id} className={cn(
-            "flex items-center h-[36px] w-[calc(100%-12px)] mx-[6px] rounded-[4px]  px-3 justify-start transition-[background-color] ",
+            "flex items-center h-[44px] w-[calc(100%-12px)] mx-[6px] rounded-[4px]  px-3 justify-start transition-[background-color] ",
             isExpanded ? "bg-[#666666]" : ""
           )}>
             <div className={cn(`w-[24px] h-[24px] rounded-full  flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${isExpanded ? "bg-[#CCCCCC]" : "bg-[#666666]"}`)}>
               PK
             </div>
-            {isExpanded && (
-              <>
-                <div className="flex flex-col ml-[18px]">
-                  <span className="text-[10px] font-medium text-[#FFFFFF]">
-                    Pankaj Kumar
-                  </span>
-                  <span className="text-[10px] font-medium text-[#FFFFFF]">
-                    Pathfinder ats CRM
-                  </span>
-
-                </div>
-                <div className="ml-[18px]">
-                  <svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.83333 9.50781L5.16667 14.1745L0.5 9.50781" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M0.502605 5.16808L5.16921 0.501359L9.83594 5.16797" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
-                  </svg>
-                </div>
-              </>
-
-            )}
+            <div
+              className={cn(
+                "ml-[12px] flex items-center gap-[18px] overflow-hidden transition-[max-width,opacity] duration-300",
+                isExpanded ? "max-w-[200px] opacity-100" : "max-w-0 opacity-0"
+              )}
+            >
+              <div className="flex flex-col">
+                <span className="text-[10px] font-medium text-[#FFFFFF] whitespace-nowrap">
+                  John Doe
+                </span>
+                <span className="text-[10px] font-medium text-[#FFFFFF] whitespace-nowrap">
+                  Pathfinder ats CRM
+                </span>
+              </div>
+              <div>
+                <svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.83333 9.50781L5.16667 14.1745L0.5 9.50781" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M0.502605 5.16808L5.16921 0.501359L9.83594 5.16797" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </div>
+            </div>
           </div>
         );
       }
@@ -141,17 +142,19 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       style={{ willChange: "width" }}
     >
       <div className={cn(
-        "h-[56px] flex items-center px-[12px] border-[#CCCCCC] bg-[#EAEAEA]",
-        isExpanded ? "justify-start" : "justify-center"
+        "h-[56px] flex items-center px-[12px] border-[#CCCCCC] bg-[#EAEAEA]"
       )}>
-        {isExpanded ? (
-          <div className="flex items-center gap-[10px]">
-            <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px]" />
+        <div className="flex items-center gap-[10px]">
+          <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px] shrink-0" />
+          <div
+            className={cn(
+              "overflow-hidden transition-[max-width,opacity] duration-300",
+              isExpanded ? "max-w-[90px] opacity-100" : "max-w-0 opacity-0"
+            )}
+          >
             <img src={BrandName} alt="Pathfinder ATS CRM" className="h-[30px] w-[80px]" />
           </div>
-        ) : (
-          <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px]" />
-        )}
+        </div>
       </div>
       <nav className="flex-1 flex flex-col">
         <div className="flex flex-col mt-[12px] gap-[5px] justify-center">

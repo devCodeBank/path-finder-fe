@@ -70,7 +70,7 @@ export const CompanyDetails: React.FC = () => {
     companyName: "Pathfinder AtsCrm",
     country: "New Zealand",
     website: "Not available",
-    accountOwner: "Pankaj Kumar",
+    accountOwner: "John Doe",
     accountId: "PFAC1057",
     accountType: "Agency",
     email: "pankaj.kumar@pathfinderatscrm.com",

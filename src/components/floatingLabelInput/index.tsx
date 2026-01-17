@@ -3,13 +3,7 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { ChevronDown } from "lucide-react";
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> { }
 
@@ -19,7 +13,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
             <Input
                 placeholder=" "
                 className={cn(
-                    'h-[56px] peer border-[#CCCCCC] bg-white pb-1 text-[#333333] hover:text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/70 hover:placeholder:text-[#333333] focus-visible:ring-0 focus-visible:border-[#6E41E2] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100',
+                    'h-[56px] peer border-[#CCCCCC] bg-white pb-1 text-[#333333]  hover:text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/70 hover:placeholder:text-[#333333] focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100',
                     className
                 )}
                 ref={ref}
@@ -96,29 +90,27 @@ const FloatingLabelSelect = ({
 
     return (
         <div className={cn("relative", className)}>
-            <Select
-                value={value}
-                onValueChange={onValueChange}
-                defaultValue={defaultValue}
-                disabled={disabled}
-            >
-                <SelectTrigger
+            <div className="relative">
+                <select
                     id={id}
+                    value={value}
+                    onChange={(event) => onValueChange?.(event.target.value)}
+                    defaultValue={defaultValue}
+                    disabled={disabled}
                     className={cn(
-                        'h-[56px] w-full peer border-[#CCCCCC] bg-white rounded-md px-3 pb-1  text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] focus:ring-0 focus:border-[#6E41E2] hover:border-[#CCCCCC] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100 [&>span]:mt-1.5',
+                        "h-[56px] w-full peer border border-[#CCCCCC] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
                         className
                     )}
                 >
-                    <SelectValue placeholder=" " />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-[#CCCCCC]">
+                    <option value="" disabled hidden />
                     {options.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value} className="text-[#333333] font-[500]">
+                        <option key={opt.value} value={opt.value}>
                             {opt.label}
-                        </SelectItem>
+                        </option>
                     ))}
-                </SelectContent>
-            </Select>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171]" />
+            </div>
             <FloatingLabel
                 htmlFor={id}
                 className={cn(
