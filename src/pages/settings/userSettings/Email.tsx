@@ -17,6 +17,7 @@ export const Email: React.FC = () => {
     fontSize: "12px",
     width: "110px",
     fontWeight: 400,
+    borderRadius: "4px",
 
     boxShadow: "none",
     "&.Mui-disabled": {
@@ -37,7 +38,7 @@ export const Email: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-6 flex items-center justify-between">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-6 flex items-center justify-between">
         <div className="flex items-center gap-5">
           <EnvelopeIcon className="h-18 w-14" />
           <div className="flex flex-col gap-1">
@@ -50,7 +51,7 @@ export const Email: React.FC = () => {
         </Button>
       </div>
 
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-6">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-6">
         <ul className="flex flex-col gap-4">
           {[
             "Manage all your communication directly from one platform.",

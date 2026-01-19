@@ -110,7 +110,7 @@ export const Notifications: React.FC = () => {
   return (
     <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-[0px]">
       {/* Do Not Disturb Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden min-h-[135px]">
         <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
         </div>
@@ -175,6 +175,7 @@ export const Notifications: React.FC = () => {
                     fontSize: '13px',
                     fontWeight: 400,
                     gap: '8px',
+                    borderRadius: '4px',
                     boxShadow: 'none',
                     '&:hover': {
                       borderColor: '#CCCCCC',
@@ -193,7 +194,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Days Off Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden min-h-[135px]">
         <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
@@ -205,7 +206,7 @@ export const Notifications: React.FC = () => {
                 key={day}
                 onClick={() => toggleDay(day)}
                 className={cn(
-                  "w-[62px] h-[36px] rounded-md border text-[13px] font-[400] transition-colors",
+                  "w-[62px] h-[36px] rounded-[4px] border text-[13px] font-[400] transition-colors",
                   settings.selectedDaysOff.includes(day)
                     ? "border-[#57CC4D] bg-[#57CC4D] text-white"
                     : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#666666]"
@@ -219,7 +220,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Email Notifications Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden min-h-[135px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden min-h-[135px]">
         <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
         </div>
@@ -237,7 +238,7 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* List Preferences Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg overflow-hidden">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden">
         <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
           <p className="text-[14px] font-[500] text-[#333333]">
             Send email and push notifications for:

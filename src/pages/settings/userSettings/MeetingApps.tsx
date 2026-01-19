@@ -18,7 +18,7 @@ const IntegrationCard = ({
   buttonSx: object;
 }) => {
   return (
-    <div className="bg-white border border-[#CCCCCC] rounded-lg p-6 flex items-center justify-between">
+    <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-6 flex items-center justify-between">
       <div className="flex gap-4">
         <div className="mt-1">
           <Icon className="h-12 w-12" />
@@ -49,6 +49,7 @@ export const MeetingApps: React.FC = () => {
     fontSize: "12px",
     width: "128px",
     fontWeight: 400,
+    borderRadius: "4px",
 
     boxShadow: "none",
     "&.Mui-disabled": {

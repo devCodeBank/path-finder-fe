@@ -163,7 +163,7 @@ export const Profile: React.FC = () => {
   return (
     <div className="flex flex-col w-full max-w-full  font-sans h-[100%]">
       {/* Top Profile Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4 flex flex-col md:flex-row items-start md:items-center justify-between    my-[0px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between    my-[0px]">
         <div className="flex items-start gap-6">
           <div className="flex flex-col gap-2">
             {/* Avatar Box */}
@@ -225,7 +225,7 @@ export const Profile: React.FC = () => {
       </div>
 
       {/* Details Grid Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-lg p-4   my-[18px]">
+      <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-4   my-[18px]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {/* Row 1 */}
           {renderField("First Name", formData.firstName, "firstName")}
