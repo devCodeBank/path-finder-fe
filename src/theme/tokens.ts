@@ -42,10 +42,10 @@ export const colorTokens = {
   border: {
     primary: "#6E41E280", // Primary @ 50% opacity
     primaryHover: "#6E41E2E6", // Primary @ 90% opacity
-    light: "#E5E7EB",
-    medium: "#D1D5DB",
-    mediumLight: "#CCCCCC",
-    dark: "#9CA3AF",
+    light: "#E5E7EB80",
+    medium: "#D1D5DB80",
+    mediumLight: "#CCCCCC80",
+    dark: "#9CA3AF80",
     focus: "#7C3AED",
   },
 

@@ -1,11 +1,18 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Button } from "@mui/material";
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
 
 const NotificationIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.0893 7.33301C12.4767 10.9163 14 11.9997 14 11.9997H2C2 11.9997 4 10.5777 4 5.59967C4 4.46834 4.42133 3.38301 5.17133 2.58301C5.92133 1.78301 6.94 1.33301 8 1.33301C8.22533 1.33301 8.44756 1.35301 8.66667 1.39301M9.15333 13.9997C9.03613 14.2017 8.8679 14.3694 8.66548 14.486C8.46307 14.6026 8.23359 14.664 8 14.664C7.76641 14.664 7.53693 14.6026 7.33452 14.486C7.13211 14.3694 6.96387 14.2017 6.84667 13.9997M12.6667 5.33301C13.1971 5.33301 13.7058 5.12229 14.0809 4.74722C14.456 4.37215 14.6667 3.86344 14.6667 3.33301C14.6667 2.80257 14.456 2.29387 14.0809 1.91879C13.7058 1.54372 13.1971 1.33301 12.6667 1.33301C12.1362 1.33301 11.6275 1.54372 11.2525 1.91879C10.8774 2.29387 10.6667 2.80257 10.6667 3.33301C10.6667 3.86344 10.8774 4.37215 11.2525 4.74722C11.6275 5.12229 12.1362 5.33301 12.6667 5.33301Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12.0893 7.33301C12.4767 10.9163 14 11.9997 14 11.9997H2C2 11.9997 4 10.5777 4 5.59967C4 4.46834 4.42133 3.38301 5.17133 2.58301C5.92133 1.78301 6.94 1.33301 8 1.33301C8.22533 1.33301 8.44756 1.35301 8.66667 1.39301M9.15333 13.9997C9.03613 14.2017 8.8679 14.3694 8.66548 14.486C8.46307 14.6026 8.23359 14.664 8 14.664C7.76641 14.664 7.53693 14.6026 7.33452 14.486C7.13211 14.3694 6.96387 14.2017 6.84667 13.9997M12.6667 5.33301C13.1971 5.33301 13.7058 5.12229 14.0809 4.74722C14.456 4.37215 14.6667 3.86344 14.6667 3.33301C14.6667 2.80257 14.456 2.29387 14.0809 1.91879C13.7058 1.54372 13.1971 1.33301 12.6667 1.33301C12.1362 1.33301 11.6275 1.54372 11.2525 1.91879C10.8774 2.29387 10.6667 2.80257 10.6667 3.33301C10.6667 3.86344 10.8774 4.37215 11.2525 4.74722C11.6275 5.12229 12.1362 5.33301 12.6667 5.33301Z" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const ClockIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="7" cy="7" r="5.5" stroke="#666666" strokeWidth="1.5" />
+    <path d="M7 3.8V7.4L9.6 8.8" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -90,6 +97,27 @@ export const Notifications: React.FC = () => {
       offerDeclined: false,
     },
   });
+  const [isTimeLocked, setIsTimeLocked] = useState(false);
+  const fromTimeRef = useRef<HTMLInputElement | null>(null);
+  const toTimeRef = useRef<HTMLInputElement | null>(null);
+
+  const toggleDoNotDisturb = () => {
+    setSettings((prev) => {
+      const next = !prev.doNotDisturb;
+      setIsTimeLocked(!next);
+      return { ...prev, doNotDisturb: next };
+    });
+  };
+
+  const openTimePicker = (ref: React.RefObject<HTMLInputElement>) => {
+    if (!ref.current) {
+      return;
+    }
+    if (typeof ref.current.showPicker === "function") {
+      ref.current.showPicker();
+    }
+    ref.current.focus();
+  };
 
   const handleToggle = (key: keyof NotificationSettings["notifications"]) => (val: boolean) => {
     setSettings(prev => ({
@@ -110,8 +138,8 @@ export const Notifications: React.FC = () => {
   return (
     <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-[0px]">
       {/* Do Not Disturb Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
         </div>
 
@@ -119,12 +147,12 @@ export const Notifications: React.FC = () => {
           <div className="flex flex-wrap items-center gap-x-6 gap-y-4 w-full">
             <div className="flex items-center gap-2">
               <div
-                onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
+                onClick={toggleDoNotDisturb}
                 className={cn(
                   "w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors",
                   settings.doNotDisturb
                     ? "bg-[#57CC4D] border-[#57CC4D]"
-                    : "bg-white border-[#CCCCCC]"
+                    : "bg-white border-[#CCCCCC80]"
                 )}
               >
                 {settings.doNotDisturb && (
@@ -134,7 +162,7 @@ export const Notifications: React.FC = () => {
                 )}
               </div>
               <label
-                onClick={() => setSettings(prev => ({ ...prev, doNotDisturb: !prev.doNotDisturb }))}
+                onClick={toggleDoNotDisturb}
                 className="text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
               >
                 Do not notify me from:
@@ -142,24 +170,50 @@ export const Notifications: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={settings.doNotDisturbFrom}
-                onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
-                className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
-              />
+              <div className="relative">
+                <input
+                  ref={fromTimeRef}
+                  type="time"
+                  value={settings.doNotDisturbFrom}
+                  onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
+                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF] disabled:cursor-not-allowed"
+                  disabled={!settings.doNotDisturb || isTimeLocked}
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  onClick={() => openTimePicker(fromTimeRef)}
+                  disabled={!settings.doNotDisturb || isTimeLocked}
+                  aria-label="Select start time"
+                >
+                  <ClockIcon />
+                </button>
+              </div>
               <span className="text-[13px] font-[400] text-[#333333]">To:</span>
-              <input
-                type="text"
-                value={settings.doNotDisturbTo}
-                onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
-                className="w-[70px] h-[36px] border border-[#CCCCCC] rounded-md text-center text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
-              />
+              <div className="relative">
+                <input
+                  ref={toTimeRef}
+                  type="time"
+                  value={settings.doNotDisturbTo}
+                  onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
+                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF] disabled:cursor-not-allowed"
+                  disabled={!settings.doNotDisturb || isTimeLocked}
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  onClick={() => openTimePicker(toTimeRef)}
+                  disabled={!settings.doNotDisturb || isTimeLocked}
+                  aria-label="Select end time"
+                >
+                  <ClockIcon />
+                </button>
+              </div>
             </div>
 
             {settings.doNotDisturb && (
               <p className="text-[13px] font-[400] text-[#333333]">
-                Notifications paused until tomorrow at 08:00
+                Notifications paused from {settings.doNotDisturbFrom} to {settings.doNotDisturbTo}
               </p>
             )}
 
@@ -169,7 +223,7 @@ export const Notifications: React.FC = () => {
                   variant="outlined"
                   sx={{
                     height: '36px',
-                    borderColor: '#CCCCCC',
+                    borderColor: '#CCCCCC80',
                     color: '#333333',
                     textTransform: 'none',
                     fontSize: '13px',
@@ -178,12 +232,16 @@ export const Notifications: React.FC = () => {
                     borderRadius: '4px',
                     boxShadow: 'none',
                     '&:hover': {
-                      borderColor: '#CCCCCC',
+                      borderColor: '#CCCCCC80',
                       backgroundColor: 'rgba(110, 65, 226, 0.04)',
                       boxShadow: 'none',
                     }
                   }}
                   startIcon={<NotificationIcon />}
+                  onClick={() => {
+                    setIsTimeLocked(true);
+                    setSettings(prev => ({ ...prev, doNotDisturb: false }));
+                  }}
                 >
                   Resume Notifications
                 </Button>
@@ -194,8 +252,8 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Days Off Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#F5F5F5]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
 
@@ -209,7 +267,7 @@ export const Notifications: React.FC = () => {
                   "w-[62px] h-[36px] rounded-[4px] border text-[13px] font-[400] transition-colors",
                   settings.selectedDaysOff.includes(day)
                     ? "border-[#57CC4D] bg-[#57CC4D] text-white"
-                    : "border-[#CCCCCC] bg-white text-[#333333] hover:border-[#666666]"
+                    : "border-[#CCCCCC80] bg-white text-[#333333] hover:border-[#666666]"
                 )}
               >
                 {day}
@@ -220,8 +278,8 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* Email Notifications Section */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#F5F5F5]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
         </div>
 
@@ -229,6 +287,7 @@ export const Notifications: React.FC = () => {
           <div className="max-w-[400px] w-full">
             <FloatingLabelInput
               label="Preferred Email"
+              labelClassName="text-[#333333]/70"
               value={settings.preferredEmail}
               onChange={(e) => setSettings(prev => ({ ...prev, preferredEmail: e.target.value }))}
               className="w-full"
@@ -238,8 +297,8 @@ export const Notifications: React.FC = () => {
       </div>
 
       {/* List Preferences Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center bg-[#F5F5F5]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#F5F5F5]">
           <p className="text-[14px] font-[500] text-[#333333]">
             Send email and push notifications for:
           </p>
@@ -345,6 +404,14 @@ export const Notifications: React.FC = () => {
       </div>
 
       <style>{`
+        .dnd-time-input::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          display: none;
+        }
+        .dnd-time-input::-webkit-clear-button,
+        .dnd-time-input::-webkit-inner-spin-button {
+          display: none;
+        }
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;
         }
@@ -365,3 +432,4 @@ export const Notifications: React.FC = () => {
 };
 
 export default Notifications;
+

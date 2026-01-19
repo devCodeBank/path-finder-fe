@@ -68,7 +68,7 @@
 
 @layer base {
   * {
-    border-color: hsl(var(--border) / 1);
+    border-color: hsl(var(--border) / 0.5);
   }
 
   body {

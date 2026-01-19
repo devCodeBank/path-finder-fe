@@ -28,7 +28,7 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
       <button
         onClick={handleClick}
         className={cn(
-          "group relative flex items-center mx-[6px] rounded-[4px] h-[32px] w-[calc(100%-12px)]",
+          "group relative flex items-center mx-[6px] rounded-[4px] h-[32px] w-[calc(100%-20px)]",
           "transition-[color,background-color] duration-300 ease-in-out",
           `${!bottomMenuItems.includes(item.id) ? "mb-[8px]" : `${item.id === "user-avatar" ? "pt-[32px]" : ""}`}`,
           "px-3 justify-start",

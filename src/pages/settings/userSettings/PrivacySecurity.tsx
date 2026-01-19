@@ -19,7 +19,7 @@ const Toggle = ({
   linkHref?: string;
 }) => {
   return (
-    <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0] last:border-0">
+    <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080] last:border-0">
       <div className="flex flex-col gap-1 pr-4">
         <span className="text-[14px] font-[500] text-[#333333]">{label}</span>
         {description && (
@@ -66,13 +66,14 @@ export const PrivacySecurity: React.FC = () => {
   const [newsletterSubscription, setNewsletterSubscription] = useState(false);
   const outlineButtonSx = {
     height: "36px",
-    borderColor: "#CCCCCC",
+    borderColor: "#CCCCCC80",
     color: "#333333",
     textTransform: "none",
     fontSize: "12px",
     width: "128px",
     fontWeight: 400,
     padding: "inherit",
+    borderRadius: "4px",
     boxShadow: "none",
 
     "&.Mui-disabled": {
@@ -81,11 +82,11 @@ export const PrivacySecurity: React.FC = () => {
       opacity: 1
     },
     "&.MuiButton-outlined.Mui-disabled": {
-      borderColor: "#CCCCCC !important",
-      border: "1px solid #CCCCCC"
+      borderColor: "#CCCCCC80 !important",
+      border: "1px solid #CCCCCC80"
     },
     "&:hover": {
-      borderColor: "#CCCCCC",
+      borderColor: "#CCCCCC80",
       backgroundColor: "#EAEAEA",
       boxShadow: "none"
     }
@@ -94,14 +95,14 @@ export const PrivacySecurity: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 w-full max-w-full font-sans ">
       {/* Default Security Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Default Security</h3>
         </div>
 
         <div className="px-5">
           {/* Email Row */}
-          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Primary Email</span>
               <span className="text-[13px] font-[400] text-[#333333]">{primaryEmail}</span>
@@ -109,7 +110,7 @@ export const PrivacySecurity: React.FC = () => {
           </div>
 
           {/* Password Row */}
-          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Password</span>
               <p className="text-[13px] font-[400] text-[#333333]">*#0!x%&</p>
@@ -142,8 +143,8 @@ export const PrivacySecurity: React.FC = () => {
       </div>
 
       {/* Login Security Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Login Security</h3>
         </div>
         <div className="px-5">
@@ -165,13 +166,13 @@ export const PrivacySecurity: React.FC = () => {
       </div>
 
       {/* Verification Methods Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Verification Methods</h3>
         </div>
         <div className="px-5">
           {/* Phone Number */}
-          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Phone Number</span>
               <p className="text-[13px] font-[400] text-[#333333]">Require additional verification step for logins from a new device or browser.</p>
@@ -194,7 +195,7 @@ export const PrivacySecurity: React.FC = () => {
                   value={phoneInput}
                   onChange={(event) => setPhoneInput(event.target.value)}
                   placeholder="Enter phone number"
-                  className="mt-2 w-[200px] h-[36px] rounded-md border border-[#CCCCCC] px-3 text-[12px] text-[#333333] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
+                  className="mt-2 w-[200px] h-[36px] rounded-md border border-[#CCCCCC80] px-3 text-[12px] text-[#333333] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
                 />
               ) : null}
             </div>
@@ -221,7 +222,7 @@ export const PrivacySecurity: React.FC = () => {
           </div>
 
           {/* Alternate Emails */}
-          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F0]">
+          <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Alternate Emails</span>
               <p className="text-[13px] font-[400] text-[#333333]">Add alternate emails in addition to your default email to receive a verification code.</p>
@@ -244,7 +245,7 @@ export const PrivacySecurity: React.FC = () => {
                   value={emailInput}
                   onChange={(event) => setEmailInput(event.target.value)}
                   placeholder="Enter Email Address"
-                  className="mt-2 w-[240px] h-[36px] rounded-md border border-[#CCCCCC] px-3 text-[12px] text-[#333333] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
+                  className="mt-2 w-[240px] h-[36px] rounded-md border border-[#CCCCCC80] px-3 text-[12px] text-[#333333] focus:outline-none focus:border-[#666666] hover:border-[#666666]"
                 />
               ) : null}
             </div>
@@ -287,8 +288,8 @@ export const PrivacySecurity: React.FC = () => {
       </div>
 
       {/* Notifications Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC] flex items-center bg-[#EAEAEA]/25">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
+        <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <h3 className="text-[14px] font-[500] text-[#333333]">Notifications</h3>
         </div>
         <div className="px-5">
@@ -318,3 +319,4 @@ export const PrivacySecurity: React.FC = () => {
 };
 
 export default PrivacySecurity;
+

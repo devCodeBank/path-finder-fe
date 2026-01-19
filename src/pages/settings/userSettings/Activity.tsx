@@ -10,8 +10,8 @@ const ActivityCard = ({
   headerAction?: React.ReactNode;
 }) => {
   return (
-    <div className="bg-white border border-[#CCCCCC] rounded-[4px] overflow-hidden">
-      <div className="px-4 h-[36px] border-b border-[#CCCCCC] flex items-center justify-between bg-[#F5F5F5]">
+    <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
+      <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[#F5F5F5]">
         <h3 className="text-[14px] font-[500] text-[#333333]">{title}</h3>
         {headerAction}
       </div>
@@ -163,11 +163,11 @@ export const Activity: React.FC = () => {
           {visibleSessions.map((session, index) => (
             <div
               key={session.id}
-              className={index === visibleSessions.length - 1 ? "flex items-center cursor-pointer" : "flex items-center pb-4 border-b border-[#F0F0F0] cursor-pointer"}
+              className={index === visibleSessions.length - 1 ? "flex items-center cursor-pointer" : "flex items-center pb-4 border-b border-[#F0F0F080] cursor-pointer"}
               onClick={() => setActiveSessionId(session.id)}
             >
               <div className="flex items-center gap-4 flex-1">
-                <div className="h-[34px] w-[54px] rounded-sm border border-[#CCCCCC] bg-[#1F2A66] flex items-center justify-center text-[12px] text-white font-[600]">
+                <div className="h-[34px] w-[54px] rounded-sm border border-[#CCCCCC80] bg-[#1F2A66] flex items-center justify-center text-[12px] text-white font-[600]">
                   PC
                 </div>
                 <div className="flex flex-col">
@@ -177,19 +177,19 @@ export const Activity: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-4 flex-1">
-                <div className="h-[28px] w-[28px] rounded-md border border-[#CCCCCC] bg-[#0078D4] text-white text-[11px] font-[600] flex items-center justify-center">
+                <div className="h-[28px] w-[28px] rounded-md border border-[#CCCCCC80] bg-[#0078D4] text-white text-[11px] font-[600] flex items-center justify-center">
                   W
                 </div>
-                <div className="h-[28px] w-[28px] rounded-md border border-[#CCCCCC] bg-[#F4F4F4] text-[#333333] text-[11px] font-[600] flex items-center justify-center">
+                <div className="h-[28px] w-[28px] rounded-md border border-[#CCCCCC80] bg-[#F4F4F4] text-[#333333] text-[11px] font-[600] flex items-center justify-center">
                   {session.browser === "Chrome" ? "C" : "A"}
                 </div>
                 <div className="flex items-center gap-2 text-[13px] text-[#333333]">
                   <span>{session.location}</span>
                   <span className="relative group">
-                    <span className="h-[16px] w-[16px] rounded-full border border-[#717171] text-[11px] text-[#717171] flex items-center justify-center">
+                    <span className="h-[16px] w-[16px] rounded-full border border-[#71717180] text-[11px] text-[#717171] flex items-center justify-center">
                       i
                     </span>
-                    <span className="absolute -top-2 left-6 z-10 w-[220px] rounded-md border border-[#E5E5E5] bg-white p-2 text-[11px] text-[#555555] shadow-[0px_6px_16px_0px_#0000001F] opacity-0 pointer-events-none group-hover:opacity-100">
+                    <span className="absolute -top-2 left-6 z-10 w-[220px] rounded-md border border-[#E5E5E580] bg-white p-2 text-[11px] text-[#555555] shadow-[0px_6px_16px_0px_#0000001F] opacity-0 pointer-events-none group-hover:opacity-100">
                       The location shown is approximated based on the accessed IP address. Click to view the exact IP address.
                     </span>
                   </span>
@@ -239,10 +239,10 @@ export const Activity: React.FC = () => {
       </ActivityCard>
       {activeSession && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000066] p-4">
-          <div className="w-full max-w-[720px] bg-white rounded-[6px] border border-[#E5E5E5] shadow-[0px_10px_30px_0px_#00000024]">
-            <div className="flex items-start justify-between px-6 py-4 border-b border-[#E5E5E5]">
+          <div className="w-full max-w-[720px] bg-white rounded-[6px] border border-[#E5E5E580] shadow-[0px_10px_30px_0px_#00000024]">
+            <div className="flex items-start justify-between px-6 py-4 border-b border-[#E5E5E580]">
               <div className="flex items-center gap-4">
-                <div className="h-[44px] w-[60px] rounded-sm border border-[#CCCCCC] bg-[#1F2A66] flex items-center justify-center text-[14px] text-white font-[600]">
+                <div className="h-[44px] w-[60px] rounded-sm border border-[#CCCCCC80] bg-[#1F2A66] flex items-center justify-center text-[14px] text-white font-[600]">
                   PC
                 </div>
                 <div className="flex flex-col">
@@ -267,7 +267,7 @@ export const Activity: React.FC = () => {
               <div className="flex flex-col gap-1">
                 <span className="text-[13px] text-[#777777]">Operating System</span>
                 <div className="flex items-center gap-2 text-[14px] text-[#111111]">
-                  <span className="h-[22px] w-[22px] rounded-sm border border-[#CCCCCC] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
+                  <span className="h-[22px] w-[22px] rounded-sm border border-[#CCCCCC80] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
                     W
                   </span>
                   <span>{activeSession.os}</span>
@@ -276,7 +276,7 @@ export const Activity: React.FC = () => {
               <div className="flex flex-col gap-1">
                 <span className="text-[13px] text-[#777777]">App</span>
                 <div className="flex items-center gap-2 text-[14px] text-[#111111]">
-                  <span className="h-[22px] w-[22px] rounded-md border border-[#CCCCCC] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
+                  <span className="h-[22px] w-[22px] rounded-md border border-[#CCCCCC80] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
                     A
                   </span>
                   <span>{activeSession.app}</span>
@@ -315,7 +315,7 @@ export const Activity: React.FC = () => {
             {activityHistory.map((item, index) => (
               <div
                 key={item.id}
-                className={index === activityHistory.length - 1 ? "flex items-center cursor-pointer" : "flex items-center pb-4 border-b border-[#F0F0F0] cursor-pointer"}
+                className={index === activityHistory.length - 1 ? "flex items-center cursor-pointer" : "flex items-center pb-4 border-b border-[#F0F0F080] cursor-pointer"}
                 onClick={() => setActiveActivityId(item.id)}
               >
                 <div className="flex items-center gap-4 flex-1">
@@ -329,22 +329,22 @@ export const Activity: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-4 flex-1">
-                  <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC] bg-[#1F2A66] text-white text-[10px] font-[600] flex items-center justify-center">
+                  <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC80] bg-[#1F2A66] text-white text-[10px] font-[600] flex items-center justify-center">
                     {item.deviceType === "Desktop" ? "PC" : "M"}
                   </div>
-                  <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
+                  <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC80] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
                     {item.os === "Windows" ? "W" : "A"}
                   </div>
-                  <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
+                  <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC80] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
                     {item.browser === "Chrome" ? "C" : "A"}
                   </div>
                   <div className="flex items-center gap-2 text-[13px] text-[#333333]">
                     <span>{item.location}</span>
                     <span className="relative group">
-                      <span className="h-[16px] w-[16px] rounded-full border border-[#717171] text-[11px] text-[#717171] flex items-center justify-center">
+                      <span className="h-[16px] w-[16px] rounded-full border border-[#71717180] text-[11px] text-[#717171] flex items-center justify-center">
                         i
                       </span>
-                      <span className="absolute -top-2 left-6 z-10 w-[220px] rounded-md border border-[#E5E5E5] bg-white p-2 text-[11px] text-[#555555] shadow-[0px_6px_16px_0px_#0000001F] opacity-0 pointer-events-none group-hover:opacity-100">
+                      <span className="absolute -top-2 left-6 z-10 w-[220px] rounded-md border border-[#E5E5E580] bg-white p-2 text-[11px] text-[#555555] shadow-[0px_6px_16px_0px_#0000001F] opacity-0 pointer-events-none group-hover:opacity-100">
                         The location shown is approximated based on the accessed IP address. Click to view the exact IP address.
                       </span>
                     </span>
@@ -364,8 +364,8 @@ export const Activity: React.FC = () => {
       </ActivityCard>
       {isActivityHistoryOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000066] p-4">
-          <div className="w-full max-w-[1200px] bg-white rounded-[8px] border border-[#E5E5E5] shadow-[0px_10px_30px_0px_#00000024]">
-            <div className="flex items-start justify-between px-6 py-5 border-b border-[#F0F0F0]">
+          <div className="w-full max-w-[1200px] bg-white rounded-[8px] border border-[#E5E5E580] shadow-[0px_10px_30px_0px_#00000024]">
+            <div className="flex items-start justify-between px-6 py-5 border-b border-[#F0F0F080]">
               <div>
                 <h3 className="text-[18px] font-[600] text-[#111111]">Activity History</h3>
                 <p className="text-[13px] text-[#717171]">
@@ -383,7 +383,7 @@ export const Activity: React.FC = () => {
             </div>
             <div className="px-6 py-5 flex flex-col gap-6 max-h-[70vh] overflow-y-auto">
               {activityHistory.map((item) => (
-                <div key={item.id} className="flex items-center pb-4 border-b border-[#F0F0F0] last:border-b-0">
+                <div key={item.id} className="flex items-center pb-4 border-b border-[#F0F0F080] last:border-b-0">
                   <div className="flex items-center gap-4 flex-1">
                     <div className="h-[44px] w-[44px] rounded-full bg-[#F3F4F6] flex items-center justify-center text-[12px] font-[600] text-[#666666]">
                       C
@@ -394,22 +394,22 @@ export const Activity: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC] bg-[#1F2A66] text-white text-[10px] font-[600] flex items-center justify-center">
+                    <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC80] bg-[#1F2A66] text-white text-[10px] font-[600] flex items-center justify-center">
                       {item.deviceType === "Desktop" ? "PC" : "M"}
                     </div>
-                    <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
+                    <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC80] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
                       {item.os === "Windows" ? "W" : "A"}
                     </div>
-                    <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
+                    <div className="h-[26px] w-[26px] rounded-md border border-[#CCCCCC80] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
                       {item.browser === "Chrome" ? "C" : "A"}
                     </div>
                     <div className="flex items-center gap-2 text-[13px] text-[#333333]">
                       <span>{item.location}</span>
                       <span className="relative group">
-                        <span className="h-[16px] w-[16px] rounded-full border border-[#717171] text-[11px] text-[#717171] flex items-center justify-center">
+                        <span className="h-[16px] w-[16px] rounded-full border border-[#71717180] text-[11px] text-[#717171] flex items-center justify-center">
                           i
                         </span>
-                        <span className="absolute -top-2 left-6 z-10 w-[220px] rounded-md border border-[#E5E5E5] bg-white p-2 text-[11px] text-[#555555] shadow-[0px_6px_16px_0px_#0000001F] opacity-0 pointer-events-none group-hover:opacity-100">
+                        <span className="absolute -top-2 left-6 z-10 w-[220px] rounded-md border border-[#E5E5E580] bg-white p-2 text-[11px] text-[#555555] shadow-[0px_6px_16px_0px_#0000001F] opacity-0 pointer-events-none group-hover:opacity-100">
                           The location shown is approximated based on the accessed IP address. Click to view the exact IP address.
                         </span>
                       </span>
@@ -423,7 +423,7 @@ export const Activity: React.FC = () => {
       )}
       {activeActivity && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000066] p-4">
-          <div className="w-full max-w-[760px] bg-white rounded-[8px] border border-[#E5E5E5] shadow-[0px_10px_30px_0px_#00000024]">
+          <div className="w-full max-w-[760px] bg-white rounded-[8px] border border-[#E5E5E580] shadow-[0px_10px_30px_0px_#00000024]">
             <div className="flex items-start justify-between px-6 py-4">
               <div className="flex items-center gap-4">
                 <div className="h-[48px] w-[48px] rounded-full bg-[#F3F4F6] flex items-center justify-center text-[12px] font-[600] text-[#666666]">
@@ -451,7 +451,7 @@ export const Activity: React.FC = () => {
               <div className="flex flex-col gap-1">
                 <span className="text-[13px] text-[#777777]">Operating System</span>
                 <div className="flex items-center gap-2 text-[14px] text-[#111111]">
-                  <span className="h-[22px] w-[22px] rounded-sm border border-[#CCCCCC] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
+                  <span className="h-[22px] w-[22px] rounded-sm border border-[#CCCCCC80] bg-[#0078D4] text-white text-[10px] font-[600] flex items-center justify-center">
                     W
                   </span>
                   <span>{activeActivity.os}</span>
@@ -460,7 +460,7 @@ export const Activity: React.FC = () => {
               <div className="flex flex-col gap-1">
                 <span className="text-[13px] text-[#777777]">Device</span>
                 <div className="flex items-center gap-2 text-[14px] text-[#111111]">
-                  <span className="h-[22px] w-[22px] rounded-sm border border-[#CCCCCC] bg-[#1F2A66] text-white text-[10px] font-[600] flex items-center justify-center">
+                  <span className="h-[22px] w-[22px] rounded-sm border border-[#CCCCCC80] bg-[#1F2A66] text-white text-[10px] font-[600] flex items-center justify-center">
                     PC
                   </span>
                   <span>{activeActivity.deviceName}</span>
@@ -469,7 +469,7 @@ export const Activity: React.FC = () => {
               <div className="flex flex-col gap-1">
                 <span className="text-[13px] text-[#777777]">App</span>
                 <div className="flex items-center gap-2 text-[14px] text-[#111111]">
-                  <span className="h-[22px] w-[22px] rounded-md border border-[#CCCCCC] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
+                  <span className="h-[22px] w-[22px] rounded-md border border-[#CCCCCC80] bg-[#F4F4F4] text-[#333333] text-[10px] font-[600] flex items-center justify-center">
                     A
                   </span>
                   <span>{activeActivity.app} {activeActivity.appVersion}</span>
@@ -498,7 +498,7 @@ export const Activity: React.FC = () => {
           </div>
           <div className="flex flex-col items-center justify-center py-6 text-center">
             <div className="h-[88px] w-[88px] rounded-full bg-[#F3F4F6] flex items-center justify-center mb-4">
-              <div className="h-[54px] w-[54px] rounded-lg bg-white border border-[#E5E5E5] shadow-[0px_2px_6px_0px_#00000014] flex flex-col items-start justify-center px-2 gap-2">
+              <div className="h-[54px] w-[54px] rounded-lg bg-white border border-[#E5E5E580] shadow-[0px_2px_6px_0px_#00000014] flex flex-col items-start justify-center px-2 gap-2">
                 <span className="h-[8px] w-[8px] rounded-full bg-[#FFB3B3]" />
                 <span className="h-[8px] w-[8px] rounded-full bg-[#B7E4C7]" />
                 <span className="h-[8px] w-[8px] rounded-full bg-[#FFE08A]" />
@@ -515,3 +515,4 @@ export const Activity: React.FC = () => {
 };
 
 export default Activity;
+

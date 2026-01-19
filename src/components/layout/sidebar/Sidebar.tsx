@@ -92,7 +92,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
             isExpanded ? "bg-[#666666]" : ""
           )}>
             <div className={cn(`w-[24px] h-[24px] rounded-full  flex items-center justify-center text-white text-[10px] font-bold shrink-0 ${isExpanded ? "bg-[#CCCCCC]" : "bg-[#666666]"}`)}>
-              PK
+              JD
             </div>
             <div
               className={cn(
@@ -105,13 +105,13 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
                   John Doe
                 </span>
                 <span className="text-[10px] font-medium text-[#FFFFFF] whitespace-nowrap">
-                  Pathfinder ats CRM
+                  Acme Corporation
                 </span>
               </div>
               <div>
-                <svg width="11" height="15" viewBox="0 0 11 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9.83333 9.50781L5.16667 14.1745L0.5 9.50781" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M0.502605 5.16808L5.16921 0.501359L9.83594 5.16797" stroke="white" stroke-linecap="round" stroke-linejoin="round" />
+                <svg width="11" height="18" viewBox="0 0 11 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.83333 12.5L5.16667 17.1667L0.5 12.5" stroke="white" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M0.5 5.5L5.16667 0.833333L9.83333 5.5" stroke="white" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
             </div>
@@ -142,7 +142,7 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
       style={{ willChange: "width" }}
     >
       <div className={cn(
-        "h-[56px] flex items-center px-[12px] border-[#CCCCCC] bg-[#EAEAEA]"
+        "h-[56px] flex items-center px-[12px] border-[#CCCCCC80] bg-[#EAEAEA]"
       )}>
         <div className="flex items-center gap-[10px]">
           <img src={BrandLogo} alt="Pathfinder logo" className="h-[30px] w-[30px] shrink-0" />
@@ -170,3 +170,4 @@ export const Sidebar: FC<SidebarProps> = ({ isExpanded = false }) => {
 };
 
 export default Sidebar
+

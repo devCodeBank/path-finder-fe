@@ -13,7 +13,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
             <Input
                 placeholder=" "
                 className={cn(
-                    'h-[56px] peer border-[#CCCCCC] bg-white pb-1 text-[#333333]  hover:text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/70 hover:placeholder:text-[#333333] focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100',
+                    'h-[56px] peer border-[#CCCCCC80] bg-white pb-1 text-[#333333]  hover:text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/70 hover:placeholder:text-[#333333] focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100',
                     className
                 )}
                 ref={ref}
@@ -41,12 +41,12 @@ const FloatingLabel = React.forwardRef<
 });
 FloatingLabel.displayName = 'FloatingLabel';
 
-type FloatingLabelInputProps = InputProps & { label?: string };
+type FloatingLabelInputProps = InputProps & { label?: string; labelClassName?: string };
 
 const FloatingLabelInput = React.forwardRef<
     HTMLInputElement,
     FloatingLabelInputProps
->(({ id, label, className, ...props }, ref) => {
+>(({ id, label, className, labelClassName, ...props }, ref) => {
     return (
         <div className={cn("relative", className)}>
             <FloatingInput ref={ref} id={id} {...props} />
@@ -55,7 +55,8 @@ const FloatingLabelInput = React.forwardRef<
                 className={cn(
                     "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100",
                     "peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
-                    "top-2 -translate-y-4 scale-75"
+                    "top-2 -translate-y-4 scale-75",
+                    labelClassName
                 )}
             >
                 {label}
@@ -67,6 +68,7 @@ FloatingLabelInput.displayName = 'FloatingLabelInput';
 
 export interface SelectProps {
     label?: string;
+    labelClassName?: string;
     options: { value: string; label: string }[];
     value?: string;
     onValueChange?: (value: string) => void;
@@ -74,42 +76,100 @@ export interface SelectProps {
     disabled?: boolean;
     id?: string;
     className?: string;
+    maxVisibleOptions?: number;
 }
 
 const FloatingLabelSelect = ({
     className,
     label,
+    labelClassName,
     options,
     id,
     value,
     onValueChange,
     defaultValue,
-    disabled
+    disabled,
+    maxVisibleOptions
 }: SelectProps) => {
     const hasValue = value || defaultValue;
+    const [isOpen, setIsOpen] = React.useState(false);
+    const selectedValue = value ?? defaultValue ?? "";
+    const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label ?? "";
+    const visibleCount = maxVisibleOptions ? Math.min(maxVisibleOptions, options.length) : 0;
 
     return (
-        <div className={cn("relative", className)}>
+        <div className={cn("relative", isOpen ? "z-20" : "", className)}>
             <div className="relative">
-                <select
-                    id={id}
-                    value={value}
-                    onChange={(event) => onValueChange?.(event.target.value)}
-                    defaultValue={defaultValue}
-                    disabled={disabled}
-                    className={cn(
-                        "h-[56px] w-full peer border border-[#CCCCCC] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
-                        className
-                    )}
-                >
-                    <option value="" disabled hidden />
-                    {options.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                            {opt.label}
-                        </option>
-                    ))}
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171]" />
+                {maxVisibleOptions ? (
+                    <>
+                        <button
+                            type="button"
+                            id={id}
+                            disabled={disabled}
+                            onClick={() => setIsOpen((prev) => !prev)}
+                            onBlur={() => setIsOpen(false)}
+                            className={cn(
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100",
+                                className
+                            )}
+                        >
+                            <span className="block truncate">{selectedLabel}</span>
+                        </button>
+                        <ChevronDown className={cn(
+                            "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171] transition-transform",
+                            isOpen ? "rotate-180" : ""
+                        )} />
+                        {isOpen && (
+                            <div
+                                className={cn(
+                                    "absolute z-30 mt-1 w-full rounded-md border border-[#CCCCCC80] bg-white shadow-[0px_6px_16px_0px_#0000001F]",
+                                    options.length > visibleCount ? "overflow-y-auto" : "overflow-hidden"
+                                )}
+                                style={visibleCount ? { maxHeight: `${visibleCount * 32}px` } : undefined}
+                            >
+                                {options.map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        type="button"
+                                        onMouseDown={(event) => {
+                                            event.preventDefault();
+                                            onValueChange?.(opt.value);
+                                            setIsOpen(false);
+                                        }}
+                                        className={cn(
+                                            "w-full px-3 py-2 text-left text-[13px] text-[#333333] hover:bg-[#F3F4F6]",
+                                            opt.value === selectedValue ? "bg-[#F3F4F6]" : ""
+                                        )}
+                                    >
+                                        {opt.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        <select
+                            id={id}
+                            value={value}
+                            onChange={(event) => onValueChange?.(event.target.value)}
+                            defaultValue={defaultValue}
+                            disabled={disabled}
+                            className={cn(
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
+                                className
+                            )}
+                        >
+                            <option value="" disabled hidden />
+                            {options.map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </option>
+                            ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171]" />
+                    </>
+                )}
             </div>
             <FloatingLabel
                 htmlFor={id}
@@ -117,7 +177,8 @@ const FloatingLabelSelect = ({
                     "peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
                     hasValue
                         ? 'top-2 -translate-y-4 scale-75'
-                        : 'top-1/2 -translate-y-1/2 scale-100'
+                        : 'top-1/2 -translate-y-1/2 scale-100',
+                    labelClassName
                 )}
             >
                 {label}
@@ -128,3 +189,4 @@ const FloatingLabelSelect = ({
 FloatingLabelSelect.displayName = 'FloatingLabelSelect';
 
 export { FloatingInput, FloatingLabel, FloatingLabelInput, FloatingLabelSelect };
+

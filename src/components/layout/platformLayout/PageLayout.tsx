@@ -123,10 +123,10 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
     return (
         <div className="h-full flex flex-col pr-2 pb-[14px] overflow-hidden">
             {/* Main Card with Shadow and Border */}
-            <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC] rounded-[14px] overflow-hidden ">
+            <div className="flex-1 flex flex-col bg-white border border-[#CCCCCC80] rounded-[14px] overflow-hidden ">
 
                 {/* Card Header (Breadcrumb) */}
-                <div className="h-[50px] border-b border-[#CCCCCC] flex items-center justify-between bg-white flex-shrink-0 ">
+                <div className="h-[50px] border-b border-[#CCCCCC80] flex items-center justify-between bg-white flex-shrink-0 ">
                     <div className="flex items-center gap-2 min-w-0 flex-1">
                         <CircularIconButton1
                             onClick={() => onToggleExpand(!sidebarExpanded)}
@@ -180,7 +180,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
 
                     {/* Main Content Area */}
                     <div className={cn(
-                        "my-[18px] mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC] border ",
+                        "my-[18px] mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC80] border ",
                         sidebar ? "rounded-tr-[14px] rounded-br-[14px]" : "rounded-[14px] ml-4"
                     )}>
                         <div className="flex-1 overflow-y-auto px-[18px] my-[18px] custom-scrollbar">
@@ -202,3 +202,4 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
 };
 
 export default PageLayout;
+

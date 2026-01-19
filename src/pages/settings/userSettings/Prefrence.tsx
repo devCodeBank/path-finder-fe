@@ -38,7 +38,7 @@ const PreferenceCard = ({
   children: React.ReactNode;
 }) => {
   return (
-    <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-6 flex items-center justify-between">
+    <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-6 flex items-center justify-between">
       <div className="flex flex-col gap-1 max-w-[70%]">
         <h4 className="text-[14px] font-[500] text-[#333333]">{title}</h4>
         <p className="text-[13px] font-[400] text-[#333333] leading-relaxed">{description}</p>
@@ -60,7 +60,7 @@ export const Prefrence: React.FC = () => {
         title="Date Format"
         description="Select the date and time format to be used for your pathfinder account activity"
       >
-        <div className="inline-flex items-center gap-4 h-[32px] rounded-md border border-[#CCCCCC] px-3 text-[12px] text-[#333333] hover:border-[#666666] hover:bg-[#EAEAEA]/25 focus-within:border-[#666666]">
+        <div className="inline-flex items-center gap-4 h-[32px] rounded-md border border-[#CCCCCC80] px-3 text-[12px] text-[#333333] hover:border-[#666666] hover:bg-[#EAEAEA]/25 focus-within:border-[#666666]">
           <select
             value={dateFormat}
             onChange={(event) => setDateFormat(event.target.value)}
@@ -102,3 +102,4 @@ export const Prefrence: React.FC = () => {
 };
 
 export default Prefrence;
+

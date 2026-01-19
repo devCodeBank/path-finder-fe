@@ -70,7 +70,7 @@ export const Profile: React.FC = () => {
     firstName: "John",
     lastName: "Doe",
     email: "john.d@example.com",
-    jobTitle: "Account Manager",
+    jobTitle: "Director, Sales",
     companyName: "Acme Limited",
     role: "super_admin",
     contactNumber: "12-345663321",
@@ -123,7 +123,7 @@ export const Profile: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#333333] text-[14px] leading-[18px] font-[500]">{label}</label>
+          <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">{label}</label>
           <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
@@ -135,10 +135,12 @@ export const Profile: React.FC = () => {
         <FloatingLabelSelect
           id={fieldKey}
           label={label}
+          labelClassName="text-[#333333]/70"
           value={value}
           onValueChange={handleSelectChange(fieldKey)}
           options={options}
           disabled={fieldKey === 'role' || fieldKey === 'currency'}
+          maxVisibleOptions={fieldKey === "timeZone" ? 10 : undefined}
           className={cn(
             "w-full h-[56px]",
           )}
@@ -150,6 +152,7 @@ export const Profile: React.FC = () => {
       <FloatingLabelInput
         id={fieldKey}
         label={label}
+        labelClassName="text-[#333333]/70"
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={fieldKey === 'email' || fieldKey === 'companyName'}
@@ -163,19 +166,24 @@ export const Profile: React.FC = () => {
   return (
     <div className="flex flex-col w-full max-w-full  font-sans h-[100%]">
       {/* Top Profile Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between    my-[0px]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between    my-[0px]">
         <div className="flex items-start gap-6">
           <div className="flex flex-col gap-2">
             {/* Avatar Box */}
             <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center border-none">
               <div className="text-[#333333] bg-white flex items-center justify-center rounded-full w-[47px] h-[47px] text-center text-xl font-bold">
-                PK
+                JD
               </div>
             </div>
             {/* Upload Photo below avatar */}
-            <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group">
+            <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group relative">
               <span className="text-[13px] text-[#333333] font-[400] group-hover:text-purple-600">Upload Photo</span>
-              <InfoOutlined sx={{ fontSize: 13, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
+              <span className="relative">
+                <InfoOutlined sx={{ fontSize: 13, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
+                <span className="absolute left-[calc(100%+8px)] top-1/2 z-10 w-[260px] -translate-y-1/2 rounded-md bg-[#5A5A5A] px-3 py-2 text-[12px] text-white shadow-[0px_6px_16px_0px_#00000029] opacity-0 pointer-events-none group-hover:opacity-100">
+                  File type supported: PNG, JPG, JPEG (Up to 500KB), recommended size with 100% and height 50px
+                </span>
+              </span>
             </div>
           </div>
 
@@ -184,8 +192,8 @@ export const Profile: React.FC = () => {
             <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
               {formData.firstName} {formData.lastName}
             </h2>
-            <p className="text-[13px] font-[400] text-[#333333]">
-              {formData.jobTitle || "Account Manager"}
+            <p className="text-[13px] font-[400] text-[#333333]/70">
+              {formData.jobTitle || "Director, Sales"}
             </p>
           </div>
         </div>
@@ -225,7 +233,7 @@ export const Profile: React.FC = () => {
       </div>
 
       {/* Details Grid Card */}
-      <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-4   my-[18px]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4   my-[18px]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {/* Row 1 */}
           {renderField("First Name", formData.firstName, "firstName")}
@@ -257,3 +265,4 @@ export const Profile: React.FC = () => {
 };
 
 export default Profile;
+

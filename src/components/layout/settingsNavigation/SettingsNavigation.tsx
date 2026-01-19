@@ -149,7 +149,7 @@ export const SettingsNavigation: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC] rounded-tl-[14px] rounded-bl-[14px] px-1 py-3 flex flex-col overflow-y-auto ">
+    <div className="w-full h-full bg-white border-t border-l border-b border-[#CCCCCC80] rounded-tl-[14px] rounded-bl-[14px] px-1 py-3 flex flex-col overflow-y-auto ">
       <div className="flex-1 flex flex-col gap-3">
         {navigationSections.map((section) => (
           <div key={section.id} className="px-1 flex flex-col gap-1.5">
@@ -184,3 +184,4 @@ export const SettingsNavigation: React.FC = () => {
 };
 
 export default SettingsNavigation;
+

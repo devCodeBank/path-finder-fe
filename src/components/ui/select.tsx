@@ -84,7 +84,7 @@ const SelectContent = React.forwardRef<
             <SelectScrollUpButton />
             <SelectPrimitive.Viewport
                 className={cn(
-                    "p-1 rounded-md border border-[#CCCCCC] bg-white shadow-none",
+                    "p-1 rounded-md border border-[#CCCCCC80] bg-white shadow-none",
                     position === "popper" &&
                     "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
                 )}
@@ -155,3 +155,4 @@ export {
     SelectScrollUpButton,
     SelectScrollDownButton,
 }
+

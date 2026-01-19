@@ -15,14 +15,14 @@ const IntegrationCard = ({
   onConnect: () => void;
 }) => {
   return (
-    <div className="bg-white border border-[#CCCCCC] rounded-[4px] p-6 flex items-center justify-between">
+    <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-6 flex items-center justify-between">
       <div className="flex gap-4">
         <div className="mt-1">
           <Icon className="h-12 w-12" />
         </div>
         <div className="flex flex-col gap-1">
           <h4 className="text-[15px] font-[500] text-[#333333]">{title}</h4>
-          <p className="text-[13px] font-[400] text-[#333333] leading-relaxed max-w-[400px]">{description}</p>
+          <p className="text-[13px] font-[400] text-[#333333]/70 leading-relaxed max-w-[400px]">{description}</p>
         </div>
       </div>
       <Button
@@ -30,7 +30,7 @@ const IntegrationCard = ({
         onClick={onConnect}
         sx={{
           height: "36px",
-          borderColor: "#CCCCCC",
+          borderColor: "#CCCCCC80",
           color: "#333333",
           textTransform: "none",
           fontSize: "12px",
@@ -45,11 +45,11 @@ const IntegrationCard = ({
             opacity: 1
           },
           "&.MuiButton-outlined.Mui-disabled": {
-            borderColor: "#CCCCCC !important",
-            border: "1px solid #CCCCCC"
+            borderColor: "#CCCCCC80 !important",
+            border: "1px solid #CCCCCC80"
           },
           "&:hover": {
-            borderColor: "#CCCCCC",
+            borderColor: "#CCCCCC80",
             backgroundColor: "#EAEAEA",
             boxShadow: "none"
           }
@@ -85,3 +85,4 @@ export const Calendar: React.FC = () => {
 };
 
 export default Calendar;
+
