@@ -93,9 +93,41 @@ const FloatingLabelSelect = ({
 }: SelectProps) => {
     const hasValue = value || defaultValue;
     const [isOpen, setIsOpen] = React.useState(false);
+    const buttonRef = React.useRef<HTMLButtonElement | null>(null);
+    const [menuStyle, setMenuStyle] = React.useState<React.CSSProperties | null>(null);
     const selectedValue = value ?? defaultValue ?? "";
     const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label ?? "";
     const visibleCount = maxVisibleOptions ? Math.min(maxVisibleOptions, options.length) : 0;
+
+    React.useEffect(() => {
+        if (!isOpen || !buttonRef.current) {
+            setMenuStyle(null);
+            return;
+        }
+
+        const updateMenuPosition = () => {
+            const rect = buttonRef.current?.getBoundingClientRect();
+            if (!rect) {
+                return;
+            }
+            setMenuStyle({
+                position: "fixed",
+                top: rect.bottom + 4,
+                left: rect.left,
+                width: rect.width,
+                zIndex: 2000,
+            });
+        };
+
+        updateMenuPosition();
+        window.addEventListener("scroll", updateMenuPosition, true);
+        window.addEventListener("resize", updateMenuPosition);
+
+        return () => {
+            window.removeEventListener("scroll", updateMenuPosition, true);
+            window.removeEventListener("resize", updateMenuPosition);
+        };
+    }, [isOpen]);
 
     return (
         <div className={cn("relative", isOpen ? "z-20" : "", className)}>
@@ -105,6 +137,7 @@ const FloatingLabelSelect = ({
                         <button
                             type="button"
                             id={id}
+                            ref={buttonRef}
                             disabled={disabled}
                             onClick={() => setIsOpen((prev) => !prev)}
                             onBlur={() => setIsOpen(false)}
@@ -119,13 +152,14 @@ const FloatingLabelSelect = ({
                             "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171] transition-transform",
                             isOpen ? "rotate-180" : ""
                         )} />
-                        {isOpen && (
+                        {isOpen && menuStyle && (
                             <div
-                                className={cn(
-                                    "absolute z-30 mt-1 w-full rounded-md border border-[#CCCCCC80] bg-white shadow-[0px_6px_16px_0px_#0000001F]",
-                                    options.length > visibleCount ? "overflow-y-auto" : "overflow-hidden"
-                                )}
-                                style={visibleCount ? { maxHeight: `${visibleCount * 32}px` } : undefined}
+                                className="rounded-md border border-[#CCCCCC80] bg-white shadow-[0px_6px_16px_0px_#0000001F] overflow-y-auto"
+                                style={{
+                                    ...menuStyle,
+                                    maxHeight: visibleCount ? `${visibleCount * 32}px` : undefined,
+                                    scrollbarGutter: "stable",
+                                }}
                             >
                                 {options.map((opt) => (
                                     <button

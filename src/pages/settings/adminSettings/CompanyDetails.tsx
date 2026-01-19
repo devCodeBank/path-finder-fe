@@ -1,41 +1,15 @@
-import { Button } from "@components/buttons/button/Button";
-import { HeaderWithUpload } from "@components/headerWithUpload";
-import { FormInput, FormSelect } from "@components/input/formInput";
 import { SettingsHeader } from "@components/settingsHeader";
-import type { SelectChangeEvent } from "@mui/material";
-import { Box } from "@mui/material";
+import { InfoOutlined } from "@mui/icons-material";
+import { Box, Button } from "@mui/material";
 import React, { useState } from "react";
 import styled from "styled-components";
+import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { cn } from "@/lib/utils";
 
 const Container = styled(Box)`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-`;
-
-const FormContainer = styled(Box)`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing(2)};
-  margin-bottom: ${({ theme }) => theme.spacing(2)};
-`;
-
-const FormRow = styled(Box)`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${({ theme }) => theme.spacing(8)};
-  width: 100%;
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-`;
-
-const ButtonContainer = styled(Box)`
-  display: flex;
-  justify-content: flex-end;
-  margin-top: ${({ theme }) => theme.spacing(3)};
 `;
 
 interface CompanyDetailsFormData {
@@ -51,12 +25,30 @@ interface CompanyDetailsFormData {
   createdOn: string;
 }
 
-const timeZoneOptions = [
-  { value: "auckland", label: "Auckland Time +12:00" },
-  { value: "sydney", label: "Sydney Time +11:00" },
-  { value: "tokyo", label: "Tokyo Time +9:00" },
-  { value: "utc", label: "UTC +0:00" },
-];
+const getTimeZoneOffsetLabel = (timeZone: string) => {
+  const now = new Date();
+  const local = new Date(now.toLocaleString("en-US", { timeZone }));
+  const utc = new Date(now.toLocaleString("en-US", { timeZone: "UTC" }));
+  const offsetMinutes = Math.round((local.getTime() - utc.getTime()) / 60000);
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const absMinutes = Math.abs(offsetMinutes);
+  const hours = String(Math.floor(absMinutes / 60)).padStart(2, "0");
+  const minutes = String(absMinutes % 60).padStart(2, "0");
+  return `(GMT ${sign}${hours}:${minutes})`;
+};
+
+const timeZoneOptions = (() => {
+  const zones =
+    typeof Intl !== "undefined" && "supportedValuesOf" in Intl
+      ? Intl.supportedValuesOf("timeZone")
+      : ["UTC"];
+  return zones
+    .map((zone) => ({
+      value: zone,
+      label: `${getTimeZoneOffsetLabel(zone)} ${zone}`,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+})();
 
 const currencyOptions = [
   { value: "nzd", label: "Dollar ($NZD - New Zealand)" },
@@ -67,26 +59,27 @@ const currencyOptions = [
 
 export const CompanyDetails: React.FC = () => {
   const [formData, setFormData] = useState<CompanyDetailsFormData>({
-    companyName: "Pathfinder AtsCrm",
+    companyName: "Acme Corporation",
     country: "New Zealand",
     website: "Not available",
     accountOwner: "John Doe",
     accountId: "PFAC1057",
     accountType: "Agency",
-    email: "pankaj.kumar@pathfinderatscrm.com",
-    timeZone: "auckland",
+    email: "john.d@acmecorp.com",
+    timeZone: "Pacific/Auckland",
     currency: "nzd",
     createdOn: "Sat, June 21, 2025, 5:03 pm",
   });
 
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [isEditing, setIsEditing] = useState(false);
 
   const handleInputChange = (field: keyof CompanyDetailsFormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [field]: event.target.value }));
   };
 
-  const handleSelectChange = (field: keyof CompanyDetailsFormData) => (event: SelectChangeEvent<string>) => {
-    setFormData((prev) => ({ ...prev, [field]: event.target.value }));
+  const handleSelectChange = (field: keyof CompanyDetailsFormData) => (value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleBlur = (field: keyof CompanyDetailsFormData) => () => {
@@ -96,11 +89,7 @@ export const CompanyDetails: React.FC = () => {
   const handleSaveChanges = () => {
     // TODO: Hook up to API when available
     console.warn("Saving company details:", formData);
-  };
-
-  const handleLogoUpload = () => {
-    // TODO: Implement logo upload
-    console.warn("Upload logo clicked");
+    setIsEditing(false);
   };
 
   const getCurrencyLabel = (currencyValue: string) => {
@@ -108,112 +97,151 @@ export const CompanyDetails: React.FC = () => {
     return c ? c.label : currencyValue;
   };
 
+  const getTimeZoneLabel = (timeZoneValue: string) => {
+    const tz = timeZoneOptions.find((o) => o.value === timeZoneValue);
+    return tz ? tz.label : timeZoneValue;
+  };
+
+  const isFieldReadOnly = (field: keyof CompanyDetailsFormData) => {
+    return [
+      "accountType",
+      "country",
+      "email",
+      "currency",
+      "accountId",
+      "createdOn",
+    ].includes(field);
+  };
+
+  const renderField = (
+    label: string,
+    value: string,
+    fieldKey: keyof CompanyDetailsFormData,
+    options: { value: string; label: string }[] = []
+  ) => {
+    if (!isEditing) {
+      let displayValue = value;
+      if (fieldKey === "currency") displayValue = getCurrencyLabel(value);
+      if (fieldKey === "timeZone") displayValue = getTimeZoneLabel(value);
+
+      return (
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">{label}</label>
+          <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
+        </div>
+      );
+    }
+
+    if (options.length > 0) {
+      return (
+        <FloatingLabelSelect
+          id={fieldKey}
+          label={label}
+          labelClassName="text-[#333333]/70"
+          value={value}
+          onValueChange={handleSelectChange(fieldKey)}
+          options={options}
+          disabled={isFieldReadOnly(fieldKey)}
+          maxVisibleOptions={fieldKey === "timeZone" ? 10 : undefined}
+          className={cn("w-full h-[56px]")}
+        />
+      );
+    }
+
+    return (
+      <FloatingLabelInput
+        id={fieldKey}
+        label={label}
+        labelClassName="text-[#333333]/70"
+        value={value}
+        onChange={handleInputChange(fieldKey)}
+        disabled={isFieldReadOnly(fieldKey)}
+        className={cn("w-full h-[56px]")}
+      />
+    );
+  };
+
   return (
-    <Container>
-      <SettingsHeader title="Company Details" />
+    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
 
-      <HeaderWithUpload name={formData.companyName} subtitle="Agency" onUpload={handleLogoUpload} uploadLabel="Upload Logo" />
 
-      <FormContainer>
-        <FormRow>
-          <FormInput
-            label="Company Name"
-            value={formData.companyName}
-            onChange={handleInputChange("companyName")}
-            onBlur={handleBlur("companyName")}
-            touched={touched.companyName}
-          />
-          <FormInput
-            label="Account Type"
-            value={formData.accountType}
-            onChange={handleInputChange("accountType")}
-            onBlur={handleBlur("accountType")}
-            touched={touched.accountType}
-            disabled
-          />
-        </FormRow>
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between">
+        <div className="flex items-start gap-4">
+          <div className="flex flex-col gap-2">
+            {/* Avatar Box */}
+            <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center border-none">
+              <div className="text-[#333333] bg-white flex items-center justify-center rounded-full w-[47px] h-[47px] text-center text-xl font-bold">
+                JD
+              </div>
+            </div>
+            {/* Upload Photo below avatar */}
+            <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group relative">
+              <span className="text-[13px] text-[#333333] font-[400] group-hover:text-purple-600">Upload Photo</span>
+              <span className="relative">
+                <InfoOutlined sx={{ fontSize: 13, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
+                <span className="absolute left-[calc(100%+8px)] top-1/2 z-10 w-[260px] -translate-y-1/2 rounded-md bg-[#5A5A5A] px-3 py-2 text-[12px] text-white shadow-[0px_6px_16px_0px_#00000029] opacity-0 pointer-events-none group-hover:opacity-100">
+                  File type supported: PNG, JPG, JPEG (Up to 500KB), recommended size with 100% and height 50px
+                </span>
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-1 justify-center mt-5">
+            <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
+              {formData.companyName}
+            </h2>
+            <p className="text-[13px] font-[400] text-[#333333]/70">
+              {formData.accountType || "Director, Sales"}
+            </p>
+          </div>
+        </div>
+        <div className="mt-4 md:mt-0">
+          <Button
+            variant="contained"
+            onClick={() => isEditing ? handleSaveChanges() : setIsEditing(true)}
+            sx={{
+              width: '110px',
+              height: '36px',
+              backgroundColor: '#6E41E2',
+              textTransform: 'none',
+              fontWeight: 500,
+              fontSize: '12px',
+              padding: '8px 12px',
+              borderRadius: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '18px',
+              boxShadow: 'none',
+              '&:hover': {
+                backgroundColor: '#9A77F0',
+                boxShadow: 'none',
+              },
+              '&:active': {
+                boxShadow: 'none',
+              },
+              color: "white",
+            }}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </Button>
+        </div>
+      </div>
 
-        <FormRow>
-          <FormInput
-            label="Country"
-            value={formData.country}
-            onChange={handleInputChange("country")}
-            onBlur={handleBlur("country")}
-            touched={touched.country}
-            disabled
-          />
-          <FormInput
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={handleInputChange("email")}
-            onBlur={handleBlur("email")}
-            touched={touched.email}
-            disabled
-          />
-        </FormRow>
-
-        <FormRow>
-          <FormInput
-            label="Company Website"
-            placeholder="Not available"
-            value={formData.website}
-            onChange={handleInputChange("website")}
-            onBlur={handleBlur("website")}
-            touched={touched.website}
-          />
-          <FormSelect
-            label="Time Zone"
-            value={formData.timeZone}
-            options={timeZoneOptions}
-            onChange={handleSelectChange("timeZone")}
-            onBlur={handleBlur("timeZone")}
-            touched={touched.timeZone}
-          />
-        </FormRow>
-
-        <FormRow>
-          <FormInput
-            label="Account Owner/Admin"
-            value={formData.accountOwner}
-            onChange={handleInputChange("accountOwner")}
-            onBlur={handleBlur("accountOwner")}
-            touched={touched.accountOwner}
-          />
-          <FormInput
-            label="Currency"
-            value={getCurrencyLabel(formData.currency)}
-            onChange={handleInputChange("currency")}
-            onBlur={handleBlur("currency")}
-            touched={touched.currency}
-            disabled
-          />
-        </FormRow>
-
-        <FormRow>
-          <FormInput
-            label="Account ID"
-            value={formData.accountId}
-            onChange={handleInputChange("accountId")}
-            onBlur={handleBlur("accountId")}
-            touched={touched.accountId}
-            disabled
-          />
-          <FormInput
-            label="Create On"
-            value={formData.createdOn}
-            onChange={handleInputChange("createdOn")}
-            onBlur={handleBlur("createdOn")}
-            touched={touched.createdOn}
-            disabled
-          />
-        </FormRow>
-      </FormContainer>
-
-      <ButtonContainer>
-        <Button onClick={handleSaveChanges}>Save Changes</Button>
-      </ButtonContainer>
-    </Container>
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 mt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
+          {renderField("Company Name", formData.companyName, "companyName")}
+          {renderField("Account Type", formData.accountType, "accountType")}
+          {renderField("Country", formData.country, "country")}
+          {renderField("Email", formData.email, "email")}
+          {renderField("Company Website", formData.website, "website")}
+          {renderField("Time Zone", formData.timeZone, "timeZone", timeZoneOptions)}
+          {renderField("Account Owner/Admin", formData.accountOwner, "accountOwner")}
+          {renderField("Currency", formData.currency, "currency")}
+          {renderField("Account ID", formData.accountId, "accountId")}
+          {renderField("Create On", formData.createdOn, "createdOn")}
+        </div>
+      </div>
+    </div>
   );
 };
 
