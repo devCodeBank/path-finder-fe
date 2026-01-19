@@ -109,7 +109,7 @@ export const Notifications: React.FC = () => {
     });
   };
 
-  const openTimePicker = (ref: React.RefObject<HTMLInputElement>) => {
+  const openTimePicker = (ref: React.RefObject<HTMLInputElement | null>) => {
     if (!ref.current) {
       return;
     }
