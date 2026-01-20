@@ -1,14 +1,15 @@
-import { Button } from "@components/buttons/button/Button";
-import { FilterButton } from "@components/buttons/filterButton/FilterButton";
 import { SettingsHeader } from "@components/settingsHeader";
-import { DataTable } from "@components/table";
-import type { DataTableColumn } from "@components/table";
-import AddIcon from "@mui/icons-material/Add";
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Box, IconButton, Menu, MenuItem, Typography } from "@mui/material";
-import React, { useState } from "react";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
+import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { cn } from "@/lib/utils";
 
 const Container = styled(Box)`
   display: flex;
@@ -18,22 +19,10 @@ const Container = styled(Box)`
 const Toolbar = styled(Box)`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
-`;
-
-const LeftActions = styled(Box)`
-  display: flex;
-  align-items: center;
-  gap: ${({ theme }) => theme.spacing(1)};
-`;
-
-const NameIcon = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
+  justify-content: flex-end;
+  gap: 32px;
+  margin-bottom: 24px;
+  margin-top: 8px;
 `;
 
 type UserStatus = "Active" | "Pending" | "Link Expired" | "Disabled" | "Locked Out";
@@ -46,55 +35,193 @@ interface UserRow {
   jobTitle?: string;
   teams?: string;
   status: UserStatus;
+  lastActivity: string;
+  lastActivityDate: string;
+  companyName: string;
+  contactNumber: string;
+  timeZone: string;
+  city: string;
+  state: string;
+  country: string;
+  currency: string;
 }
 
+interface InviteUserForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  team: string;
+  jobTitle: string;
+  contactNumber: string;
+  timeZone: string;
+  city: string;
+  state: string;
+  country: string;
+  roles: string[];
+  customRoles: string[];
+}
+
+const getTimeZoneOffsetLabel = (timeZone: string) => {
+  const now = new Date();
+  const local = new Date(now.toLocaleString("en-US", { timeZone }));
+  const utc = new Date(now.toLocaleString("en-US", { timeZone: "UTC" }));
+  const offsetMinutes = Math.round((local.getTime() - utc.getTime()) / 60000);
+  const sign = offsetMinutes >= 0 ? "+" : "-";
+  const absMinutes = Math.abs(offsetMinutes);
+  const hours = String(Math.floor(absMinutes / 60)).padStart(2, "0");
+  const minutes = String(absMinutes % 60).padStart(2, "0");
+  return `(GMT ${sign}${hours}:${minutes})`;
+};
+
+const timeZoneOptions = (() => {
+  const zones =
+    typeof Intl !== "undefined" && "supportedValuesOf" in Intl
+      ? Intl.supportedValuesOf("timeZone")
+      : ["UTC"];
+  return zones
+    .map((zone) => ({
+      value: zone,
+      label: `${getTimeZoneOffsetLabel(zone)} ${zone}`,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+})();
+
+const teamOptions = [
+  { value: "sales", label: "Sales" },
+  { value: "default", label: "Default" },
+];
+
+const cityOptions = [
+  { value: "auckland", label: "Auckland" },
+  { value: "wellington", label: "Wellington" },
+  { value: "christchurch", label: "Christchurch" },
+  { value: "hamilton", label: "Hamilton" },
+];
+
+const stateOptions = [
+  { value: "auckland", label: "Auckland" },
+  { value: "wellington", label: "Wellington" },
+  { value: "christchurch", label: "Christchurch" },
+  { value: "hamilton", label: "Hamilton" },
+];
+
+const countryOptions = [
+  { value: "nz", label: "New Zealand" },
+  { value: "au", label: "Australia" },
+  { value: "us", label: "United States" },
+];
+
+const systemRoles = ["Super Admin", "Admin", "Standard User", "Collaborator"];
+
+const customRoles = [
+  {
+    id: "regional-auditor",
+    name: "Regional Auditor",
+    description: "View only access to regional branch performance and financial logs",
+  },
+  {
+    id: "talent-pipeline-manager",
+    name: "Talent Pipeline Manager",
+    description: "Create and edit candidate records only",
+  },
+  {
+    id: "external-vendor-coordinator",
+    name: "External vendor Coordinator",
+    description: "Manage third-party job board integrations and external posting permissions",
+  },
+];
+
 const getMockUsers = (): UserRow[] => {
-  // static rows to mirror the design
   return [
     {
       id: "1",
       name: "John Doe",
-      email: "pankaj.kumar@pathfinderatscrm.com",
-      role: "Account Owner/Admin",
-      jobTitle: "Account Manager",
-      teams: "Not Available",
+      email: "john.d@acmecorp.com",
+      role: "Account Owner",
+      jobTitle: "Director, Sales",
+      teams: "Sales",
       status: "Active",
+      lastActivity: "about 6 hours ago",
+      lastActivityDate: "01/05/2025",
+      companyName: "Acme Corporation",
+      contactNumber: "12-345663321",
+      timeZone: "Pacific/Auckland",
+      city: "Auckland",
+      state: "Auckland",
+      country: "New Zealand",
+      currency: "Dollar ($NZD - New Zealand)",
     },
     {
       id: "2",
-      name: "John Doe",
-      email: "pankaj.kumar@pathfinderatscrm.com",
+      name: "David Miller",
+      email: "david.m@acmecorp.com",
       role: "Standard User",
-      jobTitle: "Not Available",
-      teams: "Not Available",
-      status: "Pending",
+      jobTitle: "Account Manager",
+      teams: "Default",
+      status: "Disabled",
+      lastActivity: "about 7 days ago",
+      lastActivityDate: "23/04/2025",
+      companyName: "Acme Corporation",
+      contactNumber: "12-345663321",
+      timeZone: "Pacific/Auckland",
+      city: "Auckland",
+      state: "Auckland",
+      country: "New Zealand",
+      currency: "Dollar ($NZD - New Zealand)",
     },
     {
       id: "3",
-      name: "John Doe",
-      email: "pankaj.kumar@pathfinderatscrm.com",
-      role: "Collaborator",
-      jobTitle: "Not Available",
-      teams: "Not Available",
-      status: "Link Expired",
+      name: "Jessica Lee",
+      email: "j.lee@acmecorp.com",
+      role: "Admin",
+      jobTitle: "Managing Consultant",
+      teams: "Default",
+      status: "Pending",
+      lastActivity: "about 2 hours ago",
+      lastActivityDate: "01/05/2025",
+      companyName: "Acme Corporation",
+      contactNumber: "12-345663321",
+      timeZone: "Pacific/Auckland",
+      city: "Auckland",
+      state: "Auckland",
+      country: "New Zealand",
+      currency: "Dollar ($NZD - New Zealand)",
     },
     {
       id: "4",
-      name: "John Doe",
-      email: "pankaj.kumar@pathfinderatscrm.com",
-      role: "Admin",
-      jobTitle: "Not Available",
-      teams: "Not Available",
-      status: "Disabled",
+      name: "Alex Rivera",
+      email: "a.rivera@acmecorp.com",
+      role: "Standard User",
+      jobTitle: "Account Manager",
+      teams: "Default",
+      status: "Link Expired",
+      lastActivity: "about 6 hours ago",
+      lastActivityDate: "01/05/2025",
+      companyName: "Acme Corporation",
+      contactNumber: "12-345663321",
+      timeZone: "Pacific/Auckland",
+      city: "Auckland",
+      state: "Auckland",
+      country: "New Zealand",
+      currency: "Dollar ($NZD - New Zealand)",
     },
     {
       id: "5",
-      name: "John Doe",
-      email: "pankaj.kumar@pathfinderatscrm.com",
-      role: "Admin",
-      jobTitle: "Not Available",
-      teams: "Not Available",
+      name: "Sophie Taylor",
+      email: "s.taylor@acmecorp.com",
+      role: "Standard User",
+      jobTitle: "Recruitment Consultant",
+      teams: "Default",
       status: "Locked Out",
+      lastActivity: "about 3 hours ago",
+      lastActivityDate: "01/05/2025",
+      companyName: "Acme Corporation",
+      contactNumber: "12-345663321",
+      timeZone: "Pacific/Auckland",
+      city: "Auckland",
+      state: "Auckland",
+      country: "New Zealand",
+      currency: "Dollar ($NZD - New Zealand)",
     },
   ];
 };
@@ -103,6 +230,28 @@ export const Users: React.FC = () => {
   const navigate = useNavigate();
   const rows: UserRow[] = getMockUsers();
   const [anchorByRowId, setAnchorByRowId] = useState<Record<string, HTMLElement | null>>({});
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [showInviteErrors, setShowInviteErrors] = useState(false);
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [detailsUser, setDetailsUser] = useState<UserRow | null>(null);
+  const [editingUser, setEditingUser] = useState<UserRow | null>(null);
+  const [inviteMode, setInviteMode] = useState<"invite" | "edit" | "resend">("invite");
+  const selectAllRef = useRef<HTMLInputElement | null>(null);
+  const [inviteForm, setInviteForm] = useState<InviteUserForm>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    team: "",
+    jobTitle: "",
+    contactNumber: "",
+    timeZone: "Pacific/Auckland",
+    city: "auckland",
+    state: "auckland",
+    country: "nz",
+    roles: [],
+    customRoles: [],
+  });
 
   const handleOpenRowMenu = (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorByRowId((prev) => ({ ...prev, [rowId]: event.currentTarget }));
@@ -113,81 +262,907 @@ export const Users: React.FC = () => {
   };
 
   const handleAddUser = () => {
-    navigate("/settings/admin/users/add");
+    setShowInviteErrors(false);
+    setEditingUser(null);
+    setInviteMode("invite");
+    setIsInviteOpen(true);
   };
 
+  const handleEditUser = (row: UserRow) => {
+    const [firstName, ...rest] = row.name.split(" ");
+    setEditingUser(row);
+    setInviteMode("edit");
+    const assignedRoles = systemRoles.includes(row.role) ? [row.role] : [];
+    setInviteForm((prev) => ({
+      ...prev,
+      firstName,
+      lastName: rest.join(" "),
+      email: row.email,
+      jobTitle: row.jobTitle ?? "",
+      timeZone: row.timeZone,
+      city: row.city.toLowerCase(),
+      state: row.state.toLowerCase(),
+      country: row.country === "New Zealand" ? "nz" : row.country === "Australia" ? "au" : "us",
+      roles: assignedRoles,
+    }));
+    setShowInviteErrors(false);
+    setIsInviteOpen(true);
+  };
+
+  const handleResendInvite = (row: UserRow) => {
+    const [firstName, ...rest] = row.name.split(" ");
+    setEditingUser(row);
+    setInviteMode("resend");
+    const assignedRoles = systemRoles.includes(row.role) ? [row.role] : [];
+    setInviteForm((prev) => ({
+      ...prev,
+      firstName,
+      lastName: rest.join(" "),
+      email: row.email,
+      team: row.teams?.toLowerCase() ?? "",
+      jobTitle: row.jobTitle ?? "",
+      timeZone: row.timeZone,
+      city: row.city.toLowerCase(),
+      state: row.state.toLowerCase(),
+      country: row.country === "New Zealand" ? "nz" : row.country === "Australia" ? "au" : "us",
+      roles: assignedRoles,
+    }));
+    setShowInviteErrors(false);
+    setIsInviteOpen(true);
+  };
   const handleFilterClick = () => {
-    // TODO: implement filter panel/modal
     console.warn("Filter clicked");
   };
 
-  const columns: DataTableColumn<UserRow>[] = [
-    {
-      id: "name",
-      header: "Name",
-      width: "22%",
-      minWidth: 200,
-      render: (row) => (
-        <Box display="flex" alignItems="center" gap={1.25}>
-          <NameIcon>🧑‍💼</NameIcon>
-          <Typography variant="md">{row.name}</Typography>
-        </Box>
-      ),
-    },
-    { id: "email", header: "Email", field: "email", width: "28%", minWidth: 260 },
-    { id: "role", header: "Role", field: "role", width: "16%", minWidth: 160 },
-    { id: "jobTitle", header: "Job Title", render: (r) => r.jobTitle ?? "Not Available", width: "16%", minWidth: 160 },
-    { id: "teams", header: "Team(s)", render: (r) => r.teams ?? "Not Available", width: "14%", minWidth: 140 },
-    {
-      id: "status",
-      header: "Status",
-      field: "status",
-      width: 100,
-      minWidth: 100,
-    },
-    {
-      id: "actions",
-      header: <span />,
-      align: "right",
-      width: 56,
-      minWidth: 56,
-      render: (row) => (
-        <>
-          <IconButton aria-label={`row actions for ${row.name}`} onClick={handleOpenRowMenu(row.id)}>
-            <MoreVertIcon />
-          </IconButton>
-          <Menu anchorEl={anchorByRowId[row.id]} open={Boolean(anchorByRowId[row.id])} onClose={handleCloseRowMenu(row.id)}>
-            <MenuItem onClick={handleCloseRowMenu(row.id)}>View</MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleCloseRowMenu(row.id)();
-                navigate(`/settings/admin/users/edit/${row.id}`);
-              }}
-            >
-              Edit
-            </MenuItem>
-            <MenuItem onClick={handleCloseRowMenu(row.id)}>Disable</MenuItem>
-          </Menu>
-        </>
-      ),
-    },
-  ];
+  const handleInviteInputChange = (field: keyof InviteUserForm) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInviteForm((prev) => ({ ...prev, [field]: event.target.value }));
+  };
+
+  const handleInviteSelectChange = (field: keyof InviteUserForm) => (value: string) => {
+    setInviteForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const toggleRole = (role: string) => {
+    setInviteForm((prev) => ({
+      ...prev,
+      roles: prev.roles.includes(role)
+        ? prev.roles.filter((r) => r !== role)
+        : [...prev.roles, role],
+    }));
+  };
+
+  const toggleCustomRole = (roleId: string) => {
+    setInviteForm((prev) => ({
+      ...prev,
+      customRoles: prev.customRoles.includes(roleId)
+        ? prev.customRoles.filter((r) => r !== roleId)
+        : [...prev.customRoles, roleId],
+    }));
+  };
+
+  const isInviteMissing = (value: string) => showInviteErrors && value.trim() === "";
+  const allSelected = rows.length > 0 && selectedUserIds.length === rows.length;
+  const isIndeterminate = selectedUserIds.length > 0 && selectedUserIds.length < rows.length;
+
+  const getMenuState = (status: UserStatus) => {
+    return {
+      edit: status === "Active",
+      resendInvite: status === "Link Expired",
+      copyInviteLink: status === "Pending",
+      deleteUser: status === "Active" || status === "Pending" || status === "Link Expired",
+      disableUser: status === "Locked Out",
+      reactivateUser: status === "Disabled",
+      viewDetails: status === "Active" || status === "Disabled" || status === "Locked Out",
+      unlockUser: status === "Locked Out",
+    };
+  };
+
+  useEffect(() => {
+    if (!selectAllRef.current) {
+      return;
+    }
+    selectAllRef.current.indeterminate = isIndeterminate;
+  }, [isIndeterminate]);
 
   return (
     <Container>
-      <SettingsHeader title="Users" />
 
-      <Toolbar>
-        <LeftActions>
-          <FilterButton aria-label="filter users" onClick={handleFilterClick} />
-        </LeftActions>
 
-        <Button size="sm" onClick={handleAddUser} startIcon={<AddIcon />}>
-          Add User
+      <Toolbar >
+        <Button
+          variant="outlined"
+          onClick={handleFilterClick}
+          startIcon={<FilterAltOutlinedIcon fontSize="small" />}
+          sx={{
+            width: "110px",
+            height: "36px",
+            borderColor: "#CCCCCC80",
+            color: "#333333",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            borderRadius: "4px",
+            boxShadow: "none",
+            "&:hover": {
+              borderColor: "#CCCCCC80",
+              backgroundColor: "#F3F4F6",
+              boxShadow: "none",
+            },
+          }}
+        >
+          Filters
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleAddUser}
+          startIcon={<PersonAddAltOutlinedIcon fontSize="small" />}
+          sx={{
+            height: "36px",
+            backgroundColor: "#6E41E2",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            minWidth: "110px",
+            borderRadius: "4px",
+            boxShadow: "none",
+            color: "#FFFFFF",
+            "&:hover": {
+              backgroundColor: "#7B52F4",
+              boxShadow: "none",
+            },
+          }}
+        >
+          Invite User
         </Button>
       </Toolbar>
 
-      <DataTable<UserRow> rows={rows} columns={columns} ariaLabel="users table" />
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
+        <div className="px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-[13px] text-[#333333]/70">
+            <PeopleOutlineIcon fontSize="small" />
+            <span>{rows.length} total users</span>
+          </div>
+          {selectedUserIds.length > 0 && (
+            <div className="flex items-center justify-between gap-3 text-[13px] text-[#333333] w-[180px]">
+              <div className="flex items-center gap-2">
+                <span className="font-[600]">{selectedUserIds.length}</span>
+                <span className="font-[500]">Selected</span>
+              </div>
+              <button
+                type="button"
+                className="h-[32px] w-[32px] rounded-[4px] border border-[#CCCCCC80] bg-white text-[#E53935] flex items-center justify-center"
+                onClick={() => setIsDeleteConfirmOpen(true)}
+                aria-label="Delete selected users"
+              >
+                <DeleteOutlineIcon fontSize="small" />
+              </button>
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-[0.4fr_2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-2 text-[12px] font-[500] text-[#333333]/70 border-t border-[#CCCCCC80] bg-[#FAFAFA]">
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              ref={selectAllRef}
+              className="h-[14px] w-[14px] rounded border border-[#CCCCCC80] accent-[#57CC4D]"
+              checked={allSelected}
+              onChange={() => {
+                if (isIndeterminate) {
+                  setSelectedUserIds([]);
+                } else if (selectedUserIds.length === rows.length) {
+                  setSelectedUserIds([]);
+                } else if (selectedUserIds.length === 0) {
+                  setSelectedUserIds(rows.map((row) => row.id));
+                } else {
+                  setSelectedUserIds([]);
+                }
+              }}
+              aria-checked={isIndeterminate ? "mixed" : allSelected}
+              aria-label="Select all users"
+            />
+          </div>
+
+          <span>User</span>
+          <span>Role</span>
+          <span>Status</span>
+          <span>Job Title</span>
+          <span>Teams</span>
+          <span>Last Activity</span>
+          <span className="text-right">Actions</span>
+        </div>
+        <div className="divide-y divide-[#CCCCCC80]">
+          {rows.map((row) => (
+            <div
+              key={row.id}
+              className="grid grid-cols-[0.4fr_2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
+            >
+              <div className="flex items-center">
+                {/* Hidden native checkbox (logic preserved) */}
+                <input
+                  type="checkbox"
+                  checked={selectedUserIds.includes(row.id)}
+                  onChange={(event) => {
+                    setSelectedUserIds((prev) =>
+                      event.target.checked
+                        ? [...prev, row.id]
+                        : prev.filter((id) => id !== row.id)
+                    );
+                  }}
+                  aria-label={`Select ${row.name}`}
+                  className="sr-only"
+                />
+
+                {/* Custom checkbox UI */}
+                <span
+                  className={cn(
+                    "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center cursor-pointer",
+                    selectedUserIds.includes(row.id) &&
+                    "bg-[#57CC4D] border-[#57CC4D]"
+                  )}
+                  onClick={() => {
+                    setSelectedUserIds((prev) =>
+                      prev.includes(row.id)
+                        ? prev.filter((id) => id !== row.id)
+                        : [...prev, row.id]
+                    );
+                  }}
+                >
+                  {selectedUserIds.includes(row.id) && (
+                    <svg
+                      width="12"
+                      height="10"
+                      viewBox="0 0 12 10"
+                      fill="none"
+                    >
+                      <path
+                        d="M1 5L4.5 8.5L11 1.5"
+                        stroke="#FFFFFF"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="h-[32px] w-[32px] rounded-full bg-[#F3F4F6] border border-[#CCCCCC80] flex items-center justify-center text-[11px] text-[#333333]">
+                  {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[13px] font-[500]">{row.name}</span>
+                  <span className="text-[12px] text-[#333333]/70">{row.email}</span>
+                </div>
+              </div>
+              <span>{row.role}</span>
+              <span>{row.status === "Pending" ? "Pending Activation" : row.status}</span>
+              <span>{row.jobTitle ?? "Not Available"}</span>
+              <span>{row.teams ?? "Not Available"}</span>
+              <div className="flex flex-col">
+                <span>{row.lastActivity}</span>
+                <span className="text-[12px] text-[#333333]/70">{row.lastActivityDate}</span>
+              </div>
+              <div className="flex justify-end">
+                <IconButton aria-label={`row actions for ${row.name}`} onClick={handleOpenRowMenu(row.id)} size="small">
+                  <MoreVertIcon fontSize="small" />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorByRowId[row.id]}
+                  open={Boolean(anchorByRowId[row.id])}
+                  onClose={handleCloseRowMenu(row.id)}
+                  PaperProps={{
+                    sx: {
+                      borderRadius: "6px",
+                      minWidth: "180px",
+                      boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
+                      border: "1px solid #E5E5E580",
+                      backgroundColor: "#FFFFFF",
+                      py: 0.5,
+                    },
+                  }}
+                  MenuListProps={{
+                    sx: {
+                      py: 0.5,
+                    },
+                  }}
+                >
+                  {(() => {
+                    const menuState = getMenuState(row.status);
+                    return (
+                      <>
+                        <MenuItem
+                          onClick={() => {
+                            handleCloseRowMenu(row.id)();
+                            handleEditUser(row);
+                          }}
+                          disabled={!menuState.edit}
+                          sx={{ fontSize: "13px", color: menuState.edit ? "#333333" : "#999999" }}
+                        >
+                          Edit
+                        </MenuItem>
+                        <MenuItem
+                          disabled={!menuState.resendInvite}
+                          onClick={() => {
+                            handleCloseRowMenu(row.id)();
+                            handleResendInvite(row);
+                          }}
+                          sx={{ fontSize: "13px", color: menuState.resendInvite ? "#333333" : "#999999" }}
+                        >
+                          Resend Invite
+                        </MenuItem>
+                        <MenuItem disabled={!menuState.copyInviteLink} sx={{ fontSize: "13px", color: menuState.copyInviteLink ? "#333333" : "#999999" }}>
+                          Copy Invite Link
+                        </MenuItem>
+                        <MenuItem
+                          disabled={!menuState.deleteUser}
+                          onClick={handleCloseRowMenu(row.id)}
+                          sx={{ fontSize: "13px", color: menuState.deleteUser ? "#333333" : "#999999" }}
+                        >
+                          Delete User
+                        </MenuItem>
+                        <MenuItem
+                          disabled={!menuState.disableUser}
+                          onClick={handleCloseRowMenu(row.id)}
+                          sx={{ fontSize: "13px", color: menuState.disableUser ? "#333333" : "#999999" }}
+                        >
+                          Disable User
+                        </MenuItem>
+                        <MenuItem disabled={!menuState.reactivateUser} sx={{ fontSize: "13px", color: menuState.reactivateUser ? "#333333" : "#999999" }}>
+                          Reactivate User
+                        </MenuItem>
+                        <MenuItem
+                          disabled={!menuState.viewDetails}
+                          onClick={() => {
+                            handleCloseRowMenu(row.id)();
+                            setDetailsUser(row);
+                          }}
+                          sx={{ fontSize: "13px", color: menuState.viewDetails ? "#333333" : "#999999" }}
+                        >
+                          View User Details
+                        </MenuItem>
+                        <MenuItem
+                          disabled={!menuState.unlockUser}
+                          onClick={handleCloseRowMenu(row.id)}
+                          sx={{ fontSize: "13px", color: menuState.unlockUser ? "#333333" : "#999999" }}
+                        >
+                          Unlock User
+                        </MenuItem>
+                      </>
+                    );
+                  })()}
+                </Menu>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-[12px] text-[#333333]/70 border-t border-[#CCCCCC80]">
+          <span>Showing 1 to {rows.length} of {rows.length} results</span>
+          <div className="flex items-center gap-2">
+            <span>Rows per page</span>
+            <select
+              className="h-[30px] rounded-[4px] border border-[#CCCCCC80] bg-white px-2 text-[12px] text-[#333333]"
+              defaultValue="20"
+            >
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>Page 1 of 1</span>
+            <div className="flex items-center gap-1">
+              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
+                &laquo;
+              </button>
+              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
+                &lsaquo;
+              </button>
+              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
+                &rsaquo;
+              </button>
+              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
+                &raquo;
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {isInviteOpen && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-[#00000066] p-6">
+          <div className="w-full max-w-[980px] max-h-[90vh] rounded-[4px] bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col">
+            <div className="px-6 py-5 border-b border-[#CCCCCC80] flex items-center justify-between">
+              <span className="text-[16px] font-[600] text-[#333333]">
+                {editingUser ? "Edit User" : "Invite User"}
+              </span>
+              {editingUser?.status === "Active" && (
+                <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
+                  Active User
+                </span>
+              )}
+              {editingUser?.status === "Link Expired" && (
+                <span className="rounded-[4px] bg-[#E15555] px-4 py-2 text-[12px] font-[500] text-white">
+                  Activation Link Expired
+                </span>
+              )}
+            </div>
+            <div className="px-6 py-5 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col">
+                  <FloatingLabelInput
+                    id="invite-first-name"
+                    label="First Name*"
+                    labelClassName="text-[#333333]/70"
+                    floatLabel
+                    required
+                    value={inviteForm.firstName}
+                    onChange={handleInviteInputChange("firstName")}
+                    className={cn(
+                      "w-full h-[56px]",
+                      isInviteMissing(inviteForm.firstName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {isInviteMissing(inviteForm.firstName) && (
+                    <span className="mt-1 text-[11px] text-[#E53935]">First name is required.</span>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <FloatingLabelInput
+                    id="invite-last-name"
+                    label="Last Name*"
+                    labelClassName="text-[#333333]/70"
+                    floatLabel
+                    required
+                    value={inviteForm.lastName}
+                    onChange={handleInviteInputChange("lastName")}
+                    className={cn(
+                      "w-full h-[56px]",
+                      isInviteMissing(inviteForm.lastName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {isInviteMissing(inviteForm.lastName) && (
+                    <span className="mt-1 text-[11px] text-[#E53935]">Last name is required.</span>
+                  )}
+                </div>
+                <div className="flex flex-col">
+                  <FloatingLabelInput
+                    id="invite-email"
+                    label="Email*"
+                    labelClassName="text-[#333333]/70"
+                    floatLabel
+                    required
+                    value={inviteForm.email}
+                    onChange={handleInviteInputChange("email")}
+                    className={cn(
+                      "w-full h-[56px]",
+                      isInviteMissing(inviteForm.email) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {isInviteMissing(inviteForm.email) && (
+                    <span className="mt-1 text-[11px] text-[#E53935]">Email is required.</span>
+                  )}
+                </div>
+                <FloatingLabelSelect
+                  id="invite-team"
+                  label="Team"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.team}
+                  onValueChange={handleInviteSelectChange("team")}
+                  options={teamOptions}
+                  className={cn("w-full h-[56px]")}
+                />
+                <FloatingLabelInput
+                  id="invite-job-title"
+                  label="Job Title"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.jobTitle}
+                  onChange={handleInviteInputChange("jobTitle")}
+                  className={cn("w-full h-[56px]")}
+                />
+                <FloatingLabelInput
+                  id="invite-contact-number"
+                  label="Contact Number"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.contactNumber}
+                  onChange={handleInviteInputChange("contactNumber")}
+                  className={cn("w-full h-[56px]")}
+                />
+                <FloatingLabelSelect
+                  id="invite-time-zone"
+                  label="Time Zone"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.timeZone}
+                  onValueChange={handleInviteSelectChange("timeZone")}
+                  options={timeZoneOptions}
+                  maxVisibleOptions={10}
+                  className={cn("w-full h-[56px]")}
+                />
+                <FloatingLabelSelect
+                  id="invite-city"
+                  label="City"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.city}
+                  onValueChange={handleInviteSelectChange("city")}
+                  options={cityOptions}
+                  className={cn("w-full h-[56px]")}
+                />
+                <FloatingLabelSelect
+                  id="invite-state"
+                  label="State"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.state}
+                  onValueChange={handleInviteSelectChange("state")}
+                  options={stateOptions}
+                  className={cn("w-full h-[56px]")}
+                />
+                <FloatingLabelSelect
+                  id="invite-country"
+                  label="Country"
+                  labelClassName="text-[#333333]/70"
+                  floatLabel
+                  value={inviteForm.country}
+                  onValueChange={handleInviteSelectChange("country")}
+                  options={countryOptions}
+                  className={cn("w-full h-[56px]")}
+                />
+              </div>
+
+              <div className="mt-6">
+                <div className="text-[13px] font-[600] text-[#333333] mb-2">System Roles &amp; Permissions</div>
+                <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
+                  {systemRoles.map((role) => (
+                    <label
+                      key={role}
+                      className="flex items-center gap-3 text-[13px] text-[#333333] cursor-pointer select-none"
+                    >
+                      {/* Hidden native checkbox for accessibility */}
+                      <input
+                        type="checkbox"
+                        checked={inviteForm.roles.includes(role)}
+                        onChange={() => toggleRole(role)}
+                        className="sr-only"
+                      />
+
+                      {/* Custom checkbox UI */}
+                      <span
+                        className={cn(
+                          "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
+                          inviteForm.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
+                        )}
+                      >
+                        {inviteForm.roles.includes(role) && (
+                          <svg
+                            width="12"
+                            height="10"
+                            viewBox="0 0 12 10"
+                            fill="none"
+                          >
+                            <path
+                              d="M1 5L4.5 8.5L11 1.5"
+                              stroke="#FFFFFF"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </span>
+
+                      <span>{role}</span>
+                    </label>
+
+
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <div className="text-[13px] font-[600] text-[#333333] mb-2">Custom Roles &amp; Permissions</div>
+                <div className="border-t border-[#CCCCCC80]">
+                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 text-[12px] font-[500] text-[#333333]/70">
+                    <span>Role Name</span>
+                    <span>Description</span>
+                  </div>
+                  {customRoles.map((role) => (
+                    <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 border-t border-[#CCCCCC80]">
+                      <label
+                        className="flex items-center gap-3 text-[13px] text-[#333333] cursor-pointer select-none"
+                      >
+                        {/* Hidden native checkbox for accessibility */}
+                        <input
+                          type="checkbox"
+                          checked={inviteForm.customRoles.includes(role.id)}
+                          onChange={() => toggleCustomRole(role.id)}
+                          className="sr-only"
+                        />
+
+                        {/* Custom checkbox UI */}
+                        <span
+                          className={cn(
+                            "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
+                            inviteForm.customRoles.includes(role.id) &&
+                            "bg-[#57CC4D] border-[#57CC4D]"
+                          )}
+                        >
+                          {inviteForm.customRoles.includes(role.id) && (
+                            <svg
+                              width="12"
+                              height="10"
+                              viewBox="0 0 12 10"
+                              fill="none"
+                            >
+                              <path
+                                d="M1 5L4.5 8.5L11 1.5"
+                                stroke="#FFFFFF"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          )}
+                        </span>
+
+                        <span>{role.name}</span>
+                      </label>
+
+                      <div className="text-[12px] text-[#333333]/70">{role.description}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <div className="text-[13px] font-[600] text-[#333333] mb-2">User Email*</div>
+                <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[12px] text-[#333333]/70">
+                  {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
+                </div>
+                <div className="mt-2 text-[11px] text-[#333333]/70">
+                  A link will be sent to the above email to complete the login process. For security reasons, the link to sign in will expire after 72 hours.
+                </div>
+              </div>
+            </div>
+
+            <div className="px-6 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setIsInviteOpen(false);
+                  setShowInviteErrors(false);
+                  setEditingUser(null);
+                  setInviteMode("invite");
+                }}
+                sx={{
+                  height: "36px",
+                  borderColor: "#CCCCCC80",
+                  color: "#333333",
+                  textTransform: "none",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "4px",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#CCCCCC80",
+                    backgroundColor: "#F3F4F6",
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  height: "36px",
+                  backgroundColor: "#6E41E2",
+                  textTransform: "none",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "4px",
+                  boxShadow: "none",
+                  color: "#FFFFFF",
+                  "&:hover": {
+                    backgroundColor: "#7B52F4",
+                    boxShadow: "none",
+                  },
+                }}
+                onClick={() => setShowInviteErrors(true)}
+              >
+                {inviteMode === "resend" ? "Resend Invite" : inviteMode === "edit" ? "Save Changes" : "Send Invite"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isDeleteConfirmOpen && (
+        <div className="fixed inset-0 z-[2100] flex items-center justify-center bg-[#00000066] p-6">
+          <div className="w-full max-w-[360px] rounded-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024]">
+            <div className="px-5 py-4 text-[14px] font-[600] text-[#333333] border-b border-[#CCCCCC80]">
+              Do you want to delete?
+            </div>
+            <div className="px-5 py-4 text-[13px] text-[#333333]/70">
+              This will remove the selected users from the list.
+            </div>
+            <div className="px-5 py-4 border-t border-[#CCCCCC80] flex justify-end gap-2">
+              <Button
+                variant="outlined"
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                sx={{
+                  height: "32px",
+                  borderColor: "#CCCCCC80",
+                  color: "#333333",
+                  textTransform: "none",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "4px",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#CCCCCC80",
+                    backgroundColor: "#F3F4F6",
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                No
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  setSelectedUserIds([]);
+                  setIsDeleteConfirmOpen(false);
+                }}
+                sx={{
+                  height: "32px",
+                  backgroundColor: "#6E41E2",
+                  textTransform: "none",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "4px",
+                  boxShadow: "none",
+                  color: "#FFFFFF",
+                  "&:hover": {
+                    backgroundColor: "#7B52F4",
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Yes
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {detailsUser && (
+        <div className="fixed inset-0 z-[2200] flex items-center justify-center bg-[#00000066] p-6">
+          <div className="w-full max-w-[1024px] max-h-[90vh] rounded-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto">
+            <div className="p-4">
+              <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="h-[56px] w-[56px] rounded-full border border-[#CCCCCC80] bg-[#F3F4F6] flex items-center justify-center text-[14px] font-[600] text-[#333333]">
+                    {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[14px] font-[600] text-[#333333]">{detailsUser.name}</span>
+                    <span className="text-[12px] text-[#333333]/70">{detailsUser.jobTitle}</span>
+                    <span className="text-[12px] text-[#333333]/70">Upload Photo</span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-6">
+                  <div className="text-[12px] text-[#333333]/70">
+                    <div className="text-[12px] font-[600] text-[#333333]">Last Activity</div>
+                    <div>{detailsUser.lastActivity}</div>
+                    <div>{detailsUser.lastActivityDate}</div>
+                  </div>
+                  <Button
+                    variant="contained"
+                    sx={{
+                      height: "32px",
+                      backgroundColor: "#31C24D",
+                      textTransform: "none",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      borderRadius: "4px",
+                      boxShadow: "none",
+                      color: "#FFFFFF",
+                      "&:hover": {
+                        backgroundColor: "#2CB645",
+                        boxShadow: "none",
+                      },
+                    }}
+                  >
+                    View Only
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="px-4 pb-6">
+              <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">First Name</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ")[0]}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Last Name</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ").slice(1).join(" ")}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Email</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.email}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Job Title</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.jobTitle}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Company Name</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.companyName}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Role</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.role}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Contact Number</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.contactNumber}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Time Zone</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.timeZone}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">City</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.city}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">State</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.state}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Country</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.country}</div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Currency</label>
+                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.currency}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="px-4 pb-6 flex justify-end">
+              <Button
+                variant="outlined"
+                onClick={() => setDetailsUser(null)}
+                sx={{
+                  height: "32px",
+                  borderColor: "#CCCCCC80",
+                  color: "#333333",
+                  textTransform: "none",
+                  fontSize: "12px",
+                  fontWeight: 500,
+                  borderRadius: "4px",
+                  boxShadow: "none",
+                  "&:hover": {
+                    borderColor: "#CCCCCC80",
+                    backgroundColor: "#F3F4F6",
+                    boxShadow: "none",
+                  },
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </Container>
   );
 };

@@ -41,25 +41,30 @@ const FloatingLabel = React.forwardRef<
 });
 FloatingLabel.displayName = 'FloatingLabel';
 
-type FloatingLabelInputProps = InputProps & { label?: string; labelClassName?: string };
+type FloatingLabelInputProps = InputProps & { label?: string; labelClassName?: string; floatLabel?: boolean; required?: boolean };
 
 const FloatingLabelInput = React.forwardRef<
     HTMLInputElement,
     FloatingLabelInputProps
->(({ id, label, className, labelClassName, ...props }, ref) => {
+>(({ id, label, className, labelClassName, required, ...props }, ref) => {
+    const floatLabel = props.floatLabel;
+    const inputProps = { ...props };
+    delete inputProps.floatLabel;
     return (
         <div className={cn("relative", className)}>
-            <FloatingInput ref={ref} id={id} {...props} />
+            <FloatingInput ref={ref} id={id} {...inputProps} />
             <FloatingLabel
                 htmlFor={id}
                 className={cn(
-                    "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100",
+                    floatLabel
+                        ? "top-2 -translate-y-4 scale-75"
+                        : "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 top-2 -translate-y-4 scale-75",
                     "peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
-                    "top-2 -translate-y-4 scale-75",
                     labelClassName
                 )}
             >
-                {label}
+                <span>{label}</span>
+                {required && <span className="text-[#E53935]"> *</span>}
             </FloatingLabel>
         </div>
     );
@@ -77,6 +82,8 @@ export interface SelectProps {
     id?: string;
     className?: string;
     maxVisibleOptions?: number;
+    floatLabel?: boolean;
+    required?: boolean;
 }
 
 const FloatingLabelSelect = ({
@@ -89,7 +96,9 @@ const FloatingLabelSelect = ({
     onValueChange,
     defaultValue,
     disabled,
-    maxVisibleOptions
+    maxVisibleOptions,
+    floatLabel,
+    required
 }: SelectProps) => {
     const hasValue = value || defaultValue;
     const [isOpen, setIsOpen] = React.useState(false);
@@ -209,13 +218,16 @@ const FloatingLabelSelect = ({
                 htmlFor={id}
                 className={cn(
                     "peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
-                    hasValue
+                    floatLabel
                         ? 'top-2 -translate-y-4 scale-75'
-                        : 'top-1/2 -translate-y-1/2 scale-100',
+                        : hasValue
+                            ? 'top-2 -translate-y-4 scale-75'
+                            : 'top-1/2 -translate-y-1/2 scale-100',
                     labelClassName
                 )}
             >
-                {label}
+                <span>{label}</span>
+                {required && <span className="text-[#E53935]"> *</span>}
             </FloatingLabel>
         </div>
     );

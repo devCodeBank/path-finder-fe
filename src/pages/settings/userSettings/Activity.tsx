@@ -11,7 +11,7 @@ const ActivityCard = ({
 }) => {
   return (
     <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-      <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[#F5F5F5]">
+      <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[#F5F5F5]">
         <h3 className="text-[14px] font-[500] text-[#333333]">{title}</h3>
         {headerAction}
       </div>
