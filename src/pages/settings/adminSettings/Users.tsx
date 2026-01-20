@@ -1,4 +1,3 @@
-import { SettingsHeader } from "@components/settingsHeader";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -6,7 +5,6 @@ import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
@@ -227,7 +225,6 @@ const getMockUsers = (): UserRow[] => {
 };
 
 export const Users: React.FC = () => {
-  const navigate = useNavigate();
   const rows: UserRow[] = getMockUsers();
   const [anchorByRowId, setAnchorByRowId] = useState<Record<string, HTMLElement | null>>({});
   const [isInviteOpen, setIsInviteOpen] = useState(false);

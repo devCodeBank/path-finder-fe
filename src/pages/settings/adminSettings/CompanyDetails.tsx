@@ -1,16 +1,8 @@
-import { SettingsHeader } from "@components/settingsHeader";
 import { InfoOutlined } from "@mui/icons-material";
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import React, { useState } from "react";
-import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
-
-const Container = styled(Box)`
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-`;
 
 interface CompanyDetailsFormData {
   companyName: string;
@@ -71,7 +63,6 @@ export const CompanyDetails: React.FC = () => {
     createdOn: "Sat, June 21, 2025, 5:03 pm",
   });
 
-  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [isEditing, setIsEditing] = useState(false);
 
   const handleInputChange = (field: keyof CompanyDetailsFormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,10 +71,6 @@ export const CompanyDetails: React.FC = () => {
 
   const handleSelectChange = (field: keyof CompanyDetailsFormData) => (value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleBlur = (field: keyof CompanyDetailsFormData) => () => {
-    setTouched((prev) => ({ ...prev, [field]: true }));
   };
 
   const handleSaveChanges = () => {
