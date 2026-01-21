@@ -1,4 +1,3 @@
-import { SettingsHeader } from "@components/settingsHeader";
 import AddIcon from "@mui/icons-material/Add";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
