@@ -23,7 +23,7 @@ const Toggle = ({
       <div className="flex flex-col gap-1 pr-4">
         <span className="text-[14px] font-[500] text-[#333333]">{label}</span>
         {description && (
-          <p className="text-[13px] font-[400] text-[#333333] leading-relaxed">
+          <p className="text-[13px] font-[400] text-[#333333]/70 leading-relaxed">
             {description}
           </p>
         )}
@@ -105,7 +105,7 @@ export const PrivacySecurity: React.FC = () => {
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Primary Email</span>
-              <span className="text-[13px] font-[400] text-[#333333]">{primaryEmail}</span>
+              <span className="text-[13px] font-[400] text-[#333333]/70">{primaryEmail}</span>
             </div>
           </div>
 
@@ -113,7 +113,7 @@ export const PrivacySecurity: React.FC = () => {
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Password</span>
-              <p className="text-[13px] font-[400] text-[#333333]">*#0!x%&</p>
+              <p className="text-[13px] font-[400] text-[#333333]/70">*#0!x%&</p>
             </div>
             <Button
               variant="outlined"
@@ -127,7 +127,7 @@ export const PrivacySecurity: React.FC = () => {
           <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1 max-w-[70%]">
               <span className="text-[14px] font-[500] text-[#333333]">Recovery Codes</span>
-              <p className="text-[13px] font-[400] text-[#333333]">
+              <p className="text-[13px] font-[400] text-[#333333]/70">
                 If you lose access to your password or verification methods, you will be able to log in with a recovery code.
               </p>
               <a href="#" className="text-[13px] text-[#6E41E2] hover:underline mt-1">Learn More About Recovery Codes</a>
@@ -175,7 +175,7 @@ export const PrivacySecurity: React.FC = () => {
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Phone Number</span>
-              <p className="text-[13px] font-[400] text-[#333333]">Require additional verification step for logins from a new device or browser.</p>
+              <p className="text-[13px] font-[400] text-[#333333]/70">Require additional verification step for logins from a new device or browser.</p>
               {phoneNumber ? (
                 <div className="flex items-center gap-4 mt-2">
                   <span className="text-[13px] font-[500] text-[#333333]">{phoneNumber}</span>
@@ -225,7 +225,7 @@ export const PrivacySecurity: React.FC = () => {
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Alternate Emails</span>
-              <p className="text-[13px] font-[400] text-[#333333]">Add alternate emails in addition to your default email to receive a verification code.</p>
+              <p className="text-[13px] font-[400] text-[#333333]/70">Add alternate emails in addition to your default email to receive a verification code.</p>
               {alternateEmail ? (
                 <div className="flex items-center gap-4 mt-2">
                   <span className="text-[13px] font-[500] text-[#333333]">{alternateEmail}</span>
@@ -275,7 +275,7 @@ export const PrivacySecurity: React.FC = () => {
           <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1">
               <span className="text-[14px] font-[500] text-[#333333]">Authenticator App</span>
-              <p className="text-[13px] font-[400] text-[#333333]">Set up an authenticator on your mobile device to receive verification code.</p>
+              <p className="text-[13px] font-[400] text-[#333333]/70">Set up an authenticator on your mobile device to receive verification code.</p>
             </div>
             <Button
               variant="outlined"

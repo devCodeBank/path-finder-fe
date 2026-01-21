@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { IconButton, Tooltip } from "@mui/material";
 import styled from "styled-components";
@@ -119,6 +119,13 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
     const { sidebarExpanded, onToggleExpand } = useSidebarContext();
     const location = useLocation();
     const breadcrumbPath = getBreadcrumbPath(location.pathname);
+    const contentRef = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+        if (contentRef.current) {
+            contentRef.current.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        }
+    }, [location.pathname]);
 
     return (
         <div className="h-full flex flex-col pr-2 pb-[14px] overflow-hidden">
@@ -139,7 +146,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                             {breadcrumbPath.map((label, index) => (
                                 <React.Fragment key={index}>
                                     <span className={cn(
-                                        "text-[16px] font-[500]",
+                                        "text-[16px] font-[400]",
                                         index === breadcrumbPath.length - 1 ? "text-[#333333]" : "text-[#717171]"
                                     )}>
                                         {label}
@@ -150,7 +157,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                         </div>
                     </div>
 
-                    <div className="flex items-center flex-shrink-0 ml-2 mr-6 gap-6">
+                    <div className="flex items-center flex-shrink-0 ml-4 mr-18 gap-16">
                         <Tooltip title="Search" arrow>
                             <CircularIconButton>
                                 <SearchIcon width={16} height={16} />
@@ -183,7 +190,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
                         "my-[18px] mr-4 flex-1 flex flex-col bg-white overflow-hidden border-[#CCCCCC80] border ",
                         sidebar ? "rounded-tr-[14px] rounded-br-[14px]" : "rounded-[14px] ml-4"
                     )}>
-                        <div className="flex-1 overflow-y-auto px-[18px] my-[18px] custom-scrollbar">
+                        <div ref={contentRef} className="flex-1 overflow-y-auto px-[18px] my-[18px] custom-scrollbar">
                             {children}
                         </div>
                     </div>

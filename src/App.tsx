@@ -3,7 +3,7 @@ import { checkAuthStatus } from "@redux/slices/authSlice";
 import type { AppDispatch } from "@redux/store";
 import React, { Suspense, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import AuthLayout from "./components/layout/authLayout/AuthLayout";
 import PlatformLayout from "./components/layout/platformLayout/PlatformLayout";
@@ -61,6 +61,16 @@ const PagePage = React.lazy(() => import("./pages/settings/jobSettings/Page"));
 
 const LoadingFallback: React.FC = () => <LoadingSpinner isLoading />;
 
+const ScrollToTop: React.FC = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+};
+
 const App: React.FC = () => {
   const [authChecked, setAuthChecked] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -80,6 +90,7 @@ const App: React.FC = () => {
 
   return (
     <Suspense fallback={<LoadingFallback />}>
+      <ScrollToTop />
       <Routes>
         {/* AUTH FLOW - No authentication required */}
         <Route path="/auth" element={<AuthLayout />}>

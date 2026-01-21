@@ -389,7 +389,7 @@ const theme = createTheme({
           borderRadius: "4px",
           fontSize: "12px",
           fontWeight: 400,
-          padding: "6px 12px",
+          padding: "6px 6px",
           boxShadow: "none",
         },
         arrow: {

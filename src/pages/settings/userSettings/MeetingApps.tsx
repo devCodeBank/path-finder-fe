@@ -71,7 +71,7 @@ export const MeetingApps: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
       <div className="flex flex-col gap-4">
-        <h3 className="text-[16px] font-[500] text-[#333333] ml-1">Integrate Your Virtual Meeting Apps</h3>
+        {/* <h3 className="text-[16px] font-[500] text-[#333333] ml-1">Integrate Your Virtual Meeting Apps</h3> */}
 
         <div className="flex flex-col gap-4">
           <IntegrationCard

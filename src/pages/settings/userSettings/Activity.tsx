@@ -309,7 +309,7 @@ export const Activity: React.FC = () => {
       <ActivityCard title="Activity History">
         <div className="px-5 py-4">
           <div className="text-[13px] text-[#717171] mb-4">
-            View and manage all of your Path Finder account activity.
+
           </div>
           <div className="flex flex-col gap-6">
             {activityHistory.map((item, index) => (
@@ -369,7 +369,7 @@ export const Activity: React.FC = () => {
               <div>
                 <h3 className="text-[18px] font-[600] text-[#111111]">Activity History</h3>
                 <p className="text-[13px] text-[#717171]">
-                  View and manage all of your Path Finder account activity.
+
                 </p>
               </div>
               <button
@@ -494,7 +494,7 @@ export const Activity: React.FC = () => {
       <ActivityCard title="Connected Apps">
         <div className="px-5 py-4">
           <div className="text-[13px] text-[#717171] mb-6">
-            View and manage all of the web applications connected to your Path Finder account.
+
           </div>
           <div className="flex flex-col items-center justify-center py-6 text-center">
             <div className="h-[88px] w-[88px] rounded-full bg-[#F3F4F6] flex items-center justify-center mb-4">

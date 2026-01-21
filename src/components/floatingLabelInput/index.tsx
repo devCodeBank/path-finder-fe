@@ -31,7 +31,7 @@ const FloatingLabel = React.forwardRef<
     return (
         <Label
             className={cn(
-                'absolute start-2 z-10 origin-[0] transform px-2 text-[16px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333]',
+                'absolute start-2 z-10 origin-[0] transform px-2 text-[16px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333] top-1',
                 className,
             )}
             ref={ref}
@@ -57,14 +57,14 @@ const FloatingLabelInput = React.forwardRef<
                 htmlFor={id}
                 className={cn(
                     floatLabel
-                        ? "top-2 -translate-y-4 scale-75"
-                        : "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 top-2 -translate-y-4 scale-75",
-                    "peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
+                        ? "top-1 -translate-y-4 scale-75"
+                        : "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 top-1 -translate-y-4 scale-75",
+                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
                     labelClassName
                 )}
             >
                 <span>{label}</span>
-                {required && <span className="text-[#E53935]"> *</span>}
+                {required && <span className="text-[#333333]"> *</span>}
             </FloatingLabel>
         </div>
     );
@@ -217,17 +217,17 @@ const FloatingLabelSelect = ({
             <FloatingLabel
                 htmlFor={id}
                 className={cn(
-                    "peer-focus:top-2 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
+                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
                     floatLabel
-                        ? 'top-2 -translate-y-4 scale-75'
+                        ? 'top-1 -translate-y-4 scale-75'
                         : hasValue
-                            ? 'top-2 -translate-y-4 scale-75'
+                            ? 'top-1 -translate-y-4 scale-75'
                             : 'top-1/2 -translate-y-1/2 scale-100',
                     labelClassName
                 )}
             >
                 <span>{label}</span>
-                {required && <span className="text-[#E53935]"> *</span>}
+                {required && <span className="text-[#333333]"> *</span>}
             </FloatingLabel>
         </div>
     );
@@ -235,4 +235,3 @@ const FloatingLabelSelect = ({
 FloatingLabelSelect.displayName = 'FloatingLabelSelect';
 
 export { FloatingInput, FloatingLabel, FloatingLabelInput, FloatingLabelSelect };
-

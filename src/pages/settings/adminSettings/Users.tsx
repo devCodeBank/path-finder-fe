@@ -1,4 +1,5 @@
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
@@ -414,34 +415,35 @@ export const Users: React.FC = () => {
       </Toolbar>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-[13px] text-[#333333]/70">
-            <PeopleOutlineIcon fontSize="small" />
-            <span>{rows.length} total users</span>
-          </div>
-          {selectedUserIds.length > 0 && (
-            <div className="flex items-center justify-between gap-3 text-[13px] text-[#333333] w-[180px]">
-              <div className="flex items-center gap-2">
-                <span className="font-[600]">{selectedUserIds.length}</span>
-                <span className="font-[500]">Selected</span>
-              </div>
+        <div className="px-4 h-[52px] flex items-center">
+          {selectedUserIds.length > 0 ? (
+            <div className="flex items-center gap-3 text-[13px] text-[#333333]">
               <button
                 type="button"
-                className="h-[32px] w-[32px] rounded-[4px] border border-[#CCCCCC80] bg-white text-[#E53935] flex items-center justify-center"
+                className=" bg-white text-[#E53935] "
                 onClick={() => setIsDeleteConfirmOpen(true)}
                 aria-label="Delete selected users"
               >
                 <DeleteOutlineIcon fontSize="small" />
               </button>
+              <div className="flex items-center gap-2">
+                <span className="font-[400]">{selectedUserIds.length}</span>
+                <span className="font-[400]">Selected</span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 text-[13px] text-[#333333]">
+              <PeopleOutlineIcon fontSize="small" />
+              <span>{rows.length} total users</span>
             </div>
           )}
         </div>
-        <div className="grid grid-cols-[0.4fr_2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-2 text-[12px] font-[500] text-[#333333]/70 border-t border-[#CCCCCC80] bg-[#FAFAFA]">
+        <div className="grid h-[52px] grid-cols-[0.4fr_2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-t border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
           <div className="flex items-center">
             <input
               type="checkbox"
               ref={selectAllRef}
-              className="h-[14px] w-[14px] rounded border border-[#CCCCCC80] accent-[#57CC4D]"
+              className="sr-only"
               checked={allSelected}
               onChange={() => {
                 if (isIndeterminate) {
@@ -457,6 +459,46 @@ export const Users: React.FC = () => {
               aria-checked={isIndeterminate ? "mixed" : allSelected}
               aria-label="Select all users"
             />
+            <span
+              className={cn(
+                "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center cursor-pointer",
+                (allSelected || isIndeterminate) && "bg-[#57CC4D] border-[#57CC4D]"
+              )}
+              onClick={() => {
+                if (isIndeterminate || selectedUserIds.length === rows.length) {
+                  setSelectedUserIds([]);
+                } else {
+                  setSelectedUserIds(rows.map((row) => row.id));
+                }
+              }}
+              aria-hidden
+            >
+              {(allSelected || isIndeterminate) && (
+                <svg
+                  width="12"
+                  height="10"
+                  viewBox="0 0 12 10"
+                  fill="none"
+                >
+                  {isIndeterminate ? (
+                    <path
+                      d="M2 5L10 5"
+                      stroke="#FFFFFF"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  ) : (
+                    <path
+                      d="M1 5L4.5 8.5L11 1.5"
+                      stroke="#FFFFFF"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
+                </svg>
+              )}
+            </span>
           </div>
 
           <span>User</span>
@@ -465,7 +507,7 @@ export const Users: React.FC = () => {
           <span>Job Title</span>
           <span>Teams</span>
           <span>Last Activity</span>
-          <span className="text-right">Actions</span>
+          <span>Actions</span>
         </div>
         <div className="divide-y divide-[#CCCCCC80]">
           {rows.map((row) => (
@@ -524,7 +566,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="h-[32px] w-[32px] rounded-full bg-[#F3F4F6] border border-[#CCCCCC80] flex items-center justify-center text-[11px] text-[#333333]">
+                <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 border border-[#CCCCCC80] flex items-center justify-center text-[11px] text-[#333333]">
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                 </div>
                 <div className="flex flex-col">
@@ -667,32 +709,47 @@ export const Users: React.FC = () => {
       </div>
 
       {isInviteOpen && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-[#00000066] p-6">
-          <div className="w-full max-w-[980px] max-h-[90vh] rounded-[4px] bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col">
+        <div className="fixed inset-0 z-[2000] flex justify-end bg-[#00000066]">
+          <div className="w-[60vw] max-w-[60vw] h-full bg-white flex flex-col">
             <div className="px-6 py-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[600] text-[#333333]">
                 {editingUser ? "Edit User" : "Invite User"}
               </span>
-              {editingUser?.status === "Active" && (
-                <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
-                  Active User
-                </span>
-              )}
-              {editingUser?.status === "Link Expired" && (
-                <span className="rounded-[4px] bg-[#E15555] px-4 py-2 text-[12px] font-[500] text-white">
-                  Activation Link Expired
-                </span>
-              )}
+              <div className="flex items-center gap-3">
+                {editingUser?.status === "Active" && (
+                  <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
+                    Active User
+                  </span>
+                )}
+                {editingUser?.status === "Link Expired" && (
+                  <span className="rounded-[4px] bg-[#E15555] px-4 py-2 text-[12px] font-[500] text-white">
+                    Activation Link Expired
+                  </span>
+                )}
+                <IconButton
+                  aria-label="Close"
+                  size="small"
+                  onClick={() => {
+                    setIsInviteOpen(false);
+                    setShowInviteErrors(false);
+                    setEditingUser(null);
+                    setInviteMode("invite");
+                  }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </div>
             </div>
             <div className="px-6 py-5 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <FloatingLabelInput
                     id="invite-first-name"
-                    label="First Name*"
+                    label="First Name"
                     labelClassName="text-[#333333]/70"
                     floatLabel
                     required
+                    placeholder="First Name"
                     value={inviteForm.firstName}
                     onChange={handleInviteInputChange("firstName")}
                     className={cn(
@@ -707,10 +764,11 @@ export const Users: React.FC = () => {
                 <div className="flex flex-col">
                   <FloatingLabelInput
                     id="invite-last-name"
-                    label="Last Name*"
+                    label="Last Name"
                     labelClassName="text-[#333333]/70"
                     floatLabel
                     required
+                    placeholder="Last Name"
                     value={inviteForm.lastName}
                     onChange={handleInviteInputChange("lastName")}
                     className={cn(
@@ -725,10 +783,11 @@ export const Users: React.FC = () => {
                 <div className="flex flex-col">
                   <FloatingLabelInput
                     id="invite-email"
-                    label="Email*"
+                    label="Email"
                     labelClassName="text-[#333333]/70"
                     floatLabel
                     required
+                    placeholder="Email"
                     value={inviteForm.email}
                     onChange={handleInviteInputChange("email")}
                     className={cn(
@@ -755,6 +814,7 @@ export const Users: React.FC = () => {
                   label="Job Title"
                   labelClassName="text-[#333333]/70"
                   floatLabel
+                  placeholder="Job Title"
                   value={inviteForm.jobTitle}
                   onChange={handleInviteInputChange("jobTitle")}
                   className={cn("w-full h-[56px]")}
@@ -764,6 +824,7 @@ export const Users: React.FC = () => {
                   label="Contact Number"
                   labelClassName="text-[#333333]/70"
                   floatLabel
+                  placeholder="Contact Number"
                   value={inviteForm.contactNumber}
                   onChange={handleInviteInputChange("contactNumber")}
                   className={cn("w-full h-[56px]")}
@@ -812,7 +873,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[13px] font-[600] text-[#333333] mb-2">System Roles &amp; Permissions</div>
+                <div className="text-[13px] font-[500] text-[#333333] mb-2">System Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
                   {systemRoles.map((role) => (
                     <label
@@ -861,9 +922,9 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[13px] font-[600] text-[#333333] mb-2">Custom Roles &amp; Permissions</div>
+                <div className="text-[13px] font-[500] text-[#333333] mb-2">Custom Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80]">
-                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 text-[12px] font-[500] text-[#333333]/70">
+                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 text-[12px] font-[500] text-[#333333]">
                     <span>Role Name</span>
                     <span>Description</span>
                   </div>
@@ -909,18 +970,18 @@ export const Users: React.FC = () => {
                         <span>{role.name}</span>
                       </label>
 
-                      <div className="text-[12px] text-[#333333]/70">{role.description}</div>
+                      <div className="text-[12px] text-[#333333]">{role.description}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mt-6">
-                <div className="text-[13px] font-[600] text-[#333333] mb-2">User Email*</div>
+                <div className="text-[13px] font-[500] text-[#333333] mb-2">User Email*</div>
                 <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[12px] text-[#333333]/70">
                   {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
                 </div>
-                <div className="mt-2 text-[11px] text-[#333333]/70">
+                <div className="mt-2 text-[11px] text-[#333333]">
                   A link will be sent to the above email to complete the login process. For security reasons, the link to sign in will expire after 72 hours.
                 </div>
               </div>
@@ -1038,8 +1099,8 @@ export const Users: React.FC = () => {
       )}
 
       {detailsUser && (
-        <div className="fixed inset-0 z-[2200] flex items-center justify-center bg-[#00000066] p-6">
-          <div className="w-full max-w-[1024px] max-h-[90vh] rounded-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto">
+        <div className="fixed inset-0 z-[2200] flex justify-end bg-[#00000066]">
+          <div className="w-full max-w-[720px] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto">
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
                 <div className="flex items-start gap-4">

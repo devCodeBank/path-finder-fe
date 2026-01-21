@@ -164,9 +164,10 @@ export const CompanyDetails: React.FC = () => {
             {/* Upload Photo below avatar */}
             <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group relative">
               <span className="text-[13px] text-[#333333] font-[400] group-hover:text-purple-600">Upload Photo</span>
-              <span className="relative">
-                <InfoOutlined sx={{ fontSize: 13, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
+              <span className="relative inline-flex items-center justify-center h-[16px] w-[16px]">
+                <InfoOutlined sx={{ fontSize: 13, color: '#666666' }} className="group-hover:!text-purple-600" />
                 <span className="absolute left-[calc(100%+8px)] top-1/2 z-10 w-[260px] -translate-y-1/2 rounded-md bg-[#5A5A5A] px-3 py-2 text-[12px] text-white shadow-[0px_6px_16px_0px_#00000029] opacity-0 pointer-events-none group-hover:opacity-100">
+                  <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 bg-[#5A5A5A]" />
                   File type supported: PNG, JPG, JPEG (Up to 500KB), recommended size with 100% and height 50px
                 </span>
               </span>

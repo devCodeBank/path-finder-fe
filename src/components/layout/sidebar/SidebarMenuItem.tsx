@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { memo } from "react";
+import React, { memo } from "react";
 import { cn } from "@/lib/utils";
 import type { MenuItem } from "./Sidebar";
 
@@ -13,7 +13,8 @@ interface MenuItemProps {
 const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onItemClick }) => {
   const IconComponent = item.icon;
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.currentTarget.blur();
     onItemClick(item);
   };
 
@@ -24,17 +25,24 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
   ];
 
   return (
-    <Tooltip title={item.label} placement="right" arrow disableHoverListener={isExpanded}>
+    <Tooltip
+      title={item.label}
+      placement="right"
+      arrow
+      disableHoverListener={isExpanded || isSelected}
+      disableFocusListener={isSelected}
+      disableTouchListener={isSelected}
+    >
       <button
         onClick={handleClick}
         className={cn(
-          "group relative flex items-center mx-[6px] rounded-[4px] h-[32px] w-[calc(100%-20px)]",
+          "group relative flex items-center mx-[8px] rounded-[4px] h-[32px] w-[calc(100%-15px)]",
           "transition-[color,background-color] duration-300 ease-in-out",
           `${!bottomMenuItems.includes(item.id) ? "mb-[8px]" : `${item.id === "user-avatar" ? "pt-[32px]" : ""}`}`,
           "px-3 justify-start",
           isSelected
             ? "bg-[#666666] text-white"
-            : "bg-transparent text-[#6B7280] hover:bg-[#666666] hover:text-white"
+            : "bg-transparent text-[#333333] hover:bg-[#666666] hover:text-white"
         )}
       >
         <div

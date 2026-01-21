@@ -1,16 +1,9 @@
-import { CustomBreadCrumbs } from "@components/breadCrumbs/BreadCrumbs";
-import { Button } from "@components/buttons/button/Button";
-import { SettingsHeader } from "@components/settingsHeader";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, Button, Tab, Tabs } from "@mui/material";
 import TabContent from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRolesTabContent";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-
-const StyledSettingsHeader = styled(SettingsHeader)`
-  margin-bottom: ${({ theme }) => theme.spacing(1)};
-`;
 
 const Container = styled(Box)`
   display: flex;
@@ -21,7 +14,8 @@ const Toolbar = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  margin-bottom: ${({ theme }) => theme.spacing(4)};
+    padding-bottom: 18px;
 `;
 
 const RightActions = styled(Box)`
@@ -31,26 +25,31 @@ const RightActions = styled(Box)`
 `;
 
 const StyledTabs = styled(Tabs)`
-  background: ${({ theme }) => theme.tokens.color.overlay.brandLight};
+  background: ${({ theme }) => theme.tokens.color.background.primary};
   width: 100%;
   margin-bottom: ${({ theme }) => theme.spacing(1)};
+  margin-top: ${({ theme }) => theme.spacing(1)};
+  border: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
+  // border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
 
   & .Mui-selected {
-    background: ${({ theme }) => theme.tokens.color.background.primary};
     color: ${({ theme }) => theme.tokens.color.text.primary};
   }
 
   & .MuiTabs-indicator {
-    height: 0.25rem;
-    border-radius: 8px;
+    height: 2px;
+    border-radius: 2px;
+    background: ${({ theme }) => theme.tokens.color.brand.primary};
   }
 `;
 
 const StyledTab = styled(Tab)`
   color: ${({ theme }) => theme.tokens.color.text.primary};
-  font-size: ${({ theme }) => theme.tokens.typography.fontSize.lg};
+  font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
   font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
   text-transform: none;'
+  min-height: 40px;
+  padding: ${({ theme }) => theme.spacing(1, 2)};
 `;
 
 export const SystemRoles: React.FC = () => {
@@ -67,12 +66,28 @@ export const SystemRoles: React.FC = () => {
 
   return (
     <Container>
-      <StyledSettingsHeader title="Roles & Permissions" />
-      <CustomBreadCrumbs breadcrumbs={[{ label: "Home", href: "/settings/admin/roles-permissions" }, { label: "System Roles" }]} />
 
-      <Toolbar>
+      <Toolbar >
         <RightActions>
-          <Button size="sm" onClick={handleCreateCustomRole} startIcon={<AddIcon />}>
+          <Button
+            variant="contained"
+            onClick={handleCreateCustomRole}
+            startIcon={<AddIcon fontSize="small" />}
+            sx={{
+              height: "36px",
+              backgroundColor: "#6E41E2",
+              textTransform: "none",
+              fontSize: "12px",
+              fontWeight: 500,
+              borderRadius: "4px",
+              boxShadow: "none",
+              color: "#FFFFFF",
+              "&:hover": {
+                backgroundColor: "#7B52F4",
+                boxShadow: "none",
+              },
+            }}
+          >
             Create Custom Role
           </Button>
         </RightActions>

@@ -153,7 +153,7 @@ export const SettingsNavigation: React.FC = () => {
       <div className="flex-1 flex flex-col gap-3">
         {navigationSections.map((section) => (
           <div key={section.id} className="px-1 flex flex-col gap-1.5">
-            <h3 className="px-[8px] text-[#666666] text-[16px] font-[500] leading-[18px] py-[10px]">
+            <h3 className="px-[8px] text-[#333333] text-[16px] font-[400] leading-[18px] py-[10px]">
               {section.title}
             </h3>
             {section.items.map((item) => {
