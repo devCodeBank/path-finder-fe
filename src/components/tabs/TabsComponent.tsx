@@ -29,6 +29,7 @@ const StyledTabs = styled(Tabs)`
   .MuiTabs-indicator {
     height: 0.25rem;
     border-radius: 4px;
+    background-color: #6E41E2;
   }
 `;
 

@@ -1,3 +1,4 @@
+import TabsComponent from "@/components/tabs/TabsComponent";
 import AddIcon from "@mui/icons-material/Add";
 import { Box, Button, Tab, Tabs } from "@mui/material";
 import TabContent from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRolesTabContent";
@@ -92,13 +93,21 @@ export const SystemRoles: React.FC = () => {
           </Button>
         </RightActions>
       </Toolbar>
-      <StyledTabs value={value} onChange={handleChange}>
+      <TabsComponent
+        tabs={[
+          { label: "Super Admin", value: "super-admin", content: <Box><TabContent tabName="super-admin" /></Box> },
+          { label: "Admin", value: "admin", content: <Box><TabContent tabName="admin" /></Box> },
+          { label: "Standard User", value: "standard-user", content: <Box><TabContent tabName="standard-user" /></Box> },
+          { label: "Collaborator", value: "collaborator", content: <Box><TabContent tabName="collaborator" /></Box> },
+        ]}
+      />
+      {/* <StyledTabs value={value} onChange={handleChange}>
         <StyledTab label="Super Admin" value="super-admin" />
         <StyledTab label="Admin" value="admin" />
         <StyledTab label="Standard User" value="standard-user" />
         <StyledTab label="Collaborator" value="collaborator" />
-      </StyledTabs>
-      <TabContent tabName={value} />
+      </StyledTabs> */}
+      {/* <TabContent tabName={value} /> */}
     </Container>
   );
 };

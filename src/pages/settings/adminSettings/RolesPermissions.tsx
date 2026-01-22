@@ -7,8 +7,8 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import { Button, IconButton } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import { Button, IconButton, Menu, MenuItem } from "@mui/material";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 interface RoleRow {
@@ -48,15 +48,7 @@ const getMockRoles = (): RoleRow[] => {
 export const RolesPermissions: React.FC = () => {
   const navigate = useNavigate();
   const rows = getMockRoles();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const selectAllRef = useRef<HTMLInputElement | null>(null);
-  const allSelected = rows.length > 0 && selectedIds.length === rows.length;
-  const isIndeterminate = selectedIds.length > 0 && selectedIds.length < rows.length;
-
-  useEffect(() => {
-    if (!selectAllRef.current) return;
-    selectAllRef.current.indeterminate = isIndeterminate;
-  }, [isIndeterminate]);
+  const [anchorByRowId, setAnchorByRowId] = useState<Record<string, HTMLElement | null>>({});
 
   const handleFilterClick = () => {
     // TODO: implement filter panel/modal
@@ -70,104 +62,94 @@ export const RolesPermissions: React.FC = () => {
   const handleCreateCustomRole = () => {
     navigate("/settings/admin/roles-permissions/create-custom");
   };
+  const handleOpenRowMenu = (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorByRowId((prev) => ({ ...prev, [rowId]: event.currentTarget }));
+  };
+
+  const handleCloseRowMenu = (rowId: string) => () => {
+    setAnchorByRowId((prev) => ({ ...prev, [rowId]: null }));
+  };
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      {/* <SettingsHeader title="Roles & Permissions" /> */}
+    <div className="flex flex-col w-full">
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-[13px] text-[#333333]/70">
-          <SecurityOutlinedIcon fontSize="small" />
-          <span>{rows.length} custom roles</span>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outlined"
-            onClick={handleFilterClick}
-            startIcon={<FilterAltOutlinedIcon fontSize="small" />}
-            sx={{
-              height: "36px",
+
+      <div className="flex flex-wrap items-center justify-end gap-3 mt-2 mb-6">
+        <Button
+          variant="outlined"
+          onClick={handleFilterClick}
+          startIcon={<FilterAltOutlinedIcon fontSize="small" />}
+          sx={{
+            height: "36px",
+            borderColor: "#CCCCCC80",
+            color: "#333333",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            borderRadius: "4px",
+            boxShadow: "none",
+            "&:hover": {
               borderColor: "#CCCCCC80",
-              color: "#333333",
-              textTransform: "none",
-              fontSize: "12px",
-              fontWeight: 500,
-              borderRadius: "4px",
+              backgroundColor: "#F3F4F6",
               boxShadow: "none",
-              "&:hover": {
-                borderColor: "#CCCCCC80",
-                backgroundColor: "#F3F4F6",
-                boxShadow: "none",
-              },
-            }}
-          >
-            Filters
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={handleViewSystemRoles}
-            startIcon={<VisibilityOutlinedIcon fontSize="small" />}
-            sx={{
-              height: "36px",
+            },
+          }}
+        >
+          Filters
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={handleViewSystemRoles}
+          startIcon={<VisibilityOutlinedIcon fontSize="small" />}
+          sx={{
+            height: "36px",
+            borderColor: "#CCCCCC80",
+            color: "#333333",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            borderRadius: "4px",
+            boxShadow: "none",
+            "&:hover": {
               borderColor: "#CCCCCC80",
-              color: "#333333",
-              textTransform: "none",
-              fontSize: "12px",
-              fontWeight: 500,
-              borderRadius: "4px",
+              backgroundColor: "#F3F4F6",
               boxShadow: "none",
-              "&:hover": {
-                borderColor: "#CCCCCC80",
-                backgroundColor: "#F3F4F6",
-                boxShadow: "none",
-              },
-            }}
-          >
-            View System Roles
-          </Button>
-          <Button
-            variant="contained"
-            onClick={handleCreateCustomRole}
-            startIcon={<AddIcon fontSize="small" />}
-            sx={{
-              height: "36px",
-              backgroundColor: "#6E41E2",
-              textTransform: "none",
-              fontSize: "12px",
-              fontWeight: 500,
-              borderRadius: "4px",
+            },
+          }}
+        >
+          View System Roles
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleCreateCustomRole}
+          startIcon={<AddIcon fontSize="small" />}
+          sx={{
+            height: "36px",
+            backgroundColor: "#6E41E2",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            borderRadius: "4px",
+            boxShadow: "none",
+            color: "#FFFFFF",
+            "&:hover": {
+              backgroundColor: "#7B52F4",
               boxShadow: "none",
-              color: "#FFFFFF",
-              "&:hover": {
-                backgroundColor: "#7B52F4",
-                boxShadow: "none",
-              },
-            }}
-          >
-            Create Custom Role
-          </Button>
-        </div>
+            },
+          }}
+        >
+          Create Custom Role
+        </Button>
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="grid grid-cols-[0.4fr_2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[12px] font-[500] text-[#333333]/70 border-b border-[#CCCCCC80] bg-[#FAFAFA]">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              ref={selectAllRef}
-              className="h-[14px] w-[14px] rounded border border-[#CCCCCC80] accent-[#57CC4D]"
-              checked={allSelected}
-              onChange={() => {
-                if (isIndeterminate || allSelected) {
-                  setSelectedIds([]);
-                } else {
-                  setSelectedIds(rows.map((row) => row.id));
-                }
-              }}
-              aria-checked={isIndeterminate ? "mixed" : allSelected}
-              aria-label="Select all roles"
-            />
+        <div className="px-4 h-[52px] flex items-center ">
+          <div className="flex items-center gap-2 text-[13px] text-[#333333]/70">
+            <SecurityOutlinedIcon fontSize="small" />
+            <span>{rows.length} custom roles</span>
           </div>
+        </div>
+        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center">
           <span>Custom Role Name</span>
           <span>Description</span>
           <span>Created By</span>
@@ -178,25 +160,10 @@ export const RolesPermissions: React.FC = () => {
           {rows.map((row) => (
             <div
               key={row.id}
-              className="grid grid-cols-[0.4fr_2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
+              className="grid grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] font-[400] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={selectedIds.includes(row.id)}
-                  onChange={(event) => {
-                    setSelectedIds((prev) =>
-                      event.target.checked
-                        ? [...prev, row.id]
-                        : prev.filter((id) => id !== row.id)
-                    );
-                  }}
-                  aria-label={`Select ${row.customRoleName}`}
-                  className="h-[14px] w-[14px] rounded border border-[#CCCCCC80] accent-[#57CC4D]"
-                />
-              </div>
               <span className="font-[500]">{row.customRoleName}</span>
-              <span className="text-[#333333]/80 truncate max-w-[420px]">{row.description}</span>
+              <span className="text-[#333333] truncate max-w-[420px]">{row.description}</span>
               <div className="flex flex-col text-[12px] text-[#333333]/80">
                 <span className="text-[13px] text-[#333333]">{row.createdBy}</span>
                 <span>{row.createdDate}</span>
@@ -205,6 +172,7 @@ export const RolesPermissions: React.FC = () => {
                 <IconButton
                   aria-label={`row actions for ${row.customRoleName}`}
                   size="small"
+                  onClick={handleOpenRowMenu(row.id)}
                   sx={{
                     border: "1px solid #CCCCCC80",
                     borderRadius: "4px",
@@ -214,6 +182,33 @@ export const RolesPermissions: React.FC = () => {
                 >
                   <MoreVertIcon fontSize="small" />
                 </IconButton>
+                <Menu
+                  anchorEl={anchorByRowId[row.id]}
+                  open={Boolean(anchorByRowId[row.id])}
+                  onClose={handleCloseRowMenu(row.id)}
+                  PaperProps={{
+                    sx: {
+                      borderRadius: "6px",
+                      minWidth: "100px",
+                      boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
+                      border: "1px solid #E5E5E580",
+                      backgroundColor: "#FFFFFF",
+                      py: 0.5,
+                    },
+                  }}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
+                >
+                  <MenuItem onClick={handleCloseRowMenu(row.id)} sx={{ fontSize: "13px", color: "#333333" }}>
+                    Edit
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseRowMenu(row.id)} sx={{ fontSize: "13px", color: "#333333" }}>
+                    Disable
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseRowMenu(row.id)} sx={{ fontSize: "13px", color: "#333333" }}>
+                    View
+                  </MenuItem>
+                </Menu>
               </div>
             </div>
           ))}

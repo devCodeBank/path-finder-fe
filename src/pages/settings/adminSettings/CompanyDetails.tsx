@@ -43,10 +43,10 @@ const timeZoneOptions = (() => {
 })();
 
 const currencyOptions = [
-  { value: "nzd", label: "Dollar ($NZD - New Zealand)" },
-  { value: "usd", label: "Dollar ($USD - United States)" },
-  { value: "aud", label: "Dollar ($AUD - Australia)" },
-  { value: "eur", label: "Euro (€EUR - Europe)" },
+  { value: "$NZD - New Zealand", label: "Dollar ($NZD - New Zealand)" },
+  { value: "$USD - United States", label: "Dollar ($USD - United States)" },
+  { value: "$AUD - Australia", label: "Dollar ($AUD - Australia)" },
+  { value: "€EUR - Europe", label: "Euro (€EUR - Europe)" },
 ];
 
 export const CompanyDetails: React.FC = () => {
@@ -59,7 +59,7 @@ export const CompanyDetails: React.FC = () => {
     accountType: "Agency",
     email: "john.d@acmecorp.com",
     timeZone: "Pacific/Auckland",
-    currency: "nzd",
+    currency: "$NZD - New Zealand",
     createdOn: "Sat, June 21, 2025, 5:03 pm",
   });
 
@@ -80,7 +80,8 @@ export const CompanyDetails: React.FC = () => {
   };
 
   const getCurrencyLabel = (currencyValue: string) => {
-    const c = currencyOptions.find((o) => o.value === currencyValue);
+    const normalized = currencyValue.toLowerCase();
+    const c = currencyOptions.find((o) => o.value === normalized);
     return c ? c.label : currencyValue;
   };
 
@@ -90,14 +91,7 @@ export const CompanyDetails: React.FC = () => {
   };
 
   const isFieldReadOnly = (field: keyof CompanyDetailsFormData) => {
-    return [
-      "accountType",
-      "country",
-      "email",
-      "currency",
-      "accountId",
-      "createdOn",
-    ].includes(field);
+    return field !== "website";
   };
 
   const renderField = (
@@ -149,7 +143,7 @@ export const CompanyDetails: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
+    <div className="flex flex-col gap-4 w-full max-w-full font-sans pb-10">
 
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between">
@@ -215,7 +209,7 @@ export const CompanyDetails: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 mt-4">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {renderField("Company Name", formData.companyName, "companyName")}
           {renderField("Account Type", formData.accountType, "accountType")}

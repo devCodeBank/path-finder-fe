@@ -84,6 +84,7 @@ export interface SelectProps {
     maxVisibleOptions?: number;
     floatLabel?: boolean;
     required?: boolean;
+    placeholder?: string;
 }
 
 const FloatingLabelSelect = ({
@@ -98,7 +99,8 @@ const FloatingLabelSelect = ({
     disabled,
     maxVisibleOptions,
     floatLabel,
-    required
+    required,
+    placeholder
 }: SelectProps) => {
     const hasValue = value || defaultValue;
     const [isOpen, setIsOpen] = React.useState(false);
@@ -106,6 +108,7 @@ const FloatingLabelSelect = ({
     const [menuStyle, setMenuStyle] = React.useState<React.CSSProperties | null>(null);
     const selectedValue = value ?? defaultValue ?? "";
     const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label ?? "";
+    const placeholderText = placeholder ?? "Select";
     const visibleCount = maxVisibleOptions ? Math.min(maxVisibleOptions, options.length) : 0;
 
     React.useEffect(() => {
@@ -155,7 +158,14 @@ const FloatingLabelSelect = ({
                                 className
                             )}
                         >
-                            <span className="block truncate">{selectedLabel}</span>
+                            <span
+                                className={cn(
+                                    "block truncate",
+                                    selectedLabel ? "text-[#333333]" : "text-[#333333]/70"
+                                )}
+                            >
+                                {selectedLabel || placeholderText}
+                            </span>
                         </button>
                         <ChevronDown className={cn(
                             "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171] transition-transform",
@@ -203,7 +213,9 @@ const FloatingLabelSelect = ({
                                 className
                             )}
                         >
-                            <option value="" disabled hidden />
+                            <option value="" disabled hidden>
+                                {placeholderText}
+                            </option>
                             {options.map((opt) => (
                                 <option key={opt.value} value={opt.value}>
                                     {opt.label}

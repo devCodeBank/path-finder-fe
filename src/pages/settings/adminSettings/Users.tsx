@@ -1,11 +1,10 @@
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
@@ -229,13 +228,12 @@ export const Users: React.FC = () => {
   const rows: UserRow[] = getMockUsers();
   const [anchorByRowId, setAnchorByRowId] = useState<Record<string, HTMLElement | null>>({});
   const [isInviteOpen, setIsInviteOpen] = useState(false);
+  const [isInviteVisible, setIsInviteVisible] = useState(false);
   const [showInviteErrors, setShowInviteErrors] = useState(false);
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
-  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [detailsUser, setDetailsUser] = useState<UserRow | null>(null);
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
   const [inviteMode, setInviteMode] = useState<"invite" | "edit" | "resend">("invite");
-  const selectAllRef = useRef<HTMLInputElement | null>(null);
+  const inviteCloseTimerRef = useRef<number | null>(null);
   const [inviteForm, setInviteForm] = useState<InviteUserForm>({
     firstName: "",
     lastName: "",
@@ -263,7 +261,7 @@ export const Users: React.FC = () => {
     setShowInviteErrors(false);
     setEditingUser(null);
     setInviteMode("invite");
-    setIsInviteOpen(true);
+    openInvitePanel();
   };
 
   const handleEditUser = (row: UserRow) => {
@@ -284,7 +282,7 @@ export const Users: React.FC = () => {
       roles: assignedRoles,
     }));
     setShowInviteErrors(false);
-    setIsInviteOpen(true);
+    openInvitePanel();
   };
 
   const handleResendInvite = (row: UserRow) => {
@@ -306,7 +304,26 @@ export const Users: React.FC = () => {
       roles: assignedRoles,
     }));
     setShowInviteErrors(false);
+    openInvitePanel();
+  };
+  const openInvitePanel = () => {
+    if (inviteCloseTimerRef.current) {
+      window.clearTimeout(inviteCloseTimerRef.current);
+      inviteCloseTimerRef.current = null;
+    }
     setIsInviteOpen(true);
+    requestAnimationFrame(() => setIsInviteVisible(true));
+  };
+
+  const closeInvitePanel = () => {
+    setIsInviteVisible(false);
+    if (inviteCloseTimerRef.current) {
+      window.clearTimeout(inviteCloseTimerRef.current);
+    }
+    inviteCloseTimerRef.current = window.setTimeout(() => {
+      setIsInviteOpen(false);
+      inviteCloseTimerRef.current = null;
+    }, 300);
   };
   const handleFilterClick = () => {
     console.warn("Filter clicked");
@@ -339,28 +356,19 @@ export const Users: React.FC = () => {
   };
 
   const isInviteMissing = (value: string) => showInviteErrors && value.trim() === "";
-  const allSelected = rows.length > 0 && selectedUserIds.length === rows.length;
-  const isIndeterminate = selectedUserIds.length > 0 && selectedUserIds.length < rows.length;
 
   const getMenuState = (status: UserStatus) => {
     return {
       edit: status === "Active",
       resendInvite: status === "Link Expired",
       copyInviteLink: status === "Pending",
-      deleteUser: status === "Active" || status === "Pending" || status === "Link Expired",
-      disableUser: status === "Locked Out",
+      deleteUser: status === "Pending" || status === "Link Expired",
+      disableUser: status === "Active",
       reactivateUser: status === "Disabled",
       viewDetails: status === "Active" || status === "Disabled" || status === "Locked Out",
       unlockUser: status === "Locked Out",
     };
   };
-
-  useEffect(() => {
-    if (!selectAllRef.current) {
-      return;
-    }
-    selectAllRef.current.indeterminate = isIndeterminate;
-  }, [isIndeterminate]);
 
   return (
     <Container>
@@ -416,91 +424,12 @@ export const Users: React.FC = () => {
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
         <div className="px-4 h-[52px] flex items-center">
-          {selectedUserIds.length > 0 ? (
-            <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-              <button
-                type="button"
-                className=" bg-white text-[#E53935] "
-                onClick={() => setIsDeleteConfirmOpen(true)}
-                aria-label="Delete selected users"
-              >
-                <DeleteOutlineIcon fontSize="small" />
-              </button>
-              <div className="flex items-center gap-2">
-                <span className="font-[400]">{selectedUserIds.length}</span>
-                <span className="font-[400]">Selected</span>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-              <PeopleOutlineIcon fontSize="small" />
-              <span>{rows.length} total users</span>
-            </div>
-          )}
-        </div>
-        <div className="grid h-[52px] grid-cols-[0.4fr_2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-t border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              ref={selectAllRef}
-              className="sr-only"
-              checked={allSelected}
-              onChange={() => {
-                if (isIndeterminate) {
-                  setSelectedUserIds([]);
-                } else if (selectedUserIds.length === rows.length) {
-                  setSelectedUserIds([]);
-                } else if (selectedUserIds.length === 0) {
-                  setSelectedUserIds(rows.map((row) => row.id));
-                } else {
-                  setSelectedUserIds([]);
-                }
-              }}
-              aria-checked={isIndeterminate ? "mixed" : allSelected}
-              aria-label="Select all users"
-            />
-            <span
-              className={cn(
-                "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center cursor-pointer",
-                (allSelected || isIndeterminate) && "bg-[#57CC4D] border-[#57CC4D]"
-              )}
-              onClick={() => {
-                if (isIndeterminate || selectedUserIds.length === rows.length) {
-                  setSelectedUserIds([]);
-                } else {
-                  setSelectedUserIds(rows.map((row) => row.id));
-                }
-              }}
-              aria-hidden
-            >
-              {(allSelected || isIndeterminate) && (
-                <svg
-                  width="12"
-                  height="10"
-                  viewBox="0 0 12 10"
-                  fill="none"
-                >
-                  {isIndeterminate ? (
-                    <path
-                      d="M2 5L10 5"
-                      stroke="#FFFFFF"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  ) : (
-                    <path
-                      d="M1 5L4.5 8.5L11 1.5"
-                      stroke="#FFFFFF"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  )}
-                </svg>
-              )}
-            </span>
+          <div className="flex items-center gap-3 text-[13px] text-[#333333]">
+            <PeopleOutlineIcon fontSize="small" />
+            <span>{rows.length} total users</span>
           </div>
-
+        </div>
+        <div className="grid h-[52px] grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
           <span>User</span>
           <span>Role</span>
           <span>Status</span>
@@ -513,58 +442,8 @@ export const Users: React.FC = () => {
           {rows.map((row) => (
             <div
               key={row.id}
-              className="grid grid-cols-[0.4fr_2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
+              className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
-              <div className="flex items-center">
-                {/* Hidden native checkbox (logic preserved) */}
-                <input
-                  type="checkbox"
-                  checked={selectedUserIds.includes(row.id)}
-                  onChange={(event) => {
-                    setSelectedUserIds((prev) =>
-                      event.target.checked
-                        ? [...prev, row.id]
-                        : prev.filter((id) => id !== row.id)
-                    );
-                  }}
-                  aria-label={`Select ${row.name}`}
-                  className="sr-only"
-                />
-
-                {/* Custom checkbox UI */}
-                <span
-                  className={cn(
-                    "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center cursor-pointer",
-                    selectedUserIds.includes(row.id) &&
-                    "bg-[#57CC4D] border-[#57CC4D]"
-                  )}
-                  onClick={() => {
-                    setSelectedUserIds((prev) =>
-                      prev.includes(row.id)
-                        ? prev.filter((id) => id !== row.id)
-                        : [...prev, row.id]
-                    );
-                  }}
-                >
-                  {selectedUserIds.includes(row.id) && (
-                    <svg
-                      width="12"
-                      height="10"
-                      viewBox="0 0 12 10"
-                      fill="none"
-                    >
-                      <path
-                        d="M1 5L4.5 8.5L11 1.5"
-                        stroke="#FFFFFF"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  )}
-                </span>
-              </div>
-
               <div className="flex items-center gap-3">
                 <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 border border-[#CCCCCC80] flex items-center justify-center text-[11px] text-[#333333]">
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
@@ -709,8 +588,18 @@ export const Users: React.FC = () => {
       </div>
 
       {isInviteOpen && (
-        <div className="fixed inset-0 z-[2000] flex justify-end bg-[#00000066]">
-          <div className="w-[60vw] max-w-[60vw] h-full bg-white flex flex-col">
+        <div
+          className={[
+            "fixed inset-0 z-[2000] flex justify-end bg-[#00000066] transition-opacity duration-300",
+            isInviteVisible ? "opacity-100" : "opacity-0 pointer-events-none",
+          ].join(" ")}
+        >
+          <div
+            className={[
+              "w-[60vw] max-w-[60vw] h-full bg-white flex flex-col transition-transform duration-300 ease-out",
+              isInviteVisible ? "translate-x-0" : "translate-x-full",
+            ].join(" ")}
+          >
             <div className="px-6 py-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[600] text-[#333333]">
                 {editingUser ? "Edit User" : "Invite User"}
@@ -730,7 +619,7 @@ export const Users: React.FC = () => {
                   aria-label="Close"
                   size="small"
                   onClick={() => {
-                    setIsInviteOpen(false);
+                    closeInvitePanel();
                     setShowInviteErrors(false);
                     setEditingUser(null);
                     setInviteMode("invite");
@@ -749,7 +638,7 @@ export const Users: React.FC = () => {
                     labelClassName="text-[#333333]/70"
                     floatLabel
                     required
-                    placeholder="First Name"
+                    placeholder="Add First Name"
                     value={inviteForm.firstName}
                     onChange={handleInviteInputChange("firstName")}
                     className={cn(
@@ -768,7 +657,7 @@ export const Users: React.FC = () => {
                     labelClassName="text-[#333333]/70"
                     floatLabel
                     required
-                    placeholder="Last Name"
+                    placeholder="Add Last Name"
                     value={inviteForm.lastName}
                     onChange={handleInviteInputChange("lastName")}
                     className={cn(
@@ -787,7 +676,7 @@ export const Users: React.FC = () => {
                     labelClassName="text-[#333333]/70"
                     floatLabel
                     required
-                    placeholder="Email"
+                    placeholder="Add Email"
                     value={inviteForm.email}
                     onChange={handleInviteInputChange("email")}
                     className={cn(
@@ -807,6 +696,7 @@ export const Users: React.FC = () => {
                   value={inviteForm.team}
                   onValueChange={handleInviteSelectChange("team")}
                   options={teamOptions}
+                  placeholder="Select Team"
                   className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelInput
@@ -814,7 +704,7 @@ export const Users: React.FC = () => {
                   label="Job Title"
                   labelClassName="text-[#333333]/70"
                   floatLabel
-                  placeholder="Job Title"
+                  placeholder="Add Job Title"
                   value={inviteForm.jobTitle}
                   onChange={handleInviteInputChange("jobTitle")}
                   className={cn("w-full h-[56px]")}
@@ -824,7 +714,7 @@ export const Users: React.FC = () => {
                   label="Contact Number"
                   labelClassName="text-[#333333]/70"
                   floatLabel
-                  placeholder="Contact Number"
+                  placeholder="Add Contact Number"
                   value={inviteForm.contactNumber}
                   onChange={handleInviteInputChange("contactNumber")}
                   className={cn("w-full h-[56px]")}
@@ -838,6 +728,7 @@ export const Users: React.FC = () => {
                   onValueChange={handleInviteSelectChange("timeZone")}
                   options={timeZoneOptions}
                   maxVisibleOptions={10}
+                  placeholder="Select Time Zone"
                   className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelSelect
@@ -848,6 +739,7 @@ export const Users: React.FC = () => {
                   value={inviteForm.city}
                   onValueChange={handleInviteSelectChange("city")}
                   options={cityOptions}
+                  placeholder="Select City"
                   className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelSelect
@@ -858,6 +750,7 @@ export const Users: React.FC = () => {
                   value={inviteForm.state}
                   onValueChange={handleInviteSelectChange("state")}
                   options={stateOptions}
+                  placeholder="Select State"
                   className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelSelect
@@ -868,6 +761,7 @@ export const Users: React.FC = () => {
                   value={inviteForm.country}
                   onValueChange={handleInviteSelectChange("country")}
                   options={countryOptions}
+                  placeholder="Select Country"
                   className={cn("w-full h-[56px]")}
                 />
               </div>
@@ -991,7 +885,7 @@ export const Users: React.FC = () => {
               <Button
                 variant="outlined"
                 onClick={() => {
-                  setIsInviteOpen(false);
+                  closeInvitePanel();
                   setShowInviteErrors(false);
                   setEditingUser(null);
                   setInviteMode("invite");
@@ -1033,65 +927,6 @@ export const Users: React.FC = () => {
                 onClick={() => setShowInviteErrors(true)}
               >
                 {inviteMode === "resend" ? "Resend Invite" : inviteMode === "edit" ? "Save Changes" : "Send Invite"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isDeleteConfirmOpen && (
-        <div className="fixed inset-0 z-[2100] flex items-center justify-center bg-[#00000066] p-6">
-          <div className="w-full max-w-[360px] rounded-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024]">
-            <div className="px-5 py-4 text-[14px] font-[600] text-[#333333] border-b border-[#CCCCCC80]">
-              Do you want to delete?
-            </div>
-            <div className="px-5 py-4 text-[13px] text-[#333333]/70">
-              This will remove the selected users from the list.
-            </div>
-            <div className="px-5 py-4 border-t border-[#CCCCCC80] flex justify-end gap-2">
-              <Button
-                variant="outlined"
-                onClick={() => setIsDeleteConfirmOpen(false)}
-                sx={{
-                  height: "32px",
-                  borderColor: "#CCCCCC80",
-                  color: "#333333",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    borderColor: "#CCCCCC80",
-                    backgroundColor: "#F3F4F6",
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                No
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  setSelectedUserIds([]);
-                  setIsDeleteConfirmOpen(false);
-                }}
-                sx={{
-                  height: "32px",
-                  backgroundColor: "#6E41E2",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  color: "#FFFFFF",
-                  "&:hover": {
-                    backgroundColor: "#7B52F4",
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                Yes
               </Button>
             </div>
           </div>

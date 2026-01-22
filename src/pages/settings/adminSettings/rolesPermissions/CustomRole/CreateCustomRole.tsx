@@ -14,9 +14,10 @@ const Toolbar = styled(Box)`
   align-items: center;
   justify-content: flex-end;
   flex-wrap: wrap;
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  margin-bottom: ${({ theme }) => theme.spacing(2)};
   gap: 24px;
-  padding-bottom: 18px;
+  padding-top: 10px;
+  padding-bottom: 24px;
 
   & > * {
     flex: 1;
@@ -44,6 +45,7 @@ export const SystemRoles: React.FC = () => {
           onChange={handleInputChange("roleName")}
           floatLabel
           className="w-full h-[56px]"
+          placeholder="Add Custom Role Name"
         />
         <FloatingLabelInput
           id="role-description"
@@ -54,6 +56,7 @@ export const SystemRoles: React.FC = () => {
           onChange={handleInputChange("roleDescription")}
           floatLabel
           className="w-full h-[56px]"
+          placeholder="Add Custom Role Dsescription"
         />
       </Toolbar>
       <TabContent />

@@ -256,7 +256,7 @@ const renderSectionRows = (
         {pairs.map((pair, index) => (
           <div
             key={`${pair[0]}-${index}`}
-            className="grid grid-cols-[2.2fr_0.3fr_2.2fr_0.3fr] gap-2 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[2.2fr_0.3fr_2.2fr_0.3fr] gap-10 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
             <span className="truncate">{pair[0]}</span>
             <div className="flex justify-center">
@@ -300,7 +300,7 @@ const renderSectionRows = (
                   />
                   <span
                     className={cn(
-                      "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center cursor-pointer",
+                      "h-[16px] w-[16px]  rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center cursor-pointer",
                       checkedItems[`${sectionTitle}:${pair[1]}`] && "bg-[#57CC4D] border-[#57CC4D]"
                     )}
                     onClick={() => onToggle(`${sectionTitle}:${pair[1]}`)}
@@ -327,7 +327,7 @@ const renderSectionRows = (
         {items.map((item, index) => (
           <div
             key={`${item}-${index}`}
-            className="grid grid-cols-[1fr_24px] gap-2 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[1fr_24px] gap-10 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
             <span className="text-[12px] leading-[16px]">{item}</span>
             <div className="flex justify-center">
@@ -373,14 +373,21 @@ export const CustomRoleContent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 border border-[#CCCCCC80] rounded-[4px]">
+    <div className="flex flex-col gap-4  rounded-[4px]">
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        {sections.map((section) => (
+        {sections.map((section, index) => (
           <div key={section.title}>
-            <div className="bg-[#FAFAFA] px-4 py-2 text-[12px] font-[600] text-[#333333] border-t border-[#CCCCCC80]">
+            <div
+              className={[
+                "bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333] ",
+                index > 0 ? "mt-6" : "",
+              ].join(" ")}
+            >
               {section.title}
             </div>
-            {renderSectionRows(section.title, section.items, checkedItems, handleToggle)}
+            <div className="border-b border-[#CCCCCC80]">
+              {renderSectionRows(section.title, section.items, checkedItems, handleToggle)}
+            </div>
           </div>
         ))}
       </div>

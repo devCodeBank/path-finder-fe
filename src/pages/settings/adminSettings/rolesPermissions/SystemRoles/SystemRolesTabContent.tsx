@@ -93,7 +93,7 @@ const Indicator: React.FC<{ enabled: boolean }> = ({ enabled }) => (
   <span
     className={[
       "inline-flex h-[16px] w-[16px] items-center justify-center rounded-[4px] border",
-      enabled ? "border-[#57CC4D] bg-[#57CC4D]" : "border-[#CCCCCC80] bg-white",
+      enabled ? "border-[#57CC4D]/60 bg-[#57CC4D]/60" : "border-[#D9D9D9] bg-[#F3F4F6]",
     ].join(" ")}
     aria-hidden="true"
   >
@@ -113,7 +113,7 @@ const renderSectionRows = (items: PermissionItem[]) => {
         {pairs.map((pair, index) => (
           <div
             key={`${pair[0]?.label ?? "row"}-${index}`}
-            className="grid grid-cols-[2.2fr_0.3fr_2.2fr_0.3fr] gap-2 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[2.2fr_24px_2.2fr_24px] gap-20 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
             <span className="truncate">{pair[0]?.label}</span>
             <div className="flex justify-center">{pair[0] && <Indicator enabled={pair[0].enabled} />}</div>
@@ -429,23 +429,30 @@ export const TabContent: React.FC<{ tabName: string }> = ({ tabName }) => {
   };
 
   return (
-    <div className="flex flex-col gap-4 border border-[#CCCCCC80] rounded-[4px] ">
+    <div className="flex flex-col gap-4  rounded-[4px] ">
       <p className="mt-3 pl-3 text-[13px] text-[#333333]/70">
         This role is system-defined and cannot be edited or deleted. If custom roles with specific permissions are required, a new role
         can be created.
       </p>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        {moduleSections.map((section) => (
+        {moduleSections.map((section, index) => (
           <div key={section.title}>
-            <div className="bg-[#FAFAFA] px-4 py-2 text-[12px] font-[600] text-[#333333] border-t border-[#CCCCCC80]">
+            <div
+              className={[
+                "bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80]",
+                index > 0 ? "mt-6" : "",
+              ].join(" ")}
+            >
               {section.title}
             </div>
-            {renderSectionRows(section.items)}
+            <div className="border-b border-[#CCCCCC80]">
+              {renderSectionRows(section.items)}
+            </div>
           </div>
         ))}
 
-        {settingsSections.map((section) => {
+        {settingsSections.map((section, index) => {
           const sectionKey = settingsSectionKeyMap[section.title];
           const items = section.items
             .map((item) => ({
@@ -455,11 +462,13 @@ export const TabContent: React.FC<{ tabName: string }> = ({ tabName }) => {
             .filter((item) => item.label);
           if (!items.length) return null;
           return (
-            <div key={section.title}>
-              <div className="bg-[#FAFAFA] px-4 py-2 text-[12px] font-[600] text-[#333333] border-t border-[#CCCCCC80]">
+            <div key={section.title} className={index === 0 && moduleSections.length > 0 ? "mt-5" : ""}>
+              <div className="bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
                 {section.title}
               </div>
-              {renderSectionRows(items)}
+              <div className={["border-b border-[#CCCCCC80]", index < settingsSections.length - 1 ? "mb-5" : ""].join(" ")}>
+                {renderSectionRows(items)}
+              </div>
             </div>
           );
         })}
