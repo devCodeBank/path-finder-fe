@@ -1,8 +1,8 @@
 import TabsComponent from "@/components/tabs/TabsComponent";
 import AddIcon from "@mui/icons-material/Add";
-import { Box, Button, Tab, Tabs } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import TabContent from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRolesTabContent";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
@@ -25,41 +25,9 @@ const RightActions = styled(Box)`
   gap: ${({ theme }) => theme.spacing(1)};
 `;
 
-const StyledTabs = styled(Tabs)`
-  background: ${({ theme }) => theme.tokens.color.background.primary};
-  width: 100%;
-  margin-bottom: ${({ theme }) => theme.spacing(1)};
-  margin-top: ${({ theme }) => theme.spacing(1)};
-  border: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
-  // border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
-
-  & .Mui-selected {
-    color: ${({ theme }) => theme.tokens.color.text.primary};
-  }
-
-  & .MuiTabs-indicator {
-    height: 2px;
-    border-radius: 2px;
-    background: ${({ theme }) => theme.tokens.color.brand.primary};
-  }
-`;
-
-const StyledTab = styled(Tab)`
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-  font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
-  font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
-  text-transform: none;'
-  min-height: 40px;
-  padding: ${({ theme }) => theme.spacing(1, 2)};
-`;
 
 export const SystemRoles: React.FC = () => {
   const navigate = useNavigate();
-  const [value, setValue] = useState("super-admin");
-
-  const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
-  };
 
   const handleCreateCustomRole = () => {
     navigate("/settings/admin/roles-permissions/create-custom");
@@ -101,13 +69,6 @@ export const SystemRoles: React.FC = () => {
           { label: "Collaborator", value: "collaborator", content: <Box><TabContent tabName="collaborator" /></Box> },
         ]}
       />
-      {/* <StyledTabs value={value} onChange={handleChange}>
-        <StyledTab label="Super Admin" value="super-admin" />
-        <StyledTab label="Admin" value="admin" />
-        <StyledTab label="Standard User" value="standard-user" />
-        <StyledTab label="Collaborator" value="collaborator" />
-      </StyledTabs> */}
-      {/* <TabContent tabName={value} /> */}
     </Container>
   );
 };
