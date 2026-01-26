@@ -132,7 +132,7 @@ export const Teams: React.FC = () => {
       <Toolbar>
         <RightActions>
           <Button
-            variant="contained"
+            variant="solid"
             onClick={handleCreateTeam}
             startIcon={<AddIcon fontSize="small" />}
             sx={{

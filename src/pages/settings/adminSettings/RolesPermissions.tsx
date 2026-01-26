@@ -8,7 +8,6 @@ import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { Button, IconButton, Menu, MenuItem, SvgIcon, Tooltip } from "@mui/material";
 import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import CreateCustomRole from "@pages/settings/adminSettings/rolesPermissions/CustomRole/CreateCustomRole";
 import SystemRoles from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRoles";
 import CloseXIcon from "@assets/icons/x.svg";
@@ -48,7 +47,6 @@ const getMockRoles = (): RoleRow[] => {
 };
 
 export const RolesPermissions: React.FC = () => {
-  const navigate = useNavigate();
   const rows = getMockRoles();
   const [anchorByRowId, setAnchorByRowId] = useState<Record<string, HTMLElement | null>>({});
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -211,7 +209,7 @@ export const RolesPermissions: React.FC = () => {
             <span>{rows.length} custom roles</span>
           </div>
         </div>
-        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#EAEAEA] items-center">
+        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#EAEAEA]/25 items-center">
           <span>Custom Role Name</span>
           <span>Description</span>
           <span>Created By</span>
