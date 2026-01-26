@@ -1,13 +1,17 @@
-import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import CloseIcon from "@mui/icons-material/Close";
+import { SvgIcon } from "@mui/material";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import LastPageIcon from "@mui/icons-material/LastPage";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
-import { Box, Button, IconButton, Menu, MenuItem } from "@mui/material";
+import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
+import CloseXIcon from "@assets/icons/x.svg";
 
 const Container = styled(Box)`
   display: flex;
@@ -17,7 +21,7 @@ const Container = styled(Box)`
 const Toolbar = styled(Box)`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 32px;
   margin-bottom: 24px;
   margin-top: 8px;
@@ -231,9 +235,12 @@ export const Users: React.FC = () => {
   const [isInviteVisible, setIsInviteVisible] = useState(false);
   const [showInviteErrors, setShowInviteErrors] = useState(false);
   const [detailsUser, setDetailsUser] = useState<UserRow | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
   const [inviteMode, setInviteMode] = useState<"invite" | "edit" | "resend">("invite");
   const inviteCloseTimerRef = useRef<number | null>(null);
+  const detailsCloseTimerRef = useRef<number | null>(null);
   const [inviteForm, setInviteForm] = useState<InviteUserForm>({
     firstName: "",
     lastName: "",
@@ -325,6 +332,28 @@ export const Users: React.FC = () => {
       inviteCloseTimerRef.current = null;
     }, 300);
   };
+
+  const openDetailsPanel = (row: UserRow) => {
+    if (detailsCloseTimerRef.current) {
+      window.clearTimeout(detailsCloseTimerRef.current);
+      detailsCloseTimerRef.current = null;
+    }
+    setDetailsUser(row);
+    setIsDetailsOpen(true);
+    requestAnimationFrame(() => setIsDetailsVisible(true));
+  };
+
+  const closeDetailsPanel = () => {
+    setIsDetailsVisible(false);
+    if (detailsCloseTimerRef.current) {
+      window.clearTimeout(detailsCloseTimerRef.current);
+    }
+    detailsCloseTimerRef.current = window.setTimeout(() => {
+      setIsDetailsOpen(false);
+      setDetailsUser(null);
+      detailsCloseTimerRef.current = null;
+    }, 300);
+  };
   const handleFilterClick = () => {
     console.warn("Filter clicked");
   };
@@ -374,11 +403,24 @@ export const Users: React.FC = () => {
     <Container>
 
 
-      <Toolbar >
+      <Toolbar>
         <Button
           variant="outlined"
           onClick={handleFilterClick}
-          startIcon={<FilterAltOutlinedIcon fontSize="small" />}
+          startIcon={
+            <SvgIcon
+              fontSize="small"
+              viewBox="0 0 20 20"
+              sx={{ stroke: "currentColor", fill: "none", color: "#CCCCCC" }}
+            >
+              <path
+                d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </SvgIcon>
+          }
           sx={{
             width: "110px",
             height: "36px",
@@ -386,7 +428,7 @@ export const Users: React.FC = () => {
             color: "#333333",
             textTransform: "none",
             fontSize: "12px",
-            fontWeight: 500,
+            fontWeight: 400,
             borderRadius: "4px",
             boxShadow: "none",
             "&:hover": {
@@ -445,7 +487,7 @@ export const Users: React.FC = () => {
               className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
               <div className="flex items-center gap-3">
-                <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 border border-[#CCCCCC80] flex items-center justify-center text-[11px] text-[#333333]">
+                <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25  flex items-center justify-center text-[11px] text-[#333333]">
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                 </div>
                 <div className="flex flex-col">
@@ -533,7 +575,7 @@ export const Users: React.FC = () => {
                           disabled={!menuState.viewDetails}
                           onClick={() => {
                             handleCloseRowMenu(row.id)();
-                            setDetailsUser(row);
+                            openDetailsPanel(row);
                           }}
                           sx={{ fontSize: "13px", color: menuState.viewDetails ? "#333333" : "#999999" }}
                         >
@@ -558,30 +600,40 @@ export const Users: React.FC = () => {
           <span>Showing 1 to {rows.length} of {rows.length} results</span>
           <div className="flex items-center gap-2">
             <span>Rows per page</span>
-            <select
-              className="h-[30px] rounded-[4px] border border-[#CCCCCC80] bg-white px-2 text-[12px] text-[#333333]"
-              defaultValue="20"
-            >
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="50">50</option>
-            </select>
+            <div className="relative">
+              <select
+                className="h-[30px] min-w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333]"
+                defaultValue="20"
+              >
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+              <svg
+                className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#666666]"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="M5.25 7.5L10 12.25L14.75 7.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <span>Page 1 of 1</span>
-            <div className="flex items-center gap-1">
-              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
-                &laquo;
-              </button>
-              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
-                &lsaquo;
-              </button>
-              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
-                &rsaquo;
-              </button>
-              <button type="button" className="h-[28px] w-[28px] rounded-[4px] border border-[#CCCCCC80] text-[#666666]">
-                &raquo;
-              </button>
+            <div className="flex items-center gap-2">
+              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+                <FirstPageIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+                <NavigateBeforeIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+                <NavigateNextIcon fontSize="small" />
+              </IconButton>
+              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+                <LastPageIcon fontSize="small" />
+              </IconButton>
             </div>
           </div>
         </div>
@@ -600,8 +652,8 @@ export const Users: React.FC = () => {
               isInviteVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
-            <div className="px-6 py-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[600] text-[#333333]">
+            <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] flex items-center justify-between">
+              <span className="text-[16px] font-[500] text-[#333333]">
                 {editingUser ? "Edit User" : "Invite User"}
               </span>
               <div className="flex items-center gap-3">
@@ -615,21 +667,47 @@ export const Users: React.FC = () => {
                     Activation Link Expired
                   </span>
                 )}
-                <IconButton
-                  aria-label="Close"
-                  size="small"
-                  onClick={() => {
-                    closeInvitePanel();
-                    setShowInviteErrors(false);
-                    setEditingUser(null);
-                    setInviteMode("invite");
+                <Tooltip
+                  title="Close"
+                  arrow
+                  placement="bottom"
+                  componentsProps={{
+                    tooltip: {
+                      sx: {
+                        width: "40px",
+                        height: "20px",
+                        bgcolor: "#666666",
+                        fontSize: "11px",
+                        borderRadius: "4px",
+                        px: 1,
+                        py: 0.5,
+                        textAlign: "center",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      },
+                    },
+                    arrow: { sx: { color: "#666666" } },
+                    popper: { sx: { zIndex: 2300 } },
                   }}
                 >
-                  <CloseIcon fontSize="small" />
-                </IconButton>
+                  <button
+                    type="button"
+                    aria-label="Close"
+                    className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                    onClick={() => {
+                      closeInvitePanel();
+                      setShowInviteErrors(false);
+                      setEditingUser(null);
+                      setInviteMode("invite");
+                    }}
+                  >
+                    <img src={CloseXIcon} alt="" className="h-[8px] w-[8.5px]transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
+                  </button>
+                </Tooltip>
               </div>
             </div>
-            <div className="px-6 py-5 overflow-y-auto">
+            <div className="px-4 py-5 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col">
                   <FloatingLabelInput
@@ -818,14 +896,14 @@ export const Users: React.FC = () => {
               <div className="mt-6">
                 <div className="text-[13px] font-[500] text-[#333333] mb-2">Custom Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80]">
-                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 text-[12px] font-[500] text-[#333333]">
+                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 text-[14px] font-[500] text-[#333333]">
                     <span>Role Name</span>
                     <span>Description</span>
                   </div>
                   {customRoles.map((role) => (
                     <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 border-t border-[#CCCCCC80]">
                       <label
-                        className="flex items-center gap-3 text-[13px] text-[#333333] cursor-pointer select-none"
+                        className="flex items-center gap-3 text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
                       >
                         {/* Hidden native checkbox for accessibility */}
                         <input
@@ -861,27 +939,27 @@ export const Users: React.FC = () => {
                           )}
                         </span>
 
-                        <span>{role.name}</span>
+                        <span >{role.name}</span>
                       </label>
 
-                      <div className="text-[12px] text-[#333333]">{role.description}</div>
+                      <div className="text-[13px] text-[#333333]">{role.description}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="mt-6">
-                <div className="text-[13px] font-[500] text-[#333333] mb-2">User Email*</div>
-                <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[12px] text-[#333333]/70">
+                <div className="text-[14px] font-[500] text-[#333333] mb-2">User Email*</div>
+                <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[13px] font-[400] text-[#333333]/70">
                   {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
                 </div>
-                <div className="mt-2 text-[11px] text-[#333333]">
+                <div className="mt-2 text-[12px] text-[#333333]">
                   A link will be sent to the above email to complete the login process. For security reasons, the link to sign in will expire after 72 hours.
                 </div>
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
+            <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
               <Button
                 variant="outlined"
                 onClick={() => {
@@ -933,10 +1011,42 @@ export const Users: React.FC = () => {
         </div>
       )}
 
-      {detailsUser && (
-        <div className="fixed inset-0 z-[2200] flex justify-end bg-[#00000066]">
-          <div className="w-full max-w-[720px] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto">
-            <div className="p-4">
+      {isDetailsOpen && detailsUser && (
+        <div
+          className={[
+            "fixed inset-0 z-[2200] flex justify-end bg-[#00000066] transition-opacity duration-300",
+            isDetailsVisible ? "opacity-100" : "opacity-0 pointer-events-none",
+          ].join(" ")}
+        >
+          <div
+            className={[
+              "w-[60vw] max-w-[720px] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
+              isDetailsVisible ? "translate-x-0" : "translate-x-full",
+            ].join(" ")}
+          >
+            <div className="h-[52px] px-4 border-b border-[#CCCCCC80] flex items-center justify-between">
+              <span className="text-[16px] font-[500] text-[#333333]">User Details</span>
+              <Tooltip
+                title="Close"
+                arrow
+                placement="bottom"
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#666666", fontSize: "11px", borderRadius: "4px", px: 1, py: 0.5 } },
+                  arrow: { sx: { color: "#666666" } },
+                  popper: { sx: { zIndex: 2300 } },
+                }}
+              >
+                <button
+                  type="button"
+                  aria-label="Close details"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closeDetailsPanel}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[8px] w-[8.5px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
+                </button>
+              </Tooltip>
+            </div>
+            <div className="px-4 py-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
                 <div className="flex items-start gap-4">
                   <div className="h-[56px] w-[56px] rounded-full border border-[#CCCCCC80] bg-[#F3F4F6] flex items-center justify-center text-[14px] font-[600] text-[#333333]">
@@ -1033,7 +1143,7 @@ export const Users: React.FC = () => {
             <div className="px-4 pb-6 flex justify-end">
               <Button
                 variant="outlined"
-                onClick={() => setDetailsUser(null)}
+                onClick={closeDetailsPanel}
                 sx={{
                   height: "32px",
                   borderColor: "#CCCCCC80",

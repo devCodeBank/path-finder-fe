@@ -93,11 +93,11 @@ export const PrivacySecurity: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans ">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans ">
       {/* Default Security Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Default Security</h3>
+          <h3 className="text-[14px] font-[400] text-[#333333]">Default Security</h3>
         </div>
 
         <div className="px-5">
@@ -145,7 +145,7 @@ export const PrivacySecurity: React.FC = () => {
       {/* Login Security Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Login Security</h3>
+          <h3 className="text-[14px] font-[400] text-[#333333]">Login Security</h3>
         </div>
         <div className="px-5">
           <Toggle
@@ -168,7 +168,7 @@ export const PrivacySecurity: React.FC = () => {
       {/* Verification Methods Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Verification Methods</h3>
+          <h3 className="text-[14px] font-[400] text-[#333333]">Verification Methods</h3>
         </div>
         <div className="px-5">
           {/* Phone Number */}
@@ -290,7 +290,7 @@ export const PrivacySecurity: React.FC = () => {
       {/* Notifications Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Notifications</h3>
+          <h3 className="text-[14px] font-[400] text-[#333333]">Notifications</h3>
         </div>
         <div className="px-5">
           <Toggle
@@ -319,4 +319,3 @@ export const PrivacySecurity: React.FC = () => {
 };
 
 export default PrivacySecurity;
-

@@ -140,7 +140,7 @@ export const Notifications: React.FC = () => {
       {/* Do Not Disturb Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
         <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
+          <h3 className="text-[14px] font-[400] text-[#333333]">Do Not Disturb</h3>
         </div>
 
         <div className="px-4 min-h-[95px] flex items-center">
@@ -253,8 +253,8 @@ export const Notifications: React.FC = () => {
 
       {/* Days Off Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#F5F5F5]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[400] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
 
         <div className="p-4 min-h-[95px] flex items-center">
@@ -279,8 +279,8 @@ export const Notifications: React.FC = () => {
 
       {/* Email Notifications Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#F5F5F5]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[400] text-[#333333]">Email Notifications</h3>
         </div>
 
         <div className="p-4 min-h-[95px] flex items-center">
@@ -298,7 +298,7 @@ export const Notifications: React.FC = () => {
 
       {/* List Preferences Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#F5F5F5]">
+        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <p className="text-[14px] font-[500] text-[#333333]">
             Send email and push notifications for:
           </p>
@@ -411,6 +411,14 @@ export const Notifications: React.FC = () => {
         .dnd-time-input::-webkit-clear-button,
         .dnd-time-input::-webkit-inner-spin-button {
           display: none;
+        }
+        .dnd-time-input:disabled {
+          border-color: #CCCCCC80;
+          background-color: #F3F4F6;
+        }
+        .dnd-time-input:disabled:hover {
+          border-color: #CCCCCC80;
+          background-color: #F3F4F6;
         }
         .custom-scrollbar::-webkit-scrollbar {
           width: 4px;

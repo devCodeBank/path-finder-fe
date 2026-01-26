@@ -13,7 +13,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
             <Input
                 placeholder=" "
                 className={cn(
-                    'h-[56px] peer border-[#CCCCCC80] bg-white pb-1 text-[#333333]  hover:text-[#333333] font-[400] !text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/70 hover:placeholder:text-[#333333] focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100',
+                    'h-[56px] peer border-[#CCCCCC80] bg-white pb-1 text-[#333333] hover:text-[#333333] font-[500] text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/40 hover:placeholder:text-[#333333]/40 focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100',
                     className
                 )}
                 ref={ref}
@@ -31,7 +31,7 @@ const FloatingLabel = React.forwardRef<
     return (
         <Label
             className={cn(
-                'absolute start-2 z-10 origin-[0] transform px-2 text-[16px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333] top-1',
+                'absolute start-2 z-10 origin-[0] transform px-2 text-[14px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333] top-1 peer-disabled:font-[400] peer-disabled:text-[#9CA3AF]',
                 className,
             )}
             ref={ref}
@@ -57,9 +57,9 @@ const FloatingLabelInput = React.forwardRef<
                 htmlFor={id}
                 className={cn(
                     floatLabel
-                        ? "top-1 -translate-y-4 scale-75"
-                        : "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 top-1 -translate-y-4 scale-75",
-                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
+                        ? "top-1 -translate-y-4 scale-100"
+                        : "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 top-1 -translate-y-4 scale-100",
+                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-100 peer-focus:text-[#717171]",
                     labelClassName
                 )}
             >
@@ -154,14 +154,18 @@ const FloatingLabelSelect = ({
                             onClick={() => setIsOpen((prev) => !prev)}
                             onBlur={() => setIsOpen(false)}
                             className={cn(
-                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100",
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[500] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100",
                                 className
                             )}
                         >
                             <span
                                 className={cn(
                                     "block truncate",
-                                    selectedLabel ? "text-[#333333]" : "text-[#333333]/70"
+                                    disabled
+                                        ? "text-[#9CA3AF]"
+                                        : selectedLabel
+                                            ? "text-[#333333]"
+                                            : "text-[#333333]/40"
                                 )}
                             >
                                 {selectedLabel || placeholderText}
@@ -209,7 +213,7 @@ const FloatingLabelSelect = ({
                             defaultValue={defaultValue}
                             disabled={disabled}
                             className={cn(
-                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[500] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
                                 className
                             )}
                         >
@@ -229,11 +233,11 @@ const FloatingLabelSelect = ({
             <FloatingLabel
                 htmlFor={id}
                 className={cn(
-                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-[#717171]",
+                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-100 peer-focus:text-[#717171]",
                     floatLabel
-                        ? 'top-1 -translate-y-4 scale-75'
+                        ? 'top-1 -translate-y-4 scale-100'
                         : hasValue
-                            ? 'top-1 -translate-y-4 scale-75'
+                            ? 'top-1 -translate-y-4 scale-100'
                             : 'top-1/2 -translate-y-1/2 scale-100',
                     labelClassName
                 )}

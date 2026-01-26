@@ -55,7 +55,7 @@ export const colorTokens = {
     tertiary: "#9CA3AF",
     muted: "#777777",
     inverse: "#FFFFFF",
-    placeholder: "#9CA3AF",
+    placeholder: "#33333366",
     disabled: "#D1D5DB",
     link: "#6E41E2",
     linkHover: "#5B21B6",

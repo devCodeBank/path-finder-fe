@@ -15,6 +15,10 @@ const Label = styled.label`
   line-height: 1.2;
   font-weight: 500;
   color: ${({ theme }) => theme.tokens.color.text.primary};
+
+  &[data-disabled="true"] {
+    font-weight: 400;
+  }
 `;
 
 const RequiredIndicator = styled.span`
@@ -29,6 +33,8 @@ const StyledTextField = styled(TextField)`
 
   .MuiOutlinedInput-root {
     background-color: ${({ theme }) => theme.tokens.color.background.primary};
+    font-size: 13px;
+    font-weight: 500;
 
     & fieldset {
       border-color: ${({ theme }) => theme.tokens.color.border.mediumLight};
@@ -45,6 +51,7 @@ const StyledTextField = styled(TextField)`
 
     &.Mui-disabled {
       background-color: ${({ theme }) => theme.tokens.color.background.disabledLight};
+      font-weight: 400;
 
       & fieldset {
         border-color: ${({ theme }) => theme.tokens.color.border.mediumLight};
@@ -86,10 +93,11 @@ export const FormInput: React.FC<FormInputProps> = ({
   const showError = required && touched && (!value || value === "");
   const hasCustomError = errorMessage && touched;
   const helperText = hasCustomError ? errorMessage : showError ? "*Please fill in this field." : rest.helperText;
+  const isDisabled = !!rest.disabled;
 
   return (
     <Container>
-      <Label>
+      <Label data-disabled={isDisabled ? "true" : "false"}>
         {label}
         {required && <RequiredIndicator> *</RequiredIndicator>}
       </Label>

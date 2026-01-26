@@ -164,9 +164,9 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-full  font-sans h-[100%]">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans h-[100%]">
       {/* Top Profile Card */}
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between    my-[0px]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between">
         <div className="flex items-start gap-6">
           <div className="flex flex-col gap-2">
             {/* Avatar Box */}
@@ -176,10 +176,10 @@ export const Profile: React.FC = () => {
               </div>
             </div>
             {/* Upload Photo below avatar */}
-            <div className="flex items-center gap-1 cursor-pointer hover:text-purple-600 transition-colors group relative">
-              <span className="text-[13px] text-[#333333] font-[400] group-hover:text-purple-600">Upload Photo</span>
-              <span className="relative inline-flex items-center justify-center h-[16px] w-[16px]">
-                <InfoOutlined sx={{ fontSize: 12, color: '#666666', position: "relative", top: "1px" }} className="group-hover:!text-purple-600" />
+            <div className="flex items-center gap-1">
+              <span className="text-[13px] text-[#333333] font-[400]">Upload Photo</span>
+              <span className="relative inline-flex items-center justify-center h-[16px] w-[16px] cursor-pointer group">
+                <InfoOutlined sx={{ fontSize: 13, color: "#666666" }} className="group-hover:!text-purple-600" />
                 <span className="absolute left-[calc(100%+8px)] top-1/2 z-10 w-[260px] -translate-y-1/2 rounded-md bg-[#5A5A5A] px-3 py-2 text-[12px] text-white shadow-[0px_6px_16px_0px_#00000029] opacity-0 pointer-events-none group-hover:opacity-100">
                   <span className="absolute -left-1 top-1/2 h-2 w-2 -translate-y-1/2 rotate-45 bg-[#5A5A5A]" />
                   File type supported: PNG, JPG, JPEG (Up to 500KB), recommended size with 100% and height 50px
@@ -234,7 +234,7 @@ export const Profile: React.FC = () => {
       </div>
 
       {/* Details Grid Card */}
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4   my-[18px]">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {/* Row 1 */}
           {renderField("First Name", formData.firstName, "firstName")}

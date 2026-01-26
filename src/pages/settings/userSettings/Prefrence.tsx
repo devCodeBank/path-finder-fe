@@ -55,7 +55,7 @@ export const Prefrence: React.FC = () => {
   const [newsletter, setNewsletter] = useState(false);
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-full font-sans pb-10">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-10">
       <PreferenceCard
         title="Date Format"
         description="Select the date and time format to be used for your pathfinder account activity"

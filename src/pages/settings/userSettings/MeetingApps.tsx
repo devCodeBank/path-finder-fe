@@ -24,7 +24,7 @@ const IntegrationCard = ({
           <Icon className="h-12 w-12" />
         </div>
         <div className="flex flex-col gap-1">
-          <h4 className="text-[15px] font-[500] text-[#333333]">{title}</h4>
+          <h4 className="text-[14px] font-[500] text-[#333333]">{title}</h4>
           <p className="text-[13px] font-[400] text-[#333333]/70 leading-relaxed max-w-[500px]">{description}</p>
         </div>
       </div>
@@ -69,11 +69,11 @@ export const MeetingApps: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
-      <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-10">
+      <div className="flex flex-col gap-[18px]">
         {/* <h3 className="text-[16px] font-[500] text-[#333333] ml-1">Integrate Your Virtual Meeting Apps</h3> */}
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-[18px]">
           <IntegrationCard
             icon={GoogleMeetIcon}
             title="Google Meet Integration"

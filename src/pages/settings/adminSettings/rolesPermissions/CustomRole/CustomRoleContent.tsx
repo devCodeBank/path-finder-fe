@@ -256,7 +256,7 @@ const renderSectionRows = (
         {pairs.map((pair, index) => (
           <div
             key={`${pair[0]}-${index}`}
-            className="grid grid-cols-[2.2fr_0.3fr_2.2fr_0.3fr] gap-10 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[2.2fr_0.3fr_2.2fr_0.3fr] gap-10 px-4 py-2 text-[13px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
             <span className="truncate">{pair[0]}</span>
             <div className="flex justify-center">
@@ -327,9 +327,9 @@ const renderSectionRows = (
         {items.map((item, index) => (
           <div
             key={`${item}-${index}`}
-            className="grid grid-cols-[1fr_24px] gap-10 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[1fr_24px] gap-10 px-4 py-2 text-[13px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
-            <span className="text-[12px] leading-[16px]">{item}</span>
+            <span className="text-[13px] leading-[16px]">{item}</span>
             <div className="flex justify-center">
               <input
                 type="checkbox"
@@ -392,47 +392,6 @@ export const CustomRoleContent: React.FC = () => {
         ))}
       </div>
 
-      <div className="flex justify-end gap-3 px-4 pb-4">
-        <Button
-          variant="outlined"
-          sx={{
-            height: "32px",
-            borderColor: "#CCCCCC80",
-            color: "#333333",
-            textTransform: "none",
-            fontSize: "12px",
-            fontWeight: 500,
-            borderRadius: "4px",
-            boxShadow: "none",
-            "&:hover": {
-              borderColor: "#CCCCCC80",
-              backgroundColor: "#F3F4F6",
-              boxShadow: "none",
-            },
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          variant="contained"
-          sx={{
-            height: "32px",
-            backgroundColor: "#6E41E2",
-            textTransform: "none",
-            fontSize: "12px",
-            fontWeight: 500,
-            borderRadius: "4px",
-            boxShadow: "none",
-            color: "#FFFFFF",
-            "&:hover": {
-              backgroundColor: "#7B52F4",
-              boxShadow: "none",
-            },
-          }}
-        >
-          Save
-        </Button>
-      </div>
     </div>
   );
 };

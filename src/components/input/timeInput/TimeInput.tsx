@@ -5,7 +5,8 @@ const StyledInput = styled.input`
   padding: 8px 12px;
   border: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 13px;
+  font-weight: 500;
   color: ${({ theme }) => theme.tokens.color.text.primary};
   background-color: ${({ theme }) => theme.tokens.color.background.primary};
   width: 80px;
@@ -25,6 +26,7 @@ const StyledInput = styled.input`
     background-color: ${({ theme }) => theme.tokens.color.background.disabledLight};
     border-color: ${({ theme }) => theme.tokens.color.border.mediumLight};
     cursor: not-allowed;
+    font-weight: 400;
   }
 `;
 

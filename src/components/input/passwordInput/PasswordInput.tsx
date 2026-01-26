@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)`
   .MuiInputLabel-root {
     color: ${({ theme }) => theme.tokens.color.text.primary};
     font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
-    font-size: ${({ theme }) => theme.tokens.typography.fontSize.lg};
+    font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
     z-index: 1;
 
     &.MuiInputLabel-shrink {
@@ -27,6 +27,10 @@ const StyledTextField = styled(TextField)`
       color: ${({ theme }) => theme.tokens.color.text.primary};
     }
 
+    &.Mui-disabled {
+      font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
+    }
+
     .MuiFormLabel-asterisk {
       color: ${({ theme }) => theme.tokens.color.text.primary};
     }
@@ -37,7 +41,8 @@ const StyledTextField = styled(TextField)`
     border-radius: ${({ theme }) => theme.tokens.radius.md};
     height: ${({ theme }) => theme.tokens.component.input.height};
     font-family: ${({ theme }) => theme.tokens.typography.fontFamily.primary};
-    font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
+    font-size: 13px;
+    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
     transition: all 200ms ease-in-out;
 
     & fieldset {
@@ -77,6 +82,7 @@ const StyledTextField = styled(TextField)`
 
       &:disabled {
         color: ${({ theme }) => theme.tokens.color.text.disabled};
+        font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
       }
 
       /* Chrome autofill styling override */

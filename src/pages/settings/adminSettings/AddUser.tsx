@@ -38,8 +38,8 @@ const FormSection = styled(Box)`
 `;
 
 const SectionTitle = styled(Typography)`
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
   color: ${({ theme }) => theme.tokens.color.text.primary};
   margin-bottom: ${({ theme }) => theme.spacing(2)};
   grid-column: 1 / -1;
@@ -60,10 +60,13 @@ const StyledTableHead = styled(TableHead)`
 `;
 
 const StyledTableCell = styled(TableCell)`
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-  font-weight: 500;
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
-  padding: ${({ theme }) => theme.spacing(1)} ${({ theme }) => theme.spacing(0)};
+  && {
+    color: ${({ theme }) => theme.tokens.color.text.primary};
+    font-weight: 500;
+    font-size: 14px;
+    border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
+    padding: ${({ theme }) => theme.spacing(1)} ${({ theme }) => theme.spacing(0)};
+  }
 `;
 
 const StyledTableBodyCell = styled(TableCell)`

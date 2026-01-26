@@ -3,7 +3,6 @@ import AddIcon from "@mui/icons-material/Add";
 import { Box, Button } from "@mui/material";
 import TabContent from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRolesTabContent";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled(Box)`
@@ -26,12 +25,11 @@ const RightActions = styled(Box)`
 `;
 
 
-export const SystemRoles: React.FC = () => {
-  const navigate = useNavigate();
+export interface SystemRolesProps {
+  onCreateCustomRole?: () => void;
+}
 
-  const handleCreateCustomRole = () => {
-    navigate("/settings/admin/roles-permissions/create-custom");
-  };
+export const SystemRoles: React.FC<SystemRolesProps> = ({ onCreateCustomRole }) => {
 
   return (
     <Container>
@@ -40,7 +38,7 @@ export const SystemRoles: React.FC = () => {
         <RightActions>
           <Button
             variant="contained"
-            onClick={handleCreateCustomRole}
+            onClick={onCreateCustomRole}
             startIcon={<AddIcon fontSize="small" />}
             sx={{
               height: "36px",

@@ -19,7 +19,7 @@ const StyledTabs = styled(Tabs)`
   margin-bottom: ${({ theme }) => theme.spacing(2)};
   width: 100%;
   .MuiTab-root {
-    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.semibold};
+   
     color: ${({ theme }) => theme.tokens.color.text.primary};
     text-transform: capitalize;
     &.Mui-selected {

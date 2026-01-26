@@ -93,7 +93,7 @@ const Indicator: React.FC<{ enabled: boolean }> = ({ enabled }) => (
   <span
     className={[
       "inline-flex h-[16px] w-[16px] items-center justify-center rounded-[4px] border",
-      enabled ? "border-[#57CC4D]/60 bg-[#57CC4D]/60" : "border-[#D9D9D9] bg-[#F3F4F6]",
+      enabled ? "border-transparent bg-[#57CC4D]/60" : "border-[#D9D9D9] bg-[#F3F4F6]",
     ].join(" ")}
     aria-hidden="true"
   >
@@ -113,7 +113,7 @@ const renderSectionRows = (items: PermissionItem[]) => {
         {pairs.map((pair, index) => (
           <div
             key={`${pair[0]?.label ?? "row"}-${index}`}
-            className="grid grid-cols-[2.2fr_24px_2.2fr_24px] gap-20 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[2.2fr_24px_2.2fr_24px] gap-20 px-4 py-2 text-[13px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
             <span className="truncate">{pair[0]?.label}</span>
             <div className="flex justify-center">{pair[0] && <Indicator enabled={pair[0].enabled} />}</div>
@@ -126,9 +126,9 @@ const renderSectionRows = (items: PermissionItem[]) => {
         {items.map((item, index) => (
           <div
             key={`${item.label}-${index}`}
-            className="grid grid-cols-[1fr_24px] gap-2 px-4 py-2 text-[12px] text-[#333333] border-t border-[#CCCCCC80] items-center"
+            className="grid grid-cols-[1fr_24px] gap-2 px-4 py-2 text-[13px] text-[#333333] border-t border-[#CCCCCC80] items-center"
           >
-            <span className="text-[12px] leading-[16px]">{item.label}</span>
+            <span className="text-[13px] leading-[16px]">{item.label}</span>
             <div className="flex justify-center">
               <Indicator enabled={item.enabled} />
             </div>
@@ -440,7 +440,7 @@ export const TabContent: React.FC<{ tabName: string }> = ({ tabName }) => {
           <div key={section.title}>
             <div
               className={[
-                "bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80]",
+                "bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333]  border-[#CCCCCC80]",
                 index > 0 ? "mt-6" : "",
               ].join(" ")}
             >

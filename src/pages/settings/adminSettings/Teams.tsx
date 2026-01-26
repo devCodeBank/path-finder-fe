@@ -2,8 +2,6 @@ import { CustomBreadCrumbs } from "@components/breadCrumbs/BreadCrumbs";
 import { Button } from "@components/buttons/button/Button";
 import DropDownModal from "@components/popupModals/dropdownModal";
 import { SettingsHeader } from "@components/settingsHeader";
-import { DataTable } from "@components/table";
-import type { DataTableColumn } from "@components/table";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
@@ -28,15 +26,15 @@ const StyledSettingsHeader = styled(SettingsHeader)`
 
 const StyledCollapsibleHeader = styled(Box)`
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 1.6fr 3fr auto;
   align-items: center;
-  width: auto;
-  gap: 0;
+  gap: 16px;
   cursor: pointer;
-  background-color: ${({ theme }) => theme.tokens.color.overlay.brandLight};
-  padding: 0;
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
-  border-radius: ${({ theme }) => theme.shape.borderRadius};
+  background-color: #fafafa;
+  padding: 16px;
+  border-bottom: 1px solid #cccccc80;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 `;
 
 const Container = styled(Box)`
@@ -48,7 +46,7 @@ const Toolbar = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: ${({ theme }) => theme.spacing(3)};
+  margin-bottom: 18px;
 `;
 
 const RightActions = styled(Box)`
@@ -102,71 +100,6 @@ export const Teams: React.FC = () => {
   const selectMemberById = useMemo(makeSelectMemberById, []);
   const selectedMember = useAppSelector((state) => selectMemberById(state, selectedMemberId));
 
-  const tableColumns: DataTableColumn<TeamRow>[] = useMemo(
-    () => [
-      {
-        id: "person",
-        header: "",
-        render: (row) => (
-          <Box display="flex" alignItems="center" gap={1.25}>
-            <Box component="span" aria-hidden>
-              🧑‍💼
-            </Box>
-            <Box component="span">{row.name}</Box>
-          </Box>
-        ),
-        minWidth: "fit-content",
-        width: "50%",
-      },
-      {
-        id: "title",
-        header: "",
-        render: (row) => <Box sx={{ color: theme.tokens.color.text.secondary }}>{row.title}</Box>,
-        width: "auto",
-        minWidth: "fit-content",
-        align: "left",
-      },
-      {
-        id: "role",
-        header: "",
-        render: (row) => <Box sx={{ color: theme.tokens.color.text.secondary }}>{row.role}</Box>,
-        width: "auto",
-        minWidth: "fit-content",
-        align: "left",
-      },
-      {
-        id: "status",
-        header: "",
-        render: (row) => <Box sx={{ color: theme.tokens.color.text.secondary }}>{row.status}</Box>,
-        width: "auto",
-        minWidth: "fit-content",
-        align: "left",
-      },
-      {
-        id: "actions",
-        header: <span />,
-        align: "right",
-        width: "6%",
-        minWidth: 56,
-        render: (row) => (
-          <>
-            <IconButton aria-label={`row actions for ${row.name}`} onClick={handleOpenRowMenu(row.id)}>
-              <MoreVertIcon />
-            </IconButton>
-            <Menu anchorEl={anchorByRowId[row.id]} open={Boolean(anchorByRowId[row.id])} onClose={handleCloseRowMenu(row.id)}>
-              <MenuItem disabled={teams.length <= 1} onClick={handleOpenMoveTeamModal(row.id)}>
-                Move
-              </MenuItem>
-              <MenuItem onClick={handleCloseRowMenu(row.id)}>Edit</MenuItem>
-              <MenuItem onClick={handleCloseRowMenu(row.id)}>Delete</MenuItem>
-            </Menu>
-          </>
-        ),
-      },
-    ],
-    [anchorByRowId, teams.length],
-  );
-
   if (status === "loading") {
     return (
       <Container>
@@ -193,30 +126,56 @@ export const Teams: React.FC = () => {
 
   return (
     <Container>
-      <StyledSettingsHeader title="Teams" />
-      <CustomBreadCrumbs breadcrumbs={[{ label: "Home" }]} />
+      {/* <StyledSettingsHeader title="Teams" />
+      <CustomBreadCrumbs breadcrumbs={[{ label: "Home" }]} /> */}
 
       <Toolbar>
         <RightActions>
-          <Button size="sm" onClick={handleCreateTeam} startIcon={<AddIcon />}>
+          <Button
+            variant="contained"
+            onClick={handleCreateTeam}
+            startIcon={<AddIcon fontSize="small" />}
+            sx={{
+              height: "36px",
+              backgroundColor: "#6E41E2",
+              textTransform: "none",
+              fontSize: "12px",
+              fontWeight: 500,
+              minWidth: "132px",
+              width: "132px",
+              borderRadius: "4px",
+              boxShadow: "none",
+              color: "#FFFFFF",
+              "&:hover": {
+                backgroundColor: "#7B52F4",
+                boxShadow: "none",
+              },
+            }}
+          >
             Create Team
           </Button>
         </RightActions>
       </Toolbar>
 
-      {teams.map((team, index) => (
-        <CollapsibleSection
-          key={team.id}
-          teamId={team.id}
-          teamName={team.teamName}
-          teamDescription={team.teamDescription}
-          metrics={team.metrics}
-          rows={team.members}
-          columns={tableColumns}
-          defaultCollapsed={index !== 0}
-          showEditButton={index !== 0}
-        />
-      ))}
+      {teams
+        .filter((team) => team.teamName.trim().toLowerCase() !== "sales hiring")
+        .map((team, index) => (
+          <CollapsibleSection
+            key={team.id}
+            teamId={team.id}
+            teamName={team.teamName}
+            teamDescription={team.teamDescription}
+            metrics={team.metrics}
+            rows={team.members}
+            defaultCollapsed={index !== 0}
+            showEditButton={index !== 0}
+            onOpenRowMenu={handleOpenRowMenu}
+            onCloseRowMenu={handleCloseRowMenu}
+            onOpenMoveTeamModal={handleOpenMoveTeamModal}
+            rowMenuAnchorById={anchorByRowId}
+            canMoveMember={teams.length > 1}
+          />
+        ))}
 
       <DropDownModal
         open={isMoveModalOpen}
@@ -236,24 +195,32 @@ export const Teams: React.FC = () => {
 
 export default Teams;
 
-const CollapsibleSection = <T extends { id: string }>({
+const CollapsibleSection = ({
   teamId,
   teamName,
   teamDescription,
   metrics,
   rows,
-  columns,
   defaultCollapsed = false,
   showEditButton = true,
+  onOpenRowMenu,
+  onCloseRowMenu,
+  onOpenMoveTeamModal,
+  rowMenuAnchorById,
+  canMoveMember,
 }: {
   teamId: string;
   teamName: string;
   teamDescription: string;
   metrics: { openJobs: number; closedJobs: number; archivedJobs: number };
-  rows: T[];
-  columns: DataTableColumn<T>[];
+  rows: TeamRow[];
   defaultCollapsed?: boolean;
   showEditButton?: boolean;
+  onOpenRowMenu: (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onCloseRowMenu: (rowId: string) => () => void;
+  onOpenMoveTeamModal: (rowId: string) => () => void;
+  rowMenuAnchorById: Record<string, HTMLElement | null>;
+  canMoveMember: boolean;
 }) => {
   const [collapsed, setCollapsed] = useState<boolean>(defaultCollapsed);
   const navigate = useNavigate();
@@ -262,67 +229,127 @@ const CollapsibleSection = <T extends { id: string }>({
       sx={{
         overflow: "hidden",
         padding: 0,
-        marginBottom: 4,
+        marginBottom: "25px",
+        border: "1px solid #E6E6E6",
+        borderRadius: "8px",
+        backgroundColor: "#FFFFFF",
       }}
     >
       <StyledCollapsibleHeader role="button" onClick={() => setCollapsed((p) => !p)}>
-        <Box display="flex" flexDirection="column" sx={{ padding: 1 }}>
+        <Box display="flex" flexDirection="column">
           <Box
             component="span"
             sx={{ fontSize: theme.tokens.typography.fontSize.md, fontWeight: theme.tokens.typography.fontWeight.medium }}
           >
             {teamName}
           </Box>
-          <Box
-            component="span"
-            sx={{
-              fontSize: theme.tokens.typography.fontSize.md,
-              color: theme.tokens.color.text.secondary,
-              fontWeight: theme.tokens.typography.fontWeight.normal,
-            }}
-          >
-            {teamDescription}
-          </Box>
+          {teamDescription?.trim() ? (
+            <Box
+              component="span"
+              sx={{
+                fontSize: theme.tokens.typography.fontSize.md,
+                color: theme.tokens.color.text.secondary,
+                fontWeight: theme.tokens.typography.fontWeight.normal,
+              }}
+            >
+              {teamDescription}
+            </Box>
+          ) : null}
         </Box>
 
-        <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" sx={{ width: "100%", padding: 1 }}>
+        <Box
+          display="grid"
+          sx={{
+            gridTemplateColumns: "repeat(4, minmax(80px, 1fr))",
+            justifyItems: "center",
+            alignItems: "center",
+            gap: 2,
+            width: "100%",
+          }}
+        >
           <Metric label="Members" value={rows.length} />
           <Metric label="Open Jobs" value={metrics.openJobs} />
           <Metric label="Closed Jobs" value={metrics.closedJobs} />
           <Metric label="Archived Jobs" value={metrics.archivedJobs} />
-          {collapsed ? (
-            <KeyboardDoubleArrowDownRoundedIcon fontSize="medium" sx={{ color: theme.tokens.color.text.secondary }} />
-          ) : (
-            <KeyboardDoubleArrowUpRoundedIcon fontSize="medium" sx={{ color: theme.tokens.color.text.secondary }} />
-          )}
-          <Box
-            sx={{
-              border: "1.6px solid",
-              borderColor: showEditButton ? "primary.main" : "transparent",
-              borderRadius: "10%",
-              padding: 0.25,
-              visibility: showEditButton ? "visible" : "hidden",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
+        </Box>
+
+        <Box display="flex" alignItems="center" gap={1} sx={{ justifySelf: "end" }}>
+          {showEditButton && (
             <IconButton
               size="small"
-              color="primary"
               aria-label="edit team"
               onClick={(e) => {
                 e.stopPropagation();
                 navigate(`/settings/admin/teams/create/${teamId}`);
               }}
+              sx={{
+                border: "1px solid #CCCCCC80",
+                borderRadius: "6px",
+                padding: "4px",
+              }}
             >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
-          </Box>
+          )}
+          <IconButton size="small" aria-label="toggle team rows" sx={{ padding: "4px" }}>
+            {collapsed ? (
+              <KeyboardDoubleArrowDownRoundedIcon fontSize="small" sx={{ color: theme.tokens.color.text.secondary }} />
+            ) : (
+              <KeyboardDoubleArrowUpRoundedIcon fontSize="small" sx={{ color: theme.tokens.color.text.secondary }} />
+            )}
+          </IconButton>
         </Box>
       </StyledCollapsibleHeader>
 
       {!collapsed && (
-        <Box>
-          <DataTable<T> rows={rows} columns={columns} hideHeader ariaLabel="teams table" />
+        <Box className="flex flex-col gap-[12px]">
+          {rows.length === 0 ? (
+            <Box className="px-4 py-6 text-[13px] text-[#333333]/70">No members yet.</Box>
+          ) : (
+            rows.map((row) => (
+              <Box
+                key={row.id}
+                className="grid grid-cols-[minmax(260px,2.2fr)_1fr_1fr_auto] items-center gap-2 px-4 py-3 text-[13px] text-[#333333] transition-colors hover:bg-[#EAEAEA]/25 border-b border-[#CCCCCC80]"
+              >
+                <Box display="flex" alignItems="center" gap="16px">
+                  <Box className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 border border-[#CCCCCC80] flex items-center justify-center text-[11px] text-[#333333]">
+                    {getInitials(row.name)}
+                  </Box>
+                  <Box display="flex" flexDirection="column">
+                    <Box component="span" className="text-[13px] font-[500]">
+                      {row.name}
+                    </Box>
+                    <Box component="span" className="text-[12px] text-[#333333]/70">
+                      {row.title || "Not Available"}
+                    </Box>
+                  </Box>
+                </Box>
+                <Box component="span">{row.role}</Box>
+                <Box component="span">{row.status}</Box>
+                <Box display="flex" justifyContent="flex-end">
+                  <IconButton
+                    aria-label={`row actions for ${row.name}`}
+                    onClick={onOpenRowMenu(row.id)}
+                    size="small"
+                    sx={{
+                      border: "1px solid #CCCCCC80",
+                      borderRadius: "6px",
+                      padding: "4px",
+                    }}
+                  >
+                    <MoreVertIcon fontSize="small" />
+                  </IconButton>
+                  <Menu anchorEl={rowMenuAnchorById[row.id]} open={Boolean(rowMenuAnchorById[row.id])} onClose={onCloseRowMenu(row.id)}>
+                    <MenuItem disabled={!canMoveMember} onClick={onOpenMoveTeamModal(row.id)}>
+                      Move
+                    </MenuItem>
+                    <MenuItem onClick={onCloseRowMenu(row.id)}>Edit</MenuItem>
+                    <MenuItem onClick={onCloseRowMenu(row.id)}>Delete</MenuItem>
+                  </Menu>
+                </Box>
+              </Box>
+            ))
+          )}
         </Box>
       )}
     </Box>
@@ -330,21 +357,28 @@ const CollapsibleSection = <T extends { id: string }>({
 };
 
 const Metric = ({ label, value }: { label: string; value: number }) => (
-  <Box display="flex" flexDirection="column" justifyContent="center" sx={{ minHeight: 40, alignItems: "flex-start", width: "fit-content" }}>
-    <Box display="flex" flexDirection="column" sx={{ alignItems: "center", width: "fit-content" }}>
-      <Box component="span" sx={{ fontSize: theme.tokens.typography.fontSize.md, fontWeight: theme.tokens.typography.fontWeight.medium }}>
-        {value}
-      </Box>
-      <Box
-        component="span"
-        sx={{
-          fontSize: theme.tokens.typography.fontSize.md,
-          color: theme.tokens.color.text.secondary,
-          fontWeight: theme.tokens.typography.fontWeight.medium,
-        }}
-      >
-        {label}
-      </Box>
+  <Box display="flex" flexDirection="column" justifyContent="center" sx={{ minHeight: 40, alignItems: "center", width: "fit-content" }}>
+    <Box component="span" sx={{ fontSize: theme.tokens.typography.fontSize.md, fontWeight: theme.tokens.typography.fontWeight.medium }}>
+      {value}
+    </Box>
+    <Box
+      component="span"
+      sx={{
+        fontSize: theme.tokens.typography.fontSize.md,
+        color: theme.tokens.color.text.secondary,
+        fontWeight: theme.tokens.typography.fontWeight.medium,
+      }}
+    >
+      {label}
     </Box>
   </Box>
 );
+
+const getInitials = (name: string) =>
+  name
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();

@@ -58,7 +58,7 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
 
         <span
           className={cn(
-            "text-[14px] font-medium whitespace-nowrap overflow-hidden ml-[16px] transition-[opacity,max-width] duration-300 ease-in-out",
+            "text-[14px]  font-400 whitespace-nowrap overflow-hidden ml-[16px] transition-[opacity,max-width] duration-300 ease-in-out",
             isExpanded ? "opacity-100 visible max-w-[calc(100%-40px)]" : "opacity-0 invisible max-w-0",
             "text-inherit"
           )}

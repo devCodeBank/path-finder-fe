@@ -61,10 +61,11 @@ export interface ToggleSwitchProps {
 
 export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({ checked, onChange, label, disabled = false }) => {
   const theme = useTheme() as DefaultTheme;
-  const success = disabled ? theme.palette.success.light : theme.palette.success.main;
-  const gray = disabled ? theme.tokens.color.neutral.gray300 : theme.tokens.color.neutral.gray150;
-  const borderColor = checked ? success : gray;
-  const thumbColor = checked ? success : gray;
+  const success = theme.palette.success.main;
+  const gray = theme.tokens.color.neutral.gray150;
+  const disabledGray = theme.tokens.color.neutral.gray300;
+  const borderColor = disabled ? theme.tokens.color.border.light : checked ? success : gray;
+  const thumbColor = disabled ? disabledGray : checked ? success : gray;
   const handleToggle = () => {
     if (!disabled) {
       onChange(!checked);

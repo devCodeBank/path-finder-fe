@@ -11,7 +11,7 @@ const StyledFormControl = styled(FormControl)`
   .MuiInputLabel-root {
     color: ${({ theme }) => theme.tokens.color.text.primary};
     font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
-    font-size: ${({ theme }) => theme.tokens.typography.fontSize.lg};
+    font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
     font-family: ${({ theme }) => theme.tokens.typography.fontFamily.primary};
     z-index: 1;
 
@@ -29,6 +29,10 @@ const StyledFormControl = styled(FormControl)`
       color: ${({ theme }) => theme.tokens.color.text.primary};
     }
 
+    &.Mui-disabled {
+      font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
+    }
+
     .MuiFormLabel-asterisk {
       color: ${({ theme }) => theme.tokens.color.text.primary};
     }
@@ -37,8 +41,15 @@ const StyledFormControl = styled(FormControl)`
   .MuiSelect-select {
     padding: ${({ theme }) => theme.spacing(1, 2)};
     font-family: ${({ theme }) => theme.tokens.typography.fontFamily.primary};
-    font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
+    font-size: 13px;
+    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
     color: ${({ theme }) => theme.tokens.color.text.primary};
+
+    &.Mui-disabled {
+      color: ${({ theme }) => theme.tokens.color.text.disabled};
+      -webkit-text-fill-color: ${({ theme }) => theme.tokens.color.text.disabled};
+      font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
+    }
   }
 
   .MuiOutlinedInput-root {
@@ -77,6 +88,10 @@ const StyledFormControl = styled(FormControl)`
   .MuiSelect-select em {
     color: ${({ theme }) => theme.tokens.color.text.placeholder};
     font-style: normal;
+  }
+
+  .MuiSelect-select.Mui-disabled em {
+    color: ${({ theme }) => theme.tokens.color.text.disabled};
   }
 
   .MuiFormHelperText-root {

@@ -37,12 +37,12 @@ export const Email: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6 w-full max-w-full font-sans pb-10">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-10">
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-6 flex items-center justify-between">
         <div className="flex items-center gap-5">
           <EnvelopeIcon className="h-18 w-14" />
           <div className="flex flex-col gap-1">
-            <h2 className="text-[15px] font-[500] text-[#333333]">Email</h2>
+            <h2 className="text-[14px] font-[500] text-[#333333]">Email</h2>
             <p className="text-[13px] font-[400] text-[#333333]/70">Connect your email with pathfinder ats crm</p>
           </div>
         </div>

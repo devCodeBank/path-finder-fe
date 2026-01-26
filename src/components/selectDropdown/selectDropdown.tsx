@@ -30,6 +30,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
   "&.Mui-disabled .MuiSelect-select": {
     cursor: "not-allowed",
     color: theme.tokens.color.text.disabled,
+    fontWeight: theme.tokens.typography.fontWeight.normal,
   },
 
   "&.Mui-disabled .MuiSelect-icon": {
@@ -41,7 +42,8 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     alignItems: "center",
     padding: "0 12px",
     fontFamily: theme.tokens.typography.fontFamily.primary,
-    fontSize: theme.tokens.typography.fontSize.sm,
+    fontSize: "13px",
+    fontWeight: theme.tokens.typography.fontWeight.medium,
     color: theme.tokens.color.text.primary,
     height: 40,
   },

@@ -69,26 +69,29 @@ const StyledTableContainer = styled(TableContainer)`
 `;
 
 const HeaderCell = styled(MuiTableCell)`
-  font-size: ${({ theme }) => theme.tokens.typography.fontSize.lg};
-  font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
-  color: ${({ theme }) => theme.tokens.color.text.primary};
-  background: ${({ theme }) => theme.tokens.color.overlay.brandLight};
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
+  font-size: 14px;
+  font-weight: 500;
+  color: #333333;
+  background: #FAFAFA;
+  border-bottom: 1px solid #CCCCCC80;
   height: 52px;
-  padding: ${({ theme }) => theme.spacing(0, 1)};
+  padding: 0 16px;
 `;
 
 const BodyCell = styled(MuiTableCell)`
-  font-size: ${({ theme }) => theme.tokens.typography.fontSize.md};
-  font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
-  border-bottom: 1px solid ${({ theme }) => theme.tokens.color.border.light};
-  color: ${({ theme }) => theme.tokens.color.text.primary};
+  font-size: 13px;
+  font-weight: 400;
+  border-bottom: 1px solid #CCCCCC80;
+  color: #333333;
   height: 52px;
-  padding: ${({ theme }) => theme.spacing(0, 1)};
+  padding: 0 16px;
 `;
 
 const TableRow = styled(MuiTableRow)`
   height: 52px;
+  &.MuiTableRow-hover:hover {
+    background-color: rgba(234, 234, 234, 0.25);
+  }
 `;
 
 const toCssSize = (value?: number | string): string | undefined => {

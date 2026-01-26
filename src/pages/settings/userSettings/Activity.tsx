@@ -11,8 +11,8 @@ const ActivityCard = ({
 }) => {
   return (
     <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-      <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[#F5F5F5]">
-        <h3 className="text-[14px] font-[500] text-[#333333]">{title}</h3>
+      <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[#EAEAEA]/25">
+        <h3 className="text-[14px] font-[400] text-[#333333]">{title}</h3>
         {headerAction}
       </div>
       <div className="min-h-[142px]">{children}</div>
@@ -146,7 +146,7 @@ export const Activity: React.FC = () => {
   const activeActivity = activityHistory.find((item) => item.id === activeActivityId) ?? null;
 
   return (
-    <div className="flex flex-col gap-4 w-full max-w-full font-sans ">
+    <div className="flex flex-col gap-[18px] w-full max-w-full font-sans ">
       <ActivityCard
         title="Active Sessions"
         headerAction={
@@ -515,4 +515,3 @@ export const Activity: React.FC = () => {
 };
 
 export default Activity;
-

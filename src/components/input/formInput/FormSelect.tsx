@@ -15,6 +15,10 @@ const Label = styled.label`
   line-height: 1.2;
   font-weight: 500;
   color: ${({ theme }) => theme.tokens.color.text.primary};
+
+  &[data-disabled="true"] {
+    font-weight: 400;
+  }
 `;
 
 const RequiredIndicator = styled.span`
@@ -31,6 +35,8 @@ const StyledFormControl = styled(FormControl)`
 
   .MuiSelect-select {
     padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
   }
 
   .MuiOutlinedInput-root {
@@ -57,6 +63,10 @@ const StyledFormControl = styled(FormControl)`
         border-color: ${({ theme }) => theme.tokens.color.border.mediumLight};
       }
     }
+  }
+
+  .MuiOutlinedInput-root.Mui-disabled .MuiSelect-select {
+    font-weight: 400;
   }
 
   .MuiSelect-select em {
@@ -106,7 +116,7 @@ export const FormSelect: React.FC<FormSelectProps> = ({
 
   return (
     <Container>
-      <Label>
+      <Label data-disabled={disabled ? "true" : "false"}>
         {label}
         {required && <RequiredIndicator> *</RequiredIndicator>}
       </Label>
