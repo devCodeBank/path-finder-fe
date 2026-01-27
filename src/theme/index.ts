@@ -287,6 +287,8 @@ const theme = createTheme({
           },
           "& .MuiOutlinedInput-input": {
             padding: "8px 16px",
+            fontSize: "13px",
+            fontWeight: 400,
           },
           "& .MuiInputLabel-root": {
             color: colorTokens.text.secondary,
@@ -306,6 +308,8 @@ const theme = createTheme({
           padding: "8px 16px",
           display: "flex",
           alignItems: "center",
+          fontSize: "13px",
+          fontWeight: 400,
         },
       },
     },

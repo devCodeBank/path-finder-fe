@@ -487,16 +487,20 @@ export const Users: React.FC = () => {
               className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
               <div className="flex items-center gap-3">
-                <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25  flex items-center justify-center text-[11px] text-[#333333]">
+                <div className="h-[32px] w-[32px]  bg-[#EAEAEA]/25  flex items-center justify-center text-[11px] text-[#333333]">
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[13px] font-[500]">{row.name}</span>
-                  <span className="text-[12px] text-[#333333]/70">{row.email}</span>
+                  <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
               </div>
-              <span>{row.role}</span>
-              <span>{row.status === "Pending" ? "Pending Activation" : row.status}</span>
+              <span className="inline-flex h-[24px] w-[130px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+                {row.role}
+              </span>
+              <span className="inline-flex h-[24px] w-[110px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+                {row.status === "Pending" ? "Pending" : row.status === "Link Expired" ? "Linked Expired" : row.status}
+              </span>
               <span>{row.jobTitle ?? "Not Available"}</span>
               <span>{row.teams ?? "Not Available"}</span>
               <div className="flex flex-col">
@@ -653,10 +657,10 @@ export const Users: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">
+              <span className="text-[16px] font-[500] text-[#333333] pt-3 ">
                 {editingUser ? "Edit User" : "Invite User"}
               </span>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 padding-right-50px pr-[20px]">
                 {editingUser?.status === "Active" && (
                   <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
                     Active User
@@ -674,12 +678,12 @@ export const Users: React.FC = () => {
                   componentsProps={{
                     tooltip: {
                       sx: {
-                        width: "40px",
-                        height: "20px",
+                        width: "48px",
+                        height: "28px",
                         bgcolor: "#666666",
                         fontSize: "11px",
                         borderRadius: "4px",
-                        px: 1,
+                        px: 3,
                         py: 0.5,
                         textAlign: "center",
                         display: "flex",
@@ -694,7 +698,7 @@ export const Users: React.FC = () => {
                   <button
                     type="button"
                     aria-label="Close"
-                    className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                    className="inline-flex h-[24px] w-[24px] items-center  justify-center transition-opacity hover:opacity-80"
                     onClick={() => {
                       closeInvitePanel();
                       setShowInviteErrors(false);
@@ -702,18 +706,18 @@ export const Users: React.FC = () => {
                       setInviteMode("invite");
                     }}
                   >
-                    <img src={CloseXIcon} alt="" className="h-[8px] w-[8.5px]transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
+                    <img src={CloseXIcon} alt="" className=" h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
                   </button>
                 </Tooltip>
               </div>
             </div>
-            <div className="px-4 py-5 overflow-y-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="px-4 py-6 overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col">
                   <FloatingLabelInput
                     id="invite-first-name"
                     label="First Name"
-                    labelClassName="text-[#333333]/70"
+                    labelClassName="text-[#333333]/50"
                     floatLabel
                     required
                     placeholder="Add First Name"
@@ -732,7 +736,7 @@ export const Users: React.FC = () => {
                   <FloatingLabelInput
                     id="invite-last-name"
                     label="Last Name"
-                    labelClassName="text-[#333333]/70"
+                    labelClassName="text-[#333333]/50"
                     floatLabel
                     required
                     placeholder="Add Last Name"
@@ -751,7 +755,7 @@ export const Users: React.FC = () => {
                   <FloatingLabelInput
                     id="invite-email"
                     label="Email"
-                    labelClassName="text-[#333333]/70"
+                    labelClassName="text-[#333333]/50"
                     floatLabel
                     required
                     placeholder="Add Email"
@@ -769,7 +773,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-team"
                   label="Team"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.team}
                   onValueChange={handleInviteSelectChange("team")}
@@ -780,7 +784,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelInput
                   id="invite-job-title"
                   label="Job Title"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   placeholder="Add Job Title"
                   value={inviteForm.jobTitle}
@@ -790,7 +794,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelInput
                   id="invite-contact-number"
                   label="Contact Number"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   placeholder="Add Contact Number"
                   value={inviteForm.contactNumber}
@@ -800,7 +804,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-time-zone"
                   label="Time Zone"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.timeZone}
                   onValueChange={handleInviteSelectChange("timeZone")}
@@ -812,7 +816,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-city"
                   label="City"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.city}
                   onValueChange={handleInviteSelectChange("city")}
@@ -823,7 +827,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-state"
                   label="State"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.state}
                   onValueChange={handleInviteSelectChange("state")}
@@ -834,7 +838,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-country"
                   label="Country"
-                  labelClassName="text-[#333333]/70"
+                  labelClassName="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.country}
                   onValueChange={handleInviteSelectChange("country")}
@@ -847,49 +851,51 @@ export const Users: React.FC = () => {
               <div className="mt-6">
                 <div className="text-[13px] font-[500] text-[#333333] mb-2">System Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
-                  {systemRoles.map((role) => (
-                    <label
-                      key={role}
-                      className="flex items-center gap-3 text-[13px] text-[#333333] cursor-pointer select-none"
-                    >
-                      {/* Hidden native checkbox for accessibility */}
-                      <input
-                        type="checkbox"
-                        checked={inviteForm.roles.includes(role)}
-                        onChange={() => toggleRole(role)}
-                        className="sr-only"
-                      />
-
-                      {/* Custom checkbox UI */}
-                      <span
-                        className={cn(
-                          "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
-                          inviteForm.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
-                        )}
+                  {systemRoles.map((role) => {
+                    const roleId = `system-role-${role.toLowerCase().replace(/\s+/g, "-")}`;
+                    return (
+                      <div
+                        key={role}
+                        className="flex items-center gap-3 text-[13px] text-[#333333] select-none"
                       >
-                        {inviteForm.roles.includes(role) && (
-                          <svg
-                            width="12"
-                            height="10"
-                            viewBox="0 0 12 10"
-                            fill="none"
+                        <label htmlFor={roleId} className="cursor-pointer">
+                          <input
+                            id={roleId}
+                            type="checkbox"
+                            checked={inviteForm.roles.includes(role)}
+                            onChange={() => toggleRole(role)}
+                            className="sr-only"
+                          />
+
+                          <span
+                            className={cn(
+                              "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
+                              inviteForm.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
+                            )}
                           >
-                            <path
-                              d="M1 5L4.5 8.5L11 1.5"
-                              stroke="#FFFFFF"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        )}
-                      </span>
+                            {inviteForm.roles.includes(role) && (
+                              <svg
+                                width="12"
+                                height="10"
+                                viewBox="0 0 12 10"
+                                fill="none"
+                              >
+                                <path
+                                  d="M1 5L4.5 8.5L11 1.5"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
+                        </label>
 
-                      <span>{role}</span>
-                    </label>
-
-
-                  ))}
+                        <span className="cursor-default">{role}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -902,45 +908,44 @@ export const Users: React.FC = () => {
                   </div>
                   {customRoles.map((role) => (
                     <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 border-t border-[#CCCCCC80]">
-                      <label
-                        className="flex items-center gap-3 text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
-                      >
-                        {/* Hidden native checkbox for accessibility */}
-                        <input
-                          type="checkbox"
-                          checked={inviteForm.customRoles.includes(role.id)}
-                          onChange={() => toggleCustomRole(role.id)}
-                          className="sr-only"
-                        />
+                      <div className="flex items-center gap-3 text-[13px] font-[400] text-[#333333] select-none">
+                        <label htmlFor={role.id} className="cursor-pointer">
+                          <input
+                            id={role.id}
+                            type="checkbox"
+                            checked={inviteForm.customRoles.includes(role.id)}
+                            onChange={() => toggleCustomRole(role.id)}
+                            className="sr-only"
+                          />
 
-                        {/* Custom checkbox UI */}
-                        <span
-                          className={cn(
-                            "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
-                            inviteForm.customRoles.includes(role.id) &&
-                            "bg-[#57CC4D] border-[#57CC4D]"
-                          )}
-                        >
-                          {inviteForm.customRoles.includes(role.id) && (
-                            <svg
-                              width="12"
-                              height="10"
-                              viewBox="0 0 12 10"
-                              fill="none"
-                            >
-                              <path
-                                d="M1 5L4.5 8.5L11 1.5"
-                                stroke="#FFFFFF"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          )}
-                        </span>
+                          <span
+                            className={cn(
+                              "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
+                              inviteForm.customRoles.includes(role.id) &&
+                              "bg-[#57CC4D] border-[#57CC4D]"
+                            )}
+                          >
+                            {inviteForm.customRoles.includes(role.id) && (
+                              <svg
+                                width="12"
+                                height="10"
+                                viewBox="0 0 12 10"
+                                fill="none"
+                              >
+                                <path
+                                  d="M1 5L4.5 8.5L11 1.5"
+                                  stroke="#FFFFFF"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            )}
+                          </span>
+                        </label>
 
-                        <span >{role.name}</span>
-                      </label>
+                        <span className="cursor-default">{role.name}</span>
+                      </div>
 
                       <div className="text-[13px] text-[#333333]">{role.description}</div>
                     </div>
@@ -1024,14 +1029,28 @@ export const Users: React.FC = () => {
               isDetailsVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
-            <div className="h-[52px] px-4 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">User Details</span>
+            <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] pr-[20px] flex items-center justify-between">
+              <span className="text-[16px] font-[500] text-[#333333] pt-3">User Details</span>
               <Tooltip
                 title="Close"
                 arrow
                 placement="bottom"
                 componentsProps={{
-                  tooltip: { sx: { bgcolor: "#666666", fontSize: "11px", borderRadius: "4px", px: 1, py: 0.5 } },
+                  tooltip: {
+                    sx: {
+                      width: "48px",
+                      height: "28px",
+                      bgcolor: "#666666",
+                      fontSize: "11px",
+                      borderRadius: "4px",
+                      px: 3,
+                      py: 0.5,
+                      textAlign: "center",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    },
+                  },
                   arrow: { sx: { color: "#666666" } },
                   popper: { sx: { zIndex: 2300 } },
                 }}
@@ -1042,25 +1061,25 @@ export const Users: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeDetailsPanel}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[8px] w-[8.5px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
                 </button>
               </Tooltip>
             </div>
             <div className="px-4 py-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
                 <div className="flex items-start gap-4">
-                  <div className="h-[56px] w-[56px] rounded-full border border-[#CCCCCC80] bg-[#F3F4F6] flex items-center justify-center text-[14px] font-[600] text-[#333333]">
+                  <div className="h-[56px] w-[56px]  border border-[#CCCCCC80] bg-[#F3F4F6] flex items-center justify-center text-[14px] font-[600] text-[#333333]">
                     {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="text-[14px] font-[600] text-[#333333]">{detailsUser.name}</span>
-                    <span className="text-[12px] text-[#333333]/70">{detailsUser.jobTitle}</span>
-                    <span className="text-[12px] text-[#333333]/70">Upload Photo</span>
+                    <span className="text-[13px] text-[#333333]/70">{detailsUser.jobTitle}</span>
+                    <span className="text-[13px] text-[#333333]/70">Upload Photo</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <div className="text-[12px] text-[#333333]/70">
-                    <div className="text-[12px] font-[600] text-[#333333]">Last Activity</div>
+                  <div className="text-[13px] text-[#333333]/70">
+                    <div className="text-[13px] font-[600] text-[#333333]">Last Activity</div>
                     <div>{detailsUser.lastActivity}</div>
                     <div>{detailsUser.lastActivityDate}</div>
                   </div>
@@ -1090,52 +1109,52 @@ export const Users: React.FC = () => {
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">First Name</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ")[0]}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">First Name</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ")[0]}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Last Name</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ").slice(1).join(" ")}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Last Name</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ").slice(1).join(" ")}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Email</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.email}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Email</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.email}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Job Title</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.jobTitle}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Job Title</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.jobTitle}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Company Name</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.companyName}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Company Name</label>
+                    <div className="text-[#333333]/ text-[13px] leading-[18px] font-[400]">{detailsUser.companyName}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Role</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.role}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Role</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.role}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Contact Number</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.contactNumber}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Contact Number</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.contactNumber}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Time Zone</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.timeZone}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Time Zone</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.timeZone}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">City</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.city}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">City</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.city}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">State</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.state}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">State</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.state}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Country</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.country}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Country</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.country}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[500]">Currency</label>
-                    <div className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{detailsUser.currency}</div>
+                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Currency</label>
+                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.currency}</div>
                   </div>
                 </div>
               </div>

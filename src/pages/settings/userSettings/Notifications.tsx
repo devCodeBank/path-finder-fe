@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const NotificationIcon = () => (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12.0893 7.33301C12.4767 10.9163 14 11.9997 14 11.9997H2C2 11.9997 4 10.5777 4 5.59967C4 4.46834 4.42133 3.38301 5.17133 2.58301C5.92133 1.78301 6.94 1.33301 8 1.33301C8.22533 1.33301 8.44756 1.35301 8.66667 1.39301M9.15333 13.9997C9.03613 14.2017 8.8679 14.3694 8.66548 14.486C8.46307 14.6026 8.23359 14.664 8 14.664C7.76641 14.664 7.53693 14.6026 7.33452 14.486C7.13211 14.3694 6.96387 14.2017 6.84667 13.9997M12.6667 5.33301C13.1971 5.33301 13.7058 5.12229 14.0809 4.74722C14.456 4.37215 14.6667 3.86344 14.6667 3.33301C14.6667 2.80257 14.456 2.29387 14.0809 1.91879C13.7058 1.54372 13.1971 1.33301 12.6667 1.33301C12.1362 1.33301 11.6275 1.54372 11.2525 1.91879C10.8774 2.29387 10.6667 2.80257 10.6667 3.33301C10.6667 3.86344 10.8774 4.37215 11.2525 4.74722C11.6275 5.12229 12.1362 5.33301 12.6667 5.33301Z" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <path d="M12.0893 7.33301C12.4767 10.9163 14 11.9997 14 11.9997H2C2 11.9997 4 10.5777 4 5.59967C4 4.46834 4.42133 3.38301 5.17133 2.58301C5.92133 1.78301 6.94 1.33301 8 1.33301C8.22533 1.33301 8.44756 1.35301 8.66667 1.39301M9.15333 13.9997C9.03613 14.2017 8.8679 14.3694 8.66548 14.486C8.46307 14.6026 8.23359 14.664 8 14.664C7.76641 14.664 7.53693 14.6026 7.33452 14.486C7.13211 14.3694 6.96387 14.2017 6.84667 13.9997M12.6667 5.33301C13.1971 5.33301 13.7058 5.12229 14.0809 4.74722C14.456 4.37215 14.6667 3.86344 14.6667 3.33301C14.6667 2.80257 14.456 2.29387 14.0809 1.91879C13.7058 1.54372 13.1971 1.33301 12.6667 1.33301C12.1362 1.33301 11.6275 1.54372 11.2525 1.91879C10.8774 2.29387 10.6667 2.80257 10.6667 3.33301C10.6667 3.86344 10.8774 4.37215 11.2525 4.74722C11.6275 5.12229 12.1362 5.33301 12.6667 5.33301Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -146,8 +146,10 @@ export const Notifications: React.FC = () => {
         <div className="px-4 min-h-[95px] flex items-center">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-4 w-full">
             <div className="flex items-center gap-2">
-              <div
+              <button
+                type="button"
                 onClick={toggleDoNotDisturb}
+                aria-label="Toggle do not disturb"
                 className={cn(
                   "w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors",
                   settings.doNotDisturb
@@ -160,13 +162,10 @@ export const Notifications: React.FC = () => {
                     <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 )}
-              </div>
-              <label
-                onClick={toggleDoNotDisturb}
-                className="text-[13px] font-[400] text-[#333333] cursor-pointer select-none"
-              >
+              </button>
+              <span className="text-[13px] font-[400] text-[#333333] select-none">
                 Do not notify me from:
-              </label>
+              </span>
             </div>
 
             <div className="flex items-center gap-2">
@@ -176,7 +175,7 @@ export const Notifications: React.FC = () => {
                   type="time"
                   value={settings.doNotDisturbFrom}
                   onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
-                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF] disabled:cursor-not-allowed"
+                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#666666] disabled:cursor-not-allowed"
                   disabled={!settings.doNotDisturb || isTimeLocked}
                 />
                 <button
@@ -196,7 +195,7 @@ export const Notifications: React.FC = () => {
                   type="time"
                   value={settings.doNotDisturbTo}
                   onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
-                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#9CA3AF] disabled:cursor-not-allowed"
+                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#666666] disabled:cursor-not-allowed"
                   disabled={!settings.doNotDisturb || isTimeLocked}
                 />
                 <button
@@ -220,27 +219,26 @@ export const Notifications: React.FC = () => {
             {settings.doNotDisturb && (
               <div className="ml-auto">
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   sx={{
-                    height: '36px',
-                    borderColor: '#CCCCCC80',
-                    color: '#333333',
-                    textTransform: 'none',
-                    fontSize: '13px',
-                    fontWeight: 400,
-                    gap: '8px',
-                    borderRadius: '4px',
-                    boxShadow: 'none',
-                    '&:hover': {
-                      borderColor: '#CCCCCC80',
-                      backgroundColor: 'rgba(110, 65, 226, 0.04)',
-                      boxShadow: 'none',
-                    }
+                    height: "36px",
+                    backgroundColor: "#6E41E2",
+                    color: "#FFFFFF",
+                    textTransform: "none",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    gap: "8px",
+                    borderRadius: "4px",
+                    boxShadow: "none",
+                    "&:hover": {
+                      backgroundColor: "#7B52F4",
+                      boxShadow: "none",
+                    },
                   }}
                   startIcon={<NotificationIcon />}
                   onClick={() => {
                     setIsTimeLocked(true);
-                    setSettings(prev => ({ ...prev, doNotDisturb: false }));
+                    setSettings((prev) => ({ ...prev, doNotDisturb: false }));
                   }}
                 >
                   Resume Notifications

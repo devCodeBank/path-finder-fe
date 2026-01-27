@@ -13,7 +13,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
             <Input
                 placeholder=" "
                 className={cn(
-                    'h-[56px] peer border-[#CCCCCC80] bg-white pb-1 text-[#333333] hover:text-[#333333] font-[500] text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/40 hover:placeholder:text-[#333333]/40 focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100',
+                    'h-[56px] peer border-[#CCCCCC80] bg-white pb-1 text-[#333333] hover:text-[#333333] font-[400] text-[13px] placeholder:text-[13px] placeholder:font-[400] placeholder:text-[#333333]/40 hover:placeholder:text-[#333333]/40 focus-visible:ring-0 focus-visible:border-[#666666] hover:border-[#333333] hover:text-[#333333]  disabled:text-[#333333]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100',
                     className
                 )}
                 ref={ref}
@@ -31,7 +31,7 @@ const FloatingLabel = React.forwardRef<
     return (
         <Label
             className={cn(
-                'absolute start-2 z-10 origin-[0] transform px-2 text-[14px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333] top-1 peer-disabled:font-[400] peer-disabled:text-[#9CA3AF]',
+                'absolute start-2 z-10 origin-[0] transform px-2 text-[14px] font-[500] duration-300 cursor-text pointer-events-none bg-white text-[#333333] top-1 peer-disabled:font-[400] peer-disabled:text-[#333333]/70',
                 className,
             )}
             ref={ref}
@@ -59,12 +59,12 @@ const FloatingLabelInput = React.forwardRef<
                     floatLabel
                         ? "top-1 -translate-y-4 scale-100"
                         : "peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:scale-100 top-1 -translate-y-4 scale-100",
-                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-100 peer-focus:text-[#717171]",
+                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-100",
                     labelClassName
                 )}
             >
                 <span>{label}</span>
-                {required && <span className="text-[#333333]"> *</span>}
+                {required && <span className="text-[#333333]/70"> *</span>}
             </FloatingLabel>
         </div>
     );
@@ -154,7 +154,7 @@ const FloatingLabelSelect = ({
                             onClick={() => setIsOpen((prev) => !prev)}
                             onBlur={() => setIsOpen(false)}
                             className={cn(
-                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[500] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100",
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:text-[#666666]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100",
                                 className
                             )}
                         >
@@ -162,7 +162,7 @@ const FloatingLabelSelect = ({
                                 className={cn(
                                     "block truncate",
                                     disabled
-                                        ? "text-[#9CA3AF]"
+                                        ? "text-[#666666]/50"
                                         : selectedLabel
                                             ? "text-[#333333]"
                                             : "text-[#333333]/40"
@@ -172,7 +172,7 @@ const FloatingLabelSelect = ({
                             </span>
                         </button>
                         <ChevronDown className={cn(
-                            "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171] transition-transform",
+                            "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666] transition-transform",
                             isOpen ? "rotate-180" : ""
                         )} />
                         {isOpen && menuStyle && (
@@ -213,7 +213,7 @@ const FloatingLabelSelect = ({
                             defaultValue={defaultValue}
                             disabled={disabled}
                             className={cn(
-                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[500] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:bg-[#EAEAEA]/25 disabled:text-[#9CA3AF] disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:text-[#666666]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
                                 className
                             )}
                         >
@@ -226,14 +226,14 @@ const FloatingLabelSelect = ({
                                 </option>
                             ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#717171]" />
+                        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666]" />
                     </>
                 )}
             </div>
             <FloatingLabel
                 htmlFor={id}
                 className={cn(
-                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-100 peer-focus:text-[#717171]",
+                    "peer-focus:top-1 peer-focus:-translate-y-4 peer-focus:scale-100 peer-focus:text-[#666666]",
                     floatLabel
                         ? 'top-1 -translate-y-4 scale-100'
                         : hasValue

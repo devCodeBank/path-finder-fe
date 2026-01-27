@@ -135,7 +135,7 @@ export const Profile: React.FC = () => {
         <FloatingLabelSelect
           id={fieldKey}
           label={label}
-          labelClassName="text-[#333333]/70"
+          labelClassName="text-[#333333]/50"
           value={value}
           onValueChange={handleSelectChange(fieldKey)}
           options={options}
@@ -152,7 +152,7 @@ export const Profile: React.FC = () => {
       <FloatingLabelInput
         id={fieldKey}
         label={label}
-        labelClassName="text-[#333333]/70"
+        labelClassName="text-[#333333]/50"
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={fieldKey === 'email' || fieldKey === 'companyName'}
@@ -234,7 +234,7 @@ export const Profile: React.FC = () => {
       </div>
 
       {/* Details Grid Card */}
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {/* Row 1 */}
           {renderField("First Name", formData.firstName, "firstName")}

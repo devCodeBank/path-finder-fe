@@ -28,11 +28,7 @@ const IntegrationCard = ({
           <p className="text-[13px] font-[400] text-[#333333]/70 leading-relaxed max-w-[500px]">{description}</p>
         </div>
       </div>
-      <Button
-        variant="outlined"
-        onClick={onConnect}
-        sx={buttonSx}
-      >
+      <Button variant="contained" onClick={onConnect} sx={buttonSx}>
         Connect
       </Button>
     </div>
@@ -43,27 +39,23 @@ export const MeetingApps: React.FC = () => {
   const subtitle = "Connect your preferred video conferencing tools to centralise scheduling, hosting, and managing all virtual interactions within Pathfinder ATS CRM.";
   const outlineButtonSx = {
     height: "36px",
-    borderColor: "#CCCCCC80",
-    color: "#333333",
+    backgroundColor: "#6E41E2",
+    color: "#FFFFFF",
     textTransform: "none",
     fontSize: "12px",
     width: "128px",
-    fontWeight: 400,
+    fontWeight: 500,
     borderRadius: "4px",
 
     boxShadow: "none",
     "&.Mui-disabled": {
-      color: "#CCCCCC",
+      color: "#FFFFFF",
+      backgroundColor: "#CCCCCC80",
       boxShadow: "none",
       opacity: 1
     },
-    "&.MuiButton-outlined.Mui-disabled": {
-      borderColor: "#CCCCCC80 !important",
-      border: "1px solid #CCCCCC80"
-    },
     "&:hover": {
-      borderColor: "#CCCCCC80",
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#7B52F4",
       boxShadow: "none"
     }
   };

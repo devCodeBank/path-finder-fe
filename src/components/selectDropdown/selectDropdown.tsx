@@ -43,7 +43,7 @@ const StyledSelect = styled(Select)(({ theme }) => ({
     padding: "0 12px",
     fontFamily: theme.tokens.typography.fontFamily.primary,
     fontSize: "13px",
-    fontWeight: theme.tokens.typography.fontWeight.medium,
+    fontWeight: theme.tokens.typography.fontWeight.normal,
     color: theme.tokens.color.text.primary,
     height: 40,
   },

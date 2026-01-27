@@ -7,7 +7,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { Button, IconButton, Menu, MenuItem, SvgIcon, Tooltip } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import CreateCustomRole from "@pages/settings/adminSettings/rolesPermissions/CustomRole/CreateCustomRole";
 import SystemRoles from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRoles";
 import CloseXIcon from "@assets/icons/x.svg";
@@ -18,7 +18,63 @@ interface RoleRow {
   description: string;
   createdDate: string;
   createdBy: string;
+  users: string;
 }
+
+const DescriptionCell: React.FC<{ text: string; maxWidth?: number }> = ({ text, maxWidth = 300 }) => {
+  const textRef = useRef<HTMLSpanElement | null>(null);
+  const [isOverflowed, setIsOverflowed] = useState(false);
+
+  useLayoutEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    const checkOverflow = () => {
+      setIsOverflowed(el.scrollWidth > el.clientWidth);
+    };
+
+    checkOverflow();
+    const observer = new ResizeObserver(checkOverflow);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [text]);
+
+  const content = (
+    <span
+      ref={textRef}
+      className="text-[#333333] truncate inline-block align-middle"
+      style={{ maxWidth }}
+    >
+      {text}
+    </span>
+  );
+
+  return isOverflowed ? (
+    <Tooltip
+      title={text}
+      arrow
+      placement="top"
+      componentsProps={{
+        tooltip: {
+          sx: {
+            maxWidth: "320px",
+            bgcolor: "#666666",
+            fontSize: "12px",
+            borderRadius: "4px",
+            px: 1.5,
+            py: 1,
+          },
+        },
+        arrow: { sx: { color: "#666666" } },
+        popper: { sx: { zIndex: 2300 } },
+      }}
+    >
+      {content}
+    </Tooltip>
+  ) : (
+    content
+  );
+};
 
 const getMockRoles = (): RoleRow[] => {
   return [
@@ -28,6 +84,7 @@ const getMockRoles = (): RoleRow[] => {
       description: "View only access to regional branch performance and financial logs",
       createdDate: "01/05/2025",
       createdBy: "John Doe",
+      users: "5",
     },
     {
       id: "2",
@@ -35,6 +92,7 @@ const getMockRoles = (): RoleRow[] => {
       description: "Create and edit candidate records only",
       createdDate: "31/08/2025",
       createdBy: "John Doe",
+      users: "12",
     },
     {
       id: "3",
@@ -42,6 +100,7 @@ const getMockRoles = (): RoleRow[] => {
       description: "Manage third-party job board integrations and external posting permissions",
       createdDate: "03/09/2025",
       createdBy: "John Doe",
+      users: "3",
     },
   ];
 };
@@ -126,7 +185,7 @@ export const RolesPermissions: React.FC = () => {
               <SvgIcon
                 fontSize="small"
                 viewBox="0 0 20 20"
-                sx={{ stroke: "currentColor", fill: "none", color: "#CCCCCC" }}
+                sx={{ stroke: "currentColor", fill: "none", color: "#666666", opacity: "50%" }}
               >
                 <path
                   d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
@@ -162,15 +221,15 @@ export const RolesPermissions: React.FC = () => {
             startIcon={<VisibilityOutlinedIcon fontSize="small" />}
             sx={{
               height: "36px",
-              borderColor: "#CCCCCC80",
-              color: "#333333",
+              borderColor: "#6E41E2",
+              color: "#6E41E2",
               textTransform: "none",
               fontSize: "12px",
               fontWeight: 500,
               borderRadius: "4px",
               boxShadow: "none",
               "&:hover": {
-                borderColor: "#CCCCCC80",
+                borderColor: "#6E41E2",
                 backgroundColor: "#F3F4F6",
                 boxShadow: "none",
               },
@@ -209,10 +268,11 @@ export const RolesPermissions: React.FC = () => {
             <span>{rows.length} custom roles</span>
           </div>
         </div>
-        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#EAEAEA]/25 items-center">
+        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr_0.5fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#EAEAEA]/25 items-center">
           <span>Custom Role Name</span>
           <span>Description</span>
           <span>Created By</span>
+          <span>Users</span>
           <span className="text-right">Actions</span>
         </div>
 
@@ -220,13 +280,18 @@ export const RolesPermissions: React.FC = () => {
           {rows.map((row) => (
             <div
               key={row.id}
-              className="grid grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] font-[400] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
+              className="grid grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr_0.5fr] gap-2 px-4 py-3 text-[13px] font-[400] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
-              <span className="font-[500] text-[13px]">{row.customRoleName}</span>
-              <span className="text-[#333333] truncate max-w-[420px]">{row.description}</span>
+              <span className="font-[400] text-[13px]">{row.customRoleName}</span>
+              <DescriptionCell text={row.description} />
               <div className="flex flex-col text-[13px] text-[#333333]">
                 <span className="text-[13px] text-[#333333]">{row.createdBy}</span>
                 <span>{row.createdDate}</span>
+              </div>
+              <div className="flex items-center">
+                <span className="inline-flex h-[28px] min-w-[28px] items-center justify-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+                  {row.users}
+                </span>
               </div>
               <div className="flex justify-end">
                 <IconButton
@@ -327,11 +392,11 @@ export const RolesPermissions: React.FC = () => {
         >
           <div
             className={[
-              "w-[60vw] max-w-[60vw] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
+              "w-[60vw] max-w-[60vw] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
               isCreateVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
-            <div className="h-[52px] px-4 border-b border-[#CCCCCC80] flex items-center justify-between">
+            <div className="h-[52px] pr-[30px] pt-10 py-7  px-4 border-b border-[#CCCCCC80] flex items-center justify-between shrink-0">
               <span className="text-[16px] font-[500] text-[#333333]">Create Custom Role</span>
               <Tooltip
                 title="Close"
@@ -341,7 +406,7 @@ export const RolesPermissions: React.FC = () => {
                   tooltip: {
                     sx: {
                       width: "40px",
-                      height: "20px",
+                      height: "30px",
                       bgcolor: "#666666",
                       fontSize: "11px",
                       borderRadius: "4px",
@@ -366,15 +431,15 @@ export const RolesPermissions: React.FC = () => {
                   <img
                     src={CloseXIcon}
                     alt=""
-                    className="h-[8px] w-[8.5px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
                   />
                 </button>
               </Tooltip>
             </div>
-            <div className="px-4 py-4">
+            <div className="px-4 py-4 flex-1 overflow-y-auto">
               <CreateCustomRole />
             </div>
-            <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
+            <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3 shrink-0">
               <Button
                 variant="outlined"
                 onClick={handleCloseCreatePanel}
@@ -430,11 +495,11 @@ export const RolesPermissions: React.FC = () => {
         >
           <div
             className={[
-              "w-[60vw] max-w-[60vw] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
+              "w-[60vw] max-w-[60vw] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
               isSystemVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
-            <div className="h-[52px] px-4 py-8.5 border-b border-[#CCCCCC80] flex items-center justify-between">
+            <div className="h-[52px] pr-[30px] px-4 pt-10 py-7 border-b border-[#CCCCCC80] flex items-center justify-between shrink-0">
               <span className="text-[16px] font-[500] text-[#333333]">System Roles</span>
               <Tooltip
                 title="Close"
@@ -443,8 +508,8 @@ export const RolesPermissions: React.FC = () => {
                 componentsProps={{
                   tooltip: {
                     sx: {
-                      width: "40px",
-                      height: "20px",
+                      width: "50px",
+                      height: "30px",
                       bgcolor: "#666666",
                       fontSize: "11px",
                       borderRadius: "4px",
@@ -469,57 +534,15 @@ export const RolesPermissions: React.FC = () => {
                   <img
                     src={CloseXIcon}
                     alt=""
-                    className="h-[8px] w-[8.5px]transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    className="h-[15px] w-[15px]transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
                   />
                 </button>
               </Tooltip>
             </div>
-            <div className="px-4 py-4">
+            <div className="px-4 py-4 flex-1 overflow-y-auto">
               <SystemRoles onCreateCustomRole={openCreateFromSystem} />
             </div>
-            <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
-              <Button
-                variant="outlined"
-                onClick={handleCloseSystemPanel}
-                sx={{
-                  height: "36px",
-                  borderColor: "#CCCCCC80",
-                  color: "#333333",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    borderColor: "#CCCCCC80",
-                    backgroundColor: "#F3F4F6",
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                onClick={openCreateFromSystem}
-                sx={{
-                  height: "36px",
-                  backgroundColor: "#6E41E2",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  color: "#FFFFFF",
-                  "&:hover": {
-                    backgroundColor: "#7B52F4",
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                Create Custom Role
-              </Button>
-            </div>
+
           </div>
         </div>
       )}

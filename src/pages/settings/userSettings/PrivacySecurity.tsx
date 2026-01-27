@@ -66,28 +66,24 @@ export const PrivacySecurity: React.FC = () => {
   const [newsletterSubscription, setNewsletterSubscription] = useState(false);
   const outlineButtonSx = {
     height: "36px",
-    borderColor: "#CCCCCC80",
-    color: "#333333",
+    backgroundColor: "#6E41E2",
+    color: "#FFFFFF",
     textTransform: "none",
     fontSize: "12px",
     width: "128px",
-    fontWeight: 400,
+    fontWeight: 500,
     padding: "inherit",
     borderRadius: "4px",
     boxShadow: "none",
 
     "&.Mui-disabled": {
-      color: "#CCCCCC",
+      color: "#FFFFFF",
+      backgroundColor: "#CCCCCC80",
       boxShadow: "none",
       opacity: 1
     },
-    "&.MuiButton-outlined.Mui-disabled": {
-      borderColor: "#CCCCCC80 !important",
-      border: "1px solid #CCCCCC80"
-    },
     "&:hover": {
-      borderColor: "#CCCCCC80",
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#7B52F4",
       boxShadow: "none"
     }
   };
@@ -115,10 +111,7 @@ export const PrivacySecurity: React.FC = () => {
               <span className="text-[14px] font-[500] text-[#333333]">Password</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">*#0!x%&</p>
             </div>
-            <Button
-              variant="outlined"
-              sx={outlineButtonSx}
-            >
+            <Button variant="contained" sx={outlineButtonSx}>
               Change Password
             </Button>
           </div>
@@ -132,10 +125,7 @@ export const PrivacySecurity: React.FC = () => {
               </p>
               <a href="#" className="text-[13px] text-[#6E41E2] hover:underline mt-1">Learn More About Recovery Codes</a>
             </div>
-            <Button
-              variant="outlined"
-              sx={outlineButtonSx}
-            >
+            <Button variant="contained" sx={outlineButtonSx}>
               Show Codes
             </Button>
           </div>
@@ -200,7 +190,7 @@ export const PrivacySecurity: React.FC = () => {
               ) : null}
             </div>
             <Button
-              variant="outlined"
+              variant="contained"
               sx={outlineButtonSx}
               disabled={Boolean(phoneNumber) || (isPhoneEditing && phoneInput.trim().length === 0)}
               onClick={() => {
@@ -250,7 +240,7 @@ export const PrivacySecurity: React.FC = () => {
               ) : null}
             </div>
             <Button
-              variant="outlined"
+              variant="contained"
               sx={outlineButtonSx}
               disabled={Boolean(alternateEmail) || (isEmailEditing && emailInput.trim().length === 0)}
               onClick={() => {
@@ -277,10 +267,7 @@ export const PrivacySecurity: React.FC = () => {
               <span className="text-[14px] font-[500] text-[#333333]">Authenticator App</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">Set up an authenticator on your mobile device to receive verification code.</p>
             </div>
-            <Button
-              variant="outlined"
-              sx={outlineButtonSx}
-            >
+            <Button variant="contained" sx={outlineButtonSx}>
               Set Up App
             </Button>
           </div>

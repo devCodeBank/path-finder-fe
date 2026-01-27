@@ -42,7 +42,7 @@ const StyledFormControl = styled(FormControl)`
     padding: ${({ theme }) => theme.spacing(1, 2)};
     font-family: ${({ theme }) => theme.tokens.typography.fontFamily.primary};
     font-size: 13px;
-    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
+    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
     color: ${({ theme }) => theme.tokens.color.text.primary};
 
     &.Mui-disabled {

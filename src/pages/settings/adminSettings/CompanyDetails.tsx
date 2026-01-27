@@ -107,7 +107,7 @@ export const CompanyDetails: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-1.5">
-          <label className="text-[14px] leading-[18px] font-[500]">{label}</label>
+          <label className="text-[14px] text-[#333333]/70 leading-[18px] font-[500]">{label}</label>
           <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
@@ -118,7 +118,7 @@ export const CompanyDetails: React.FC = () => {
         <FloatingLabelSelect
           id={fieldKey}
           label={label}
-          labelClassName="text-[#333333]/70"
+          labelClassName="text-[#333333]/50"
           value={value}
           onValueChange={handleSelectChange(fieldKey)}
           options={options}
@@ -133,7 +133,7 @@ export const CompanyDetails: React.FC = () => {
       <FloatingLabelInput
         id={fieldKey}
         label={label}
-        labelClassName="text-[#333333]/70"
+        labelClassName="text-[#333333]/50"
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={isFieldReadOnly(fieldKey)}
@@ -146,8 +146,8 @@ export const CompanyDetails: React.FC = () => {
     <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-10">
 
 
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex flex-col md:flex-row items-start md:items-center justify-between">
-        <div className="flex items-start gap-4">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-6 flex flex-col md:flex-row items-start md:items-center justify-between">
+        <div className="flex items-start gap-6">
           <div className="flex flex-col gap-2">
             {/* Avatar Box */}
             <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center border-none">
@@ -209,7 +209,7 @@ export const CompanyDetails: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
           {renderField("Company Name", formData.companyName, "companyName")}
           {renderField("Account Type", formData.accountType, "accountType")}

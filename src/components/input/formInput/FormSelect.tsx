@@ -36,7 +36,7 @@ const StyledFormControl = styled(FormControl)`
   .MuiSelect-select {
     padding: 8px 16px;
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
   }
 
   .MuiOutlinedInput-root {

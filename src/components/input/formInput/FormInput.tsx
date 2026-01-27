@@ -34,7 +34,7 @@ const StyledTextField = styled(TextField)`
   .MuiOutlinedInput-root {
     background-color: ${({ theme }) => theme.tokens.color.background.primary};
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 400;
 
     & fieldset {
       border-color: ${({ theme }) => theme.tokens.color.border.mediumLight};

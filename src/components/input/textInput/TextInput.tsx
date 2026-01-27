@@ -41,7 +41,7 @@ const StyledTextField = styled(TextField)`
     height: ${({ theme }) => theme.tokens.component.input.height};
     font-family: ${({ theme }) => theme.tokens.typography.fontFamily.primary};
     font-size: 13px;
-    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.medium};
+    font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
     transition: all 200ms ease-in-out;
 
     & fieldset {

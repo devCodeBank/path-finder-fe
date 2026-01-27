@@ -11,27 +11,23 @@ const CheckIcon = () => (
 export const Email: React.FC = () => {
   const outlineButtonSx = {
     height: "36px ",
-    borderColor: "#CCCCCC80",
-    color: "#333333",
+    backgroundColor: "#6E41E2",
+    color: "#FFFFFF",
     textTransform: "none",
     fontSize: "12px",
     width: "110px",
-    fontWeight: 400,
+    fontWeight: 500,
     borderRadius: "4px",
 
     boxShadow: "none",
     "&.Mui-disabled": {
-      color: "#CCCCCC",
+      color: "#FFFFFF",
+      backgroundColor: "#CCCCCC80",
       boxShadow: "none",
       opacity: 1
     },
-    "&.MuiButton-outlined.Mui-disabled": {
-      borderColor: "#CCCCCC80 !important",
-      border: "1px solid #CCCCCC80"
-    },
     "&:hover": {
-      borderColor: "#CCCCCC80",
-      backgroundColor: "#EAEAEA",
+      backgroundColor: "#7B52F4",
       boxShadow: "none"
     }
   };
@@ -46,7 +42,7 @@ export const Email: React.FC = () => {
             <p className="text-[13px] font-[400] text-[#333333]/70">Connect your email with pathfinder ats crm</p>
           </div>
         </div>
-        <Button variant="outlined" sx={outlineButtonSx}>
+        <Button variant="contained" sx={outlineButtonSx}>
           Connect
         </Button>
       </div>

@@ -6,7 +6,7 @@ const StyledInput = styled.input`
   border: 1px solid ${({ theme }) => theme.tokens.color.border.mediumLight};
   border-radius: 6px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 400;
   color: ${({ theme }) => theme.tokens.color.text.primary};
   background-color: ${({ theme }) => theme.tokens.color.background.primary};
   width: 80px;
