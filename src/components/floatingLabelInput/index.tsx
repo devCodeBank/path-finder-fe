@@ -105,41 +105,10 @@ const FloatingLabelSelect = ({
     const hasValue = value || defaultValue;
     const [isOpen, setIsOpen] = React.useState(false);
     const buttonRef = React.useRef<HTMLButtonElement | null>(null);
-    const [menuStyle, setMenuStyle] = React.useState<React.CSSProperties | null>(null);
     const selectedValue = value ?? defaultValue ?? "";
     const selectedLabel = options.find((opt) => opt.value === selectedValue)?.label ?? "";
     const placeholderText = placeholder ?? "Select";
     const visibleCount = maxVisibleOptions ? Math.min(maxVisibleOptions, options.length) : 0;
-
-    React.useEffect(() => {
-        if (!isOpen || !buttonRef.current) {
-            setMenuStyle(null);
-            return;
-        }
-
-        const updateMenuPosition = () => {
-            const rect = buttonRef.current?.getBoundingClientRect();
-            if (!rect) {
-                return;
-            }
-            setMenuStyle({
-                position: "fixed",
-                top: rect.bottom + 4,
-                left: rect.left,
-                width: rect.width,
-                zIndex: 2000,
-            });
-        };
-
-        updateMenuPosition();
-        window.addEventListener("scroll", updateMenuPosition, true);
-        window.addEventListener("resize", updateMenuPosition);
-
-        return () => {
-            window.removeEventListener("scroll", updateMenuPosition, true);
-            window.removeEventListener("resize", updateMenuPosition);
-        };
-    }, [isOpen]);
 
     return (
         <div className={cn("relative", isOpen ? "z-20" : "", className)}>
@@ -171,15 +140,17 @@ const FloatingLabelSelect = ({
                                 {selectedLabel || placeholderText}
                             </span>
                         </button>
-                        <ChevronDown className={cn(
-                            "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666] transition-transform",
-                            isOpen ? "rotate-180" : ""
-                        )} />
-                        {isOpen && menuStyle && (
+                        <ChevronDown
+                            className={cn(
+                                "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 transition-transform",
+                                disabled ? "text-[#CCCCCC]" : "text-[#666666]",
+                                isOpen ? "rotate-180" : ""
+                            )}
+                        />
+                        {isOpen && (
                             <div
-                                className="rounded-md border border-[#CCCCCC80] bg-white shadow-[0px_6px_16px_0px_#0000001F] overflow-y-auto"
+                                className="absolute left-0 top-[calc(100%+4px)] z-20 w-full rounded-md border border-[#CCCCCC80] bg-white shadow-[0px_6px_16px_0px_#0000001F] overflow-y-auto"
                                 style={{
-                                    ...menuStyle,
                                     maxHeight: visibleCount ? `${visibleCount * 32}px` : undefined,
                                     scrollbarGutter: "stable",
                                 }}
@@ -226,7 +197,12 @@ const FloatingLabelSelect = ({
                                 </option>
                             ))}
                         </select>
-                        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666]" />
+                        <ChevronDown
+                            className={cn(
+                                "pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2",
+                                disabled ? "text-[#CCCCCC]" : "text-[#666666]"
+                            )}
+                        />
                     </>
                 )}
             </div>

@@ -12,22 +12,15 @@
       {
         "id": "u1",
         "name": "John Doe",
-        "title": "Chief Executive Officer",
-        "role": "Administrator",
+        "title": "Director, Sales",
+        "role": "Account Owner",
         "status": "Active"
       },
       {
         "id": "u2",
-        "name": "Aisha Thompson",
-        "title": "Operations Manager",
-        "role": "Manager",
-        "status": "Active"
-      },
-      {
-        "id": "u3",
-        "name": "Daniel Reyes",
-        "title": "HR Specialist",
-        "role": "Recruiter",
+        "name": "David Miller",
+        "title": "Account Manager",
+        "role": "Standard User",
         "status": "Active"
       }
     ]
@@ -44,30 +37,16 @@
     "members": [
       {
         "id": "u4",
-        "name": "Sophia Lee",
-        "title": "Senior Technical Recruiter",
-        "role": "Recruiter",
+        "name": "Jessica Lee",
+        "title": "Managing Consultant",
+        "role": "Administrator",
         "status": "Active"
       },
       {
         "id": "u5",
-        "name": "Marcus Chen",
-        "title": "Engineering Manager",
-        "role": "Hiring Manager",
-        "status": "Active"
-      },
-      {
-        "id": "u6",
-        "name": "Priya Patel",
-        "title": "Software Engineer",
-        "role": "Interviewer",
-        "status": "Active"
-      },
-      {
-        "id": "u7",
-        "name": "Jamal Robinson",
-        "title": "Staff Engineer",
-        "role": "Interviewer",
+        "name": "Sophie Taylor",
+        "title": "Recruitment Consultant",
+        "role": "Standard User",
         "status": "Active"
       }
     ]

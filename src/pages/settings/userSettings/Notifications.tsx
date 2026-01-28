@@ -52,10 +52,14 @@ const Toggle = ({
   label: string
 }) => {
   return (
-    <div className="flex items-center gap-3 cursor-pointer group" onClick={() => onChange(!enabled)}>
-      <div
+    <div className="flex items-center gap-3 group">
+      <button
+        type="button"
+        aria-pressed={enabled}
+        aria-label={label}
+        onClick={() => onChange(!enabled)}
         className={cn(
-          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none",
+          "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 outline-none",
           enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]"
         )}
       >
@@ -65,8 +69,8 @@ const Toggle = ({
             enabled ? "translate-x-[18px]" : "translate-x-[3px]"
           )}
         />
-      </div>
-      <span className="text-[13px] font-[400] text-[#333333] group-hover:text-[#000000] transition-colors">
+      </button>
+      <span className="text-[13px] font-[400] text-[#333333] transition-colors">
         {label}
       </span>
     </div>

@@ -241,7 +241,7 @@ export const Users: React.FC = () => {
   const [inviteMode, setInviteMode] = useState<"invite" | "edit" | "resend">("invite");
   const inviteCloseTimerRef = useRef<number | null>(null);
   const detailsCloseTimerRef = useRef<number | null>(null);
-  const [inviteForm, setInviteForm] = useState<InviteUserForm>({
+  const createDefaultInviteForm = (): InviteUserForm => ({
     firstName: "",
     lastName: "",
     email: "",
@@ -255,6 +255,7 @@ export const Users: React.FC = () => {
     roles: [],
     customRoles: [],
   });
+  const [inviteForm, setInviteForm] = useState<InviteUserForm>(createDefaultInviteForm);
 
   const handleOpenRowMenu = (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorByRowId((prev) => ({ ...prev, [rowId]: event.currentTarget }));
@@ -268,6 +269,7 @@ export const Users: React.FC = () => {
     setShowInviteErrors(false);
     setEditingUser(null);
     setInviteMode("invite");
+    setInviteForm(createDefaultInviteForm());
     openInvitePanel();
   };
 
@@ -398,6 +400,9 @@ export const Users: React.FC = () => {
       unlockUser: status === "Locked Out",
     };
   };
+  const rowsPerPage = 20;
+  const totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+  const isSinglePage = totalPages <= 1;
 
   return (
     <Container>
@@ -431,6 +436,9 @@ export const Users: React.FC = () => {
             fontWeight: 400,
             borderRadius: "4px",
             boxShadow: "none",
+            "& .MuiButton-startIcon": {
+              borderRadius: "4px",
+            },
             "&:hover": {
               borderColor: "#CCCCCC80",
               backgroundColor: "#F3F4F6",
@@ -487,18 +495,18 @@ export const Users: React.FC = () => {
               className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
               <div className="flex items-center gap-3">
-                <div className="h-[32px] w-[32px]  bg-[#EAEAEA]/25  flex items-center justify-center text-[11px] text-[#333333]">
-                  {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
-                </div>
+              <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 flex items-center justify-center text-[11px] text-[#333333]">
+                {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+              </div>
                 <div className="flex flex-col">
                   <span className="text-[13px] font-[500]">{row.name}</span>
                   <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
               </div>
-              <span className="inline-flex h-[24px] w-[130px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[24px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.role}
               </span>
-              <span className="inline-flex h-[24px] w-[110px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[24px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.status === "Pending" ? "Pending" : row.status === "Link Expired" ? "Linked Expired" : row.status}
               </span>
               <span>{row.jobTitle ?? "Not Available"}</span>
@@ -606,7 +614,7 @@ export const Users: React.FC = () => {
             <span>Rows per page</span>
             <div className="relative">
               <select
-                className="h-[30px] min-w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333]"
+                className="h-[30px] min-w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666]"
                 defaultValue="20"
               >
                 <option value="10">10</option>
@@ -624,18 +632,50 @@ export const Users: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span>Page 1 of 1</span>
+            <span>Page 1 of {totalPages}</span>
             <div className="flex items-center gap-2">
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <FirstPageIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <NavigateBeforeIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <NavigateNextIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <LastPageIcon fontSize="small" />
               </IconButton>
             </div>
@@ -674,25 +714,10 @@ export const Users: React.FC = () => {
                 <Tooltip
                   title="Close"
                   arrow
-                  placement="bottom"
                   componentsProps={{
-                    tooltip: {
-                      sx: {
-                        width: "48px",
-                        height: "28px",
-                        bgcolor: "#666666",
-                        fontSize: "11px",
-                        borderRadius: "4px",
-                        px: 3,
-                        py: 0.5,
-                        textAlign: "center",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      },
-                    },
-                    arrow: { sx: { color: "#666666" } },
-                    popper: { sx: { zIndex: 2300 } },
+                    tooltip: { sx: { bgcolor: "#797979" } },
+                    arrow: { sx: { color: "#797979" } },
+                    popper: { sx: { zIndex: 2400 } },
                   }}
                 >
                   <button
@@ -902,12 +927,12 @@ export const Users: React.FC = () => {
               <div className="mt-6">
                 <div className="text-[13px] font-[500] text-[#333333] mb-2">Custom Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80]">
-                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 text-[14px] font-[500] text-[#333333]">
+                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[14px] font-[500] text-[#333333]">
                     <span>Role Name</span>
                     <span>Description</span>
                   </div>
                   {customRoles.map((role) => (
-                    <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 px-2 py-2 border-t border-[#CCCCCC80]">
+                    <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 border-t border-[#CCCCCC80]">
                       <div className="flex items-center gap-3 text-[13px] font-[400] text-[#333333] select-none">
                         <label htmlFor={role.id} className="cursor-pointer">
                           <input
@@ -1034,25 +1059,10 @@ export const Users: React.FC = () => {
               <Tooltip
                 title="Close"
                 arrow
-                placement="bottom"
                 componentsProps={{
-                  tooltip: {
-                    sx: {
-                      width: "48px",
-                      height: "28px",
-                      bgcolor: "#666666",
-                      fontSize: "11px",
-                      borderRadius: "4px",
-                      px: 3,
-                      py: 0.5,
-                      textAlign: "center",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    },
-                  },
-                  arrow: { sx: { color: "#666666" } },
-                  popper: { sx: { zIndex: 2300 } },
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button
@@ -1068,13 +1078,14 @@ export const Users: React.FC = () => {
             <div className="px-4 py-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
                 <div className="flex items-start gap-4">
-                  <div className="h-[56px] w-[56px]  border border-[#CCCCCC80] bg-[#F3F4F6] flex items-center justify-center text-[14px] font-[600] text-[#333333]">
-                    {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                  <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center">
+                    <div className="text-[#333333] bg-white flex items-center justify-center rounded-full w-[47px] h-[47px] text-center text-[16px] font-[600]">
+                      {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                    </div>
                   </div>
                   <div className="flex flex-col gap-1">
                     <span className="text-[14px] font-[600] text-[#333333]">{detailsUser.name}</span>
                     <span className="text-[13px] text-[#333333]/70">{detailsUser.jobTitle}</span>
-                    <span className="text-[13px] text-[#333333]/70">Upload Photo</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
@@ -1095,7 +1106,7 @@ export const Users: React.FC = () => {
                       boxShadow: "none",
                       color: "#FFFFFF",
                       "&:hover": {
-                        backgroundColor: "#2CB645",
+                        backgroundColor: "#31C24D",
                         boxShadow: "none",
                       },
                     }}

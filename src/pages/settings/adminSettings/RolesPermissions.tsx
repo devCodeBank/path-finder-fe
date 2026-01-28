@@ -7,7 +7,7 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import { Button, IconButton, Menu, MenuItem, SvgIcon, Tooltip } from "@mui/material";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import CreateCustomRole from "@pages/settings/adminSettings/rolesPermissions/CustomRole/CreateCustomRole";
 import SystemRoles from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRoles";
 import CloseXIcon from "@assets/icons/x.svg";
@@ -22,26 +22,8 @@ interface RoleRow {
 }
 
 const DescriptionCell: React.FC<{ text: string; maxWidth?: number }> = ({ text, maxWidth = 300 }) => {
-  const textRef = useRef<HTMLSpanElement | null>(null);
-  const [isOverflowed, setIsOverflowed] = useState(false);
-
-  useLayoutEffect(() => {
-    const el = textRef.current;
-    if (!el) return;
-
-    const checkOverflow = () => {
-      setIsOverflowed(el.scrollWidth > el.clientWidth);
-    };
-
-    checkOverflow();
-    const observer = new ResizeObserver(checkOverflow);
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [text]);
-
   const content = (
     <span
-      ref={textRef}
       className="text-[#333333] truncate inline-block align-middle"
       style={{ maxWidth }}
     >
@@ -49,7 +31,7 @@ const DescriptionCell: React.FC<{ text: string; maxWidth?: number }> = ({ text, 
     </span>
   );
 
-  return isOverflowed ? (
+  return (
     <Tooltip
       title={text}
       arrow
@@ -57,12 +39,18 @@ const DescriptionCell: React.FC<{ text: string; maxWidth?: number }> = ({ text, 
       componentsProps={{
         tooltip: {
           sx: {
-            maxWidth: "320px",
+            minWidth: "220px",
+            maxWidth: "260px",
+            width: "230px",
+            minHeight: "36px",
             bgcolor: "#666666",
+            color: "#FFFFFF",
             fontSize: "12px",
-            borderRadius: "4px",
-            px: 1.5,
+            lineHeight: "16px",
+            borderRadius: "6px",
+            px: 2,
             py: 1,
+            textAlign: "center",
           },
         },
         arrow: { sx: { color: "#666666" } },
@@ -71,8 +59,6 @@ const DescriptionCell: React.FC<{ text: string; maxWidth?: number }> = ({ text, 
     >
       {content}
     </Tooltip>
-  ) : (
-    content
   );
 };
 
@@ -171,6 +157,9 @@ export const RolesPermissions: React.FC = () => {
     handleCloseSystemPanel();
     handleCreateCustomRole();
   };
+  const rowsPerPage = 20;
+  const totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+  const isSinglePage = totalPages <= 1;
 
   return (
     <div className="flex flex-col w-full">
@@ -196,6 +185,7 @@ export const RolesPermissions: React.FC = () => {
               </SvgIcon>
             }
             sx={{
+              width: "110px",
               height: "36px",
               borderColor: "#CCCCCC80",
               color: "#333333",
@@ -204,6 +194,9 @@ export const RolesPermissions: React.FC = () => {
               fontWeight: 400,
               borderRadius: "4px",
               boxShadow: "none",
+              "& .MuiButton-startIcon": {
+                borderRadius: "4px",
+              },
               "&:hover": {
                 borderColor: "#CCCCCC80",
                 backgroundColor: "#F3F4F6",
@@ -227,10 +220,11 @@ export const RolesPermissions: React.FC = () => {
               fontSize: "12px",
               fontWeight: 500,
               borderRadius: "4px",
+              padding: "0 14px",
               boxShadow: "none",
               "&:hover": {
                 borderColor: "#6E41E2",
-                backgroundColor: "#F3F4F6",
+                backgroundColor: "rgba(110, 65, 226, 0.08)",
                 boxShadow: "none",
               },
             }}
@@ -286,7 +280,7 @@ export const RolesPermissions: React.FC = () => {
               <DescriptionCell text={row.description} />
               <div className="flex flex-col text-[13px] text-[#333333]">
                 <span className="text-[13px] text-[#333333]">{row.createdBy}</span>
-                <span>{row.createdDate}</span>
+                <span className="text-[#333333]/70">{row.createdDate}</span>
               </div>
               <div className="flex items-center">
                 <span className="inline-flex h-[28px] min-w-[28px] items-center justify-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
@@ -345,7 +339,7 @@ export const RolesPermissions: React.FC = () => {
             <span>Rows per page</span>
             <div className="relative">
               <select
-                className="h-[32px] w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333]"
+                className="h-[32px] w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666]"
                 defaultValue="20"
                 aria-label="Rows per page"
               >
@@ -364,18 +358,50 @@ export const RolesPermissions: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span>Page 1 of 1</span>
+            <span>Page 1 of {totalPages}</span>
             <div className="flex items-center gap-2">
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <FirstPageIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <NavigateBeforeIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <NavigateNextIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ border: "1px solid #CCCCCC80", borderRadius: "4px" }}>
+              <IconButton
+                size="small"
+                disabled={isSinglePage}
+                sx={{
+                  border: "1px solid #CCCCCC80",
+                  borderRadius: "4px",
+                  "&.Mui-disabled": { color: "#999999", borderColor: "#CCCCCC80" },
+                }}
+              >
                 <LastPageIcon fontSize="small" />
               </IconButton>
             </div>
@@ -392,7 +418,7 @@ export const RolesPermissions: React.FC = () => {
         >
           <div
             className={[
-              "w-[60vw] max-w-[60vw] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
+              "w-[60vw] max-w-[60vw] h-full  bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
               isCreateVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
@@ -401,25 +427,10 @@ export const RolesPermissions: React.FC = () => {
               <Tooltip
                 title="Close"
                 arrow
-                placement="bottom"
                 componentsProps={{
-                  tooltip: {
-                    sx: {
-                      width: "40px",
-                      height: "30px",
-                      bgcolor: "#666666",
-                      fontSize: "11px",
-                      borderRadius: "4px",
-                      px: 1,
-                      py: 0.5,
-                      textAlign: "center",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    },
-                  },
-                  arrow: { sx: { color: "#666666" } },
-                  popper: { sx: { zIndex: 2300 } },
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button
@@ -495,7 +506,7 @@ export const RolesPermissions: React.FC = () => {
         >
           <div
             className={[
-              "w-[60vw] max-w-[60vw] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
+              "w-[60vw] max-w-[60vw] h-full  bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
               isSystemVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
@@ -504,25 +515,10 @@ export const RolesPermissions: React.FC = () => {
               <Tooltip
                 title="Close"
                 arrow
-                placement="bottom"
                 componentsProps={{
-                  tooltip: {
-                    sx: {
-                      width: "50px",
-                      height: "30px",
-                      bgcolor: "#666666",
-                      fontSize: "11px",
-                      borderRadius: "4px",
-                      px: 1,
-                      py: 0.5,
-                      textAlign: "center",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    },
-                  },
-                  arrow: { sx: { color: "#666666" } },
-                  popper: { sx: { zIndex: 2300 } },
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button

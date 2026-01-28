@@ -390,10 +390,11 @@ const theme = createTheme({
         tooltip: {
           backgroundColor: "#6E41E2",
           color: "#FFFFFF",
-          borderRadius: "4px",
+          borderRadius: "6px",
           fontSize: "12px",
           fontWeight: 400,
-          padding: "6px 6px",
+          lineHeight: "16px",
+          padding: "8px 12px",
           boxShadow: "none",
         },
         arrow: {

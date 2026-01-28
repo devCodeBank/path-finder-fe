@@ -177,7 +177,12 @@ export const Profile: React.FC = () => {
             </div>
             {/* Upload Photo below avatar */}
             <div className="flex items-center gap-1">
-              <span className="text-[13px] text-[#333333] font-[400]">Upload Photo</span>
+              <button
+                type="button"
+                className="text-[13px] text-[#333333] font-[400] hover:text-[#6E41E2] hover:underline"
+              >
+                Upload Photo
+              </button>
               <span className="relative inline-flex items-center justify-center h-[16px] w-[16px] cursor-pointer group">
                 <InfoOutlined sx={{ fontSize: 13, color: "#666666" }} className="group-hover:!text-purple-600" />
                 <span className="absolute left-[calc(100%+8px)] top-1/2 z-10 w-[260px] -translate-y-1/2 rounded-md bg-[#5A5A5A] px-3 py-2 text-[12px] text-white shadow-[0px_6px_16px_0px_#00000029] opacity-0 pointer-events-none group-hover:opacity-100">
