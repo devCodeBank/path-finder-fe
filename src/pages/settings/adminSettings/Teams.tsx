@@ -150,22 +150,19 @@ export const Teams: React.FC = () => {
   const moveMember = (memberId: string, destinationTeamIdValue: string) => {
     if (!memberId || !destinationTeamIdValue) return;
     setTeamItems((prev) => {
-      let memberToMove: TeamRow | null = null;
-      const removedFromSource = prev.map((team) => {
-        const match = team.members.find((m) => m.id === memberId) || null;
-        if (match) {
-          memberToMove = match;
-          return { ...team, members: team.members.filter((m) => m.id !== memberId) };
-        }
-        return team;
-      });
+      const sourceTeam = prev.find((team) => team.members.some((m) => m.id === memberId));
+      const memberToMove = sourceTeam?.members.find((m) => m.id === memberId);
       if (!memberToMove) return prev;
-      return removedFromSource.map((team) => {
-        if (team.id === destinationTeamIdValue) {
-          return { ...team, members: [...team.members, memberToMove] };
-        }
-        return team;
-      });
+      const removedFromSource = prev.map((team) =>
+        team.id === sourceTeam.id
+          ? { ...team, members: team.members.filter((m) => m.id !== memberId) }
+          : team
+      );
+      return removedFromSource.map((team) =>
+        team.id === destinationTeamIdValue
+          ? { ...team, members: [...team.members, memberToMove] }
+          : team
+      );
     });
   };
 
