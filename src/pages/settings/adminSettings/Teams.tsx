@@ -152,7 +152,7 @@ export const Teams: React.FC = () => {
     setTeamItems((prev) => {
       const sourceTeam = prev.find((team) => team.members.some((m) => m.id === memberId));
       const memberToMove = sourceTeam?.members.find((m) => m.id === memberId);
-      if (!memberToMove) return prev;
+      if (!sourceTeam || !memberToMove) return prev;
       const removedFromSource = prev.map((team) =>
         team.id === sourceTeam.id
           ? { ...team, members: team.members.filter((m) => m.id !== memberId) }
