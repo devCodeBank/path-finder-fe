@@ -749,7 +749,7 @@ const CollapsibleSection = ({
                         <MenuItem
                           onClick={() => {
                             onCloseRowMenu(row.id)();
-                            onDeleteMember(row.id, row.name);
+                            onDeleteMember(row.id);
                           }}
                           sx={{ fontSize: "13px", fontWeight: 500, color: "#333333" }}
                         >
