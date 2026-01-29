@@ -524,8 +524,7 @@ export const Users: React.FC = () => {
                   anchorEl={anchorByRowId[row.id]}
                   open={Boolean(anchorByRowId[row.id])}
                   onClose={handleCloseRowMenu(row.id)}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                  transformOrigin={{ vertical: "top", horizontal: "left" }}
+
                   PaperProps={{
                     sx: {
                       borderRadius: "6px",

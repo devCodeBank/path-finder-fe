@@ -1,5 +1,6 @@
 import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 import theme from "@theme/index";
 import React from "react";
 import styled from "styled-components";
@@ -136,6 +137,7 @@ export interface SelectInputProps {
   errorMessage?: string;
   onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   zIndex?: number;
+  sx?: SxProps<Theme>;
 }
 
 export const SelectInput: React.FC<SelectInputProps> = ({
@@ -152,6 +154,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   errorMessage,
   onBlur,
   zIndex,
+  sx,
   ...props
 }) => {
   const shouldShrink = !!placeholder || !!value;
@@ -170,6 +173,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
         label={label}
         displayEmpty={!!placeholder}
         notched={shouldShrink}
+        sx={sx}
         MenuProps={{
           anchorOrigin: {
             vertical: "bottom",

@@ -1,4 +1,3 @@
-import MoveFileIcon from "@assets/icons/move-file.svg?react";
 import { Button } from "@components/buttons/button/Button";
 import { CloseRounded } from "@mui/icons-material";
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
@@ -9,16 +8,12 @@ export interface DeleteMemberModalProps {
   open: boolean;
   onClose: () => void;
   onConfirm: () => void;
-  memberName?: string;
-  currentTeamName?: string;
 }
 
 export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
   open,
   onClose,
   onConfirm,
-  memberName = "Member",
-  currentTeamName = "Default Team",
 }) => {
   return (
     <Dialog

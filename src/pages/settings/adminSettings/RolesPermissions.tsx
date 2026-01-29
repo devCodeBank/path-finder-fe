@@ -307,8 +307,8 @@ export const RolesPermissions: React.FC = () => {
                   anchorEl={anchorByRowId[row.id]}
                   open={Boolean(anchorByRowId[row.id])}
                   onClose={handleCloseRowMenu(row.id)}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                  transformOrigin={{ vertical: "top", horizontal: "left" }}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
                   PaperProps={{
                     sx: {
                       borderRadius: "6px",
@@ -319,8 +319,7 @@ export const RolesPermissions: React.FC = () => {
                       py: 0.5,
                     },
                   }}
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  transformOrigin={{ vertical: "top", horizontal: "right" }}
+
                 >
                   <MenuItem onClick={handleCloseRowMenu(row.id)} sx={{ fontSize: "13px", color: "#333333" }}>
                     Edit

@@ -402,8 +402,6 @@ export const Teams: React.FC = () => {
       <DeleteMemberModal
         open={isDeleteOpen}
         onClose={handleCloseDeleteModal}
-        memberName={deleteMemberName}
-        currentTeamName={deleteMemberTeamName}
         onConfirm={() => {
           if (deleteMemberId) {
             moveMemberToGeneral(deleteMemberId);
@@ -735,8 +733,8 @@ const CollapsibleSection = ({
                       anchorEl={rowMenuAnchorById[row.id]}
                       open={Boolean(rowMenuAnchorById[row.id])}
                       onClose={onCloseRowMenu(row.id)}
-                      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                      transformOrigin={{ vertical: "top", horizontal: "left" }}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      transformOrigin={{ vertical: "top", horizontal: "right" }}
                       PaperProps={{
                         sx: {
                           borderRadius: "6px",
@@ -747,8 +745,6 @@ const CollapsibleSection = ({
                           py: 0.5,
                         },
                       }}
-                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                      transformOrigin={{ vertical: "top", horizontal: "right" }}
                     >
                       <MenuItem
                         disabled={!canMoveMember}
