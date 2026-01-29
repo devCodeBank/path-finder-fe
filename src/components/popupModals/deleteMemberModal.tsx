@@ -1,31 +1,22 @@
 import MoveFileIcon from "@assets/icons/move-file.svg?react";
 import { Button } from "@components/buttons/button/Button";
-import { SelectInput } from "@components/input/selectInput/SelectInput";
 import { CloseRounded } from "@mui/icons-material";
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import theme from "@theme/index";
 import React from "react";
 
-export interface DropDownModalProps {
+export interface DeleteMemberModalProps {
   open: boolean;
   onClose: () => void;
-  teams: { id: string; name: string }[];
-  value: string;
-  onChange: (teamId: string) => void;
   onConfirm: () => void;
-  confirmDisabled?: boolean;
   memberName?: string;
   currentTeamName?: string;
 }
 
-export const DropDownModal: React.FC<DropDownModalProps> = ({
+export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
   open,
   onClose,
-  teams,
-  value,
-  onChange,
   onConfirm,
-  confirmDisabled,
   memberName = "Member",
   currentTeamName = "Default Team",
 }) => {
@@ -37,9 +28,9 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
             padding: "20px",
             borderRadius: "10px",
             border: "1px solid #E6E6E6",
-            width: "520px",
-            maxWidth: "520px",
-            minHeight: "250px",
+            width: "450px",
+            maxWidth: "450px",
+            minHeight: "200px",
             backgroundColor: "#FFFFFF",
             display: "flex",
             flexDirection: "column",
@@ -56,7 +47,7 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
       onClose={onClose}
       fullWidth={false}
       maxWidth={false}
-      aria-labelledby="move-member-title"
+      aria-labelledby="delete-member-title"
     >
       <DialogTitle
         sx={{
@@ -68,13 +59,15 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
         }}
         component="div"
       >
-        <Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <MoveFileIcon style={{ width: 18, height: 18, color: "#666666" }} />
-            <span style={{ fontSize: 16, fontWeight: 500, color: "#333333", paddingLeft: "18px" }}>{`Move ${memberName}`}</span>
+        <Box sx={{ width: "100%", textAlign: "center" }}>
+          <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
+            {/* <MoveFileIcon style={{ width: 18, height: 18, color: "#666666" }} /> */}
+            <span style={{ fontSize: 16, fontWeight: 500, color: "#333333" }}>
+              Delete Team Member?
+            </span>
           </Box>
-          <Typography variant="body2" sx={{ color: "#666666", ml: 4, mt: 5, paddingTop: "20px" }}>
-            {currentTeamName}
+          <Typography variant="body2" sx={{ color: "#666666", mt: 0.5, paddingTop: "30PX" }}>
+            Note: Deleted user will move to Default Team
           </Typography>
         </Box>
         <Box>
@@ -92,30 +85,14 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
           alignItems: "center",
           justifyContent: "center",
         }}
-      >
-        <Box sx={{ width: "100%" }}>
-          <SelectInput
-            label=" "
-            value={value}
-            onChange={(e) => onChange(e.target.value as string)}
-            options={teams.map((t) => ({ value: t.id, label: t.name }))}
-            placeholder="Select a new team"
-            zIndex={theme.tokens.zIndex.modal + 1}
-            sx={{
-              "& .MuiSelect-select": {
-                textAlign: "center",
-              },
-            }}
-          />
-        </Box>
-      </DialogContent>
+      />
       <DialogActions sx={{ padding: 0, justifyContent: "flex-end", marginTop: "auto" }}>
-        <Button size="sm" onClick={onConfirm} variant="solid" disabled={Boolean(confirmDisabled)}>
-          Move
+        <Button size="sm" onClick={onConfirm} variant="solid">
+          Delete
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default DropDownModal;
+export default DeleteMemberModal;

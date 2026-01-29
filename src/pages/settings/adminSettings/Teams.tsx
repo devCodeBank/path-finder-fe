@@ -17,6 +17,7 @@ import theme from "@theme/index";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import CloseXIcon from "@assets/icons/x.svg";
+import DeleteMemberModal from "@components/popupModals/deleteMemberModal";
 
 import type { Team, TeamRow } from "../../../types/teams";
 
@@ -75,6 +76,9 @@ export const Teams: React.FC = () => {
   const [isCreateVisible, setIsCreateVisible] = useState(false);
   const createCloseTimerRef = useRef<number | null>(null);
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
+  const [deleteMemberName, setDeleteMemberName] = useState<string>("");
 
   const [teamName, setTeamName] = useState("");
   const [teamAdmin, setTeamAdmin] = useState("");
@@ -92,6 +96,18 @@ export const Teams: React.FC = () => {
     setIsMoveModalOpen(false);
     setSelectedMemberId(null);
     setDestinationTeamId("");
+  };
+
+  const handleOpenDeleteModal = (memberId: string, memberName: string) => {
+    setDeleteMemberId(memberId);
+    setDeleteMemberName(memberName);
+    setIsDeleteOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteOpen(false);
+    setDeleteMemberId(null);
+    setDeleteMemberName("");
   };
 
   const handleOpenCreatePanel = () => {
@@ -146,6 +162,16 @@ export const Teams: React.FC = () => {
     }
     return null;
   }, [selectedMemberId, teamItems]);
+
+  const deleteMemberTeamName = useMemo(() => {
+    if (!deleteMemberId) return "";
+    for (const team of teamItems) {
+      if (team.members.some((m) => m.id === deleteMemberId)) {
+        return team.teamName;
+      }
+    }
+    return "";
+  }, [deleteMemberId, teamItems]);
 
   const moveMember = (memberId: string, destinationTeamIdValue: string) => {
     if (!memberId || !destinationTeamIdValue) return;
@@ -348,7 +374,7 @@ export const Teams: React.FC = () => {
             onOpenRowMenu={handleOpenRowMenu}
             onCloseRowMenu={handleCloseRowMenu}
             onOpenMoveTeamModal={handleOpenMoveTeamModal}
-            onDeleteMember={moveMemberToGeneral}
+            onDeleteMember={(memberId, memberName) => handleOpenDeleteModal(memberId, memberName)}
             onEditTeam={handleOpenEditTeam}
             rowMenuAnchorById={anchorByRowId}
             canMoveMember={teamItems.length > 1}
@@ -369,6 +395,21 @@ export const Teams: React.FC = () => {
           handleCloseMoveTeamModal();
         }}
         confirmDisabled={!destinationTeamId}
+        memberName={selectedMember?.member?.name}
+        currentTeamName={selectedMember?.team?.teamName}
+      />
+
+      <DeleteMemberModal
+        open={isDeleteOpen}
+        onClose={handleCloseDeleteModal}
+        memberName={deleteMemberName}
+        currentTeamName={deleteMemberTeamName}
+        onConfirm={() => {
+          if (deleteMemberId) {
+            moveMemberToGeneral(deleteMemberId);
+          }
+          handleCloseDeleteModal();
+        }}
       />
 
       {isCreateOpen && (
@@ -547,7 +588,7 @@ const CollapsibleSection = ({
   onOpenRowMenu: (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => void;
   onCloseRowMenu: (rowId: string) => () => void;
   onOpenMoveTeamModal: (rowId: string) => () => void;
-  onDeleteMember: (rowId: string) => void;
+  onDeleteMember: (rowId: string, memberName: string) => void;
   onEditTeam: (teamId: string) => void;
   rowMenuAnchorById: Record<string, HTMLElement | null>;
   canMoveMember: boolean;
@@ -604,7 +645,7 @@ const CollapsibleSection = ({
         </Box>
 
         <Box display="flex" alignItems="center" gap="24px" sx={{ justifySelf: "end" }}>
-          {showEditButton && (
+          {showEditButton ? (
             <IconButton
               size="small"
               aria-label="edit team"
@@ -620,6 +661,8 @@ const CollapsibleSection = ({
             >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
+          ) : (
+            <Box sx={{ width: "28px", height: "28px" }} />
           )}
           <IconButton
             size="small"
@@ -665,12 +708,12 @@ const CollapsibleSection = ({
                     </Box>
                   </Box>
                   <Box component="span" className="justify-self-center">
-                    <span className="inline-flex h-[20px] min-w-[92px] justify-center items-center rounded-[4px] bg-[#6E41E2] px-2 text-[13px] font-[400] text-white">
+                    <span className="inline-flex h-[20px] w-[112px] justify-center items-center rounded-[4px] bg-[#6E41E2] px-2 text-[13px] font-[400] text-white">
                       {row.role}
                     </span>
                   </Box>
                   <Box component="span" className="justify-self-center">
-                    <span className="inline-flex h-[20px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[13px] font-[400] text-white">
+                    <span className="inline-flex h-[20px] w-[55px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[13px] font-[400] text-white">
                       {row.status}
                     </span>
                   </Box>
@@ -718,7 +761,7 @@ const CollapsibleSection = ({
                         <MenuItem
                           onClick={() => {
                             onCloseRowMenu(row.id)();
-                            onDeleteMember(row.id);
+                            onDeleteMember(row.id, row.name);
                           }}
                           sx={{ fontSize: "13px", fontWeight: 500, color: "#333333" }}
                         >

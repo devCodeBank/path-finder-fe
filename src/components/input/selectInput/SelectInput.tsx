@@ -179,7 +179,14 @@ export const SelectInput: React.FC<SelectInputProps> = ({
             vertical: "top",
             horizontal: "left",
           },
-          ...(zIndex ? { slotProps: { paper: { sx: { zIndex: zIndex } } } } : {}),
+          slotProps: {
+            paper: {
+              sx: {
+                backgroundColor: "#FFFFFF",
+                ...(zIndex ? { zIndex: zIndex } : {}),
+              },
+            },
+          },
         }}
         {...props}
       >
