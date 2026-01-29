@@ -98,7 +98,7 @@ export const Teams: React.FC = () => {
     setDestinationTeamId("");
   };
 
-  const handleOpenDeleteModal = (memberId: string, memberName: string) => {
+  const handleOpenDeleteModal = (memberId: string) => {
     setDeleteMemberId(memberId);
     // setDeleteMemberName(memberName);
     setIsDeleteOpen(true);
@@ -366,7 +366,7 @@ export const Teams: React.FC = () => {
             onOpenRowMenu={handleOpenRowMenu}
             onCloseRowMenu={handleCloseRowMenu}
             onOpenMoveTeamModal={handleOpenMoveTeamModal}
-            onDeleteMember={(memberId, memberName) => handleOpenDeleteModal(memberId, memberName)}
+            onDeleteMember={(memberId) => handleOpenDeleteModal(memberId)}
             onEditTeam={handleOpenEditTeam}
             rowMenuAnchorById={anchorByRowId}
             canMoveMember={teamItems.length > 1}
@@ -578,7 +578,7 @@ const CollapsibleSection = ({
   onOpenRowMenu: (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => void;
   onCloseRowMenu: (rowId: string) => () => void;
   onOpenMoveTeamModal: (rowId: string) => () => void;
-  onDeleteMember: (rowId: string, memberName: string) => void;
+  onDeleteMember: (rowId: string) => void;
   onEditTeam: (teamId: string) => void;
   rowMenuAnchorById: Record<string, HTMLElement | null>;
   canMoveMember: boolean;
