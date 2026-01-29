@@ -416,7 +416,7 @@ export const Users: React.FC = () => {
             <SvgIcon
               fontSize="small"
               viewBox="0 0 20 20"
-              sx={{ stroke: "currentColor", fill: "none", color: "#CCCCCC" }}
+              sx={{ stroke: "currentColor", fill: "none", color: "#666666", opacity: "50%" }}
             >
               <path
                 d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
@@ -427,7 +427,7 @@ export const Users: React.FC = () => {
             </SvgIcon>
           }
           sx={{
-            width: "110px",
+            width: "94px",
             height: "36px",
             borderColor: "#CCCCCC80",
             color: "#333333",
@@ -454,6 +454,7 @@ export const Users: React.FC = () => {
           startIcon={<PersonAddAltOutlinedIcon fontSize="small" />}
           sx={{
             height: "36px",
+            width: "121px",
             backgroundColor: "#6E41E2",
             textTransform: "none",
             fontSize: "12px",
@@ -495,18 +496,18 @@ export const Users: React.FC = () => {
               className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
             >
               <div className="flex items-center gap-3">
-              <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 flex items-center justify-center text-[11px] text-[#333333]">
-                {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
-              </div>
+                <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 flex items-center justify-center text-[11px] text-[#333333]">
+                  {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                </div>
                 <div className="flex flex-col">
                   <span className="text-[13px] font-[500]">{row.name}</span>
                   <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
               </div>
-              <span className="inline-flex h-[24px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[20px] w-[113px] items-center justify-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.role}
               </span>
-              <span className="inline-flex h-[24px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[20px] w-[106px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.status === "Pending" ? "Pending" : row.status === "Link Expired" ? "Linked Expired" : row.status}
               </span>
               <span>{row.jobTitle ?? "Not Available"}</span>
@@ -523,21 +524,20 @@ export const Users: React.FC = () => {
                   anchorEl={anchorByRowId[row.id]}
                   open={Boolean(anchorByRowId[row.id])}
                   onClose={handleCloseRowMenu(row.id)}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                  transformOrigin={{ vertical: "top", horizontal: "left" }}
                   PaperProps={{
                     sx: {
                       borderRadius: "6px",
-                      minWidth: "180px",
+                      minWidth: "100px",
                       boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
                       border: "1px solid #E5E5E580",
                       backgroundColor: "#FFFFFF",
                       py: 0.5,
                     },
                   }}
-                  MenuListProps={{
-                    sx: {
-                      py: 0.5,
-                    },
-                  }}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
                 >
                   {(() => {
                     const menuState = getMenuState(row.status);
@@ -614,7 +614,7 @@ export const Users: React.FC = () => {
             <span>Rows per page</span>
             <div className="relative">
               <select
-                className="h-[30px] min-w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666]"
+                className="h-[30px] min-w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#CCCCCC80] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                 defaultValue="20"
               >
                 <option value="10">10</option>
@@ -1083,7 +1083,7 @@ export const Users: React.FC = () => {
                       {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                     </div>
                   </div>
-                  <div className="flex flex-col gap-1">
+                  <div className="flex flex-col gap-1 justify-center mt-5">
                     <span className="text-[14px] font-[600] text-[#333333]">{detailsUser.name}</span>
                     <span className="text-[13px] text-[#333333]/70">{detailsUser.jobTitle}</span>
                   </div>
@@ -1105,6 +1105,7 @@ export const Users: React.FC = () => {
                       borderRadius: "4px",
                       boxShadow: "none",
                       color: "#FFFFFF",
+                      cursor: "not-allowed",
                       "&:hover": {
                         backgroundColor: "#31C24D",
                         boxShadow: "none",

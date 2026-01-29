@@ -226,10 +226,11 @@ export const Notifications: React.FC = () => {
                   variant="contained"
                   sx={{
                     height: "36px",
+                    width: "190px",
                     backgroundColor: "#6E41E2",
                     color: "#FFFFFF",
                     textTransform: "none",
-                    fontSize: "13px",
+                    fontSize: "12px",
                     fontWeight: 500,
                     gap: "8px",
                     borderRadius: "4px",

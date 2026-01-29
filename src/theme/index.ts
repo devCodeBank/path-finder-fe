@@ -333,7 +333,7 @@ const theme = createTheme({
           borderRadius: radiusTokens.md,
           textTransform: "none",
           fontWeight: typographyTokens.fontWeight.semibold,
-          padding: "12px 24px",
+          padding: "2px 8px",
           fontSize: typographyTokens.fontSize.lg,
           height: componentTokens.button.height.md,
           boxShadow: shadowTokens.sm,
@@ -345,14 +345,22 @@ const theme = createTheme({
             boxShadow: shadowTokens.sm,
           },
         },
+        startIcon: {
+          marginRight: "18px",
+          marginLeft: "0px",
+        },
+        endIcon: {
+          marginLeft: "18px",
+          marginRight: "0px",
+        },
         sizeSmall: {
           height: componentTokens.button.height.sm,
-          padding: "8px 16px",
+          padding: "2px 8px",
           fontSize: typographyTokens.fontSize.md,
         },
         sizeLarge: {
           height: componentTokens.button.height.lg,
-          padding: "16px 32px",
+          padding: "2px 8px",
           fontSize: typographyTokens.fontSize.xl,
         },
       },

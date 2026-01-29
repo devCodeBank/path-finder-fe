@@ -687,17 +687,25 @@ const CollapsibleSection = ({
                     >
                       <MoreVertIcon fontSize="small" />
                     </IconButton>
+
                     <Menu
                       anchorEl={rowMenuAnchorById[row.id]}
                       open={Boolean(rowMenuAnchorById[row.id])}
                       onClose={onCloseRowMenu(row.id)}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                      transformOrigin={{ vertical: "top", horizontal: "left" }}
                       PaperProps={{
                         sx: {
+                          borderRadius: "6px",
+                          minWidth: "100px",
+                          boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
+                          border: "1px solid #E5E5E580",
                           backgroundColor: "#FFFFFF",
-                          border: "1px solid #E6E6E6",
-                          boxShadow: "0px 8px 20px rgba(0,0,0,0.12)",
+                          py: 0.5,
                         },
                       }}
+                      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                      transformOrigin={{ vertical: "top", horizontal: "right" }}
                     >
                       <MenuItem
                         disabled={!canMoveMember}
@@ -724,8 +732,9 @@ const CollapsibleSection = ({
             </Box>
           )}
         </Box>
-      )}
-    </Box>
+      )
+      }
+    </Box >
   );
 };
 

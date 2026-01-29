@@ -43,7 +43,7 @@ export const MeetingApps: React.FC = () => {
     color: "#FFFFFF",
     textTransform: "none",
     fontSize: "12px",
-    width: "128px",
+    width: "110px",
     fontWeight: 500,
     borderRadius: "4px",
 

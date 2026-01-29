@@ -70,7 +70,7 @@ export const PrivacySecurity: React.FC = () => {
     color: "#FFFFFF",
     textTransform: "none",
     fontSize: "12px",
-    width: "128px",
+    width: "129px",
     fontWeight: 500,
     padding: "inherit",
     borderRadius: "4px",

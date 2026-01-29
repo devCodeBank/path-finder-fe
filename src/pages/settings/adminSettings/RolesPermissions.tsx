@@ -185,7 +185,7 @@ export const RolesPermissions: React.FC = () => {
               </SvgIcon>
             }
             sx={{
-              width: "110px",
+              width: "94px",
               height: "36px",
               borderColor: "#CCCCCC80",
               color: "#333333",
@@ -214,6 +214,7 @@ export const RolesPermissions: React.FC = () => {
             startIcon={<VisibilityOutlinedIcon fontSize="small" />}
             sx={{
               height: "36px",
+              width: "180px",
               borderColor: "#6E41E2",
               color: "#6E41E2",
               textTransform: "none",
@@ -237,6 +238,7 @@ export const RolesPermissions: React.FC = () => {
             startIcon={<AddIcon fontSize="small" />}
             sx={{
               height: "36px",
+              width: "174px",
               backgroundColor: "#6E41E2",
               textTransform: "none",
               fontSize: "12px",
@@ -305,6 +307,8 @@ export const RolesPermissions: React.FC = () => {
                   anchorEl={anchorByRowId[row.id]}
                   open={Boolean(anchorByRowId[row.id])}
                   onClose={handleCloseRowMenu(row.id)}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                  transformOrigin={{ vertical: "top", horizontal: "left" }}
                   PaperProps={{
                     sx: {
                       borderRadius: "6px",
@@ -339,7 +343,7 @@ export const RolesPermissions: React.FC = () => {
             <span>Rows per page</span>
             <div className="relative">
               <select
-                className="h-[32px] w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666]"
+                className="h-[32px] w-[70px] appearance-none rounded-[4px] border border-[#CCCCCC80] bg-white px-2 pr-7 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#CCCCCC80] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
                 defaultValue="20"
                 aria-label="Rows per page"
               >

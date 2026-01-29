@@ -31,6 +31,7 @@ const StyledFormControl = styled(FormControl)`
 
     &.Mui-disabled {
       font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
+      cursor: not-allowed;
     }
 
     .MuiFormLabel-asterisk {
@@ -49,7 +50,12 @@ const StyledFormControl = styled(FormControl)`
       color: ${({ theme }) => theme.tokens.color.text.disabled};
       -webkit-text-fill-color: ${({ theme }) => theme.tokens.color.text.disabled};
       font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.normal};
+      cursor: not-allowed;
     }
+  }
+
+  .MuiSelect-icon.Mui-disabled {
+    cursor: not-allowed;
   }
 
   .MuiOutlinedInput-root {
@@ -78,11 +84,16 @@ const StyledFormControl = styled(FormControl)`
 
     &.Mui-disabled {
       background-color: ${({ theme }) => theme.tokens.color.background.disabled};
+      cursor: not-allowed;
 
       & .MuiOutlinedInput-notchedOutline {
         border-color: ${({ theme }) => theme.tokens.color.border.light};
       }
     }
+  }
+
+  .MuiInputBase-root.Mui-disabled {
+    cursor: not-allowed;
   }
 
   .MuiSelect-select em {

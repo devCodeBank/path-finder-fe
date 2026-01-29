@@ -123,7 +123,7 @@ const FloatingLabelSelect = ({
                             onClick={() => setIsOpen((prev) => !prev)}
                             onBlur={() => setIsOpen(false)}
                             className={cn(
-                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:text-[#666666]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100",
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-left text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:text-[#666666]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100 disabled:cursor-not-allowed",
                                 className
                             )}
                         >
@@ -184,7 +184,7 @@ const FloatingLabelSelect = ({
                             defaultValue={defaultValue}
                             disabled={disabled}
                             className={cn(
-                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:text-[#666666]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100 appearance-none",
+                                "h-[56px] w-full peer border border-[#CCCCCC80] bg-white rounded-md px-3 pb-1 text-[#333333] font-[400] !text-[13px] focus:outline-none focus:ring-0 focus:border-[#666666] focus-visible:border-[#666666] hover:border-[#666666] disabled:text-[#666666]/50 disabled:font-[400] disabled:border-[#DDDDDD] disabled:opacity-100 disabled:cursor-not-allowed appearance-none",
                                 className
                             )}
                         >
