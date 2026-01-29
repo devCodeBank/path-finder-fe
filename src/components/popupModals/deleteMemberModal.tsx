@@ -23,9 +23,9 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
             padding: "20px",
             borderRadius: "10px",
             border: "1px solid #E6E6E6",
-            width: "450px",
-            maxWidth: "450px",
-            minHeight: "200px",
+            width: "434px",
+
+            height: "229px",
             backgroundColor: "#FFFFFF",
             display: "flex",
             flexDirection: "column",
@@ -55,13 +55,11 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
         component="div"
       >
         <Box sx={{ width: "100%", textAlign: "center" }}>
-          <Box display="flex" alignItems="center" justifyContent="center" gap={1}>
-            {/* <MoveFileIcon style={{ width: 18, height: 18, color: "#666666" }} /> */}
-            <span style={{ fontSize: 16, fontWeight: 500, color: "#333333" }}>
-              Delete Team Member?
-            </span>
-          </Box>
-          <Typography variant="body2" sx={{ color: "#666666", mt: 0.5, paddingTop: "30PX" }}>
+
+          <Typography variant="body2" sx={{ mt: 0.5, paddingTop: "66PX", fontSize: 16, fontWeight: 500, color: "#333333" }}>
+            Delete Team Member?
+          </Typography>
+          <Typography variant="body2" sx={{ color: "#666666", mt: 0.5, paddingTop: "0PX" }}>
             Note: Deleted user will move to Default Team
           </Typography>
         </Box>

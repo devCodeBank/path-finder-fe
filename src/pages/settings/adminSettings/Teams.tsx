@@ -33,7 +33,7 @@ const StyledCollapsibleHeader = styled(Box)`
   cursor: default;
   background-color: #FAFAFA;
   padding: 14px 16px;
-  border-bottom: 1px solid #e6e6e6;
+ 
   border-top-left-radius: 6px;
   border-top-right-radius: 6px;
 `;
@@ -411,7 +411,7 @@ export const Teams: React.FC = () => {
         >
           <div
             className={[
-              "w-[60vw] max-w-[60vw] h-full  bg-white shadow-[0px_10px_30px_0px_#00000024] flex flex-col overflow-hidden transition-transform duration-300 ease-out",
+              "w-[60vw] max-w-[60vw] h-full  bg-white  flex flex-col overflow-hidden transition-transform duration-300 ease-out",
               isCreateVisible ? "translate-x-0" : "translate-x-full",
             ].join(" ")}
           >
@@ -731,7 +731,7 @@ const CollapsibleSection = ({
                         sx: {
                           borderRadius: "6px",
                           minWidth: "100px",
-                          boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
+                          // boxShadow: "0px 8px 20px rgba(0,0,0,0.15)",
                           border: "1px solid #E5E5E580",
                           backgroundColor: "#FFFFFF",
                           py: 0.5,

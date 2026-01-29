@@ -37,9 +37,9 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
             padding: "20px",
             borderRadius: "10px",
             border: "1px solid #E6E6E6",
-            width: "520px",
-            maxWidth: "520px",
-            minHeight: "250px",
+            width: "434px",
+
+            height: "229px",
             backgroundColor: "#FFFFFF",
             display: "flex",
             flexDirection: "column",
