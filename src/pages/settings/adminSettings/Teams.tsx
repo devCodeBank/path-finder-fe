@@ -78,7 +78,7 @@ export const Teams: React.FC = () => {
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteMemberId, setDeleteMemberId] = useState<string | null>(null);
-  const [deleteMemberName, setDeleteMemberName] = useState<string>("");
+
 
   const [teamName, setTeamName] = useState("");
   const [teamAdmin, setTeamAdmin] = useState("");
@@ -100,14 +100,14 @@ export const Teams: React.FC = () => {
 
   const handleOpenDeleteModal = (memberId: string, memberName: string) => {
     setDeleteMemberId(memberId);
-    setDeleteMemberName(memberName);
+    // setDeleteMemberName(memberName);
     setIsDeleteOpen(true);
   };
 
   const handleCloseDeleteModal = () => {
     setIsDeleteOpen(false);
     setDeleteMemberId(null);
-    setDeleteMemberName("");
+    // setDeleteMemberName("");
   };
 
   const handleOpenCreatePanel = () => {
@@ -163,15 +163,7 @@ export const Teams: React.FC = () => {
     return null;
   }, [selectedMemberId, teamItems]);
 
-  const deleteMemberTeamName = useMemo(() => {
-    if (!deleteMemberId) return "";
-    for (const team of teamItems) {
-      if (team.members.some((m) => m.id === deleteMemberId)) {
-        return team.teamName;
-      }
-    }
-    return "";
-  }, [deleteMemberId, teamItems]);
+
 
   const moveMember = (memberId: string, destinationTeamIdValue: string) => {
     if (!memberId || !destinationTeamIdValue) return;
