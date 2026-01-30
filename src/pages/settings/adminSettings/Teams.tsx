@@ -492,7 +492,7 @@ export const Teams: React.FC = () => {
                 <FloatingLabelInput
                   id="create-team-name"
                   label="Team Name"
-                  labelClassName="text-[#333333]/50"
+
                   floatLabel
                   required
                   placeholder="E.g. Software Engineering Hiring Team"
@@ -506,7 +506,7 @@ export const Teams: React.FC = () => {
                 <FloatingLabelInput
                   id="create-team-admin"
                   label="Team Admin Name"
-                  labelClassName="text-[#333333]/50"
+
                   floatLabel
                   required
                   placeholder="Start Typing Name or Email"
@@ -520,7 +520,7 @@ export const Teams: React.FC = () => {
                 <FloatingLabelInput
                   id="create-team-members"
                   label="Team Members"
-                  labelClassName="text-[#333333]/50"
+
                   floatLabel
                   placeholder="Start Typing Name or Email"
                   value={teamMembersInput}
@@ -538,7 +538,7 @@ export const Teams: React.FC = () => {
                   id="create-team-status"
                   label="Team Status"
                   className="text-[#333333]/50"
-                  floatLabel
+
                   value={teamStatus}
                   onValueChange={setTeamStatus}
                   options={statusOptions}

@@ -132,7 +132,7 @@ export const CompanyDetails: React.FC = () => {
       <FloatingLabelInput
         id={fieldKey}
         label={label}
-        labelClassName="text-[#707070]"
+
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={isFieldReadOnly(fieldKey)}

@@ -40,7 +40,7 @@ export const SystemRoles: React.FC = () => {
           id="role-name"
           label="Role Name"
           required
-          labelClassName="text-[#333333]/70"
+
           value={formData.roleName}
           onChange={handleInputChange("roleName")}
           floatLabel
@@ -51,7 +51,7 @@ export const SystemRoles: React.FC = () => {
           id="role-description"
           label="Role Description"
           required
-          labelClassName="text-[#333333]/70"
+
           value={formData.roleDescription}
           onChange={handleInputChange("roleDescription")}
           floatLabel

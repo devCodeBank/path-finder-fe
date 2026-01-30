@@ -149,13 +149,16 @@ export const Profile: React.FC = () => {
       <FloatingLabelInput
         id={fieldKey}
         label={label}
-        labelClassName="text-[#707070]"
+
         value={value}
         onChange={handleInputChange(fieldKey)}
-        disabled={fieldKey === 'email' || fieldKey === 'companyName'}
-        className={cn(
-          "w-full h-[56px]",
-        )}
+        disabled={fieldKey === 'email' || fieldKey === 'companyName'
+        }
+        className={
+          cn(
+            "w-full h-[56px]",
+          )
+        }
       />
     );
   };

@@ -290,7 +290,7 @@ export const Notifications: React.FC = () => {
           <div className="max-w-[400px] w-full">
             <FloatingLabelInput
               label="Preferred Email"
-              labelClassName="text-[#333333]/70"
+
               value={settings.preferredEmail}
               onChange={(e) => setSettings(prev => ({ ...prev, preferredEmail: e.target.value }))}
               className="w-full"

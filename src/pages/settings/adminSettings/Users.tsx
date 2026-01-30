@@ -741,7 +741,7 @@ export const Users: React.FC = () => {
                   <FloatingLabelInput
                     id="invite-first-name"
                     label="First Name"
-                    labelClassName="text-[#333333]/50"
+
                     floatLabel
                     required
                     placeholder="Add First Name"
@@ -760,7 +760,7 @@ export const Users: React.FC = () => {
                   <FloatingLabelInput
                     id="invite-last-name"
                     label="Last Name"
-                    labelClassName="text-[#333333]/50"
+
                     floatLabel
                     required
                     placeholder="Add Last Name"
@@ -779,7 +779,7 @@ export const Users: React.FC = () => {
                   <FloatingLabelInput
                     id="invite-email"
                     label="Email"
-                    labelClassName="text-[#333333]/50"
+
                     floatLabel
                     required
                     placeholder="Add Email"
@@ -798,7 +798,7 @@ export const Users: React.FC = () => {
                   id="invite-team"
                   label="Team"
                   className="text-[#707070]"
-                  floatLabel
+
                   value={inviteForm.team}
                   onValueChange={handleInviteSelectChange("team")}
                   options={teamOptions}
@@ -807,7 +807,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelInput
                   id="invite-job-title"
                   label="Job Title"
-                  labelClassName="text-[#707070]"
+
 
                   floatLabel
                   placeholder="Add Job Title"
@@ -818,7 +818,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelInput
                   id="invite-contact-number"
                   label="Contact Number"
-                  labelClassName="text-[#333333]/50"
+
                   floatLabel
                   placeholder="Add Contact Number"
                   value={inviteForm.contactNumber}
@@ -829,7 +829,7 @@ export const Users: React.FC = () => {
                   id="invite-time-zone"
                   label="Time Zone"
                   className="text-[#333333]/50"
-                  floatLabel
+
                   value={inviteForm.timeZone}
                   onValueChange={handleInviteSelectChange("timeZone")}
                   options={timeZoneOptions}
@@ -840,7 +840,7 @@ export const Users: React.FC = () => {
                   id="invite-city"
                   label="City"
                   className="text-[#333333]/50"
-                  floatLabel
+
                   value={inviteForm.city}
                   onValueChange={handleInviteSelectChange("city")}
                   options={cityOptions}
@@ -850,7 +850,7 @@ export const Users: React.FC = () => {
                   id="invite-state"
                   label="State"
                   className="text-[#333333]/50"
-                  floatLabel
+
                   value={inviteForm.state}
                   onValueChange={handleInviteSelectChange("state")}
                   options={stateOptions}
@@ -860,7 +860,7 @@ export const Users: React.FC = () => {
                   id="invite-country"
                   label="Country"
                   className="text-[#333333]/50"
-                  floatLabel
+
                   value={inviteForm.country}
                   onValueChange={handleInviteSelectChange("country")}
                   options={countryOptions}
