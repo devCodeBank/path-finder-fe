@@ -177,6 +177,8 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
   width: ${({ fullWidth }) => (fullWidth ? "100%" : "auto")};
   font-family: ${({ theme }) => theme.tokens.typography.fontFamily.primary};
   font-weight: ${({ theme }) => theme.tokens.typography.fontWeight.semibold};
+  font-size: 12px;
+  line-height: 1.2;
   border-radius: ${({ theme }) => theme.tokens.radius.sm};
   box-shadow: none;
   text-transform: none;
@@ -186,18 +188,15 @@ const StyledButton = styled(MuiButton)<StyledButtonProps>`
     const sizes = {
       sm: css`
         height: ${theme.tokens.component.button.height.sm};
-        padding: ${theme.spacing(1, 1.5)};
-        font-size: ${theme.tokens.typography.fontSize.sm};
+        padding: 8px 12px;
       `,
       md: css`
         height: ${theme.tokens.component.button.height.md};
-        padding: ${theme.spacing(1.25, 2)};
-        font-size: ${theme.tokens.typography.fontSize.md};
+        padding: 8px 12px;
       `,
       lg: css`
         height: ${theme.tokens.component.button.height.lg};
-        padding: ${theme.spacing(1.5, 3)};
-        font-size: ${theme.tokens.typography.fontSize.lg};
+        padding: 8px 12px;
       `,
     };
     return sizes[$size];

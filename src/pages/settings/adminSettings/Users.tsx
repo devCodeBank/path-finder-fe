@@ -454,12 +454,12 @@ export const Users: React.FC = () => {
           startIcon={<PersonAddAltOutlinedIcon fontSize="small" />}
           sx={{
             height: "36px",
-            width: "121px",
+            width: "125px",
             backgroundColor: "#6E41E2",
             textTransform: "none",
             fontSize: "12px",
             fontWeight: 500,
-            minWidth: "110px",
+            minWidth: "121px",
             borderRadius: "4px",
             boxShadow: "none",
             color: "#FFFFFF",
@@ -504,11 +504,11 @@ export const Users: React.FC = () => {
                   <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
               </div>
-              <span className="inline-flex h-[20px] w-[113px] items-center justify-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[20px] w-[113px] items-center justify-start rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.role}
               </span>
               <span className="inline-flex h-[20px] w-[106px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
-                {row.status === "Pending" ? "Pending" : row.status === "Link Expired" ? "Linked Expired" : row.status}
+                {row.status === "Pending" ? "Pending" : row.status === "Link Expired" ? "Link Expired" : row.status}
               </span>
               <span>{row.jobTitle ?? "Not Available"}</span>
               <span>{row.teams ?? "Not Available"}</span>
@@ -797,18 +797,18 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-team"
                   label="Team"
-                  labelClassName="text-[#333333]/50"
+                  className="text-[#707070]"
                   floatLabel
                   value={inviteForm.team}
                   onValueChange={handleInviteSelectChange("team")}
                   options={teamOptions}
                   placeholder="Select Team"
-                  className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelInput
                   id="invite-job-title"
                   label="Job Title"
-                  labelClassName="text-[#333333]/50"
+                  labelClassName="text-[#707070]"
+
                   floatLabel
                   placeholder="Add Job Title"
                   value={inviteForm.jobTitle}
@@ -828,47 +828,43 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-time-zone"
                   label="Time Zone"
-                  labelClassName="text-[#333333]/50"
+                  className="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.timeZone}
                   onValueChange={handleInviteSelectChange("timeZone")}
                   options={timeZoneOptions}
                   maxVisibleOptions={10}
                   placeholder="Select Time Zone"
-                  className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelSelect
                   id="invite-city"
                   label="City"
-                  labelClassName="text-[#333333]/50"
+                  className="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.city}
                   onValueChange={handleInviteSelectChange("city")}
                   options={cityOptions}
                   placeholder="Select City"
-                  className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelSelect
                   id="invite-state"
                   label="State"
-                  labelClassName="text-[#333333]/50"
+                  className="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.state}
                   onValueChange={handleInviteSelectChange("state")}
                   options={stateOptions}
                   placeholder="Select State"
-                  className={cn("w-full h-[56px]")}
                 />
                 <FloatingLabelSelect
                   id="invite-country"
                   label="Country"
-                  labelClassName="text-[#333333]/50"
+                  className="text-[#333333]/50"
                   floatLabel
                   value={inviteForm.country}
                   onValueChange={handleInviteSelectChange("country")}
                   options={countryOptions}
                   placeholder="Select Country"
-                  className={cn("w-full h-[56px]")}
                 />
               </div>
 

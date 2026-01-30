@@ -135,15 +135,12 @@ export const Profile: React.FC = () => {
         <FloatingLabelSelect
           id={fieldKey}
           label={label}
-          labelClassName="text-[#333333]/50"
+          className="text-[#707070]"
           value={value}
           onValueChange={handleSelectChange(fieldKey)}
           options={options}
           disabled={fieldKey === 'role' || fieldKey === 'currency'}
           maxVisibleOptions={fieldKey === "timeZone" ? 10 : undefined}
-          className={cn(
-            "w-full h-[56px]",
-          )}
         />
       );
     }
@@ -152,7 +149,7 @@ export const Profile: React.FC = () => {
       <FloatingLabelInput
         id={fieldKey}
         label={label}
-        labelClassName="text-[#333333]/50"
+        labelClassName="text-[#707070]"
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={fieldKey === 'email' || fieldKey === 'companyName'}

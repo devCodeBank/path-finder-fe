@@ -207,14 +207,14 @@ export const RolesPermissions: React.FC = () => {
             Filters
           </Button>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
           <Button
             variant="outlined"
             onClick={handleViewSystemRoles}
             startIcon={<VisibilityOutlinedIcon fontSize="small" />}
             sx={{
               height: "36px",
-              width: "180px",
+              width: "auto",
               borderColor: "#6E41E2",
               color: "#6E41E2",
               textTransform: "none",
@@ -238,7 +238,7 @@ export const RolesPermissions: React.FC = () => {
             startIcon={<AddIcon fontSize="small" />}
             sx={{
               height: "36px",
-              width: "174px",
+              width: "176px",
               backgroundColor: "#6E41E2",
               textTransform: "none",
               fontSize: "12px",

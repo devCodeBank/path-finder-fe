@@ -3,6 +3,7 @@ import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLa
 import DropDownModal from "@components/popupModals/dropdownModal";
 import { SettingsHeader } from "@components/settingsHeader";
 import AddIcon from "@mui/icons-material/Add";
+import ClearRoundedIcon from "@mui/icons-material/ClearRounded";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
@@ -50,6 +51,31 @@ const Toolbar = styled(Box)`
   margin-bottom: 18px;
 `;
 
+const SelectedMembersList = styled(Box)`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  grid-column: 1 / -1;
+  align-items: flex-center;
+`;
+
+const MemberChip = styled(Box)`
+  display: inline-flex;
+  align-items: center;
+  width: 168px;
+  height: 32px;
+  gap: ${({ theme }) => theme.spacing(1)};
+  border: 1px solid #E6E6E6;
+  background-color: #F7F7F7;
+  border-radius: 20px;
+  padding-left: 12px;
+  padding-right: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #333333;
+`;
+
 const RightActions = styled(Box)`
   display: flex;
   align-items: center;
@@ -83,6 +109,7 @@ export const Teams: React.FC = () => {
   const [teamName, setTeamName] = useState("");
   const [teamAdmin, setTeamAdmin] = useState("");
   const [teamMembersInput, setTeamMembersInput] = useState("");
+  const [teamMembers, setTeamMembers] = useState<string[]>([]);
   const [teamStatus, setTeamStatus] = useState("active");
   const [showCreateErrors, setShowCreateErrors] = useState(false);
 
@@ -202,6 +229,7 @@ export const Teams: React.FC = () => {
     setTeamName("");
     setTeamAdmin("");
     setTeamMembersInput("");
+    setTeamMembers([]);
     setTeamStatus("active");
     setShowCreateErrors(false);
   };
@@ -219,11 +247,29 @@ export const Teams: React.FC = () => {
 
     setTeamName(team.teamName);
     setTeamAdmin(resolvedAdmin);
-    setTeamMembersInput(nonAdminMembers.join(", "));
+    setTeamMembers(nonAdminMembers);
+    setTeamMembersInput("");
     setTeamStatus(statusFromMember);
     setShowCreateErrors(false);
     setEditingTeamId(teamId);
     handleOpenCreatePanel();
+  };
+
+  const parseMemberNames = (value: string) =>
+    value
+      .split(",")
+      .map((name) => name.trim())
+      .filter(Boolean);
+
+  const addMembersFromInput = (value: string) => {
+    const names = parseMemberNames(value);
+    if (names.length === 0) return;
+    setTeamMembers((prev) => {
+      const existing = new Set(prev.map((name) => name.toLowerCase()));
+      const uniqueNames = names.filter((name) => !existing.has(name.toLowerCase()));
+      return uniqueNames.length > 0 ? [...prev, ...uniqueNames] : prev;
+    });
+    setTeamMembersInput("");
   };
 
   const handleSubmitCreateTeam = () => {
@@ -234,10 +280,9 @@ export const Teams: React.FC = () => {
     }
 
     const statusLabel = teamStatus === "active" ? "Active" : "Inactive";
-    const memberNames = teamMembersInput
-      .split(",")
-      .map((name) => name.trim())
-      .filter(Boolean);
+    const memberNames = [...teamMembers, ...parseMemberNames(teamMembersInput)].filter(
+      (name, index, all) => all.findIndex((value) => value.toLowerCase() === name.toLowerCase()) === index
+    );
 
     const members: TeamRow[] = [
       {
@@ -480,19 +525,42 @@ export const Teams: React.FC = () => {
                   placeholder="Start Typing Name or Email"
                   value={teamMembersInput}
                   onChange={(event) => setTeamMembersInput(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === ",") {
+                      event.preventDefault();
+                      addMembersFromInput(teamMembersInput);
+                    }
+                  }}
+                  onBlur={() => addMembersFromInput(teamMembersInput)}
                   className="w-full h-[56px]"
                 />
                 <FloatingLabelSelect
                   id="create-team-status"
                   label="Team Status"
-                  labelClassName="text-[#333333]/50"
+                  className="text-[#333333]/50"
                   floatLabel
                   value={teamStatus}
                   onValueChange={setTeamStatus}
                   options={statusOptions}
                   placeholder="Active"
-                  className="w-full h-[56px]"
                 />
+                {teamMembers.length > 0 && (
+                  <SelectedMembersList aria-label="selected team members">
+                    {teamMembers.map((name) => (
+                      <MemberChip key={name}>
+                        <span>{name}</span>
+                        <IconButton
+                          size="small"
+                          aria-label={`remove ${name}`}
+                          onClick={() => setTeamMembers((prev) => prev.filter((member) => member !== name))}
+                          sx={{ padding: "91px" }}
+                        >
+                          <ClearRoundedIcon sx={{ fontSize: 14 }} />
+                        </IconButton>
+                      </MemberChip>
+                    ))}
+                  </SelectedMembersList>
+                )}
               </div>
             </div>
             <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
