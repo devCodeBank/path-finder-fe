@@ -504,10 +504,10 @@ export const Users: React.FC = () => {
                   <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
               </div>
-              <span className="inline-flex h-[20px] w-[113px] items-center justify-start rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[20px] w-[106px] items-center justify-start rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.role}
               </span>
-              <span className="inline-flex h-[20px] w-[106px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
+              <span className="inline-flex h-[20px] w-[88px] items-center rounded-[4px] bg-[#6E41E2] px-2 text-[12px] font-[500] text-white">
                 {row.status === "Pending" ? "Pending" : row.status === "Link Expired" ? "Link Expired" : row.status}
               </span>
               <span>{row.jobTitle ?? "Not Available"}</span>
