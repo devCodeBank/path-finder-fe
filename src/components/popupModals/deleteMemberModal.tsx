@@ -1,8 +1,8 @@
-import { Button } from "@components/buttons/button/Button";
 import { CloseRounded } from "@mui/icons-material";
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import theme from "@theme/index";
 import React from "react";
+
 
 export interface DeleteMemberModalProps {
   open: boolean;
@@ -21,7 +21,7 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
         paper: {
           sx: {
             padding: "20px",
-            borderRadius: "10px",
+            borderRadius: "8px",
             border: "1px solid #E6E6E6",
             width: "434px",
 
@@ -56,7 +56,7 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
       >
         <Box sx={{ width: "100%", textAlign: "center" }}>
 
-          <Typography variant="body2" sx={{ mt: 0.5, paddingTop: "66PX", fontSize: 16, fontWeight: 500, color: "#333333" }}>
+          <Typography variant="body1" sx={{ mt: 0.5, paddingTop: "66PX", fontSize: 16, fontWeight: 500, color: "#333333" }}>
             Delete Team Member?
           </Typography>
           <Typography variant="body2" sx={{ color: "#666666", mt: 0.5, paddingTop: "0PX" }}>
@@ -80,7 +80,27 @@ export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
         }}
       />
       <DialogActions sx={{ padding: 0, justifyContent: "flex-end", marginTop: "auto" }}>
-        <Button size="sm" onClick={onConfirm} variant="solid">
+
+        <Button
+          variant="outlined"
+          onClick={onClose}
+
+          sx={{
+            height: "36px",
+            width: "auto",
+            backgroundColor: "#6E41E2",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            borderRadius: "4px",
+            boxShadow: "none",
+            color: "#FFFFFF",
+            "&:hover": {
+              backgroundColor: "#7B52F4",
+              boxShadow: "none",
+            },
+          }}
+        >
           Delete
         </Button>
       </DialogActions>

@@ -1,8 +1,8 @@
 import MoveFileIcon from "@assets/icons/move-file.svg?react";
-import { Button } from "@components/buttons/button/Button";
+
 import { SelectInput } from "@components/input/selectInput/SelectInput";
 import { CloseRounded } from "@mui/icons-material";
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import theme from "@theme/index";
 import React from "react";
 
@@ -35,7 +35,7 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
         paper: {
           sx: {
             padding: "20px",
-            borderRadius: "10px",
+            borderRadius: "8px",
             border: "1px solid #E6E6E6",
             width: "434px",
 
@@ -73,8 +73,8 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
             <MoveFileIcon style={{ width: 18, height: 18, color: "#666666" }} />
             <span style={{ fontSize: 16, fontWeight: 500, color: "#333333", paddingLeft: "18px" }}>{`Move ${memberName}`}</span>
           </Box>
-          <Typography variant="body2" sx={{ color: "#666666", ml: 4, mt: 5, paddingTop: "20px" }}>
-            {currentTeamName}
+          <Typography variant="body2" sx={{ color: "#666666", ml: 4, mt: 5, paddingTop: "20px", paddingLeft: "40px" }}>
+            Default Team
           </Typography>
         </Box>
         <Box>
@@ -95,22 +95,39 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
       >
         <Box sx={{ width: "100%" }}>
           <SelectInput
-            label=" "
+            label=""
             value={value}
             onChange={(e) => onChange(e.target.value as string)}
             options={teams.map((t) => ({ value: t.id, label: t.name }))}
             placeholder="Select a new team"
             zIndex={theme.tokens.zIndex.modal + 1}
-            sx={{
-              "& .MuiSelect-select": {
-                textAlign: "center",
-              },
-            }}
+
+
           />
         </Box>
       </DialogContent>
       <DialogActions sx={{ padding: 0, justifyContent: "flex-end", marginTop: "auto" }}>
-        <Button size="sm" onClick={onConfirm} variant="solid" disabled={Boolean(confirmDisabled)}>
+
+        <Button
+          variant="outlined"
+          onClick={onConfirm}
+
+          sx={{
+            height: "36px",
+            width: "auto",
+            backgroundColor: "#6E41E2",
+            textTransform: "none",
+            fontSize: "12px",
+            fontWeight: 500,
+            borderRadius: "4px",
+            boxShadow: "none",
+            color: "#FFFFFF",
+            "&:hover": {
+              backgroundColor: "#7B52F4",
+              boxShadow: "none",
+            },
+          }}
+        >
           Move
         </Button>
       </DialogActions>
