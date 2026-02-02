@@ -238,7 +238,7 @@ export const RolesPermissions: React.FC = () => {
             startIcon={<AddIcon fontSize="small" />}
             sx={{
               height: "36px",
-              width: "176px",
+              width: "auto",
               backgroundColor: "#6E41E2",
               textTransform: "none",
               fontSize: "12px",

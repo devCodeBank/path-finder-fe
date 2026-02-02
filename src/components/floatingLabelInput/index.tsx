@@ -30,7 +30,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, InputProps>(
           focus-visible:border-[#666666]
           hover:border-[#333333]
 
-          disabled:text-[#9E9E9E]/75
+          disabled:text-[#9E9E9E]
           disabled:border-[#DDDDDD]
           disabled:opacity-100
           `,
@@ -91,7 +91,7 @@ const FloatingLabelInput = React.forwardRef<
                 className="
           text-[#707070]
           peer-focus:text-[#707070]
-          peer-disabled:!text-[#ADADAD]
+          peer-disabled:!text-[#9E9E9E]
 
           top-1
          -translate-y-4
@@ -184,7 +184,7 @@ const FloatingLabelSelect = ({
                             ? "text-[#9E9E9E]/75"
                             : selectedLabel
                                 ? "text-[#333333]"
-                                : "text-[#9E9E9E]/85"
+                                : "text-[#9E9E9E]"
                     )}
                 >
                     {selectedLabel || placeholderText}
