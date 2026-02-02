@@ -92,6 +92,7 @@ const FloatingLabelInput = React.forwardRef<
           text-[#707070]
           peer-focus:text-[#707070]
           peer-disabled:!text-[#9E9E9E]
+        
 
           top-1
          -translate-y-4
