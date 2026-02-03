@@ -136,7 +136,7 @@ export const CompanyDetails: React.FC = () => {
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={isFieldReadOnly(fieldKey)}
-        className={cn("w-full h-[56px]")}
+        className={cn("w-full h-[36px]")}
       />
     );
   };

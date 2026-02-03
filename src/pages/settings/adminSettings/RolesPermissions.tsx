@@ -97,6 +97,9 @@ export const RolesPermissions: React.FC = () => {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isCreateVisible, setIsCreateVisible] = useState(false);
   const createCloseTimerRef = useRef<number | null>(null);
+  const [customRoleName, setCustomRoleName] = useState("");
+  const [customRoleDescription, setCustomRoleDescription] = useState("");
+  const [showCustomRoleErrors, setShowCustomRoleErrors] = useState(false);
   const [isSystemOpen, setIsSystemOpen] = useState(false);
   const [isSystemVisible, setIsSystemVisible] = useState(false);
   const systemCloseTimerRef = useRef<number | null>(null);
@@ -120,6 +123,9 @@ export const RolesPermissions: React.FC = () => {
       window.clearTimeout(createCloseTimerRef.current);
       createCloseTimerRef.current = null;
     }
+    setCustomRoleName("");
+    setCustomRoleDescription("");
+    setShowCustomRoleErrors(false);
     setIsCreateOpen(true);
     requestAnimationFrame(() => setIsCreateVisible(true));
   };
@@ -451,7 +457,15 @@ export const RolesPermissions: React.FC = () => {
               </Tooltip>
             </div>
             <div className="px-4 py-4 flex-1 overflow-y-auto">
-              <CreateCustomRole />
+              <CreateCustomRole
+                roleName={customRoleName}
+                roleDescription={customRoleDescription}
+                showErrors={showCustomRoleErrors}
+                onChange={(field, value) => {
+                  if (field === "roleName") setCustomRoleName(value);
+                  if (field === "roleDescription") setCustomRoleDescription(value);
+                }}
+              />
             </div>
             <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3 shrink-0">
               <Button
@@ -491,7 +505,13 @@ export const RolesPermissions: React.FC = () => {
                     boxShadow: "none",
                   },
                 }}
-                onClick={() => console.warn("Save custom role")}
+                onClick={() => {
+                  if (customRoleName.trim() === "" || customRoleDescription.trim() === "") {
+                    setShowCustomRoleErrors(true);
+                    return;
+                  }
+                  console.warn("Save custom role");
+                }}
               >
                 Save
               </Button>

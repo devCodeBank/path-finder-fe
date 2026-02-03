@@ -1,7 +1,7 @@
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
 import { Box } from "@mui/material";
 import TabContent from "@pages/settings/adminSettings/rolesPermissions/CustomRole/CustomRoleContent";
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 const Container = styled(Box)`
@@ -25,39 +25,57 @@ const Toolbar = styled(Box)`
   }
 `;
 
-export const SystemRoles: React.FC = () => {
-  const [formData, setFormData] = useState({ roleName: "", roleDescription: "" });
+type CreateCustomRoleProps = {
+  roleName: string;
+  roleDescription: string;
+  showErrors?: boolean;
+  onChange: (field: "roleName" | "roleDescription", value: string) => void;
+};
 
+export const SystemRoles: React.FC<CreateCustomRoleProps> = ({
+  roleName,
+  roleDescription,
+  showErrors = false,
+  onChange,
+}) => {
   const handleInputChange = (field: "roleName" | "roleDescription") => (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({ ...prev, [field]: event.target.value }));
+    onChange(field, event.target.value);
   };
 
   return (
     <Container>
 
       <Toolbar>
-        <FloatingLabelInput
-          id="role-name"
-          label="Role Name"
-          required
-
-          value={formData.roleName}
-          onChange={handleInputChange("roleName")}
-          floatLabel
-          className="w-full h-[56px]"
-          placeholder="Add Custom Role Name"
-        />
-        <FloatingLabelInput
-          id="role-description"
-          label="Role Description"
-          required
-
-          value={formData.roleDescription}
-          onChange={handleInputChange("roleDescription")}
-          floatLabel
-          className="w-full h-[56px]"
-          placeholder="Add Custom Role Dsescription"
-        />
+        <div className="flex flex-col gap-1.5">
+          <FloatingLabelInput
+            id="role-name"
+            label="Role Name"
+            required
+            value={roleName}
+            onChange={handleInputChange("roleName")}
+            floatLabel
+            className="w-full h-[36px]"
+            placeholder="Add Custom Role Name"
+          />
+          {showErrors && roleName.trim() === "" && (
+            <span className="text-[11px] text-[#E4554A]">*Role Name is required</span>
+          )}
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <FloatingLabelInput
+            id="role-description"
+            label="Role Description"
+            required
+            value={roleDescription}
+            onChange={handleInputChange("roleDescription")}
+            floatLabel
+            className="w-full h-[36px]"
+            placeholder="Add Custom Role Dsescription"
+          />
+          {showErrors && roleDescription.trim() === "" && (
+            <span className="text-[11px] text-[#E4554A]">*Role Description is required</span>
+          )}
+        </div>
       </Toolbar>
       <TabContent />
     </Container>

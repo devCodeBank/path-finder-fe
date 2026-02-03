@@ -489,34 +489,42 @@ export const Teams: React.FC = () => {
             </div>
             <div className="px-4 py-6 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FloatingLabelInput
-                  id="create-team-name"
-                  label="Team Name"
-
-                  floatLabel
-                  required
-                  placeholder="E.g. Software Engineering Hiring Team"
-                  value={teamName}
-                  onChange={(event) => setTeamName(event.target.value)}
-                  className={[
-                    "w-full h-[56px]",
-                    showCreateErrors && teamName.trim() === "" ? "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]" : "",
-                  ].join(" ")}
-                />
-                <FloatingLabelInput
-                  id="create-team-admin"
-                  label="Team Admin Name"
-
-                  floatLabel
-                  required
-                  placeholder="Start Typing Name or Email"
-                  value={teamAdmin}
-                  onChange={(event) => setTeamAdmin(event.target.value)}
-                  className={[
-                    "w-full h-[56px]",
-                    showCreateErrors && teamAdmin.trim() === "" ? "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]" : "",
-                  ].join(" ")}
-                />
+                <div className="flex flex-col gap-1.5">
+                  <FloatingLabelInput
+                    id="create-team-name"
+                    label="Team Name"
+                    floatLabel
+                    required
+                    placeholder="E.g. Software Engineering Hiring Team"
+                    value={teamName}
+                    onChange={(event) => setTeamName(event.target.value)}
+                    className={[
+                      "w-full h-[36px]",
+                      showCreateErrors && teamName.trim() === "" ? "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]" : "",
+                    ].join(" ")}
+                  />
+                  {showCreateErrors && teamName.trim() === "" && (
+                    <span className="text-[11px] text-[#E4554A]">*Team Name is required</span>
+                  )}
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <FloatingLabelInput
+                    id="create-team-admin"
+                    label="Team Admin Name"
+                    floatLabel
+                    required
+                    placeholder="Start Typing Name or Email"
+                    value={teamAdmin}
+                    onChange={(event) => setTeamAdmin(event.target.value)}
+                    className={[
+                      "w-full h-[36px]",
+                      showCreateErrors && teamAdmin.trim() === "" ? "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]" : "",
+                    ].join(" ")}
+                  />
+                  {showCreateErrors && teamAdmin.trim() === "" && (
+                    <span className="text-[11px] text-[#E4554A]">*Team Admin Name is required</span>
+                  )}
+                </div>
                 <FloatingLabelInput
                   id="create-team-members"
                   label="Team Members"
@@ -532,12 +540,12 @@ export const Teams: React.FC = () => {
                     }
                   }}
                   onBlur={() => addMembersFromInput(teamMembersInput)}
-                  className="w-full h-[56px]"
+                  className="w-full h-[36px]"
                 />
                 <FloatingLabelSelect
                   id="create-team-status"
                   label="Team Status"
-                  className="text-[#333333]/50"
+                  className="text-[#333333]"
 
                   value={teamStatus}
                   onValueChange={setTeamStatus}

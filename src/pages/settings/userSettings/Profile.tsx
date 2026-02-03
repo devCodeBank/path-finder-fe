@@ -156,7 +156,7 @@ export const Profile: React.FC = () => {
         }
         className={
           cn(
-            "w-full h-[56px]",
+            "w-full h-[36px]",
           )
         }
       />

@@ -748,7 +748,7 @@ export const Users: React.FC = () => {
                     value={inviteForm.firstName}
                     onChange={handleInviteInputChange("firstName")}
                     className={cn(
-                      "w-full h-[56px]",
+                      "w-full h-[36px]",
                       isInviteMissing(inviteForm.firstName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                     )}
                   />
@@ -767,7 +767,7 @@ export const Users: React.FC = () => {
                     value={inviteForm.lastName}
                     onChange={handleInviteInputChange("lastName")}
                     className={cn(
-                      "w-full h-[56px]",
+                      "w-full h-[36px]",
                       isInviteMissing(inviteForm.lastName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                     )}
                   />
@@ -786,7 +786,7 @@ export const Users: React.FC = () => {
                     value={inviteForm.email}
                     onChange={handleInviteInputChange("email")}
                     className={cn(
-                      "w-full h-[56px]",
+                      "w-full h-[36px]",
                       isInviteMissing(inviteForm.email) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                     )}
                   />
@@ -797,7 +797,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-team"
                   label="Team"
-                  className="text-[#707070]"
+                  className="text-[#333333]"
 
                   value={inviteForm.team}
                   onValueChange={handleInviteSelectChange("team")}
@@ -813,7 +813,7 @@ export const Users: React.FC = () => {
                   placeholder="Add Job Title"
                   value={inviteForm.jobTitle}
                   onChange={handleInviteInputChange("jobTitle")}
-                  className={cn("w-full h-[56px]")}
+                  className={cn("w-full h-[36px]")}
                 />
                 <FloatingLabelInput
                   id="invite-contact-number"
@@ -823,12 +823,12 @@ export const Users: React.FC = () => {
                   placeholder="Add Contact Number"
                   value={inviteForm.contactNumber}
                   onChange={handleInviteInputChange("contactNumber")}
-                  className={cn("w-full h-[56px]")}
+                  className={cn("w-full h-[36px]")}
                 />
                 <FloatingLabelSelect
                   id="invite-time-zone"
                   label="Time Zone"
-                  className="text-[#333333]/50"
+                  className="text-[#333333]"
 
                   value={inviteForm.timeZone}
                   onValueChange={handleInviteSelectChange("timeZone")}
@@ -839,7 +839,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-city"
                   label="City"
-                  className="text-[#333333]/50"
+                  className="text-[#333333]"
 
                   value={inviteForm.city}
                   onValueChange={handleInviteSelectChange("city")}
@@ -849,7 +849,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-state"
                   label="State"
-                  className="text-[#333333]/50"
+                  className="text-[#333333]"
 
                   value={inviteForm.state}
                   onValueChange={handleInviteSelectChange("state")}
@@ -859,7 +859,7 @@ export const Users: React.FC = () => {
                 <FloatingLabelSelect
                   id="invite-country"
                   label="Country"
-                  className="text-[#333333]/50"
+                  className="text-[#333333]"
 
                   value={inviteForm.country}
                   onValueChange={handleInviteSelectChange("country")}
