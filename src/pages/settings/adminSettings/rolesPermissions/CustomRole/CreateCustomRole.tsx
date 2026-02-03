@@ -26,20 +26,34 @@ const Toolbar = styled(Box)`
 `;
 
 type CreateCustomRoleProps = {
-  roleName: string;
-  roleDescription: string;
+  roleName?: string;
+  roleDescription?: string;
   showErrors?: boolean;
-  onChange: (field: "roleName" | "roleDescription", value: string) => void;
+  onChange?: (field: "roleName" | "roleDescription", value: string) => void;
 };
 
 export const SystemRoles: React.FC<CreateCustomRoleProps> = ({
-  roleName,
-  roleDescription,
+  roleName: roleNameProp,
+  roleDescription: roleDescriptionProp,
   showErrors = false,
   onChange,
 }) => {
+  const [localRoleName, setLocalRoleName] = React.useState("");
+  const [localRoleDescription, setLocalRoleDescription] = React.useState("");
+
+  const roleName = roleNameProp ?? localRoleName;
+  const roleDescription = roleDescriptionProp ?? localRoleDescription;
+
   const handleInputChange = (field: "roleName" | "roleDescription") => (event: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(field, event.target.value);
+    if (onChange) {
+      onChange(field, event.target.value);
+      return;
+    }
+    if (field === "roleName") {
+      setLocalRoleName(event.target.value);
+      return;
+    }
+    setLocalRoleDescription(event.target.value);
   };
 
   return (
