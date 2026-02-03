@@ -113,7 +113,7 @@ const countryOptions = [
   { value: "us", label: "United States" },
 ];
 
-const systemRoles = ["Super Admin", "Admin", "Standard User", "Collaborator"];
+const systemRoles = ["Super Admin", "Administrator", "Standard User", "Collaborator"];
 
 const customRoles = [
   {
@@ -175,7 +175,7 @@ const getMockUsers = (): UserRow[] => {
       id: "3",
       name: "Jessica Lee",
       email: "j.lee@acmecorp.com",
-      role: "Admin",
+      role: "Administrator",
       jobTitle: "Managing Consultant",
       teams: "Default",
       status: "Pending",
