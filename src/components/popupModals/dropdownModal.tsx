@@ -25,9 +25,9 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
   value,
   onChange,
   onConfirm,
-  confirmDisabled,
+
   memberName = "Member",
-  currentTeamName = "Default Team",
+
 }) => {
   return (
     <Dialog

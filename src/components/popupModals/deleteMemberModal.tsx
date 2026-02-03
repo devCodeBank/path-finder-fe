@@ -13,7 +13,7 @@ export interface DeleteMemberModalProps {
 export const DeleteMemberModal: React.FC<DeleteMemberModalProps> = ({
   open,
   onClose,
-  onConfirm,
+
 }) => {
   return (
     <Dialog
