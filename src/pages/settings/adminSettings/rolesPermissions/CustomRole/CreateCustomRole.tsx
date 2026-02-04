@@ -60,7 +60,7 @@ export const SystemRoles: React.FC<CreateCustomRoleProps> = ({
     <Container>
 
       <Toolbar>
-        <div className="flex flex-col gap-1.5">
+        <div className="relative flex flex-col pb-[14px]">
           <FloatingLabelInput
             id="role-name"
             label="Role Name"
@@ -72,10 +72,12 @@ export const SystemRoles: React.FC<CreateCustomRoleProps> = ({
             placeholder="Add Custom Role Name"
           />
           {showErrors && roleName.trim() === "" && (
-            <span className="text-[11px] text-[#E4554A]">*Role Name is required</span>
+            <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">
+              *Role Name is required
+            </span>
           )}
         </div>
-        <div className="flex flex-col gap-1.5">
+        <div className="relative flex flex-col pb-[14px]">
           <FloatingLabelInput
             id="role-description"
             label="Role Description"
@@ -87,7 +89,9 @@ export const SystemRoles: React.FC<CreateCustomRoleProps> = ({
             placeholder="Add Custom Role Dsescription"
           />
           {showErrors && roleDescription.trim() === "" && (
-            <span className="text-[11px] text-[#E4554A]">*Role Description is required</span>
+            <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">
+              *Role Description is required
+            </span>
           )}
         </div>
       </Toolbar>

@@ -14,6 +14,7 @@ const primaryButtonSx = {
   fontWeight: 500,
   borderRadius: "4px",
   boxShadow: "none",
+  width: "140px",
   color: "#FFFFFF",
   "&:hover": {
     backgroundColor: "#7B52F4",
@@ -69,8 +70,50 @@ const successButtonSx = {
 };
 
 const fieldWrapperClass = "flex flex-col gap-1.5";
+const fieldWrapperWithErrorClass = "relative flex flex-col pb-[14px]";
 const fieldInputClass = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none";
 const fieldSelectClass = `${fieldInputClass} appearance-none pr-8`;
+
+const VisaIcon = ({ className = "" }: { className?: string }) => (
+  <svg
+    className={className}
+    width="40"
+    height="24"
+    viewBox="0 0 40 24"
+    role="img"
+    aria-label="Visa"
+  >
+    <rect x="0.5" y="0.5" width="39" height="23" rx="4" fill="#FFFFFF" stroke="#D6D6D6" />
+    <text
+      x="20"
+      y="16"
+      textAnchor="middle"
+      fontSize="12"
+      fontWeight="800"
+      fill="#1A1F71"
+      fontFamily="Arial, sans-serif"
+      letterSpacing="0.5"
+    >
+      VISA
+    </text>
+  </svg>
+);
+
+const MastercardIcon = ({ className = "" }: { className?: string }) => (
+  <svg
+    className={className}
+    width="40"
+    height="24"
+    viewBox="0 0 40 24"
+    role="img"
+    aria-label="Mastercard"
+  >
+    <rect x="0.5" y="0.5" width="39" height="23" rx="4" fill="#FFFFFF" stroke="#D6D6D6" />
+    <circle cx="18" cy="12" r="6.2" fill="#EB001B" />
+    <circle cx="22" cy="12" r="6.2" fill="#F79E1B" />
+    <circle cx="20" cy="12" r="6.2" fill="#F04624" opacity="0.9" />
+  </svg>
+);
 
 export const Billing: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("Subscription");
@@ -158,7 +201,7 @@ export const Billing: React.FC = () => {
         <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
           <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
             <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
-            <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
+            <div className="h-[32px] px-3 rounded-[4px] w-[140px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
               Currency: USD
             </div>
           </div>
@@ -227,9 +270,9 @@ export const Billing: React.FC = () => {
                 <label className="text-[13px] text-[#333333]/70">Card Number</label>
                 <div className="relative">
                   <input className={fieldInputClass} value="1234 1234 1234 1234" readOnly />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[11px] text-[#333333]/60">
-                    <span className="px-1.5 py-0.5 border border-[#CCCCCC80] rounded">VISA</span>
-                    <span className="px-1.5 py-0.5 border border-[#CCCCCC80] rounded">MC</span>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                    <VisaIcon />
+                    <MastercardIcon />
                   </div>
                 </div>
               </div>
@@ -329,8 +372,13 @@ export const Billing: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       <div className="flex items-center justify-end gap-3 mb-4">
-        <Button variant="contained" sx={successButtonSx}>Active</Button>
-        <Button variant="contained" sx={dangerButtonSx}>Cancel Subscription</Button>
+        <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
+          Active
+        </span>
+        <span className="rounded-[4px] bg-[#F06B61] px-4 py-2 text-[12px] font-[500] text-white">
+          Cancel Subscription
+        </span>
+        {/* <Button variant="contained" sx={dangerButtonSx}>Cancel Subscription</Button> */}
       </div>
 
       <div className="flex items-center gap-5 border-b border-[#CCCCCC80] w-full mb-6">
@@ -392,7 +440,7 @@ export const Billing: React.FC = () => {
                 </div>
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className={fieldWrapperClass}>
+                    <div className={fieldWrapperWithErrorClass}>
                       <label className="text-[13px] text-[#333333]/70">Account Owner</label>
                       <input
                         className={fieldInputClass}
@@ -401,10 +449,10 @@ export const Billing: React.FC = () => {
                         onChange={(event) => setTransferOwnerName(event.target.value)}
                       />
                       {showTransferErrors && transferOwnerName.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
-                    <div className={fieldWrapperClass}>
+                    <div className={fieldWrapperWithErrorClass}>
                       <label className="text-[13px] text-[#333333]/70">Email</label>
                       <input
                         className={fieldInputClass}
@@ -413,7 +461,7 @@ export const Billing: React.FC = () => {
                         onChange={(event) => setTransferOwnerEmail(event.target.value)}
                       />
                       {showTransferErrors && transferOwnerEmail.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
                   </div>
@@ -572,7 +620,7 @@ export const Billing: React.FC = () => {
                   <span className="text-[14px] font-[500] text-[#333333]">New Company Name</span>
                 </div>
                 <div className="p-4">
-                  <div className={fieldWrapperClass}>
+                  <div className={fieldWrapperWithErrorClass}>
                     <label className="text-[13px] text-[#333333]/70">Company Name</label>
                     <input
                       className={fieldInputClass}
@@ -581,7 +629,7 @@ export const Billing: React.FC = () => {
                       onChange={(event) => setNewCompanyName(event.target.value)}
                     />
                     {showCompanyErrors && newCompanyName.trim() === "" && (
-                      <span className="text-[11px] text-[#E4554A]">Required field</span>
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                     )}
                   </div>
                   <div className="mt-4 flex justify-end gap-3">
@@ -649,7 +697,7 @@ export const Billing: React.FC = () => {
                   <span className="text-[14px] font-[500] text-[#333333]">New Billing Email</span>
                 </div>
                 <div className="p-4">
-                  <div className={fieldWrapperClass}>
+                  <div className={fieldWrapperWithErrorClass}>
                     <label className="text-[13px] text-[#333333]/70">Email</label>
                     <input
                       className={fieldInputClass}
@@ -658,7 +706,7 @@ export const Billing: React.FC = () => {
                       onChange={(event) => setBillingEmail(event.target.value)}
                     />
                     {showBillingEmailErrors && billingEmail.trim() === "" && (
-                      <span className="text-[11px] text-[#E4554A]">Required field</span>
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                     )}
                   </div>
                   <div className="mt-4 flex justify-end gap-3">
@@ -721,7 +769,7 @@ export const Billing: React.FC = () => {
                 </div>
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
-                    <div className={fieldWrapperClass}>
+                    <div className={fieldWrapperWithErrorClass}>
                       <label className="text-[13px] text-[#333333]/70">Card Number</label>
                       <div className="relative">
                         <input
@@ -729,16 +777,16 @@ export const Billing: React.FC = () => {
                           value={cardNumber}
                           onChange={(event) => setCardNumber(event.target.value)}
                         />
-                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2 text-[11px] text-[#333333]/60">
-                          <span className="px-1.5 py-0.5 border border-[#CCCCCC80] rounded">VISA</span>
-                          <span className="px-1.5 py-0.5 border border-[#CCCCCC80] rounded">MC</span>
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                          <VisaIcon />
+                          <MastercardIcon />
                         </div>
                       </div>
                       {showCardErrors && cardNumber.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
-                    <div className={fieldWrapperClass}>
+                    <div className={fieldWrapperWithErrorClass}>
                       <label className="text-[13px] text-[#333333]/70">Expiry Date</label>
                       <input
                         className={fieldInputClass}
@@ -746,10 +794,10 @@ export const Billing: React.FC = () => {
                         onChange={(event) => setCardExpiry(event.target.value)}
                       />
                       {showCardErrors && cardExpiry.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
-                    <div className={fieldWrapperClass}>
+                    <div className={fieldWrapperWithErrorClass}>
                       <label className="text-[13px] text-[#333333]/70">Security Code</label>
                       <input
                         className={fieldInputClass}
@@ -757,10 +805,10 @@ export const Billing: React.FC = () => {
                         onChange={(event) => setCardCvc(event.target.value)}
                       />
                       {showCardErrors && cardCvc.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
-                    <div className={fieldWrapperClass}>
+                    <div className={fieldWrapperWithErrorClass}>
                       <label className="text-[13px] text-[#333333]/70">Name on the Card</label>
                       <input
                         className={fieldInputClass}
@@ -768,10 +816,10 @@ export const Billing: React.FC = () => {
                         onChange={(event) => setCardName(event.target.value)}
                       />
                       {showCardErrors && cardName.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
-                    <div className={fieldWrapperClass + " md:col-span-2"}>
+                    <div className={fieldWrapperWithErrorClass + " md:col-span-2"}>
                       <label className="text-[13px] text-[#333333]/70">Country</label>
                       <div className="relative">
                         <select
@@ -786,7 +834,7 @@ export const Billing: React.FC = () => {
                         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
                       </div>
                       {showCardErrors && cardCountry.trim() === "" && (
-                        <span className="text-[11px] text-[#E4554A]">Required field</span>
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
                     </div>
                   </div>

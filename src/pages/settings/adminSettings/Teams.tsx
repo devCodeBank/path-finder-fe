@@ -489,7 +489,7 @@ export const Teams: React.FC = () => {
             </div>
             <div className="px-4 py-6 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col gap-1.5">
+                <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
                     id="create-team-name"
                     label="Team Name"
@@ -504,10 +504,12 @@ export const Teams: React.FC = () => {
                     ].join(" ")}
                   />
                   {showCreateErrors && teamName.trim() === "" && (
-                    <span className="text-[11px] text-[#E4554A]">*Team Name is required</span>
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">
+                      *Team Name is required
+                    </span>
                   )}
                 </div>
-                <div className="flex flex-col gap-1.5">
+                <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
                     id="create-team-admin"
                     label="Team Admin Name"
@@ -522,7 +524,9 @@ export const Teams: React.FC = () => {
                     ].join(" ")}
                   />
                   {showCreateErrors && teamAdmin.trim() === "" && (
-                    <span className="text-[11px] text-[#E4554A]">*Team Admin Name is required</span>
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">
+                      *Team Admin Name is required
+                    </span>
                   )}
                 </div>
                 <FloatingLabelInput
