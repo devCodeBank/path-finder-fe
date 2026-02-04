@@ -499,7 +499,7 @@ export const Users: React.FC = () => {
                 <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 flex items-center justify-center text-[11px] text-[#333333]">
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                 </div>
-                <div className="flex flex-col">
+                <div className=" flex flex-col ">
                   <span className="text-[13px] font-[500]">{row.name}</span>
                   <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
@@ -737,7 +737,7 @@ export const Users: React.FC = () => {
             </div>
             <div className="px-4 py-6 overflow-y-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="flex flex-col">
+                <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
                     id="invite-first-name"
                     label="First Name"
@@ -753,10 +753,12 @@ export const Users: React.FC = () => {
                     )}
                   />
                   {isInviteMissing(inviteForm.firstName) && (
-                    <span className="mt-1 text-[11px] text-[#E53935]">First name is required.</span>
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *First name is required.
+                    </span>
                   )}
                 </div>
-                <div className="flex flex-col">
+                <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
                     id="invite-last-name"
                     label="Last Name"
@@ -772,10 +774,12 @@ export const Users: React.FC = () => {
                     )}
                   />
                   {isInviteMissing(inviteForm.lastName) && (
-                    <span className="mt-1 text-[11px] text-[#E53935]">Last name is required.</span>
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Last name is required.
+                    </span>
                   )}
                 </div>
-                <div className="flex flex-col">
+                <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
                     id="invite-email"
                     label="Email"
@@ -791,7 +795,9 @@ export const Users: React.FC = () => {
                     )}
                   />
                   {isInviteMissing(inviteForm.email) && (
-                    <span className="mt-1 text-[11px] text-[#E53935]">Email is required.</span>
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Email is required.
+                    </span>
                   )}
                 </div>
                 <FloatingLabelSelect
