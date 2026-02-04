@@ -14,20 +14,28 @@ interface TabsComponentProps {
 }
 
 const StyledTabs = styled(Tabs)`
-  background-color: ${({ theme }) => theme.tokens.color.background.secondary};
+  background-color: #F3F4F6;
   color: ${({ theme }) => theme.tokens.color.text.primary};
   margin-bottom: ${({ theme }) => theme.spacing(2)};
   width: 100%;
+  padding: 6px 8px;
+
+
   .MuiTab-root {
+    color: #333333;
+    text-transform: none;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 36px;
+    padding: 8px 14px;
    
-    color: ${({ theme }) => theme.tokens.color.text.primary};
-    text-transform: capitalize;
     &.Mui-selected {
-      background-color: ${({ theme }) => theme.tokens.color.background.primary};
+      color: #333333;
     }
   }
+
   .MuiTabs-indicator {
-    height: 0.25rem;
+    height: 4px;
     border-radius: 4px;
     background-color: #6E41E2;
   }

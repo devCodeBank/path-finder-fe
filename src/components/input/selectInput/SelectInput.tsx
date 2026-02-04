@@ -2,6 +2,7 @@ import { FormControl, InputLabel, Select, MenuItem, FormHelperText } from "@mui/
 import type { SelectChangeEvent } from "@mui/material";
 import type { SxProps, Theme } from "@mui/material/styles";
 import theme from "@theme/index";
+import { ChevronDown } from "lucide-react";
 import React from "react";
 import styled from "styled-components";
 
@@ -140,6 +141,10 @@ export interface SelectInputProps {
   sx?: SxProps<Theme>;
 }
 
+const SelectChevronIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <ChevronDown className={`h-4 w-4 text-[#666666] mr-2 ${className ?? ""}`} />
+);
+
 export const SelectInput: React.FC<SelectInputProps> = ({
   label,
   value,
@@ -173,6 +178,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
         label={label}
         displayEmpty={!!placeholder}
         notched={shouldShrink}
+        IconComponent={SelectChevronIcon}
         sx={sx}
         MenuProps={{
           anchorOrigin: {

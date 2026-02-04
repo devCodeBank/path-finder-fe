@@ -1,10 +1,7 @@
 import { Button } from "@mui/material";
 import { ChevronDown } from "lucide-react";
-import React, { useMemo, useState } from "react";
-
-const tabs = ["Subscription", "Billing"] as const;
-
-type TabKey = (typeof tabs)[number];
+import TabsComponent from "@/components/tabs/TabsComponent";
+import React, { useState } from "react";
 
 const primaryButtonSx = {
   height: "36px",
@@ -21,6 +18,21 @@ const primaryButtonSx = {
     boxShadow: "none",
   },
 };
+const popButtonSx = {
+  height: "36px",
+  backgroundColor: "#6E41E2",
+  textTransform: "none",
+  fontSize: "12px",
+  fontWeight: 500,
+  borderRadius: "4px",
+  boxShadow: "none",
+  width: "90px",
+  color: "#FFFFFF",
+  "&:hover": {
+    backgroundColor: "#7B52F4",
+    boxShadow: "none",
+  },
+};
 
 const outlineButtonSx = {
   height: "36px",
@@ -30,6 +42,7 @@ const outlineButtonSx = {
   fontSize: "12px",
   fontWeight: 500,
   borderRadius: "4px",
+  width: "90px",
   boxShadow: "none",
   "&:hover": {
     borderColor: "#CCCCCC80",
@@ -102,7 +115,6 @@ const MastercardIcon = ({ className = "" }: { className?: string }) => (
 );
 
 export const Billing: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<TabKey>("Subscription");
   const [isCardModalOpen, setIsCardModalOpen] = useState(false);
   const [isCardModalVisible, setIsCardModalVisible] = useState(false);
   const [showCardErrors, setShowCardErrors] = useState(false);
@@ -132,228 +144,224 @@ export const Billing: React.FC = () => {
     { id: "12736456", date: "21 Jun 2025", amount: "US$69", status: "Paid" },
   ];
 
-  const tabContent = useMemo(() => {
-    if (activeTab === "Billing") {
-      return (
-        <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-          <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
-            <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
-          </div>
-          <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
-            <span>Invoice Number</span>
-            <span>Invoice Date</span>
-            <span>Amount</span>
-            <span>Status</span>
-            <span />
-          </div>
-          <div className="divide-y divide-[#CCCCCC80]">
-            {invoices.map((invoice) => (
-              <div
-                key={invoice.id}
-                className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
-              >
-                <button type="button" className="text-left text-[#6E41E2] hover:underline">
-                  {invoice.id}
-                </button>
-                <span>{invoice.date}</span>
-                <span>{invoice.amount}</span>
-                <span className={invoice.status === "Unpaid" ? "text-[#E4554A]" : "text-[#333333]"}>
-                  {invoice.status}
-                </span>
-                <button
-                  type="button"
-                  aria-label={`download invoice ${invoice.id}`}
-                  className="inline-flex h-[28px] w-[28px] items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
-                >
-                  <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-                    <path
-                      d="M10 3V12.5M10 12.5L6.5 9M10 12.5L13.5 9M4 15.5H16"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex flex-col gap-6">
-        <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-          <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
-            <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
-            <div className="h-[32px] px-3 rounded-[4px] w-[140px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
-              Currency: USD
-            </div>
-          </div>
-
-          <div className="px-4 py-4 border-b border-[#CCCCCC80] flex flex-wrap items-center justify-between gap-4">
-            <div className="flex flex-col gap-2">
-              <div className="text-[14px] font-[500] text-[#333333]">Starter</div>
-              <button type="button" className="text-[12px] text-[#6E41E2] hover:underline w-fit">Plan Features</button>
-            </div>
-            <div className="text-[14px] text-[#333333]">
-              <span className="text-[18px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
-            </div>
-            <Button
-              variant="contained"
-              sx={primaryButtonSx}
-              onClick={() => {
-                setIsUpgradeModalOpen(true);
-                requestAnimationFrame(() => setIsUpgradeModalVisible(true));
-              }}
+  const billingContent = (
+    <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
+      <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+        <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
+      </div>
+      <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
+        <span>Invoice Number</span>
+        <span>Invoice Date</span>
+        <span>Amount</span>
+        <span>Status</span>
+        <span />
+      </div>
+      <div className="divide-y divide-[#CCCCCC80]">
+        {invoices.map((invoice) => (
+          <div
+            key={invoice.id}
+            className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
+          >
+            <button type="button" className="text-left text-[#6E41E2] hover:underline">
+              {invoice.id}
+            </button>
+            <span>{invoice.date}</span>
+            <span>{invoice.amount}</span>
+            <span className={invoice.status === "Unpaid" ? "text-[#E4554A]" : "text-[#333333]"}>
+              {invoice.status}
+            </span>
+            <button
+              type="button"
+              aria-label={`download invoice ${invoice.id}`}
+              className="inline-flex h-[28px] w-[28px] items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
             >
-              Upgrade Plan
-            </Button>
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 3V12.5M10 12.5L6.5 9M10 12.5L13.5 9M4 15.5H16"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
+        ))}
+      </div>
+    </div>
+  );
 
-          <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-            <div className="text-[13px] text-[#333333]/70">Account Activation Date</div>
-            <div className="text-[13px] text-[#333333]">21 / 08 / 2025</div>
-          </div>
-
-          <div className="px-4 py-4 border-b border-[#CCCCCC80] flex items-center justify-between gap-4">
-            <div>
-              <div className="text-[13px] text-[#333333]/70">Account Owner</div>
-              <div className="text-[13px] text-[#333333]">John Doe</div>
-            </div>
-            <Button
-              variant="contained"
-              sx={primaryButtonSx}
-              onClick={() => {
-                setIsTransferModalOpen(true);
-                setShowTransferErrors(false);
-                requestAnimationFrame(() => setIsTransferModalVisible(true));
-              }}
-            >
-              Transfer Ownership
-            </Button>
-          </div>
-
-          <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-            <div className="text-[13px] text-[#333333]/70">Active User(s)</div>
-            <div className="text-[16px] font-[600] text-[#333333]">10</div>
-          </div>
-
-          <div className="px-4 py-4">
-            <div className="text-[13px] text-[#333333]/70">Account ID</div>
-            <div className="text-[13px] text-[#333333]">PFAC1057</div>
+  const subscriptionContent = (
+    <div className="flex flex-col gap-6">
+      <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
+        <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+          <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
+          <div className="h-[32px] px-3 rounded-[4px] w-[140px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
+            Currency: USD
           </div>
         </div>
 
-        <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-          <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
-            <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
+        <div className="px-4 py-4 border-b border-[#CCCCCC80] flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="text-[14px] font-[500] text-[#333333]">Starter</div>
+            <button type="button" className="text-[12px] text-[#6E41E2] hover:underline w-fit">Plan Features</button>
           </div>
-          <div className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
-              <div className={fieldWrapperClass}>
-                <label className="text-[13px] text-[#333333]/70">Card Number</label>
-                <div className="relative">
-                  <input className={fieldInputClass} value="1234 1234 1234 1234" readOnly />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                    <VisaIcon />
-                    <MastercardIcon />
-                  </div>
-                </div>
-              </div>
-              <div className={fieldWrapperClass}>
-                <label className="text-[13px] text-[#333333]/70">Expiry Date</label>
-                <input className={fieldInputClass} value="01 / 27" readOnly />
-              </div>
-              <div className={fieldWrapperClass}>
-                <label className="text-[13px] text-[#333333]/70">Security Code</label>
-                <input className={fieldInputClass} value="123" readOnly />
-              </div>
-              <div className={fieldWrapperClass}>
-                <label className="text-[13px] text-[#333333]/70">Name on the Card</label>
-                <input className={fieldInputClass} value="John D" readOnly />
-              </div>
-              <div className={fieldWrapperClass + " md:col-span-2"}>
-                <label className="text-[13px] text-[#333333]/70">Country</label>
-                <div className="relative">
-                  <select className={fieldSelectClass} defaultValue="New Zealand" disabled>
-                    <option>New Zealand</option>
-                    <option>Australia</option>
-                    <option>United States</option>
-                  </select>
-                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
-                </div>
-              </div>
-            </div>
-            <div className="mt-4 text-[12px] text-[#333333]/70">
-              By providing your card information, you allow Pathfinder ATS CRM to charge your card for future payments in accordance with their terms.
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button
-                variant="contained"
-                sx={primaryButtonSx}
-                onClick={() => {
-                  setIsCardModalOpen(true);
-                  setShowCardErrors(false);
-                  requestAnimationFrame(() => setIsCardModalVisible(true));
-                }}
-              >
-                Update
-              </Button>
-            </div>
+          <div className="text-[14px] text-[#333333]">
+            <span className="text-[18px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
           </div>
+          <Button
+            variant="contained"
+            sx={primaryButtonSx}
+            onClick={() => {
+              setIsUpgradeModalOpen(true);
+              requestAnimationFrame(() => setIsUpgradeModalVisible(true));
+            }}
+          >
+            Upgrade Plan
+          </Button>
         </div>
 
-        <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-          <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
-            <span className="text-[14px] font-[500] text-[#333333]">Billing Details</span>
-          </div>
-          <div className="divide-y divide-[#CCCCCC80]">
-            <div className="px-4 py-4 flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[13px] text-[#333333]/70">Company Legal Name</div>
-                <div className="text-[13px] text-[#333333]">Acme Limited</div>
-              </div>
-              <Button
-                variant="contained"
-                sx={primaryButtonSx}
-                onClick={() => {
-                  setIsCompanyModalOpen(true);
-                  setShowCompanyErrors(false);
-                  requestAnimationFrame(() => setIsCompanyModalVisible(true));
-                }}
-              >
-                Update
-              </Button>
-            </div>
-            <div className="px-4 py-4 flex items-center justify-between gap-4">
-              <div>
-                <div className="text-[13px] text-[#333333]/70">Billing Email</div>
-                <div className="text-[13px] text-[#333333]/70">Not available</div>
-              </div>
-              <Button
-                variant="contained"
-                sx={primaryButtonSx}
-                onClick={() => {
-                  setIsBillingEmailModalOpen(true);
-                  setShowBillingEmailErrors(false);
-                  requestAnimationFrame(() => setIsBillingEmailModalVisible(true));
-                }}
-              >
-                Update
-              </Button>
-            </div>
-          </div>
+        <div className="px-4 py-4 border-b border-[#CCCCCC80]">
+          <div className="text-[13px] text-[#333333]/70">Account Activation Date</div>
+          <div className="text-[13px] text-[#333333]">21 / 08 / 2025</div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-end gap-3">
-          <Button variant="outlined" sx={outlineButtonSx}>Cancel</Button>
-          <Button variant="contained" sx={primaryButtonSx}>Subscribe</Button>
+        <div className="px-4 py-4 border-b border-[#CCCCCC80] flex items-center justify-between gap-4">
+          <div>
+            <div className="text-[13px] text-[#333333]/70">Account Owner</div>
+            <div className="text-[13px] text-[#333333]">John Doe</div>
+          </div>
+          <Button
+            variant="contained"
+            sx={primaryButtonSx}
+            onClick={() => {
+              setIsTransferModalOpen(true);
+              setShowTransferErrors(false);
+              requestAnimationFrame(() => setIsTransferModalVisible(true));
+            }}
+          >
+            Transfer Ownership
+          </Button>
+        </div>
+
+        <div className="px-4 py-4 border-b border-[#CCCCCC80]">
+          <div className="text-[13px] text-[#333333]/70">Active User(s)</div>
+          <div className="text-[16px] font-[600] text-[#333333]">10</div>
+        </div>
+
+        <div className="px-4 py-4">
+          <div className="text-[13px] text-[#333333]/70">Account ID</div>
+          <div className="text-[13px] text-[#333333]">PFAC1057</div>
         </div>
       </div>
-    );
-  }, [activeTab]);
+
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
+        <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+          <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
+        </div>
+        <div className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
+            <div className={fieldWrapperClass}>
+              <label className="text-[13px] text-[#333333]/70">Card Number</label>
+              <div className="relative">
+                <input className={fieldInputClass} value="1234 1234 1234 1234" readOnly />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  <VisaIcon />
+                  <MastercardIcon />
+                </div>
+              </div>
+            </div>
+            <div className={fieldWrapperClass}>
+              <label className="text-[13px] text-[#333333]/70">Expiry Date</label>
+              <input className={fieldInputClass} value="01 / 27" readOnly />
+            </div>
+            <div className={fieldWrapperClass}>
+              <label className="text-[13px] text-[#333333]/70">Security Code</label>
+              <input className={fieldInputClass} value="123" readOnly />
+            </div>
+            <div className={fieldWrapperClass}>
+              <label className="text-[13px] text-[#333333]/70">Name on the Card</label>
+              <input className={fieldInputClass} value="John D" readOnly />
+            </div>
+            <div className={fieldWrapperClass + " md:col-span-2"}>
+              <label className="text-[13px] text-[#333333]/70">Country</label>
+              <div className="relative">
+                <select className={fieldSelectClass} defaultValue="New Zealand" disabled>
+                  <option>New Zealand</option>
+                  <option>Australia</option>
+                  <option>United States</option>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 text-[12px] text-[#333333]/70">
+            By providing your card information, you allow Pathfinder ATS CRM to charge your card for future payments in accordance with their terms.
+          </div>
+          <div className="mt-4 flex justify-end">
+            <Button
+              variant="contained"
+              sx={primaryButtonSx}
+              onClick={() => {
+                setIsCardModalOpen(true);
+                setShowCardErrors(false);
+                requestAnimationFrame(() => setIsCardModalVisible(true));
+              }}
+            >
+              Update
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
+        <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+          <span className="text-[14px] font-[500] text-[#333333]">Billing Details</span>
+        </div>
+        <div className="divide-y divide-[#CCCCCC80]">
+          <div className="px-4 py-4 flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[13px] text-[#333333]/70">Company Legal Name</div>
+              <div className="text-[13px] text-[#333333]">Acme Limited</div>
+            </div>
+            <Button
+              variant="contained"
+              sx={primaryButtonSx}
+              onClick={() => {
+                setIsCompanyModalOpen(true);
+                setShowCompanyErrors(false);
+                requestAnimationFrame(() => setIsCompanyModalVisible(true));
+              }}
+            >
+              Update
+            </Button>
+          </div>
+          <div className="px-4 py-4 flex items-center justify-between gap-4">
+            <div>
+              <div className="text-[13px] text-[#333333]/70">Billing Email</div>
+              <div className="text-[13px] text-[#333333]/70">Not available</div>
+            </div>
+            <Button
+              variant="contained"
+              sx={primaryButtonSx}
+              onClick={() => {
+                setIsBillingEmailModalOpen(true);
+                setShowBillingEmailErrors(false);
+                requestAnimationFrame(() => setIsBillingEmailModalVisible(true));
+              }}
+            >
+              Update
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center justify-end gap-3">
+        <Button variant="outlined" sx={outlineButtonSx}>Cancel</Button>
+        <Button variant="contained" sx={primaryButtonSx}>Subscribe</Button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex flex-col w-full">
@@ -367,23 +375,12 @@ export const Billing: React.FC = () => {
         {/* <Button variant="contained" sx={dangerButtonSx}>Cancel Subscription</Button> */}
       </div>
 
-      <div className="flex items-center gap-5 border-b border-[#CCCCCC80] w-full mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            onClick={() => setActiveTab(tab)}
-            className={[
-              "pb-3 text-[14px] font-[500]",
-              activeTab === tab ? "text-[#333333] border-b-2 border-[#6E41E2]" : "text-[#333333]/70",
-            ].join(" ")}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      {tabContent}
+      <TabsComponent
+        tabs={[
+          { label: "Subscription", value: "subscription", content: subscriptionContent },
+          { label: "Billing", value: "billing", content: billingContent },
+        ]}
+      />
 
       {isTransferModalOpen && (
         <div
@@ -522,7 +519,9 @@ export const Billing: React.FC = () => {
                     <div className="text-[14px] text-[#333333]">
                       <span className="text-[18px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
                     </div>
-                    <Button variant="contained" sx={successButtonSx}>Active</Button>
+                    <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white text-center">
+                      Active
+                    </span>
                   </div>
 
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
@@ -533,7 +532,7 @@ export const Billing: React.FC = () => {
                     <div className="text-[14px] text-[#333333]">
                       <span className="text-[18px] font-[600]">$129</span> <span className="text-[12px]">per user / month</span>
                     </div>
-                    <Button variant="contained" sx={primaryButtonSx}>Upgrade</Button>
+                    <Button variant="contained" sx={popButtonSx}>Upgrade</Button>
                   </div>
 
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
@@ -544,7 +543,7 @@ export const Billing: React.FC = () => {
                     <div className="text-[14px] text-[#333333]">
                       <span className="text-[18px] font-[600]">$249</span> <span className="text-[12px]">per user / month</span>
                     </div>
-                    <Button variant="contained" sx={primaryButtonSx}>Upgrade</Button>
+                    <Button variant="contained" sx={popButtonSx}>Upgrade</Button>
                   </div>
                 </div>
               </div>
@@ -597,7 +596,9 @@ export const Billing: React.FC = () => {
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">Company Name</span>
-                  <Button variant="contained" sx={successButtonSx}>Current</Button>
+                  <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white text-center">
+                    Current
+                  </span>
                 </div>
                 <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="text-[#333333]/70">Acme Corporation Limited</div>
@@ -708,7 +709,7 @@ export const Billing: React.FC = () => {
                     </Button>
                     <Button
                       variant="contained"
-                      sx={primaryButtonSx}
+                      sx={popButtonSx}
                       onClick={() => setShowBillingEmailErrors(true)}
                     >
                       Update
@@ -840,7 +841,7 @@ export const Billing: React.FC = () => {
                     </Button>
                     <Button
                       variant="contained"
-                      sx={primaryButtonSx}
+                      sx={popButtonSx}
                       onClick={() => setShowCardErrors(true)}
                     >
                       Save

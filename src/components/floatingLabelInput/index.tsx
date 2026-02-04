@@ -61,7 +61,7 @@ const FloatingLabelSelect = ({
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[13px] text-[#333333]/70">
+        <label htmlFor={id} className="text-[14px] font-medium text-[#333333]/70">
           {label}
           {required && <span className="text-[#333333]/70"> *</span>}
         </label>
