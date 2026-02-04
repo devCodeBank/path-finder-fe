@@ -38,20 +38,6 @@ const outlineButtonSx = {
   },
 };
 
-const dangerButtonSx = {
-  height: "36px",
-  backgroundColor: "#E4554A",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  boxShadow: "none",
-  color: "#FFFFFF",
-  "&:hover": {
-    backgroundColor: "#F06B61",
-    boxShadow: "none",
-  },
-};
 
 const successButtonSx = {
   height: "36px",
