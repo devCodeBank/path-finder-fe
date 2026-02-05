@@ -15,7 +15,7 @@ const Toolbar = styled(Box)`
   align-items: center;
   justify-content: flex-end;
   margin-bottom: ${({ theme }) => theme.spacing(4)};
-    padding-bottom: 18px;
+    padding-bottom: 14px;
 `;
 
 const RightActions = styled(Box)`
