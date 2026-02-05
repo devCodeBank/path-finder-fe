@@ -146,54 +146,56 @@ export const Billing: React.FC = () => {
   ];
 
   const billingContent = (
-    <div className="bg-white border border-[#CCCCCC80]  overflow-hidden mt-2">
-      <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80] ">
-        <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
-      </div>
-      <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
-        <span>Invoice Number</span>
-        <span>Invoice Date</span>
-        <span>Amount</span>
-        <span>Status</span>
-        <span />
-      </div>
-      <div className="divide-y divide-[#CCCCCC80]">
-        {invoices.map((invoice) => (
-          <div
-            key={invoice.id}
-            className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
-          >
-            <button type="button" className="text-left text-[#6E41E2] hover:underline">
-              {invoice.id}
-            </button>
-            <span>{invoice.date}</span>
-            <span>{invoice.amount}</span>
-            <span className={invoice.status === "Unpaid" ? "text-[#E4554A]" : "text-[#333333]"}>
-              {invoice.status}
-            </span>
-            <button
-              type="button"
-              aria-label={`download invoice ${invoice.id}`}
-              className="inline-flex h-[28px] w-[28px] items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+    <div className="flex flex-col gap-6 pt-4">
+      <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
+        <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80] ">
+          <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
+        </div>
+        <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
+          <span>Invoice Number</span>
+          <span>Invoice Date</span>
+          <span>Amount</span>
+          <span>Status</span>
+          <span />
+        </div>
+        <div className="divide-y divide-[#CCCCCC80]">
+          {invoices.map((invoice) => (
+            <div
+              key={invoice.id}
+              className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center"
             >
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M10 3V12.5M10 12.5L6.5 9M10 12.5L13.5 9M4 15.5H16"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </div>
-        ))}
+              <button type="button" className="text-left text-[#6E41E2] hover:underline">
+                {invoice.id}
+              </button>
+              <span>{invoice.date}</span>
+              <span>{invoice.amount}</span>
+              <span className={invoice.status === "Unpaid" ? "text-[#E4554A]" : "text-[#333333]"}>
+                {invoice.status}
+              </span>
+              <button
+                type="button"
+                aria-label={`download invoice ${invoice.id}`}
+                className="inline-flex h-[28px] w-[28px] items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+              >
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M10 3V12.5M10 12.5L6.5 9M10 12.5L13.5 9M4 15.5H16"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
 
   const subscriptionContent = (
-    <div className="flex flex-col gap-6 pt-2">
+    <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
         <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
           <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
