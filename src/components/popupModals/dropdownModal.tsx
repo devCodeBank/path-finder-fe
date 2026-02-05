@@ -71,16 +71,16 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
         component="div"
       >
         <Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <MoveFileIcon style={{ width: 18, height: 18, color: "#666666" }} />
-            <span style={{ fontSize: 14, fontWeight: 500, color: "#333333", paddingLeft: "18px" }}>{`Move ${memberName}`}</span>
+          <Box display="flex" alignItems="center" marginTop={"6px"}>
+            <MoveFileIcon style={{ width: 24, height: 24, color: "#666666", strokeOpacity: 1.5 }} />
+            <span style={{ fontSize: 14, fontWeight: 500, color: "#333333", paddingLeft: "16px" }}>{`Move ${memberName}`}</span>
           </Box>
-          <Typography variant="body2" sx={{ color: "#666666", ml: 4, mt: 4, fontSize: "13px", paddingTop: "10px", paddingLeft: "40px" }}>
+          <Typography variant="body2" sx={{ color: "#666666", ml: "39px", mt: "8px", fontSize: "13px" }}>
             Default Team
           </Typography>
         </Box>
         <Box>
-          <IconButton onClick={onClose} sx={{ padding: 0 }}>
+          <IconButton onClick={onClose} sx={{ padding: 0, marginTop: "6px" }}>
             <CloseRounded style={{ width: 18, height: 18, color: "#666666" }} />
           </IconButton>
         </Box>
