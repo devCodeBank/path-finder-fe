@@ -264,9 +264,9 @@ export const Billing: React.FC = () => {
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70 font-[500]">Card Number</label>
+              <label className="text-[14px] text-[#333333]/70 font-[500]">Card Number</label>
               <div className="relative">
-                <input className={fieldInputClassInner} value="1234 1234 1234 1234" readOnly />
+                <input className={fieldInputClassInner} value="1234 1234 1234 1234" disabled />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                   <VisaIcon />
                   <MastercardIcon />
@@ -274,19 +274,19 @@ export const Billing: React.FC = () => {
               </div>
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70 font-[500]">Expiry Date</label>
-              <input className={fieldInputClassInner} value="01 / 27" readOnly />
+              <label className="text-[14px] text-[#333333]/70 font-[500]">Expiry Date</label>
+              <input className={fieldInputClassInner} value="01 / 27" disabled />
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70 font-[500]">Security Code</label>
-              <input className={fieldInputClassInner} value="123" readOnly />
+              <label className="text-[14px] text-[#333333]/70 font-[500]">Security Code</label>
+              <input className={fieldInputClassInner} value="123" disabled />
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70 font-[500]">Name on the Card</label>
-              <input className={fieldInputClassInner} value="John D" readOnly />
+              <label className="text-[14px] text-[#333333]/70 font-[500]">Name on the Card</label>
+              <input className={fieldInputClassInner} value="John D" disabled />
             </div>
             <div className={fieldWrapperClass + " md:col-span-2"}>
-              <label className="text-[13px] text-[#333333]/70">Country</label>
+              <label className="text-[14px] text-[#333333]/70">Country</label>
               <div className="relative">
                 <select className={fieldSelectClass} defaultValue="New Zealand" disabled>
                   <option>New Zealand</option>
@@ -426,7 +426,7 @@ export const Billing: React.FC = () => {
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] mb-1 text-[#333333]/70 font-[500]">Account Owner</label>
+                      <label className="text-[14px] mb-1 text-[#333333]/70 font-[500]">Account Owner</label>
                       <input
                         className={fieldInputClass}
                         placeholder="Add Name"
@@ -438,7 +438,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] mb-1 text-[#333333]/70 font-[500]">Email</label>
+                      <label className="text-[14px] mb-1 text-[#333333]/70 font-[500]">Email</label>
                       <input
                         className={fieldInputClass}
                         placeholder="Add Email"
@@ -610,7 +610,7 @@ export const Billing: React.FC = () => {
                 </div>
                 <div className="p-4">
                   <div className={fieldWrapperWithErrorClass}>
-                    <label className="text-[13px] mb-1 text-[#333333]/70 font-[500]">Company Name</label>
+                    <label className="text-[14px] mb-1 text-[#333333]/70 font-[500]">Company Name</label>
                     <input
                       className={fieldInputClass}
                       placeholder="Add New Company Name"
@@ -687,7 +687,7 @@ export const Billing: React.FC = () => {
                 </div>
                 <div className="p-4">
                   <div className={fieldWrapperWithErrorClass}>
-                    <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Email</label>
+                    <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Email</label>
                     <input
                       className={fieldInputClass}
                       placeholder="Add Billing Email"
@@ -757,9 +757,9 @@ export const Billing: React.FC = () => {
                   <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
                 </div>
                 <div className="p-4">
-                  <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-3">
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Card Number</label>
+                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Card Number</label>
                       <div className="relative">
                         <input
                           className={fieldInputClass}
@@ -776,7 +776,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Expiry Date</label>
+                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Expiry Date</label>
                       <input
                         className={fieldInputClass}
                         value={cardExpiry}
@@ -787,7 +787,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Security Code</label>
+                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Security Code</label>
                       <input
                         className={fieldInputClass}
                         value={cardCvc}
@@ -798,7 +798,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Name on the Card</label>
+                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Name on the Card</label>
                       <input
                         className={fieldInputClass}
                         value={cardName}
@@ -809,7 +809,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass + " md:col-span-2"}>
-                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Country</label>
+                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Country</label>
                       <div className="relative">
                         <select
                           className={fieldSelectClass}
@@ -827,10 +827,10 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="mt-2 text-[12px] text-[#333333]/70">
+                  <div className=" text-[12px] text-[#333333]/70">
                     By providing your card information, you allow Pathfinder ATS CRM to charge your card for future payments in accordance with their terms.
                   </div>
-                  <div className="mt-4 flex justify-end gap-3">
+                  <div className="mt-3 flex justify-end gap-3">
                     <Button
                       variant="outlined"
                       sx={outlineButtonSx}
