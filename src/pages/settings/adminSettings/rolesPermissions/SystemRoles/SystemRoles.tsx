@@ -14,7 +14,7 @@ const Toolbar = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: ${({ theme }) => theme.spacing(4)};
+
     padding-bottom: 14px;
 `;
 
