@@ -463,7 +463,7 @@ export const TabContent: React.FC<{ tabName: string }> = ({ tabName }) => {
           if (!items.length) return null;
           return (
             <div key={section.title} className={index === 0 && moduleSections.length > 0 ? "mt-5" : ""}>
-              <div className="bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
+              <div className="bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333]  border-[#CCCCCC80]">
                 {section.title}
               </div>
               <div className={["border-b border-[#CCCCCC80]", index < settingsSections.length - 1 ? "mb-5" : ""].join(" ")}>
