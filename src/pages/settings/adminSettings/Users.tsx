@@ -875,7 +875,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[13px] font-[500] text-[#333333] mb-2">System Roles &amp; Permissions</div>
+                <div className="text-[14px] font-[500] text-[#333333]/70 mb-2">System Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
                   {systemRoles.map((role) => {
                     const roleId = `system-role-${role.toLowerCase().replace(/\s+/g, "-")}`;
@@ -926,7 +926,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[13px] font-[500] text-[#333333] mb-2">Custom Roles &amp; Permissions</div>
+                <div className="text-[14px] font-[500] text-[#333333]/70 mb-2">Custom Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80]">
                   <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[14px] font-[500] text-[#333333]">
                     <span>Role Name</span>
@@ -980,8 +980,8 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[14px] font-[500] text-[#333333] mb-2">User Email*</div>
-                <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[13px] font-[400] text-[#333333]/70">
+                <div className="text-[14px] font-[500] text-[#333333]/70 mb-2">User Email*</div>
+                <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[13px] font-[400] text-[#333333]">
                   {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
                 </div>
                 <div className="mt-2 text-[12px] text-[#333333]">

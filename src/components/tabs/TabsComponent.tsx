@@ -14,28 +14,24 @@ interface TabsComponentProps {
 }
 
 const StyledTabs = styled(Tabs)`
-  background-color: #F3F4F6;
+  background-color: ${({ theme }) => theme.tokens.color.background.secondary};
   color: ${({ theme }) => theme.tokens.color.text.primary};
   margin-bottom: ${({ theme }) => theme.spacing(2)};
   width: 100%;
-  padding: 6px 8px;
+ 
 
 
   .MuiTab-root {
-    color: #333333;
-    text-transform: none;
-    font-size: 14px;
-    font-weight: 500;
-    min-height: 36px;
-    padding: 8px 14px;
+       color: ${({ theme }) => theme.tokens.color.text.primary};
+    text-transform: capitalize;
    
     &.Mui-selected {
-      color: #333333;
+       background-color: ${({ theme }) => theme.tokens.color.background.primary};
     }
   }
 
   .MuiTabs-indicator {
-    height: 4px;
+     height: 0.25rem;
     border-radius: 4px;
     background-color: #6E41E2;
   }
@@ -55,7 +51,9 @@ export default function TabsComponent(props: TabsComponentProps) {
           <Tab key={tab.value} label={tab.label} value={tab.value} />
         ))}
       </StyledTabs>
-      <Box>{props.tabs.find((tab) => tab.value === value)?.content || "No content"}</Box>
+      <Box sx={{ mt: 2 }}>
+        {props.tabs.find((tab) => tab.value === value)?.content || "No content"}
+      </Box>
     </Box>
   );
 }

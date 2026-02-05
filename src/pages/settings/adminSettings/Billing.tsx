@@ -70,8 +70,9 @@ const outlineButtonSx = {
 
 const fieldWrapperClass = "flex flex-col gap-1.5";
 const fieldWrapperWithErrorClass = "relative flex flex-col pb-[14px]";
-const fieldInputClass = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none";
-const fieldSelectClass = `${fieldInputClass} appearance-none pr-8`;
+const fieldInputClass = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#F3F4F6] disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
+const fieldInputClassInner = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] font-[400]focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#F3F4F6] disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
+const fieldSelectClass = `${fieldInputClass} peer appearance-none pr-8`;
 
 const VisaIcon = ({ className = "" }: { className?: string }) => (
   <svg
@@ -108,9 +109,9 @@ const MastercardIcon = ({ className = "" }: { className?: string }) => (
     aria-label="Mastercard"
   >
     <rect x="0.5" y="0.5" width="39" height="23" rx="4" fill="#FFFFFF" stroke="#D6D6D6" />
-    <circle cx="18" cy="12" r="6.2" fill="#EB001B" />
-    <circle cx="22" cy="12" r="6.2" fill="#F79E1B" />
-    <circle cx="20" cy="12" r="6.2" fill="#F04624" opacity="0.9" />
+    <circle cx="17.5" cy="12" r="7" fill="#EB001B" />
+    <circle cx="22.5" cy="12" r="7" fill="#F79E1B" />
+    {/* <circle cx="20" cy="12" r="7" fill="#F04624" opacity="0.9" /> */}
   </svg>
 );
 
@@ -145,8 +146,8 @@ export const Billing: React.FC = () => {
   ];
 
   const billingContent = (
-    <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
-      <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+    <div className="bg-white border border-[#CCCCCC80]  overflow-hidden mt-2">
+      <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80] ">
         <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
       </div>
       <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
@@ -192,22 +193,23 @@ export const Billing: React.FC = () => {
   );
 
   const subscriptionContent = (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 pt-2">
       <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
         <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
           <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
-          <div className="h-[32px] px-3 rounded-[4px] w-[140px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
+
+          <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
             Currency: USD
           </div>
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80] flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <div className="text-[14px] font-[500] text-[#333333]">Starter</div>
-            <button type="button" className="text-[12px] text-[#6E41E2] hover:underline w-fit">Plan Features</button>
+            <div className="text-[13px] font-[500] text-[#333333]">Starter</div>
+            <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
           </div>
           <div className="text-[14px] text-[#333333]">
-            <span className="text-[18px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
+            <span className="text-[16px] font-[600]">$69</span> <span className="text-[13px]">per user / month</span>
           </div>
           <Button
             variant="contained"
@@ -222,14 +224,14 @@ export const Billing: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-          <div className="text-[13px] text-[#333333]/70">Account Activation Date</div>
-          <div className="text-[13px] text-[#333333]">21 / 08 / 2025</div>
+          <div className="text-[13px] text-[#333333] font-[500]">Account Activation Date</div>
+          <div className="text-[13px] text-[#333333] font-[400]">21 / 08 / 2025</div>
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80] flex items-center justify-between gap-4">
           <div>
-            <div className="text-[13px] text-[#333333]/70">Account Owner</div>
-            <div className="text-[13px] text-[#333333]">John Doe</div>
+            <div className="text-[13px] text-[#333333] font-[500]">Account Owner</div>
+            <div className="text-[13px] text-[#333333] font-[400]">John Doe</div>
           </div>
           <Button
             variant="contained"
@@ -245,13 +247,13 @@ export const Billing: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-          <div className="text-[13px] text-[#333333]/70">Active User(s)</div>
-          <div className="text-[16px] font-[600] text-[#333333]">10</div>
+          <div className="text-[13px] text-[#333333] font-[500]">Active User(s)</div>
+          <div className="text-[16px] font-[600] text-[#333333] ">10</div>
         </div>
 
         <div className="px-4 py-4">
-          <div className="text-[13px] text-[#333333]/70">Account ID</div>
-          <div className="text-[13px] text-[#333333]">PFAC1057</div>
+          <div className="text-[13px] text-[#333333] font-[500]">Account ID</div>
+          <div className="text-[13px] text-[#333333] font-[400]">PFAC1057</div>
         </div>
       </div>
 
@@ -262,9 +264,9 @@ export const Billing: React.FC = () => {
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70">Card Number</label>
+              <label className="text-[13px] text-[#333333]/70 font-[500]">Card Number</label>
               <div className="relative">
-                <input className={fieldInputClass} value="1234 1234 1234 1234" readOnly />
+                <input className={fieldInputClassInner} value="1234 1234 1234 1234" readOnly />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                   <VisaIcon />
                   <MastercardIcon />
@@ -272,16 +274,16 @@ export const Billing: React.FC = () => {
               </div>
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70">Expiry Date</label>
-              <input className={fieldInputClass} value="01 / 27" readOnly />
+              <label className="text-[13px] text-[#333333]/70 font-[500]">Expiry Date</label>
+              <input className={fieldInputClassInner} value="01 / 27" readOnly />
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70">Security Code</label>
-              <input className={fieldInputClass} value="123" readOnly />
+              <label className="text-[13px] text-[#333333]/70 font-[500]">Security Code</label>
+              <input className={fieldInputClassInner} value="123" readOnly />
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[13px] text-[#333333]/70">Name on the Card</label>
-              <input className={fieldInputClass} value="John D" readOnly />
+              <label className="text-[13px] text-[#333333]/70 font-[500]">Name on the Card</label>
+              <input className={fieldInputClassInner} value="John D" readOnly />
             </div>
             <div className={fieldWrapperClass + " md:col-span-2"}>
               <label className="text-[13px] text-[#333333]/70">Country</label>
@@ -291,14 +293,14 @@ export const Billing: React.FC = () => {
                   <option>Australia</option>
                   <option>United States</option>
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666] peer-disabled:text-[#999999]" />
               </div>
             </div>
           </div>
-          <div className="mt-4 text-[12px] text-[#333333]/70">
+          <div className="mt-2 text-[12px] text-[#333333]/70">
             By providing your card information, you allow Pathfinder ATS CRM to charge your card for future payments in accordance with their terms.
           </div>
-          <div className="mt-4 flex justify-end">
+          <div className="mt-2 flex justify-end">
             <Button
               variant="contained"
               sx={primaryButtonSx}
@@ -321,8 +323,8 @@ export const Billing: React.FC = () => {
         <div className="divide-y divide-[#CCCCCC80]">
           <div className="px-4 py-4 flex items-center justify-between gap-4">
             <div>
-              <div className="text-[13px] text-[#333333]/70">Company Legal Name</div>
-              <div className="text-[13px] text-[#333333]">Acme Limited</div>
+              <div className="text-[13px] text-[#333333]/70 font-[500]">Company Legal Name</div>
+              <div className="text-[13px] text-[#333333] font-[400]">Acme Limited</div>
             </div>
             <Button
               variant="contained"
@@ -338,8 +340,8 @@ export const Billing: React.FC = () => {
           </div>
           <div className="px-4 py-4 flex items-center justify-between gap-4">
             <div>
-              <div className="text-[13px] text-[#333333]/70">Billing Email</div>
-              <div className="text-[13px] text-[#333333]/70">Not available</div>
+              <div className="text-[13px] text-[#333333]/70 font-[500]">Billing Email</div>
+              <div className="text-[13px] text-[#333333] font-[400]">Not available</div>
             </div>
             <Button
               variant="contained"
@@ -356,16 +358,16 @@ export const Billing: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-3">
+      {/* <div className="flex flex-wrap items-center justify-end gap-3">
         <Button variant="outlined" sx={outlineButtonSx}>Cancel</Button>
         <Button variant="contained" sx={primaryButtonSx}>Subscribe</Button>
-      </div>
-    </div>
+      </div> */}
+    </div >
   );
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex items-center justify-end gap-3 mb-4">
+      <div className="flex items-center justify-end gap-3 mb-6 mt-2">
         <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
           Active
         </span>
@@ -424,7 +426,7 @@ export const Billing: React.FC = () => {
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] text-[#333333]/70">Account Owner</label>
+                      <label className="text-[13px] mb-1 text-[#333333]/70 font-[500]">Account Owner</label>
                       <input
                         className={fieldInputClass}
                         placeholder="Add Name"
@@ -436,7 +438,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] text-[#333333]/70">Email</label>
+                      <label className="text-[13px] mb-1 text-[#333333]/70 font-[500]">Email</label>
                       <input
                         className={fieldInputClass}
                         placeholder="Add Email"
@@ -513,11 +515,11 @@ export const Billing: React.FC = () => {
                 <div className="divide-y divide-[#CCCCCC80]">
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col gap-2">
-                      <div className="text-[14px] font-[500] text-[#333333]">Starter</div>
-                      <button type="button" className="text-[12px] text-[#6E41E2] hover:underline w-fit">Plan Features</button>
+                      <div className="text-[13px] font-[500] text-[#333333]">Starter</div>
+                      <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
                     </div>
-                    <div className="text-[14px] text-[#333333]">
-                      <span className="text-[18px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
+                    <div className="text-[14px] text-[#333333] ">
+                      <span className="text-[16px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
                     </div>
                     <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white text-center">
                       Active
@@ -526,22 +528,22 @@ export const Billing: React.FC = () => {
 
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col gap-2">
-                      <div className="text-[14px] font-[500] text-[#333333]">Growth</div>
-                      <button type="button" className="text-[12px] text-[#6E41E2] hover:underline w-fit">Plan Features</button>
+                      <div className="text-[13px] font-[500] text-[#333333]">Growth</div>
+                      <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
                     </div>
                     <div className="text-[14px] text-[#333333]">
-                      <span className="text-[18px] font-[600]">$129</span> <span className="text-[12px]">per user / month</span>
+                      <span className="text-[16px] font-[600]">$129</span> <span className="text-[12px]">per user / month</span>
                     </div>
                     <Button variant="contained" sx={popButtonSx}>Upgrade</Button>
                   </div>
 
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col gap-2">
-                      <div className="text-[14px] font-[500] text-[#333333]">Professional</div>
-                      <button type="button" className="text-[12px] text-[#6E41E2] hover:underline w-fit">Plan Features</button>
+                      <div className="text-[13px] font-[500] text-[#333333]">Professional</div>
+                      <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
                     </div>
                     <div className="text-[14px] text-[#333333]">
-                      <span className="text-[18px] font-[600]">$249</span> <span className="text-[12px]">per user / month</span>
+                      <span className="text-[16px] font-[600]">$249</span> <span className="text-[12px]">per user / month</span>
                     </div>
                     <Button variant="contained" sx={popButtonSx}>Upgrade</Button>
                   </div>
@@ -600,15 +602,15 @@ export const Billing: React.FC = () => {
                     Current
                   </span>
                 </div>
-                <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
-                  <div className="text-[#333333]/70">Acme Corporation Limited</div>
+                <div className="px-4 py-4 font-[500]  text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
+                  <div className="text-[#333333]" >Acme Corporation Limited</div>
                 </div>
                 <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">New Company Name</span>
                 </div>
                 <div className="p-4">
                   <div className={fieldWrapperWithErrorClass}>
-                    <label className="text-[13px] text-[#333333]/70">Company Name</label>
+                    <label className="text-[13px] mb-1 text-[#333333]/70 font-[500]">Company Name</label>
                     <input
                       className={fieldInputClass}
                       placeholder="Add New Company Name"
@@ -685,7 +687,7 @@ export const Billing: React.FC = () => {
                 </div>
                 <div className="p-4">
                   <div className={fieldWrapperWithErrorClass}>
-                    <label className="text-[13px] text-[#333333]/70">Email</label>
+                    <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Email</label>
                     <input
                       className={fieldInputClass}
                       placeholder="Add Billing Email"
@@ -757,7 +759,7 @@ export const Billing: React.FC = () => {
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] text-[#333333]/70">Card Number</label>
+                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Card Number</label>
                       <div className="relative">
                         <input
                           className={fieldInputClass}
@@ -774,7 +776,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] text-[#333333]/70">Expiry Date</label>
+                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Expiry Date</label>
                       <input
                         className={fieldInputClass}
                         value={cardExpiry}
@@ -785,7 +787,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] text-[#333333]/70">Security Code</label>
+                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Security Code</label>
                       <input
                         className={fieldInputClass}
                         value={cardCvc}
@@ -796,7 +798,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[13px] text-[#333333]/70">Name on the Card</label>
+                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Name on the Card</label>
                       <input
                         className={fieldInputClass}
                         value={cardName}
@@ -807,7 +809,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass + " md:col-span-2"}>
-                      <label className="text-[13px] text-[#333333]/70">Country</label>
+                      <label className="text-[13px] mb-1 font-[500] text-[#333333]/70">Country</label>
                       <div className="relative">
                         <select
                           className={fieldSelectClass}
@@ -825,7 +827,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className="mt-4 text-[12px] text-[#333333]/70">
+                  <div className="mt-2 text-[12px] text-[#333333]/70">
                     By providing your card information, you allow Pathfinder ATS CRM to charge your card for future payments in accordance with their terms.
                   </div>
                   <div className="mt-4 flex justify-end gap-3">

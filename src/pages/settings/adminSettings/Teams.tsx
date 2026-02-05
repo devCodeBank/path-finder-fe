@@ -48,7 +48,8 @@ const Toolbar = styled(Box)`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
+  margin-top: 8px;
 `;
 
 const SelectedMembersList = styled(Box)`
@@ -63,7 +64,7 @@ const SelectedMembersList = styled(Box)`
 const MemberChip = styled(Box)`
   display: inline-flex;
   align-items: center;
-  width: 168px;
+  width: auto;
   height: 32px;
   gap: ${({ theme }) => theme.spacing(1)};
   border: 1px solid #E6E6E6;
@@ -115,6 +116,8 @@ export const Teams: React.FC = () => {
 
   const handleOpenMoveTeamModal = (rowId: string) => () => {
     setSelectedMemberId(rowId);
+    const currentTeam = teamItems.find((team) => team.members.some((m) => m.id === rowId));
+    setDestinationTeamId(currentTeam?.id ?? "");
     setIsMoveModalOpen(true);
     setAnchorByRowId((prev) => ({ ...prev, [rowId]: null }));
   };
@@ -554,7 +557,7 @@ export const Teams: React.FC = () => {
                   value={teamStatus}
                   onValueChange={setTeamStatus}
                   options={statusOptions}
-                  placeholder="Active"
+                // placeholder="Select Team Status"
                 />
                 {teamMembers.length > 0 && (
                   <SelectedMembersList aria-label="selected team members">
@@ -565,7 +568,7 @@ export const Teams: React.FC = () => {
                           size="small"
                           aria-label={`remove ${name}`}
                           onClick={() => setTeamMembers((prev) => prev.filter((member) => member !== name))}
-                          sx={{ padding: "91px" }}
+                        // sx={{ padding: "91px" }}
                         >
                           <ClearRoundedIcon sx={{ fontSize: 14 }} />
                         </IconButton>
@@ -729,7 +732,7 @@ const CollapsibleSection = ({
                 padding: "3px",
               }}
             >
-              <EditOutlinedIcon fontSize="small" />
+              <EditOutlinedIcon fontSize="small" sx={{ color: theme.tokens.color.text.secondary }} />
             </IconButton>
           ) : (
             <Box sx={{ width: "28px", height: "28px" }} />

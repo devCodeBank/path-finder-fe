@@ -21,7 +21,7 @@ const Toolbar = styled(Box)`
 const RightActions = styled(Box)`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing(1)};
+  gap: ${({ theme }) => theme.spacing(2)};
 `;
 
 

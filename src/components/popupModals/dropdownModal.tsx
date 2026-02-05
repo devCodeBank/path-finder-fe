@@ -1,6 +1,6 @@
 import MoveFileIcon from "@assets/icons/move-file.svg?react";
 
-import { SelectInput } from "@components/input/selectInput/SelectInput";
+import { FloatingLabelSelect, type FloatingLabelSelectHandle } from "@components/floatingLabelInput";
 import { CloseRounded } from "@mui/icons-material";
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Typography } from "@mui/material";
 import theme from "@theme/index";
@@ -29,6 +29,8 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
   memberName = "Member",
 
 }) => {
+  const selectRef = React.useRef<FloatingLabelSelectHandle | null>(null);
+
   return (
     <Dialog
       slotProps={{
@@ -93,17 +95,35 @@ export const DropDownModal: React.FC<DropDownModalProps> = ({
           justifyContent: "center",
         }}
       >
-        <Box sx={{ width: "100%" }}>
-          <SelectInput
+        <Box sx={{ width: "100%", position: "relative" }}>
+          <FloatingLabelSelect
             label=""
             value={value}
-            onChange={(e) => onChange(e.target.value as string)}
+            onValueChange={onChange}
             options={teams.map((t) => ({ value: t.id, label: t.name }))}
-            placeholder="Select a new team"
-            zIndex={theme.tokens.zIndex.modal + 1}
-
-
+            placeholder="Select Team"
+            className="h-[40px]"
+            ref={selectRef}
+            hideChevron={Boolean(value)}
           />
+          {value && (
+            <IconButton
+              aria-label="Clear selected team"
+              onClick={() => {
+                onChange("");
+                requestAnimationFrame(() => selectRef.current?.open());
+              }}
+              sx={{
+                position: "absolute",
+                right: "12px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                padding: "2px",
+              }}
+            >
+              <CloseRounded style={{ width: 16, height: 16, color: "#999999" }} />
+            </IconButton>
+          )}
         </Box>
       </DialogContent>
       <DialogActions sx={{ padding: 0, justifyContent: "flex-end", marginTop: "auto" }}>
