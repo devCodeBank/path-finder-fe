@@ -4,9 +4,9 @@ import React from "react";
 import styled from "styled-components";
 
 const Container = styled(Box)`
-  padding: ${({ theme }) => theme.spacing(4)};
+  display: flex;
+  flex-direction: column;
 `;
-
 const ResultsCard = styled(Box)`
   border: 1px solid #E6E6E6;
   border-radius: 6px;
