@@ -173,7 +173,7 @@ const App: React.FC = () => {
           </Route>
         </Route>
 
-        {/* FALLBACK */}
+        {/* FALLBACK when no route matches */}
         <Route path="*" element={<Navigate to="/auth/login" replace />} />
       </Routes>
     </Suspense>
