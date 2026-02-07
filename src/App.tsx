@@ -58,6 +58,12 @@ const StatusPage = React.lazy(() => import("./pages/settings/jobSettings/Status"
 const TagsPage = React.lazy(() => import("./pages/settings/jobSettings/Tags"));
 const SkillSetPage = React.lazy(() => import("./pages/settings/jobSettings/SkillSet"));
 const PagePage = React.lazy(() => import("./pages/settings/jobSettings/Page"));
+const CompanyFieldsPage = React.lazy(() => import("./pages/settings/customisation/CompanyFields"));
+const ContactFieldsPage = React.lazy(() => import("./pages/settings/customisation/ContactFields"));
+const JobFieldsPage = React.lazy(() => import("./pages/settings/customisation/JobFields"));
+const JobStatusPage = React.lazy(() => import("./pages/settings/customisation/JobStatus"));
+const JobTemplatesPage = React.lazy(() => import("./pages/settings/customisation/JobTemplates"));
+const EmailTemplatesPage = React.lazy(() => import("./pages/settings/customisation/EmailTemplates"));
 
 const LoadingFallback: React.FC = () => <LoadingSpinner isLoading />;
 
@@ -155,6 +161,15 @@ const App: React.FC = () => {
             <Route path="job/tags" element={<TagsPage />} />
             <Route path="job/skill-set" element={<SkillSetPage />} />
             <Route path="job/page" element={<PagePage />} />
+
+            {/* Customisation Routes */}
+            <Route path="customisation/candidate-fields" element={<CandidatesPage />} />
+            <Route path="customisation/company-fields" element={<CompanyFieldsPage />} />
+            <Route path="customisation/contact-fields" element={<ContactFieldsPage />} />
+            <Route path="customisation/job-fields" element={<JobFieldsPage />} />
+            <Route path="customisation/job-templates" element={<JobTemplatesPage />} />
+            <Route path="customisation/job-status" element={<JobStatusPage />} />
+            <Route path="customisation/email-templates" element={<EmailTemplatesPage />} />
           </Route>
         </Route>
 
