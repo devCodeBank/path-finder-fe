@@ -67,6 +67,7 @@ const EmailTemplatesPage = React.lazy(() => import("./pages/settings/customisati
 const HiringPipelinePage = React.lazy(() => import("./pages/settings/customisation/HiringPipeline"));
 const DealsPipelinePage = React.lazy(() => import("./pages/settings/customisation/DealsPipeline"));
 const DealFieldsPage = React.lazy(() => import("./pages/settings/customisation/DealFields"));
+const ContactStagePage = React.lazy(() => import("./pages/settings/customisation/ContactStage"));
 
 const LoadingFallback: React.FC = () => <LoadingSpinner isLoading />;
 
@@ -176,6 +177,7 @@ const App: React.FC = () => {
             <Route path="customisation/hiring-pipeline" element={<HiringPipelinePage />} />
             <Route path="customisation/deals-pipeline" element={<DealsPipelinePage />} />
             <Route path="customisation/deal-fields" element={<DealFieldsPage />} />
+            <Route path="customisation/contact-stage" element={<ContactStagePage />} />
           </Route>
         </Route>
 
