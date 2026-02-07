@@ -64,6 +64,7 @@ const JobFieldsPage = React.lazy(() => import("./pages/settings/customisation/Jo
 const JobStatusPage = React.lazy(() => import("./pages/settings/customisation/JobStatus"));
 const JobTemplatesPage = React.lazy(() => import("./pages/settings/customisation/JobTemplates"));
 const EmailTemplatesPage = React.lazy(() => import("./pages/settings/customisation/EmailTemplates"));
+const HiringPipelinePage = React.lazy(() => import("./pages/settings/customisation/HiringPipeline"));
 
 const LoadingFallback: React.FC = () => <LoadingSpinner isLoading />;
 
@@ -170,6 +171,7 @@ const App: React.FC = () => {
             <Route path="customisation/job-templates" element={<JobTemplatesPage />} />
             <Route path="customisation/job-status" element={<JobStatusPage />} />
             <Route path="customisation/email-templates" element={<EmailTemplatesPage />} />
+            <Route path="customisation/hiring-pipeline" element={<HiringPipelinePage />} />
           </Route>
         </Route>
 
