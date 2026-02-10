@@ -298,6 +298,7 @@ const JobStatus: React.FC = () => {
                   <Tooltip
                     title="You want to Remove this field? Your data associated with this field will be set as Empty!"
                     arrow
+                    placement="left"
                     componentsProps={{
                       tooltip: { sx: { bgcolor: "#797979", width: "560px" } },
                       arrow: { sx: { color: "#797979" } },
@@ -319,6 +320,7 @@ const JobStatus: React.FC = () => {
                     <Tooltip
                       title={isLocked ? lockedTooltip : "Certain status cannot be edited, deleted or moved."}
                       arrow
+                      placement="left"
                       componentsProps={{
                         tooltip: { sx: { bgcolor: "#797979", width: "320px" } },
                         arrow: { sx: { color: "#797979" } },

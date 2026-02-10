@@ -643,6 +643,10 @@ export const ContactFields: React.FC = () => {
     return getLayoutRow(sectionId, rowId)?.required ?? false;
   };
 
+  const isSectionEnabled = (sectionId: string) => {
+    return sections.find((section) => section.id === sectionId)?.enabled ?? true;
+  };
+
   const getFieldValue = (sectionId: string, rowId: string) => {
     const key = `${sectionId}.${rowId}`;
     const values: Record<string, string | boolean> = {
@@ -822,33 +826,35 @@ export const ContactFields: React.FC = () => {
 
   const layoutContent = (
     <div className="flex flex-col gap-4 pt-4">
-      <LayoutHeader
-        title="Contact Details"
-        collapsed={!layoutOpen.contactDetails}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactDetails: !p.contactDetails }))}
-      />
-      {layoutOpen.contactDetails && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("contactDetails", "firstName") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="First Name"
-                required={isLayoutRequired("contactDetails", "firstName")}
-                placeholder="e.g., Sarah"
-                value={layoutForm.firstName}
-                onChange={handleLayoutChange("firstName")}
-                className={cn(
-                  showFieldError("contactDetails", "firstName") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("contactDetails", "firstName") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *First Name is required.
-                  </span>
-                )}
-            </div>
-          )}
+      {isSectionEnabled("contactDetails") && (
+        <>
+          <LayoutHeader
+            title="Contact Details"
+            collapsed={!layoutOpen.contactDetails}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, contactDetails: !p.contactDetails }))}
+          />
+          {layoutOpen.contactDetails && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isLayoutVisible("contactDetails", "firstName") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="First Name"
+                    required={isLayoutRequired("contactDetails", "firstName")}
+                    placeholder="e.g., Sarah"
+                    value={layoutForm.firstName}
+                    onChange={handleLayoutChange("firstName")}
+                    className={cn(
+                      showFieldError("contactDetails", "firstName") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("contactDetails", "firstName") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *First Name is required.
+                      </span>
+                    )}
+                </div>
+              )}
           {isLayoutVisible("contactDetails", "lastName") && (
             <div className="relative flex flex-col pb-[14px]">
               <FloatingLabelInput
@@ -929,36 +935,40 @@ export const ContactFields: React.FC = () => {
               )}
             </div>
           )}
-        </div>
-      )}
-
-      <LayoutHeader
-        title="Record Details"
-        collapsed={!layoutOpen.recordDetails}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, recordDetails: !p.recordDetails }))}
-      />
-      {layoutOpen.recordDetails && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("recordDetails", "contactOwner") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelSelect
-                label="Contact Owner"
-                placeholder="John Doe"
-                options={[]}
-                value={layoutForm.contactOwner}
-                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactOwner: value }))}
-                className={cn(
-                  showFieldError("recordDetails", "contactOwner") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("recordDetails", "contactOwner") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Contact Owner is required.
-                  </span>
-                )}
             </div>
           )}
+        </>
+      )}
+
+      {isSectionEnabled("recordDetails") && (
+        <>
+          <LayoutHeader
+            title="Record Details"
+            collapsed={!layoutOpen.recordDetails}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, recordDetails: !p.recordDetails }))}
+          />
+          {layoutOpen.recordDetails && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isLayoutVisible("recordDetails", "contactOwner") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelSelect
+                    label="Contact Owner"
+                    placeholder="John Doe"
+                    options={[]}
+                    value={layoutForm.contactOwner}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactOwner: value }))}
+                    className={cn(
+                      showFieldError("recordDetails", "contactOwner") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("recordDetails", "contactOwner") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Contact Owner is required.
+                      </span>
+                    )}
+                </div>
+              )}
           {isLayoutVisible("recordDetails", "source") && (
             <div className="relative flex flex-col pb-[14px]">
               <FloatingLabelSelect
@@ -979,36 +989,40 @@ export const ContactFields: React.FC = () => {
                 )}
             </div>
           )}
-        </div>
-      )}
-
-      <LayoutHeader
-        title="Contact Address Info"
-        collapsed={!layoutOpen.contactAddressInfo}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactAddressInfo: !p.contactAddressInfo }))}
-      />
-      {layoutOpen.contactAddressInfo && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("contactAddressInfo", "fullAddress") && (
-            <div className="relative flex flex-col pb-[14px] md:col-span-2">
-              <FloatingLabelInput
-                label="Full Address"
-                required={isLayoutRequired("contactAddressInfo", "fullAddress")}
-                placeholder="e.g., 123 Business Way, Suite 500"
-                value={layoutForm.fullAddress}
-                onChange={handleLayoutChange("fullAddress")}
-                className={cn(
-                  showFieldError("contactAddressInfo", "fullAddress") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("contactAddressInfo", "fullAddress") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Full Address is required.
-                </span>
-              )}
             </div>
           )}
+        </>
+      )}
+
+      {isSectionEnabled("contactAddressInfo") && (
+        <>
+          <LayoutHeader
+            title="Contact Address Info"
+            collapsed={!layoutOpen.contactAddressInfo}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, contactAddressInfo: !p.contactAddressInfo }))}
+          />
+          {layoutOpen.contactAddressInfo && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isLayoutVisible("contactAddressInfo", "fullAddress") && (
+                <div className="relative flex flex-col pb-[14px] md:col-span-2">
+                  <FloatingLabelInput
+                    label="Full Address"
+                    required={isLayoutRequired("contactAddressInfo", "fullAddress")}
+                    placeholder="e.g., 123 Business Way, Suite 500"
+                    value={layoutForm.fullAddress}
+                    onChange={handleLayoutChange("fullAddress")}
+                    className={cn(
+                      showFieldError("contactAddressInfo", "fullAddress") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("contactAddressInfo", "fullAddress") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Full Address is required.
+                    </span>
+                  )}
+                </div>
+              )}
           {isLayoutVisible("contactAddressInfo", "city") && (
             <div className="relative flex flex-col pb-[14px]">
               <FloatingLabelInput
@@ -1089,36 +1103,40 @@ export const ContactFields: React.FC = () => {
               )}
             </div>
           )}
-        </div>
-      )}
-
-      <LayoutHeader
-        title="Contact Communication"
-        collapsed={!layoutOpen.contactCommunication}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactCommunication: !p.contactCommunication }))}
-      />
-      {layoutOpen.contactCommunication && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("contactCommunication", "email") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Email"
-                required={isLayoutRequired("contactCommunication", "email")}
-                placeholder="e.g., sarah.johnson@example.com"
-                value={layoutForm.email}
-                onChange={handleLayoutChange("email")}
-                className={cn(
-                  showFieldError("contactCommunication", "email") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("contactCommunication", "email") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Email is required.
-                  </span>
-                )}
             </div>
           )}
+        </>
+      )}
+
+      {isSectionEnabled("contactCommunication") && (
+        <>
+          <LayoutHeader
+            title="Contact Communication"
+            collapsed={!layoutOpen.contactCommunication}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, contactCommunication: !p.contactCommunication }))}
+          />
+          {layoutOpen.contactCommunication && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isLayoutVisible("contactCommunication", "email") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Email"
+                    required={isLayoutRequired("contactCommunication", "email")}
+                    placeholder="e.g., sarah.johnson@example.com"
+                    value={layoutForm.email}
+                    onChange={handleLayoutChange("email")}
+                    className={cn(
+                      showFieldError("contactCommunication", "email") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("contactCommunication", "email") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Email is required.
+                      </span>
+                    )}
+                </div>
+              )}
           {isLayoutVisible("contactCommunication", "phone") && (
             <div className="relative flex flex-col pb-[14px]">
               <FloatingLabelInput
@@ -1159,115 +1177,123 @@ export const ContactFields: React.FC = () => {
               )}
             </div>
           )}
-        </div>
+            </div>
+          )}
+        </>
       )}
 
-      <LayoutHeader
-        title="Contact Relationship"
-        collapsed={!layoutOpen.contactRelationship}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactRelationship: !p.contactRelationship }))}
-      />
-      {layoutOpen.contactRelationship && (
-        <div className="flex flex-col gap-4">
-          {isLayoutVisible("contactRelationship", "company") && (
-            <div className="flex flex-col md:flex-row md:items-center gap-3">
-              <div className="relative flex-1 flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Company"
-                  required={isLayoutRequired("contactRelationship", "company")}
-                  placeholder="Search by Company Name or ID"
-                  value={layoutForm.company}
-                  onChange={handleLayoutChange("company")}
-                  className={cn(
-                    showFieldError("contactRelationship", "company") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showFieldError("contactRelationship", "company") && (
+      {isSectionEnabled("contactRelationship") && (
+        <>
+          <LayoutHeader
+            title="Contact Relationship"
+            collapsed={!layoutOpen.contactRelationship}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, contactRelationship: !p.contactRelationship }))}
+          />
+          {layoutOpen.contactRelationship && (
+            <div className="flex flex-col gap-4">
+              {isLayoutVisible("contactRelationship", "company") && (
+                <div className="flex flex-col md:flex-row md:items-center gap-3">
+                  <div className="relative flex-1 flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Company"
+                      required={isLayoutRequired("contactRelationship", "company")}
+                      placeholder="Search by Company Name or ID"
+                      value={layoutForm.company}
+                      onChange={handleLayoutChange("company")}
+                      className={cn(
+                        showFieldError("contactRelationship", "company") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showFieldError("contactRelationship", "company") && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Company is required.
+                        </span>
+                      )}
+                  </div>
+                  <div className="md:pt-[14px]">
+                    <Button variant="contained" sx={primaryButtonSx}>
+                      Create New Company
+                    </Button>
+                  </div>
+                </div>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isLayoutVisible("contactRelationship", "department") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Department"
+                      required={isLayoutRequired("contactRelationship", "department")}
+                      placeholder="e.g., Engineering"
+                      value={layoutForm.department}
+                      onChange={handleLayoutChange("department")}
+                      className={cn(
+                        showFieldError("contactRelationship", "department") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showFieldError("contactRelationship", "department") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Department is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("contactRelationship", "manager") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Manager"
+                      required={isLayoutRequired("contactRelationship", "manager")}
+                      placeholder="e.g., John Doe"
+                      value={layoutForm.manager}
+                      onChange={handleLayoutChange("manager")}
+                      className={cn(
+                        showFieldError("contactRelationship", "manager") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showFieldError("contactRelationship", "manager") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Manager is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {isSectionEnabled("contactSocialLinks") && (
+        <>
+          <LayoutHeader
+            title="Contact Social Links"
+            collapsed={!layoutOpen.contactSocialLinks}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, contactSocialLinks: !p.contactSocialLinks }))}
+          />
+          {layoutOpen.contactSocialLinks && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {isLayoutVisible("contactSocialLinks", "linkedin") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="LinkedIn Profile"
+                    required={isLayoutRequired("contactSocialLinks", "linkedin")}
+                    placeholder="www.linkedin.com/sarahjohnson"
+                    value={layoutForm.linkedin}
+                    onChange={handleLayoutChange("linkedin")}
+                    className={cn(
+                      showFieldError("contactSocialLinks", "linkedin") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("contactSocialLinks", "linkedin") && (
                     <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Company is required.
+                      *LinkedIn Profile is required.
                     </span>
                   )}
-              </div>
-              <div className="md:pt-[14px]">
-                <Button variant="contained" sx={primaryButtonSx}>
-                  Create New Company
-                </Button>
-              </div>
-            </div>
-          )}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {isLayoutVisible("contactRelationship", "department") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Department"
-                  required={isLayoutRequired("contactRelationship", "department")}
-                  placeholder="e.g., Engineering"
-                  value={layoutForm.department}
-                  onChange={handleLayoutChange("department")}
-                  className={cn(
-                    showFieldError("contactRelationship", "department") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showFieldError("contactRelationship", "department") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Department is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("contactRelationship", "manager") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Manager"
-                  required={isLayoutRequired("contactRelationship", "manager")}
-                  placeholder="e.g., John Doe"
-                  value={layoutForm.manager}
-                  onChange={handleLayoutChange("manager")}
-                  className={cn(
-                    showFieldError("contactRelationship", "manager") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showFieldError("contactRelationship", "manager") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Manager is required.
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <LayoutHeader
-        title="Contact Social Links"
-        collapsed={!layoutOpen.contactSocialLinks}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactSocialLinks: !p.contactSocialLinks }))}
-      />
-      {layoutOpen.contactSocialLinks && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("contactSocialLinks", "linkedin") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="LinkedIn Profile"
-                required={isLayoutRequired("contactSocialLinks", "linkedin")}
-                placeholder="www.linkedin.com/sarahjohnson"
-                value={layoutForm.linkedin}
-                onChange={handleLayoutChange("linkedin")}
-                className={cn(
-                  showFieldError("contactSocialLinks", "linkedin") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("contactSocialLinks", "linkedin") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *LinkedIn Profile is required.
-                </span>
+                </div>
               )}
-            </div>
-          )}
           {isLayoutVisible("contactSocialLinks", "xprofile") && (
             <div className="relative flex flex-col pb-[14px]">
               <FloatingLabelInput
@@ -1328,7 +1354,9 @@ export const ContactFields: React.FC = () => {
               )}
             </div>
           )}
-        </div>
+            </div>
+          )}
+        </>
       )}
 
       <div className="flex justify-end gap-3 pt-2">

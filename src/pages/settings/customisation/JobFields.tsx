@@ -629,6 +629,10 @@ export const JobFields: React.FC = () => {
     return getLayoutRow(sectionId, rowId)?.required ?? false;
   };
 
+  const isSectionEnabled = (sectionId: string) => {
+    return sections.find((section) => section.id === sectionId)?.enabled ?? true;
+  };
+
   const getFieldValue = (sectionId: string, rowId: string) => {
     const key = `${sectionId}.${rowId}`;
     const values: Record<string, string | boolean> = {
@@ -829,38 +833,40 @@ export const JobFields: React.FC = () => {
 
   const layoutContent = (
     <div className="flex flex-col gap-4 pt-4">
-      <LayoutHeader
-        title="Job Details"
-        collapsed={!layoutOpen.jobDetails}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, jobDetails: !p.jobDetails }))}
-      />
-      {layoutOpen.jobDetails && (
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {isLayoutVisible("jobDetails", "jobTitle") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Job Title"
-                  required={isLayoutRequired("jobDetails", "jobTitle")}
-                  placeholder="e.g., Full Stack Engineer"
-                  value={layoutForm.jobTitle}
-                  onChange={handleLayoutChange("jobTitle")}
-                  className={cn(
-                    showLayoutErrors &&
-                    isLayoutRequired("jobDetails", "jobTitle") &&
-                    !layoutForm.jobTitle.trim() &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors &&
-                  isLayoutRequired("jobDetails", "jobTitle") &&
-                  !layoutForm.jobTitle.trim() && (
-                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Job Title is required.
-                    </span>
-                  )}
-              </div>
-            )}
+      {isSectionEnabled("jobDetails") && (
+        <>
+          <LayoutHeader
+            title="Job Details"
+            collapsed={!layoutOpen.jobDetails}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, jobDetails: !p.jobDetails }))}
+          />
+          {layoutOpen.jobDetails && (
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isLayoutVisible("jobDetails", "jobTitle") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Job Title"
+                      required={isLayoutRequired("jobDetails", "jobTitle")}
+                      placeholder="e.g., Full Stack Engineer"
+                      value={layoutForm.jobTitle}
+                      onChange={handleLayoutChange("jobTitle")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("jobDetails", "jobTitle") &&
+                        !layoutForm.jobTitle.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
+                      isLayoutRequired("jobDetails", "jobTitle") &&
+                      !layoutForm.jobTitle.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Job Title is required.
+                        </span>
+                      )}
+                  </div>
+                )}
             {isLayoutVisible("jobDetails", "jobType") && (
               <div className="relative flex flex-col pb-[14px]">
                 <FloatingLabelSelect
@@ -1285,16 +1291,20 @@ export const JobFields: React.FC = () => {
                 </span>
               )}            </div>
           )}
-        </div>
+            </div>
+          )}
+        </>
       )}
 
-      <LayoutHeader
-        title="Admin"
-        collapsed={!layoutOpen.admin}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, admin: !p.admin }))}
-      />
-      {layoutOpen.admin && (
-        <div className="flex flex-col gap-4">
+      {isSectionEnabled("admin") && (
+        <>
+          <LayoutHeader
+            title="Admin"
+            collapsed={!layoutOpen.admin}
+            onToggle={() => setLayoutOpen((p) => ({ ...p, admin: !p.admin }))}
+          />
+          {layoutOpen.admin && (
+            <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative">
               <FloatingLabelInput
@@ -1633,7 +1643,9 @@ export const JobFields: React.FC = () => {
               )}
             </div>
           )}
-        </div>
+            </div>
+          )}
+        </>
       )}
 
       <div className="flex justify-end gap-3 pt-2">

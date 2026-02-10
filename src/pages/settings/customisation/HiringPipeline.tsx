@@ -172,7 +172,7 @@ const HiringPipeline: React.FC = () => {
   };
 
   const handleDragStartStage =
-    (stageId: string) => (event: React.DragEvent<HTMLButtonElement>) => {
+    (stageId: string) => (event: React.DragEvent<HTMLDivElement>) => {
       setDragStageId(stageId);
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setData("text/plain", stageId);
@@ -430,10 +430,15 @@ const HiringPipeline: React.FC = () => {
                       return (
                         <div
                           key={stageId}
+                          draggable={!stage.locked}
+                          aria-label={stage.locked ? `${stage.label} is locked` : `Reorder ${stage.label}`}
+                          aria-disabled={stage.locked}
                           className={[
                             "flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[40px]",
-                            stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7]" : "bg-white text-[#333333]"
+                            stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7] cursor-not-allowed" : "bg-white text-[#333333] cursor-move"
                           ].join(" ")}
+                          onDragStart={stage.locked ? undefined : handleDragStartStage(stageId)}
+                          onDragEnd={stage.locked ? undefined : handleDragEndStage}
                           onDragOver={handleDragOverStage(stageId)}
                           onDrop={handleDropStage(stageId)}
                         >
@@ -444,23 +449,13 @@ const HiringPipeline: React.FC = () => {
                             ].join(" ")}
                           >
                             {stage.locked ? (
-                              <span className="cursor-not-allowed">
+                              <span>
                                 <GripIcon locked />
                               </span>
                             ) : (
-                              <button
-                                type="button"
-                                draggable
-                                aria-label={`Reorder ${stage.label}`}
-                                aria-disabled={false}
-                                className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] cursor-grab active:cursor-grabbing"
-                                onDragStart={handleDragStartStage(stageId)}
-                                onDragEnd={handleDragEndStage}
-                                onClick={(event) => event.stopPropagation()}
-                                onMouseDown={(event) => event.stopPropagation()}
-                              >
+                              <span className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666]">
                                 <GripIcon />
-                              </button>
+                              </span>
                             )}
                             <span>{stage.label}</span>
                           </div>
