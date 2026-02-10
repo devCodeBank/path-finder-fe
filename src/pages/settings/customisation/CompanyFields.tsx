@@ -757,8 +757,6 @@ export const CompanyFields: React.FC = () => {
     return !String(value ?? "").trim();
   };
 
-  const showFieldError = (sectionId: string, rowId: string) =>
-    showLayoutErrors && isFieldMissing(sectionId, rowId);
 
   const handleLayoutChange =
     (key: keyof typeof layoutForm) =>
