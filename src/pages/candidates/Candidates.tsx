@@ -5,7 +5,7 @@ import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDouble
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 
 const primaryButtonSx = {
   height: "36px",
@@ -45,6 +45,9 @@ type FieldRow = {
   visibility: boolean;
   required: boolean;
   extension: boolean;
+  visibilityLocked?: boolean;
+  requiredLocked?: boolean;
+  extensionLocked?: boolean;
 };
 
 type Section = {
@@ -87,13 +90,15 @@ const Toggle = ({
   onChange,
   ariaLabel,
   showLabel = false,
-  label = ""
+  label = "",
+  disabled = false
 }: {
   enabled: boolean;
   onChange: (val: boolean) => void;
   ariaLabel: string;
   showLabel?: boolean;
   label?: string;
+  disabled?: boolean;
 }) => {
   return (
     <div className={cn("flex items-center gap-3", showLabel ? "" : "")}>
@@ -102,12 +107,14 @@ const Toggle = ({
         aria-pressed={enabled}
         aria-label={ariaLabel}
         onClick={(event) => {
+          if (disabled) return;
           event.stopPropagation();
           onChange(!enabled);
         }}
         className={cn(
           "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 outline-none",
-          enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]"
+          enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]",
+          disabled ? "opacity-60 cursor-not-allowed" : ""
         )}
       >
         <span
@@ -127,11 +134,13 @@ const Toggle = ({
 const Flag = ({
   checked,
   onChange,
-  ariaLabel
+  ariaLabel,
+  disabled = false
 }: {
   checked: boolean;
   onChange: (val: boolean) => void;
   ariaLabel: string;
+  disabled?: boolean;
 }) => {
   return (
     <button
@@ -139,12 +148,14 @@ const Flag = ({
       aria-pressed={checked}
       aria-label={ariaLabel}
       onClick={(event) => {
+        if (disabled) return;
         event.stopPropagation();
         onChange(!checked);
       }}
       className={cn(
         "h-[14px] w-[14px] rounded-[3px] border flex items-center justify-center",
-        checked ? "bg-[#57CC4D] border-[#57CC4D]" : "bg-white border-[#D7D7D7]"
+        checked ? "bg-[#57CC4D] border-[#57CC4D]" : "bg-white border-[#D7D7D7]",
+        disabled ? "opacity-60 cursor-not-allowed" : ""
       )}
     >
       {checked && (
@@ -235,12 +246,40 @@ const TextAreaField = ({
 const SectionCard = ({
   section,
   collapsed,
+  draggableTitle,
+  onDragStartTitle,
+  onDragEndTitle,
+  onDropSection,
+  onDragOverSection,
+  onEditTitle,
+  onDragStartRow,
+  onDragEndRow,
+  onDragOverRow,
+  onDropRow,
   onToggleSection,
   onToggleCollapse,
   onToggleRow
 }: {
   section: Section;
   collapsed: boolean;
+  draggableTitle: boolean;
+  onDragStartTitle: (sectionId: string, event: React.DragEvent<HTMLButtonElement>) => void;
+  onDragEndTitle: () => void;
+  onDropSection: (sectionId: string, event: React.DragEvent<HTMLDivElement>) => void;
+  onDragOverSection: (event: React.DragEvent<HTMLDivElement>) => void;
+  onEditTitle: (section: Section) => void;
+  onDragStartRow: (
+    sectionId: string,
+    rowId: string,
+    event: React.DragEvent<HTMLButtonElement>
+  ) => void;
+  onDragEndRow: () => void;
+  onDragOverRow: (sectionId: string, event: React.DragEvent<HTMLDivElement>) => void;
+  onDropRow: (
+    sectionId: string,
+    rowId: string,
+    event: React.DragEvent<HTMLDivElement>
+  ) => void;
   onToggleSection: (sectionId: string, enabled: boolean) => void;
   onToggleCollapse: (sectionId: string) => void;
   onToggleRow: (sectionId: string, rowId: string, key: keyof FieldRow, value: boolean) => void;
@@ -250,8 +289,24 @@ const SectionCard = ({
       <div
         className="h-[52px] px-4 flex items-center justify-between rounded-[4px] border border-[#CCCCCC80] bg-[#FAFAFA] cursor-pointer"
         onClick={() => onToggleCollapse(section.id)}
+        onDragOver={onDragOverSection}
+        onDrop={(event) => onDropSection(section.id, event)}
       >
         <div className="flex items-center gap-2 text-[14px] text-[#333333] font-[500]">
+          {draggableTitle && (
+            <button
+              type="button"
+              draggable
+              aria-label={`Reorder ${section.title}`}
+              className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px]  border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+              onDragStart={(event) => onDragStartTitle(section.id, event)}
+              onDragEnd={onDragEndTitle}
+              onClick={(event) => event.stopPropagation()}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <GripIcon />
+            </button>
+          )}
           <span className="text-[#333333] ">{section.title}</span>
         </div>
         <div className="flex items-center gap-10">
@@ -260,14 +315,27 @@ const SectionCard = ({
             onChange={(val) => onToggleSection(section.id, val)}
             ariaLabel={`Toggle ${section.title}`}
           />
-          <button
-            type="button"
-            aria-label={`Edit ${section.title}`}
-            className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
-            onClick={(event) => event.stopPropagation()}
+          <Tooltip
+            title="Edit"
+            arrow
+            componentsProps={{
+              tooltip: { sx: { bgcolor: "#797979" } },
+              arrow: { sx: { color: "#797979" } },
+              popper: { sx: { zIndex: 2400 } },
+            }}
           >
-            <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
-          </button>
+            <button
+              type="button"
+              aria-label={`Edit ${section.title}`}
+              className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#EAAEAEA]"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEditTitle(section);
+              }}
+            >
+              <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
+            </button>
+          </Tooltip>
           <button
             type="button"
             aria-label={`Toggle ${section.title}`}
@@ -300,9 +368,22 @@ const SectionCard = ({
               <div
                 key={row.id}
                 className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr_0.8fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
+                onDragOver={(event) => onDragOverRow(section.id, event)}
+                onDrop={(event) => onDropRow(section.id, row.id, event)}
               >
                 <div className="flex items-center justify-center">
-                  <GripIcon />
+                  <button
+                    type="button"
+                    draggable
+                    aria-label={`Reorder ${row.label}`}
+                    className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px]  border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+                    onDragStart={(event) => onDragStartRow(section.id, row.id, event)}
+                    onDragEnd={onDragEndRow}
+                    onClick={(event) => event.stopPropagation()}
+                    onMouseDown={(event) => event.stopPropagation()}
+                  >
+                    <GripIcon />
+                  </button>
                 </div>
                 <span className="font-[500] text-[13px]">{row.label}</span>
                 <span className="text-[13px] font-[400] text-[#333333]/70">{row.type}</span>
@@ -311,6 +392,7 @@ const SectionCard = ({
                     enabled={row.visibility}
                     onChange={(val) => onToggleRow(section.id, row.id, "visibility", val)}
                     ariaLabel={`Toggle visibility for ${row.label}`}
+                    disabled={Boolean(row.visibilityLocked)}
                   />
                 </div>
                 <div className="flex justify-center">
@@ -318,6 +400,7 @@ const SectionCard = ({
                     checked={row.required}
                     onChange={(val) => onToggleRow(section.id, row.id, "required", val)}
                     ariaLabel={`Toggle required for ${row.label}`}
+                    disabled={Boolean(row.requiredLocked)}
                   />
                 </div>
                 <div className="flex justify-center">
@@ -325,6 +408,7 @@ const SectionCard = ({
                     checked={row.extension}
                     onChange={(val) => onToggleRow(section.id, row.id, "extension", val)}
                     ariaLabel={`Toggle extension for ${row.label}`}
+                    disabled={Boolean(row.extensionLocked)}
                   />
                 </div>
               </div>
@@ -345,15 +429,25 @@ export const Candidates: React.FC = () => {
         title: "Personal Details",
         enabled: true,
         rows: [
-          { id: "firstName", label: "First Name*", type: "Text", visibility: true, required: true, extension: true },
-          { id: "lastName", label: "Last Name", type: "Text", visibility: true, required: false, extension: true },
-          { id: "email", label: "Email", type: "Text (Email)", visibility: true, required: false, extension: true },
-          { id: "phone", label: "Phone Number", type: "Text (Phone)", visibility: true, required: false, extension: true },
+          {
+            id: "firstName",
+            label: "First Name*",
+            type: "Text",
+            visibility: true,
+            required: true,
+            extension: true,
+            visibilityLocked: true,
+            requiredLocked: true,
+            extensionLocked: true
+          },
+          { id: "lastName", label: "Last Name", type: "Text", visibility: true, required: false, extension: true, extensionLocked: true },
+          { id: "email", label: "Email", type: "Text (Email)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "phone", label: "Phone Number", type: "Text (Phone)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
           { id: "gender", label: "Gender", type: "Single-Select Dropdown", visibility: true, required: false, extension: false },
           { id: "birthDate", label: "Birth Date", type: "Date", visibility: true, required: false, extension: false },
           { id: "address", label: "Full Address", type: "Text", visibility: true, required: false, extension: false },
           { id: "city", label: "City", type: "Text", visibility: true, required: true, extension: false },
-          { id: "suburb", label: "Suburb", type: "Text", visibility: true, required: false, extension: true },
+          { id: "suburb", label: "Suburb", type: "Text", visibility: true, required: false, extension: true, extensionLocked: true },
           { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: false },
           { id: "country", label: "Country", type: "Searchable Dropdown", visibility: true, required: false, extension: false },
           { id: "postal", label: "Postal Code", type: "Text (String)", visibility: true, required: false, extension: false },
@@ -365,8 +459,8 @@ export const Candidates: React.FC = () => {
         title: "Professional Details",
         enabled: true,
         rows: [
-          { id: "employer", label: "Current Employer", type: "Text", visibility: true, required: false, extension: true },
-          { id: "jobTitle", label: "Current Job Title", type: "Text", visibility: true, required: false, extension: true },
+          { id: "employer", label: "Current Employer", type: "Text", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "jobTitle", label: "Current Job Title", type: "Text", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
           { id: "experience", label: "Experience in Years", type: "Number", visibility: true, required: false, extension: false },
           { id: "salaryCurrent", label: "Current Salary", type: "Currency", visibility: true, required: false, extension: false },
           { id: "salaryExpected", label: "Expected Salary", type: "Currency", visibility: true, required: false, extension: false },
@@ -381,7 +475,7 @@ export const Candidates: React.FC = () => {
         enabled: true,
         rows: [
           { id: "institute", label: "Institute / School", type: "Text", visibility: true, required: false, extension: false },
-          { id: "qualification", label: "Educational Qualification", type: "Text", visibility: true, required: true, extension: true },
+          { id: "qualification", label: "Educational Qualification", type: "Text", visibility: true, required: true, extension: true, visibilityLocked: true, requiredLocked: true },
           { id: "specialisation", label: "Specialisation", type: "Text", visibility: true, required: false, extension: false },
           { id: "duration", label: "Duration", type: "Text", visibility: true, required: false, extension: false },
           { id: "pursuing", label: "Currently Pursuing", type: "Toggle", visibility: true, required: false, extension: false },
@@ -393,7 +487,7 @@ export const Candidates: React.FC = () => {
         title: "Work History",
         enabled: true,
         rows: [
-          { id: "job", label: "Job Title", type: "Text", visibility: true, required: true, extension: false },
+          { id: "job", label: "Job Title", type: "Text", visibility: true, required: true, extension: false, visibilityLocked: true, requiredLocked: true },
           { id: "company", label: "Company", type: "Text", visibility: true, required: false, extension: false },
           { id: "employmentType", label: "Employment Type", type: "Single Dropdown", visibility: true, required: false, extension: false },
           { id: "industry", label: "Industry", type: "Single Dropdown", visibility: true, required: false, extension: false },
@@ -408,8 +502,8 @@ export const Candidates: React.FC = () => {
         title: "Resume & Skills",
         enabled: true,
         rows: [
-          { id: "resume", label: "Resume", type: "File", visibility: true, required: false, extension: true },
-          { id: "skills", label: "Skills", type: "Text", visibility: true, required: false, extension: true }
+          { id: "resume", label: "Resume", type: "File", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "skills", label: "Skills", type: "Text", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true }
         ]
       },
       {
@@ -417,11 +511,11 @@ export const Candidates: React.FC = () => {
         title: "Social Links",
         enabled: true,
         rows: [
-          { id: "linkedin", label: "LinkedIn Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-          { id: "facebook", label: "Facebook Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-          { id: "xprofile", label: "X Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-          { id: "github", label: "Github Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-          { id: "website", label: "Website", type: "Text (URL)", visibility: true, required: false, extension: true }
+          { id: "linkedin", label: "LinkedIn Profile", type: "Text (URL)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "facebook", label: "Facebook Profile", type: "Text (URL)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "xprofile", label: "X Profile", type: "Text (URL)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "github", label: "Github Profile", type: "Text (URL)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true },
+          { id: "website", label: "Website", type: "Text (URL)", visibility: true, required: false, extension: true, visibilityLocked: true, extensionLocked: true }
         ]
       },
       {
@@ -435,6 +529,16 @@ export const Candidates: React.FC = () => {
   );
 
   const [sections, setSections] = useState<Section[]>(initialSections);
+  const [layoutRowState, setLayoutRowState] = useState<Record<string, Record<string, FieldRow>>>(() => {
+    const state: Record<string, Record<string, FieldRow>> = {};
+    initialSections.forEach((section) => {
+      state[section.id] = {};
+      section.rows.forEach((row) => {
+        state[section.id][row.id] = row;
+      });
+    });
+    return state;
+  });
   const [enforceRequiredOnExtension, setEnforceRequiredOnExtension] = useState(false);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [layoutOpen, setLayoutOpen] = useState<Record<string, boolean>>({
@@ -506,6 +610,10 @@ export const Candidates: React.FC = () => {
     }
   ]);
   const [showLayoutErrors, setShowLayoutErrors] = useState(false);
+  const [dragSectionId, setDragSectionId] = useState<string | null>(null);
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editingSectionTitle, setEditingSectionTitle] = useState("");
+  const [dragRow, setDragRow] = useState<{ sectionId: string; rowId: string } | null>(null);
 
   const handleToggleSection = (sectionId: string, enabled: boolean) => {
     setSections((prev) =>
@@ -534,6 +642,244 @@ export const Candidates: React.FC = () => {
 
   const handleToggleCollapse = (sectionId: string) => {
     setCollapsedSections((prev) => ({ ...prev, [sectionId]: !prev[sectionId] }));
+  };
+
+  const handleDragStartSectionTitle = (
+    sectionId: string,
+    event: React.DragEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", sectionId);
+    setDragSectionId(sectionId);
+  };
+
+  const handleDragEndSectionTitle = () => {
+    setDragSectionId(null);
+  };
+
+  const handleDragOverSection = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragSectionId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDropSection = (targetSectionId: string, event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const sourceId = dragSectionId || event.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === targetSectionId) {
+      setDragSectionId(null);
+      return;
+    }
+    setSections((prev) => {
+      const sourceIndex = prev.findIndex((section) => section.id === sourceId);
+      const targetIndex = prev.findIndex((section) => section.id === targetSectionId);
+      if (sourceIndex === -1 || targetIndex === -1) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(sourceIndex, 1);
+      next.splice(targetIndex, 0, moved);
+      return next;
+    });
+    setDragSectionId(null);
+  };
+
+  const handleDragStartRow = (
+    sectionId: string,
+    rowId: string,
+    event: React.DragEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", `${sectionId}:${rowId}`);
+    setDragRow({ sectionId, rowId });
+  };
+
+  const handleDragEndRow = () => {
+    setDragRow(null);
+  };
+
+  const handleDragOverRow = (sectionId: string, event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragRow || dragRow.sectionId !== sectionId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDropRow = (
+    sectionId: string,
+    targetRowId: string,
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    const sourcePayload = dragRow?.sectionId === sectionId ? dragRow : null;
+    if (!sourcePayload) {
+      const data = event.dataTransfer.getData("text/plain");
+      const [payloadSectionId, payloadRowId] = data.split(":");
+      if (payloadSectionId !== sectionId) {
+        setDragRow(null);
+        return;
+      }
+      if (!payloadRowId || payloadRowId === targetRowId) {
+        setDragRow(null);
+        return;
+      }
+      setDragRow({ sectionId: payloadSectionId, rowId: payloadRowId });
+    }
+
+    const sourceRowId = sourcePayload ? sourcePayload.rowId : dragRow?.rowId;
+    if (!sourceRowId || sourceRowId === targetRowId) {
+      setDragRow(null);
+      return;
+    }
+
+    setSections((prev) =>
+      prev.map((section) => {
+        if (section.id !== sectionId) return section;
+        const sourceIndex = section.rows.findIndex((row) => row.id === sourceRowId);
+        const targetIndex = section.rows.findIndex((row) => row.id === targetRowId);
+        if (sourceIndex === -1 || targetIndex === -1) return section;
+        const nextRows = [...section.rows];
+        const [moved] = nextRows.splice(sourceIndex, 1);
+        nextRows.splice(targetIndex, 0, moved);
+        return { ...section, rows: nextRows };
+      })
+    );
+    setDragRow(null);
+  };
+
+  const handleOpenEditSectionTitle = (section: Section) => {
+    setEditingSectionId(section.id);
+    setEditingSectionTitle(section.title);
+  };
+
+  const handleCloseEditSectionTitle = () => {
+    setEditingSectionId(null);
+    setEditingSectionTitle("");
+  };
+
+  const handleSaveEditSectionTitle = () => {
+    if (!editingSectionId) return;
+    const nextTitle = editingSectionTitle.trim();
+    if (!nextTitle) return;
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === editingSectionId ? { ...section, title: nextTitle } : section
+      )
+    );
+    handleCloseEditSectionTitle();
+  };
+
+  const getLayoutRow = (sectionId: string, rowId: string) => {
+    return layoutRowState[sectionId]?.[rowId];
+  };
+
+  const isLayoutVisible = (sectionId: string, rowId: string) => {
+    return getLayoutRow(sectionId, rowId)?.visibility ?? true;
+  };
+
+  const isLayoutRequired = (sectionId: string, rowId: string) => {
+    return getLayoutRow(sectionId, rowId)?.required ?? false;
+  };
+
+  const getFieldValue = (sectionId: string, rowId: string) => {
+    const key = `${sectionId}.${rowId}`;
+    const values: Record<string, string | boolean> = {
+      "personal.firstName": layoutForm.firstName,
+      "personal.lastName": layoutForm.lastName,
+      "personal.email": layoutForm.email,
+      "personal.phone": layoutForm.phone,
+      "personal.gender": layoutForm.gender,
+      "personal.birthDate": layoutForm.birthDate,
+      "personal.address": layoutForm.address,
+      "personal.city": layoutForm.city,
+      "personal.suburb": layoutForm.suburb,
+      "personal.state": layoutForm.state,
+      "personal.country": layoutForm.country,
+      "personal.postal": layoutForm.postalCode,
+      "personal.relocate": layoutForm.willingToRelocate,
+      "professional.employer": layoutForm.currentEmployer,
+      "professional.jobTitle": layoutForm.currentJobTitle,
+      "professional.experience": layoutForm.experienceYears,
+      "professional.salaryCurrent": layoutForm.currentSalary,
+      "professional.salaryExpected": layoutForm.expectedSalary,
+      "professional.employmentStatus": layoutForm.employmentStatus,
+      "professional.notice": layoutForm.noticePeriod,
+      "professional.availableFrom": layoutForm.availableFrom,
+      "resumeSkills.skills": layoutForm.skills,
+      "social.linkedin": layoutForm.linkedin,
+      "social.facebook": layoutForm.facebook,
+      "social.xprofile": layoutForm.xprofile,
+      "social.github": layoutForm.github,
+      "social.website": layoutForm.website,
+      "summary.candidateSummary": layoutForm.candidateSummary
+    };
+    return values[key];
+  };
+
+  const isFieldMissing = (sectionId: string, rowId: string) => {
+    if (!isLayoutVisible(sectionId, rowId) || !isLayoutRequired(sectionId, rowId)) return false;
+
+    if (sectionId === "education") {
+      return educationEntries.some((entry) => {
+        const value =
+          rowId === "institute"
+            ? entry.institute
+            : rowId === "qualification"
+              ? entry.qualification
+              : rowId === "specialisation"
+                ? entry.specialization
+                : rowId === "duration"
+                  ? `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`
+                  : rowId === "pursuing"
+                    ? entry.currentlyPursuing
+                    : rowId === "summary"
+                      ? entry.summary
+                      : "";
+        if (typeof value === "boolean") return !value;
+        return !String(value ?? "").trim();
+      });
+    }
+
+    if (sectionId === "workHistory") {
+      return workEntries.some((entry) => {
+        const value =
+          rowId === "job"
+            ? entry.jobTitle
+            : rowId === "company"
+              ? entry.company
+              : rowId === "employmentType"
+                ? entry.employmentType
+                : rowId === "industry"
+                  ? entry.industry
+                  : rowId === "arrangement"
+                    ? entry.arrangementType
+                    : rowId === "current"
+                      ? entry.currentHere
+                      : rowId === "workDuration"
+                        ? `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`
+                        : rowId === "workSummary"
+                          ? entry.summary
+                          : "";
+        if (typeof value === "boolean") return !value;
+        return !String(value ?? "").trim();
+      });
+    }
+
+    const value = getFieldValue(sectionId, rowId);
+    if (typeof value === "boolean") return !value;
+    return !String(value ?? "").trim();
+  };
+
+  const showFieldError = (sectionId: string, rowId: string) =>
+    showLayoutErrors && isFieldMissing(sectionId, rowId);
+
+  const showEntryFieldError = (
+    sectionId: string,
+    rowId: string,
+    value: string | boolean
+  ) => {
+    if (!showLayoutErrors || !isLayoutRequired(sectionId, rowId)) return false;
+    if (typeof value === "boolean") return !value;
+    return !String(value ?? "").trim();
   };
 
   const openDatePicker = (ref: React.RefObject<HTMLInputElement | null>) => {
@@ -614,11 +960,53 @@ export const Candidates: React.FC = () => {
   };
 
   const validateLayout = () => {
-    if (!layoutForm.firstName.trim()) return false;
-    if (!layoutForm.city.trim()) return false;
-    if (!layoutForm.currentEmployer.trim()) return false;
-    if (!layoutForm.currentJobTitle.trim()) return false;
-    return true;
+    const requiredFields: Array<{ sectionId: string; rowId: string }> = [
+      { sectionId: "personal", rowId: "firstName" },
+      { sectionId: "personal", rowId: "lastName" },
+      { sectionId: "personal", rowId: "email" },
+      { sectionId: "personal", rowId: "phone" },
+      { sectionId: "personal", rowId: "gender" },
+      { sectionId: "personal", rowId: "birthDate" },
+      { sectionId: "personal", rowId: "address" },
+      { sectionId: "personal", rowId: "city" },
+      { sectionId: "personal", rowId: "suburb" },
+      { sectionId: "personal", rowId: "state" },
+      { sectionId: "personal", rowId: "country" },
+      { sectionId: "personal", rowId: "postal" },
+      { sectionId: "personal", rowId: "relocate" },
+      { sectionId: "professional", rowId: "employer" },
+      { sectionId: "professional", rowId: "jobTitle" },
+      { sectionId: "professional", rowId: "experience" },
+      { sectionId: "professional", rowId: "salaryCurrent" },
+      { sectionId: "professional", rowId: "salaryExpected" },
+      { sectionId: "professional", rowId: "employmentStatus" },
+      { sectionId: "professional", rowId: "notice" },
+      { sectionId: "professional", rowId: "availableFrom" },
+      { sectionId: "education", rowId: "institute" },
+      { sectionId: "education", rowId: "qualification" },
+      { sectionId: "education", rowId: "specialisation" },
+      { sectionId: "education", rowId: "duration" },
+      { sectionId: "education", rowId: "pursuing" },
+      { sectionId: "education", rowId: "summary" },
+      { sectionId: "workHistory", rowId: "job" },
+      { sectionId: "workHistory", rowId: "company" },
+      { sectionId: "workHistory", rowId: "employmentType" },
+      { sectionId: "workHistory", rowId: "industry" },
+      { sectionId: "workHistory", rowId: "arrangement" },
+      { sectionId: "workHistory", rowId: "current" },
+      { sectionId: "workHistory", rowId: "workDuration" },
+      { sectionId: "workHistory", rowId: "workSummary" },
+      { sectionId: "resumeSkills", rowId: "resume" },
+      { sectionId: "resumeSkills", rowId: "skills" },
+      { sectionId: "social", rowId: "linkedin" },
+      { sectionId: "social", rowId: "facebook" },
+      { sectionId: "social", rowId: "xprofile" },
+      { sectionId: "social", rowId: "github" },
+      { sectionId: "social", rowId: "website" },
+      { sectionId: "summary", rowId: "candidateSummary" }
+    ];
+
+    return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
   };
 
   const fieldsContent = (
@@ -645,17 +1033,78 @@ export const Candidates: React.FC = () => {
             key={section.id}
             section={section}
             collapsed={Boolean(collapsedSections[section.id])}
+            draggableTitle={section.title !== "Personal Details"}
+            onDragStartTitle={handleDragStartSectionTitle}
+            onDragEndTitle={handleDragEndSectionTitle}
+            onDropSection={handleDropSection}
+            onDragOverSection={handleDragOverSection}
+            onEditTitle={handleOpenEditSectionTitle}
+            onDragStartRow={handleDragStartRow}
+            onDragEndRow={handleDragEndRow}
+            onDragOverRow={handleDragOverRow}
+            onDropRow={handleDropRow}
             onToggleSection={handleToggleSection}
             onToggleCollapse={handleToggleCollapse}
             onToggleRow={handleToggleRow}
           />
         ))}
       </div>
+      {editingSectionId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
+          onClick={handleCloseEditSectionTitle}
+        >
+          <div
+            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div className="text-[16px] font-[600] text-[#333333]">Edit Section Name</div>
+              <button
+                type="button"
+                aria-label="Close"
+                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
+                onClick={handleCloseEditSectionTitle}
+              >
+                ×
+              </button>
+            </div>
+            <div className="mt-6">
+              <input
+                type="text"
+                value={editingSectionTitle}
+                onChange={(event) => setEditingSectionTitle(event.target.value)}
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                placeholder="Section name"
+              />
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                onClick={handleSaveEditSectionTitle}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-end">
         <button
           type="button"
           className="h-[36px] px-4 rounded-[4px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+          onClick={() => {
+            const state: Record<string, Record<string, FieldRow>> = {};
+            sections.forEach((section) => {
+              state[section.id] = {};
+              section.rows.forEach((row) => {
+                state[section.id][row.id] = row;
+              });
+            });
+            setLayoutRowState(state);
+          }}
         >
           Save Changes
         </button>
@@ -672,126 +1121,278 @@ export const Candidates: React.FC = () => {
       />
       {layoutOpen.personal && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative flex flex-col pb-[14px]">
-            <FloatingLabelInput
-              label="First Name"
-              required
-              placeholder="e.g., John"
-              value={layoutForm.firstName}
-              onChange={handleLayoutChange("firstName")}
-              className={cn(showLayoutErrors && !layoutForm.firstName.trim() && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]")}
-            />
-            {showLayoutErrors && !layoutForm.firstName.trim() && (
-              <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                *First Name is required.
-              </span>
-            )}
-          </div>
-          <FloatingLabelInput
-            label="Last Name"
-            placeholder="e.g., Doe"
-            value={layoutForm.lastName}
-            onChange={handleLayoutChange("lastName")}
-          />
-          <FloatingLabelInput
-            label="Email"
-            placeholder="e.g., john.doe@example.com"
-            value={layoutForm.email}
-            onChange={handleLayoutChange("email")}
-          />
-          <FloatingLabelInput
-            label="Phone"
-            placeholder="e.g., +1 555-0123"
-            value={layoutForm.phone}
-            onChange={handleLayoutChange("phone")}
-          />
-          <FloatingLabelSelect
-            label="Gender"
-            placeholder="Select Gender"
-            options={[
-              { value: "male", label: "Male" },
-              { value: "female", label: "Female" },
-              { value: "other", label: "Other" }
-            ]}
-            value={layoutForm.gender}
-            onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, gender: value }))}
-          />
-          <div className="relative">
-            <FloatingLabelInput
-              label="Birth Date"
-              placeholder="DD/MM/YYYY"
-              className="pr-9"
-              type="date"
-              ref={birthDateRef}
-              value={layoutForm.birthDate}
-              onChange={handleLayoutChange("birthDate")}
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666]/70"
-              onClick={() => openDatePicker(birthDateRef)}
-              aria-label="Select birth date"
-            >
-              <CalendarIcon />
-            </button>
-          </div>
-          <div className="md:col-span-2">
-            <FloatingLabelInput
-              label="Full Address"
-              placeholder="e.g., 123 Wall St, Apt 4B"
-              value={layoutForm.address}
-              onChange={handleLayoutChange("address")}
-            />
-          </div>
-          <div className="relative flex flex-col pb-[14px]">
-            <FloatingLabelInput
-              label="City"
-              required
-              placeholder="e.g., New York"
-              value={layoutForm.city}
-              onChange={handleLayoutChange("city")}
-              className={cn(showLayoutErrors && !layoutForm.city.trim() && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]")}
-            />
-            {showLayoutErrors && !layoutForm.city.trim() && (
-              <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                *City is required.
-              </span>
-            )}
-          </div>
-          <FloatingLabelInput
-            label="Suburb"
-            placeholder="e.g., Brooklyn"
-            value={layoutForm.suburb}
-            onChange={handleLayoutChange("suburb")}
-          />
-          <FloatingLabelInput
-            label="State/Province"
-            placeholder="e.g., NY"
-            value={layoutForm.state}
-            onChange={handleLayoutChange("state")}
-          />
-          <FloatingLabelInput
-            label="Country"
-            placeholder="Search or Add Country"
-            value={layoutForm.country}
-            onChange={handleLayoutChange("country")}
-          />
-          <FloatingLabelInput
-            label="Postal Code"
-            placeholder="e.g., 10001"
-            value={layoutForm.postalCode}
-            onChange={handleLayoutChange("postalCode")}
-          />
-          <div className="flex items-end">
-            <div className="flex items-center gap-3 h-[40px]">
-              <span className="text-[14px] font-medium text-[#333333]/70">Willing to Relocate</span>
-              <Toggle
-                enabled={layoutForm.willingToRelocate}
-                onChange={(val) => setLayoutForm((prev) => ({ ...prev, willingToRelocate: val }))}
-                ariaLabel="Willing to relocate"
+          {isLayoutVisible("personal", "firstName") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="First Name"
+                required={isLayoutRequired("personal", "firstName")}
+                placeholder="e.g., John"
+                value={layoutForm.firstName}
+                onChange={handleLayoutChange("firstName")}
+                className={cn(
+                  showFieldError("personal", "firstName") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
               />
+              {showFieldError("personal", "firstName") && (
+                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                    *First Name is required.
+                  </span>
+                )}
             </div>
-          </div>
+          )}
+          {isLayoutVisible("personal", "lastName") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Last Name"
+                required={isLayoutRequired("personal", "lastName")}
+                placeholder="e.g., Doe"
+                value={layoutForm.lastName}
+                onChange={handleLayoutChange("lastName")}
+                className={cn(
+                  showFieldError("personal", "lastName") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "lastName") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Last Name is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "email") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Email"
+                required={isLayoutRequired("personal", "email")}
+                placeholder="e.g., john.doe@example.com"
+                value={layoutForm.email}
+                onChange={handleLayoutChange("email")}
+                className={cn(
+                  showFieldError("personal", "email") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "email") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Email is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "phone") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Phone"
+                required={isLayoutRequired("personal", "phone")}
+                placeholder="e.g., +1 555-0123"
+                value={layoutForm.phone}
+                onChange={handleLayoutChange("phone")}
+                className={cn(
+                  showFieldError("personal", "phone") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "phone") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Phone is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "gender") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelSelect
+                label="Gender"
+                placeholder="Select Gender"
+                options={[
+                  { value: "male", label: "Male" },
+                  { value: "female", label: "Female" },
+                  { value: "other", label: "Other" }
+                ]}
+                value={layoutForm.gender}
+                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, gender: value }))}
+                className={cn(
+                  showFieldError("personal", "gender") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "gender") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Gender is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "birthDate") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Birth Date"
+                required={isLayoutRequired("personal", "birthDate")}
+                placeholder="DD/MM/YYYY"
+                className={cn(
+                  "pr-9",
+                  showFieldError("personal", "birthDate") &&
+                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+                type="date"
+                ref={birthDateRef}
+                value={layoutForm.birthDate}
+                onChange={handleLayoutChange("birthDate")}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666]/70"
+                onClick={() => openDatePicker(birthDateRef)}
+                aria-label="Select birth date"
+              >
+                <CalendarIcon />
+              </button>
+              {showFieldError("personal", "birthDate") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Birth Date is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "address") && (
+            <div className="relative flex flex-col pb-[14px] md:col-span-2">
+              <FloatingLabelInput
+                label="Full Address"
+                required={isLayoutRequired("personal", "address")}
+                placeholder="e.g., 123 Wall St, Apt 4B"
+                value={layoutForm.address}
+                onChange={handleLayoutChange("address")}
+                className={cn(
+                  showFieldError("personal", "address") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "address") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Full Address is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "city") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="City"
+                required={isLayoutRequired("personal", "city")}
+                placeholder="e.g., New York"
+                value={layoutForm.city}
+                onChange={handleLayoutChange("city")}
+                className={cn(
+                  showFieldError("personal", "city") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "city") && (
+                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                    *City is required.
+                  </span>
+                )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "suburb") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Suburb"
+                required={isLayoutRequired("personal", "suburb")}
+                placeholder="e.g., Brooklyn"
+                value={layoutForm.suburb}
+                onChange={handleLayoutChange("suburb")}
+                className={cn(
+                  showFieldError("personal", "suburb") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "suburb") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Suburb is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "state") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="State/Province"
+                required={isLayoutRequired("personal", "state")}
+                placeholder="e.g., NY"
+                value={layoutForm.state}
+                onChange={handleLayoutChange("state")}
+                className={cn(
+                  showFieldError("personal", "state") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "state") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *State/Province is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "country") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Country"
+                required={isLayoutRequired("personal", "country")}
+                placeholder="Search or Add Country"
+                value={layoutForm.country}
+                onChange={handleLayoutChange("country")}
+                className={cn(
+                  showFieldError("personal", "country") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "country") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Country is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "postal") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Postal Code"
+                required={isLayoutRequired("personal", "postal")}
+                placeholder="e.g., 10001"
+                value={layoutForm.postalCode}
+                onChange={handleLayoutChange("postalCode")}
+                className={cn(
+                  showFieldError("personal", "postal") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("personal", "postal") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Postal Code is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("personal", "relocate") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <div className="flex items-center gap-3 h-[40px]">
+                <span className="text-[14px] font-medium text-[#333333]/70">Willing to Relocate</span>
+                <Toggle
+                  enabled={layoutForm.willingToRelocate}
+                  onChange={(val) => setLayoutForm((prev) => ({ ...prev, willingToRelocate: val }))}
+                  ariaLabel="Willing to relocate"
+                />
+              </div>
+              {showFieldError("personal", "relocate") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Willing to Relocate is required.
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -802,83 +1403,173 @@ export const Candidates: React.FC = () => {
       />
       {layoutOpen.professional && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative flex flex-col pb-[14px]">
-            <FloatingLabelInput
-              label="Current Employer"
-              required
-              placeholder="e.g., Acme Corp"
-              value={layoutForm.currentEmployer}
-              onChange={handleLayoutChange("currentEmployer")}
-              className={cn(showLayoutErrors && !layoutForm.currentEmployer.trim() && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]")}
-            />
-            {showLayoutErrors && !layoutForm.currentEmployer.trim() && (
-              <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                *Current Employer is required.
+          {isLayoutVisible("professional", "employer") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Current Employer"
+                required={isLayoutRequired("professional", "employer")}
+                placeholder="e.g., Acme Corp"
+                value={layoutForm.currentEmployer}
+                onChange={handleLayoutChange("currentEmployer")}
+                className={cn(
+                  showFieldError("professional", "employer") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "employer") && (
+                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                    *Current Employer is required.
+                  </span>
+                )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "jobTitle") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Current Job Title"
+                required={isLayoutRequired("professional", "jobTitle")}
+                placeholder="e.g., Software Engineer"
+                value={layoutForm.currentJobTitle}
+                onChange={handleLayoutChange("currentJobTitle")}
+                className={cn(
+                  showFieldError("professional", "jobTitle") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "jobTitle") && (
+                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                    *Current Job Title is required.
+                  </span>
+                )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "experience") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Experience in Years"
+                required={isLayoutRequired("professional", "experience")}
+                placeholder="e.g., 5"
+                value={layoutForm.experienceYears}
+                onChange={handleLayoutChange("experienceYears")}
+                className={cn(
+                  showFieldError("professional", "experience") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "experience") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Experience in Years is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "salaryCurrent") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Current Salary"
+                required={isLayoutRequired("professional", "salaryCurrent")}
+                placeholder="e.g., 85,000"
+                value={layoutForm.currentSalary}
+                onChange={handleLayoutChange("currentSalary")}
+                className={cn(
+                  showFieldError("professional", "salaryCurrent") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "salaryCurrent") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Current Salary is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "salaryExpected") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Expected Salary"
+                required={isLayoutRequired("professional", "salaryExpected")}
+                placeholder="e.g., 95,000"
+                value={layoutForm.expectedSalary}
+                onChange={handleLayoutChange("expectedSalary")}
+                className={cn(
+                  showFieldError("professional", "salaryExpected") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "salaryExpected") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Expected Salary is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "employmentStatus") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelSelect
+                label="Employment Status"
+                placeholder="Select Status"
+                options={[
+                  { value: "full-time", label: "Full Time" },
+                  { value: "part-time", label: "Part Time" },
+                  { value: "contract", label: "Contract" }
+                ]}
+                value={layoutForm.employmentStatus}
+                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, employmentStatus: value }))}
+                className={cn(
+                  showFieldError("professional", "employmentStatus") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "employmentStatus") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Employment Status is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "notice") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Notice Period"
+                required={isLayoutRequired("professional", "notice")}
+                placeholder="e.g., 4 weeks"
+                value={layoutForm.noticePeriod}
+                onChange={handleLayoutChange("noticePeriod")}
+                className={cn(
+                  showFieldError("professional", "notice") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("professional", "notice") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Notice Period is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("professional", "availableFrom") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Available from"
+                placeholder="DD/MM/YYYY"
+                className={cn(
+                  "pr-9",
+                  showFieldError("professional", "availableFrom") &&
+                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+                value={layoutForm.availableFrom}
+                onChange={handleLayoutChange("availableFrom")}
+              />
+              <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
+                <CalendarIcon />
               </span>
-            )}
-          </div>
-          <div className="relative flex flex-col pb-[14px]">
-            <FloatingLabelInput
-              label="Current Job Title"
-              required
-              placeholder="e.g., Software Engineer"
-              value={layoutForm.currentJobTitle}
-              onChange={handleLayoutChange("currentJobTitle")}
-              className={cn(showLayoutErrors && !layoutForm.currentJobTitle.trim() && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]")}
-            />
-            {showLayoutErrors && !layoutForm.currentJobTitle.trim() && (
-              <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                *Current Job Title is required.
-              </span>
-            )}
-          </div>
-          <FloatingLabelInput
-            label="Experience in Years"
-            placeholder="e.g., 5"
-            value={layoutForm.experienceYears}
-            onChange={handleLayoutChange("experienceYears")}
-          />
-          <FloatingLabelInput
-            label="Current Salary"
-            placeholder="e.g., 85,000"
-            value={layoutForm.currentSalary}
-            onChange={handleLayoutChange("currentSalary")}
-          />
-          <FloatingLabelInput
-            label="Expected Salary"
-            placeholder="e.g., 95,000"
-            value={layoutForm.expectedSalary}
-            onChange={handleLayoutChange("expectedSalary")}
-          />
-          <FloatingLabelSelect
-            label="Employment Status"
-            placeholder="Select Status"
-            options={[
-              { value: "full-time", label: "Full Time" },
-              { value: "part-time", label: "Part Time" },
-              { value: "contract", label: "Contract" }
-            ]}
-            value={layoutForm.employmentStatus}
-            onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, employmentStatus: value }))}
-          />
-          <FloatingLabelInput
-            label="Notice Period"
-            placeholder="e.g., 4 weeks"
-            value={layoutForm.noticePeriod}
-            onChange={handleLayoutChange("noticePeriod")}
-          />
-          <div className="relative">
-            <FloatingLabelInput
-              label="Available from"
-              placeholder="DD/MM/YYYY"
-              className="pr-9"
-              value={layoutForm.availableFrom}
-              onChange={handleLayoutChange("availableFrom")}
-            />
-            <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
-              <CalendarIcon />
-            </span>
-          </div>
+              {showFieldError("professional", "availableFrom") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Available From is required.
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -889,89 +1580,153 @@ export const Candidates: React.FC = () => {
       />
       {layoutOpen.education && (
         <div className="flex flex-col gap-4">
-          {educationEntries.map((entry) => (
-            <div key={entry.id} className="flex flex-col gap-4 border border-[#E6E6E6] rounded-[4px] p-4 bg-white">
-              <FloatingLabelInput
-                label="Institute / School"
-                placeholder="e.g., Stanford University"
-                value={entry.institute}
-                onChange={(e) => updateEducationEntry(entry.id, "institute", e.target.value)}
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {educationEntries.map((entry) => {
+            const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
+            return (
+              <div key={entry.id} className="flex flex-col gap-4 border border-[#E6E6E6] rounded-[4px] p-4 bg-white">
+                {isLayoutVisible("education", "institute") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Institute / School"
+                      required={isLayoutRequired("education", "institute")}
+                      placeholder="e.g., Stanford University"
+                      value={entry.institute}
+                      onChange={(e) => updateEducationEntry(entry.id, "institute", e.target.value)}
+                      className={cn(
+                        showEntryFieldError("education", "institute", entry.institute) &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showEntryFieldError("education", "institute", entry.institute) && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Institute / School is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+              {(isLayoutVisible("education", "qualification") ||
+                isLayoutVisible("education", "specialisation")) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {isLayoutVisible("education", "qualification") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <FloatingLabelInput
+                          label="Educational Qualification"
+                          required={isLayoutRequired("education", "qualification")}
+                          placeholder="Add Qualification"
+                          value={entry.qualification}
+                          onChange={(e) => updateEducationEntry(entry.id, "qualification", e.target.value)}
+                          className={cn(
+                            showEntryFieldError("education", "qualification", entry.qualification) &&
+                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          )}
+                        />
+                        {showEntryFieldError("education", "qualification", entry.qualification) && (
+                            <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                              *Educational Qualification is required.
+                            </span>
+                          )}
+                      </div>
+                    )}
+                    {isLayoutVisible("education", "specialisation") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <FloatingLabelInput
+                          label="Specialisation"
+                          required={isLayoutRequired("education", "specialisation")}
+                          placeholder="e.g., Computer Science"
+                          value={entry.specialization}
+                          onChange={(e) => updateEducationEntry(entry.id, "specialization", e.target.value)}
+                          className={cn(
+                            showEntryFieldError("education", "specialisation", entry.specialization) &&
+                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          )}
+                        />
+                        {showEntryFieldError("education", "specialisation", entry.specialization) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Specialisation is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              {(isLayoutVisible("education", "duration") ||
+                isLayoutVisible("education", "pursuing")) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {isLayoutVisible("education", "duration") && (
+                      <div className="relative flex flex-col gap-1 pb-[14px]">
+                        <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
+                        <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Month"
+                            options={[]}
+                            value={entry.fromMonth}
+                            onValueChange={(value) => updateEducationEntry(entry.id, "fromMonth", value)}
+                          />
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Year"
+                            options={[]}
+                            value={entry.fromYear}
+                            onValueChange={(value) => updateEducationEntry(entry.id, "fromYear", value)}
+                          />
+                          <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Month"
+                            options={[]}
+                            value={entry.toMonth}
+                            onValueChange={(value) => updateEducationEntry(entry.id, "toMonth", value)}
+                          />
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Year"
+                            options={[]}
+                            value={entry.toYear}
+                            onValueChange={(value) => updateEducationEntry(entry.id, "toYear", value)}
+                          />
+                        </div>
+                        {showEntryFieldError("education", "duration", durationValue) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Duration is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {isLayoutVisible("education", "pursuing") && (
+                      <div className="relative flex flex-col pb-[14px] justify-end">
+                        <div className="flex items-center gap-3 h-[40px]">
+                          <span className="text-[14px] font-medium text-[#333333]/70">Currently pursuing</span>
+                          <Toggle
+                            enabled={entry.currentlyPursuing}
+                            onChange={(val) => updateEducationEntry(entry.id, "currentlyPursuing", val)}
+                            ariaLabel="Currently pursuing"
+                          />
+                        </div>
+                        {showEntryFieldError("education", "pursuing", entry.currentlyPursuing) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Currently pursuing is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              {isLayoutVisible("education", "summary") && (
                 <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    label="Educational Qualification"
-                    required
-                    placeholder="Add Qualification"
-                    value={entry.qualification}
-                    onChange={(e) => updateEducationEntry(entry.id, "qualification", e.target.value)}
-                    className={cn(showLayoutErrors && !entry.qualification.trim() && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]")}
+                  <TextAreaField
+                    label="Summary"
+                    placeholder="Brief overview of your studies..."
+                    value={entry.summary}
+                    onChange={(e) => updateEducationEntry(entry.id, "summary", e.target.value)}
                   />
-                  {showLayoutErrors && !entry.qualification.trim() && (
+                  {showEntryFieldError("education", "summary", entry.summary) && (
                     <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Educational Qualification is required.
+                      *Summary is required.
                     </span>
                   )}
                 </div>
-                <FloatingLabelInput
-                  label="Specialisation"
-                  placeholder="e.g., Computer Science"
-                  value={entry.specialization}
-                  onChange={(e) => updateEducationEntry(entry.id, "specialization", e.target.value)}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
-                  <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Month"
-                      options={[]}
-                      value={entry.fromMonth}
-                      onValueChange={(value) => updateEducationEntry(entry.id, "fromMonth", value)}
-                    />
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Year"
-                      options={[]}
-                      value={entry.fromYear}
-                      onValueChange={(value) => updateEducationEntry(entry.id, "fromYear", value)}
-                    />
-                    <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Month"
-                      options={[]}
-                      value={entry.toMonth}
-                      onValueChange={(value) => updateEducationEntry(entry.id, "toMonth", value)}
-                    />
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Year"
-                      options={[]}
-                      value={entry.toYear}
-                      onValueChange={(value) => updateEducationEntry(entry.id, "toYear", value)}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-end">
-                  <div className="flex items-center gap-3 h-[40px]">
-                    <span className="text-[14px] font-medium text-[#333333]/70">Currently pursuing</span>
-                    <Toggle
-                      enabled={entry.currentlyPursuing}
-                      onChange={(val) => updateEducationEntry(entry.id, "currentlyPursuing", val)}
-                      ariaLabel="Currently pursuing"
-                    />
-                  </div>
-                </div>
-              </div>
-              <TextAreaField
-                label="Summary"
-                placeholder="Brief overview of your studies..."
-                value={entry.summary}
-                onChange={(e) => updateEducationEntry(entry.id, "summary", e.target.value)}
-              />
+              )}
               <div className="flex justify-end">
                 <button
                   type="button"
@@ -982,7 +1737,8 @@ export const Candidates: React.FC = () => {
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
       <button
@@ -1000,105 +1756,206 @@ export const Candidates: React.FC = () => {
       />
       {layoutOpen.work && (
         <div className="flex flex-col gap-4">
-          {workEntries.map((entry) => (
-            <div key={entry.id} className="flex flex-col gap-4 border border-[#E6E6E6] rounded-[4px] p-4 bg-white">
-              <FloatingLabelInput
-                label="Job Title"
-                placeholder="e.g., Product Manager"
-                value={entry.jobTitle}
-                onChange={(e) => updateWorkEntry(entry.id, "jobTitle", e.target.value)}
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FloatingLabelInput
-                  label="Company"
-                  placeholder="e.g., Google"
-                  value={entry.company}
-                  onChange={(e) => updateWorkEntry(entry.id, "company", e.target.value)}
-                />
-                <FloatingLabelSelect
-                  label="Employment Type"
-                  placeholder="Select Employment Type"
-                  options={[
-                    { value: "full-time", label: "Full Time" },
-                    { value: "part-time", label: "Part Time" },
-                    { value: "contract", label: "Contract" }
-                  ]}
-                  value={entry.employmentType}
-                  onValueChange={(value) => updateWorkEntry(entry.id, "employmentType", value)}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FloatingLabelSelect
-                  label="Industry"
-                  placeholder="Select Industry"
-                  options={[]}
-                  value={entry.industry}
-                  onValueChange={(value) => updateWorkEntry(entry.id, "industry", value)}
-                />
-                <FloatingLabelSelect
-                  label="Work Arrangement Type"
-                  placeholder="Select Work Arrangement Type"
-                  options={[
-                    { value: "remote", label: "Remote" },
-                    { value: "hybrid", label: "Hybrid" },
-                    { value: "onsite", label: "Onsite" }
-                  ]}
-                  value={entry.arrangementType}
-                  onValueChange={(value) => updateWorkEntry(entry.id, "arrangementType", value)}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1">
-                  <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
-                  <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Month"
-                      options={[]}
-                      value={entry.fromMonth}
-                      onValueChange={(value) => updateWorkEntry(entry.id, "fromMonth", value)}
+          {workEntries.map((entry) => {
+            const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
+            return (
+              <div key={entry.id} className="flex flex-col gap-4 border border-[#E6E6E6] rounded-[4px] p-4 bg-white">
+                {isLayoutVisible("workHistory", "job") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Job Title"
+                      required={isLayoutRequired("workHistory", "job")}
+                      placeholder="e.g., Product Manager"
+                      value={entry.jobTitle}
+                      onChange={(e) => updateWorkEntry(entry.id, "jobTitle", e.target.value)}
+                      className={cn(
+                        showEntryFieldError("workHistory", "job", entry.jobTitle) &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
                     />
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Year"
-                      options={[]}
-                      value={entry.fromYear}
-                      onValueChange={(value) => updateWorkEntry(entry.id, "fromYear", value)}
-                    />
-                    <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Month"
-                      options={[]}
-                      value={entry.toMonth}
-                      onValueChange={(value) => updateWorkEntry(entry.id, "toMonth", value)}
-                    />
-                    <FloatingLabelSelect
-                      label=""
-                      placeholder="Year"
-                      options={[]}
-                      value={entry.toYear}
-                      onValueChange={(value) => updateWorkEntry(entry.id, "toYear", value)}
-                    />
+                    {showEntryFieldError("workHistory", "job", entry.jobTitle) && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Title is required.
+                      </span>
+                    )}
                   </div>
-                </div>
-                <div className="flex items-end">
-                  <div className="flex items-center gap-3 h-[40px]">
-                    <span className="text-[14px] font-medium text-[#333333]/70">I currently work here</span>
-                    <Toggle
-                      enabled={entry.currentHere}
-                      onChange={(val) => updateWorkEntry(entry.id, "currentHere", val)}
-                      ariaLabel="Currently work here"
-                    />
+                )}
+              {(isLayoutVisible("workHistory", "company") ||
+                isLayoutVisible("workHistory", "employmentType")) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {isLayoutVisible("workHistory", "company") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <FloatingLabelInput
+                          label="Company"
+                          required={isLayoutRequired("workHistory", "company")}
+                          placeholder="e.g., Google"
+                          value={entry.company}
+                          onChange={(e) => updateWorkEntry(entry.id, "company", e.target.value)}
+                          className={cn(
+                            showEntryFieldError("workHistory", "company", entry.company) &&
+                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          )}
+                        />
+                        {showEntryFieldError("workHistory", "company", entry.company) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Company is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {isLayoutVisible("workHistory", "employmentType") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <FloatingLabelSelect
+                          label="Employment Type"
+                          placeholder="Select Employment Type"
+                          options={[
+                            { value: "full-time", label: "Full Time" },
+                            { value: "part-time", label: "Part Time" },
+                            { value: "contract", label: "Contract" }
+                          ]}
+                          value={entry.employmentType}
+                          onValueChange={(value) => updateWorkEntry(entry.id, "employmentType", value)}
+                          className={cn(
+                            showEntryFieldError("workHistory", "employmentType", entry.employmentType) &&
+                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          )}
+                        />
+                        {showEntryFieldError("workHistory", "employmentType", entry.employmentType) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Employment Type is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
+                )}
+              {(isLayoutVisible("workHistory", "industry") ||
+                isLayoutVisible("workHistory", "arrangement")) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {isLayoutVisible("workHistory", "industry") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <FloatingLabelSelect
+                          label="Industry"
+                          placeholder="Select Industry"
+                          options={[]}
+                          value={entry.industry}
+                          onValueChange={(value) => updateWorkEntry(entry.id, "industry", value)}
+                          className={cn(
+                            showEntryFieldError("workHistory", "industry", entry.industry) &&
+                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          )}
+                        />
+                        {showEntryFieldError("workHistory", "industry", entry.industry) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Industry is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {isLayoutVisible("workHistory", "arrangement") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <FloatingLabelSelect
+                          label="Work Arrangement Type"
+                          placeholder="Select Work Arrangement Type"
+                          options={[
+                            { value: "remote", label: "Remote" },
+                            { value: "hybrid", label: "Hybrid" },
+                            { value: "onsite", label: "Onsite" }
+                          ]}
+                          value={entry.arrangementType}
+                          onValueChange={(value) => updateWorkEntry(entry.id, "arrangementType", value)}
+                          className={cn(
+                            showEntryFieldError("workHistory", "arrangement", entry.arrangementType) &&
+                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          )}
+                        />
+                        {showEntryFieldError("workHistory", "arrangement", entry.arrangementType) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Work Arrangement Type is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              {(isLayoutVisible("workHistory", "workDuration") ||
+                isLayoutVisible("workHistory", "current")) && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {isLayoutVisible("workHistory", "workDuration") && (
+                      <div className="relative flex flex-col gap-1 pb-[14px]">
+                        <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
+                        <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Month"
+                            options={[]}
+                            value={entry.fromMonth}
+                            onValueChange={(value) => updateWorkEntry(entry.id, "fromMonth", value)}
+                          />
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Year"
+                            options={[]}
+                            value={entry.fromYear}
+                            onValueChange={(value) => updateWorkEntry(entry.id, "fromYear", value)}
+                          />
+                          <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Month"
+                            options={[]}
+                            value={entry.toMonth}
+                            onValueChange={(value) => updateWorkEntry(entry.id, "toMonth", value)}
+                          />
+                          <FloatingLabelSelect
+                            label=""
+                            placeholder="Year"
+                            options={[]}
+                            value={entry.toYear}
+                            onValueChange={(value) => updateWorkEntry(entry.id, "toYear", value)}
+                          />
+                        </div>
+                        {showEntryFieldError("workHistory", "workDuration", durationValue) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Duration is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {isLayoutVisible("workHistory", "current") && (
+                      <div className="relative flex flex-col pb-[14px] justify-end">
+                        <div className="flex items-center gap-3 h-[40px]">
+                          <span className="text-[14px] font-medium text-[#333333]/70">I currently work here</span>
+                          <Toggle
+                            enabled={entry.currentHere}
+                            onChange={(val) => updateWorkEntry(entry.id, "currentHere", val)}
+                            ariaLabel="Currently work here"
+                          />
+                        </div>
+                        {showEntryFieldError("workHistory", "current", entry.currentHere) && (
+                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                            *Currently work here is required.
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              {isLayoutVisible("workHistory", "workSummary") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <TextAreaField
+                    label="Summary"
+                    placeholder="Describe your responsibilities..."
+                    value={entry.summary}
+                    onChange={(e) => updateWorkEntry(entry.id, "summary", e.target.value)}
+                  />
+                  {showEntryFieldError("workHistory", "workSummary", entry.summary) && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Summary is required.
+                    </span>
+                  )}
                 </div>
-              </div>
-              <TextAreaField
-                label="Summary"
-                placeholder="Describe your responsibilities..."
-                value={entry.summary}
-                onChange={(e) => updateWorkEntry(entry.id, "summary", e.target.value)}
-              />
+              )}
               <div className="flex justify-end">
                 <button
                   type="button"
@@ -1109,7 +1966,8 @@ export const Candidates: React.FC = () => {
                 </button>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
       <button
@@ -1127,34 +1985,57 @@ export const Candidates: React.FC = () => {
       />
       {layoutOpen.resume && (
         <div className="flex flex-col gap-4">
-          <div className="h-[140px] border border-dashed border-[#D6D6D6] rounded-[6px] flex flex-col items-center justify-center gap-2 text-center">
-            <div className="h-[28px] w-[28px] text-[#666666]">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                <path d="M14 4V18" stroke="#666666" strokeWidth="1.8" strokeLinecap="round" />
-                <path d="M9 9l5-5 5 5" stroke="#666666" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                <rect x="4" y="18" width="20" height="6" rx="2" stroke="#CCCCCC" strokeWidth="1.5" />
-              </svg>
+          {isLayoutVisible("resumeSkills", "resume") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <div className={cn(
+                "h-[140px] border border-dashed border-[#D6D6D6] rounded-[6px] flex flex-col items-center justify-center gap-2 text-center",
+                showFieldError("resumeSkills", "resume") && "border-[#E53935]"
+              )}>
+                <div className="h-[28px] w-[28px] text-[#666666]">
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                    <path d="M14 4V18" stroke="#666666" strokeWidth="1.8" strokeLinecap="round" />
+                    <path d="M9 9l5-5 5 5" stroke="#666666" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                    <rect x="4" y="18" width="20" height="6" rx="2" stroke="#CCCCCC" strokeWidth="1.5" />
+                  </svg>
+                </div>
+                <div className="text-[12px] text-[#333333] font-[500]">Upload Candidate Resume</div>
+                <div className="text-[11px] text-[#666666]">
+                  Drag & Drop to upload document or <span className="text-[#6E41E2]">choose</span> file from your computer
+                </div>
+              </div>
+              {showFieldError("resumeSkills", "resume") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Resume is required.
+                </span>
+              )}
             </div>
-            <div className="text-[12px] text-[#333333] font-[500]">Upload Candidate Resume</div>
-            <div className="text-[11px] text-[#666666]">
-              Drag & Drop to upload document or <span className="text-[#6E41E2]">choose</span> file from your computer
+          )}
+          {isLayoutVisible("resumeSkills", "skills") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Skills"
+                placeholder="Search and Add"
+                className={cn(
+                  "pr-9",
+                  showFieldError("resumeSkills", "skills") &&
+                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+                value={layoutForm.skills}
+                onChange={handleLayoutChange("skills")}
+              />
+              <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                  <circle cx="9" cy="9" r="6" stroke="#666666" strokeWidth="1.5" />
+                  <path d="M14 14l3 3" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </span>
+              {showFieldError("resumeSkills", "skills") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Skills is required.
+                </span>
+              )}
             </div>
-          </div>
-          <div className="relative">
-            <FloatingLabelInput
-              label="Skills"
-              placeholder="Search and Add"
-              className="pr-9"
-              value={layoutForm.skills}
-              onChange={handleLayoutChange("skills")}
-            />
-            <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
-              <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                <circle cx="9" cy="9" r="6" stroke="#666666" strokeWidth="1.5" />
-                <path d="M14 14l3 3" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-            </span>
-          </div>
+          )}
         </div>
       )}
 
@@ -1165,38 +2046,106 @@ export const Candidates: React.FC = () => {
       />
       {layoutOpen.social && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FloatingLabelInput
-            label="LinkedIn"
-            placeholder="http://www.linkedin.com/johndoe"
-            value={layoutForm.linkedin}
-            onChange={handleLayoutChange("linkedin")}
-          />
-          <FloatingLabelInput
-            label="Facebook"
-            placeholder="http://www.facebook.com/johndoe"
-            value={layoutForm.facebook}
-            onChange={handleLayoutChange("facebook")}
-          />
-          <FloatingLabelInput
-            label="X"
-            placeholder="http://www.x.com/johndoe"
-            value={layoutForm.xprofile}
-            onChange={handleLayoutChange("xprofile")}
-          />
-          <FloatingLabelInput
-            label="Github"
-            placeholder="http://github.com/johndoe"
-            value={layoutForm.github}
-            onChange={handleLayoutChange("github")}
-          />
-          <div className="md:col-span-2">
-            <FloatingLabelInput
-              label="Website"
-              placeholder="http://www.example.com"
-              value={layoutForm.website}
-              onChange={handleLayoutChange("website")}
-            />
-          </div>
+          {isLayoutVisible("social", "linkedin") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="LinkedIn"
+                required={isLayoutRequired("social", "linkedin")}
+                placeholder="http://www.linkedin.com/johndoe"
+                value={layoutForm.linkedin}
+                onChange={handleLayoutChange("linkedin")}
+                className={cn(
+                  showFieldError("social", "linkedin") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("social", "linkedin") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *LinkedIn is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("social", "facebook") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Facebook"
+                required={isLayoutRequired("social", "facebook")}
+                placeholder="http://www.facebook.com/johndoe"
+                value={layoutForm.facebook}
+                onChange={handleLayoutChange("facebook")}
+                className={cn(
+                  showFieldError("social", "facebook") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("social", "facebook") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Facebook is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("social", "xprofile") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="X"
+                required={isLayoutRequired("social", "xprofile")}
+                placeholder="http://www.x.com/johndoe"
+                value={layoutForm.xprofile}
+                onChange={handleLayoutChange("xprofile")}
+                className={cn(
+                  showFieldError("social", "xprofile") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("social", "xprofile") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *X is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("social", "github") && (
+            <div className="relative flex flex-col pb-[14px]">
+              <FloatingLabelInput
+                label="Github"
+                required={isLayoutRequired("social", "github")}
+                placeholder="http://github.com/johndoe"
+                value={layoutForm.github}
+                onChange={handleLayoutChange("github")}
+                className={cn(
+                  showFieldError("social", "github") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("social", "github") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Github is required.
+                </span>
+              )}
+            </div>
+          )}
+          {isLayoutVisible("social", "website") && (
+            <div className="relative flex flex-col pb-[14px] md:col-span-2">
+              <FloatingLabelInput
+                label="Website"
+                required={isLayoutRequired("social", "website")}
+                placeholder="http://www.example.com"
+                value={layoutForm.website}
+                onChange={handleLayoutChange("website")}
+                className={cn(
+                  showFieldError("social", "website") &&
+                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                )}
+              />
+              {showFieldError("social", "website") && (
+                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                  *Website is required.
+                </span>
+              )}
+            </div>
+          )}
         </div>
       )}
 
@@ -1208,7 +2157,10 @@ export const Candidates: React.FC = () => {
         + Add Candidate Summary
       </button>
 
-      <div className="border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden">
+      <div className={cn(
+        "relative border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden pb-[14px]",
+        showFieldError("summary", "candidateSummary") && "border-[#E53935]"
+      )}>
         <div className="flex items-center gap-2 px-3 h-[36px] border-b border-[#E6E6E6] text-[12px] text-[#333333]">
           <span className="font-[500]">B</span>
           <span className="italic">I</span>
@@ -1221,11 +2173,19 @@ export const Candidates: React.FC = () => {
           <span>(1.2) Normal</span>
         </div>
         <textarea
-          className="min-h-[140px] w-full px-3 py-2 text-[13px] text-[#333333] placeholder:text-[#999999] focus:outline-none"
+          className={cn(
+            "min-h-[140px] w-full px-3 py-2 text-[13px] text-[#333333] placeholder:text-[#999999] focus:outline-none",
+            showFieldError("summary", "candidateSummary") && "border-[#E53935]"
+          )}
           placeholder="Summary of professional profile..."
           value={layoutForm.candidateSummary}
           onChange={handleLayoutChange("candidateSummary")}
         />
+        {showFieldError("summary", "candidateSummary") && (
+          <span className="absolute left-3 bottom-[4px] text-[11px] text-[#E53935]">
+            *Candidate Summary is required.
+          </span>
+        )}
       </div>
       <div className="flex justify-end">
         <button

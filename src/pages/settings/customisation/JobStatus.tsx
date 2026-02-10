@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/x.svg";
@@ -20,53 +21,74 @@ const primaryButtonSx = {
   },
 };
 
-const GripIcon = () => (
+const GripIcon = ({ color = "rgba(51, 51, 51, 0.7)" }: { color?: string }) => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <circle cx="2" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="6" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="2" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="6" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="2" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="6" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
+    <circle cx="2" cy="2" r="1" fill={color} />
+    <circle cx="6" cy="2" r="1" fill={color} />
+    <circle cx="2" cy="6" r="1" fill={color} />
+    <circle cx="6" cy="6" r="1" fill={color} />
+    <circle cx="2" cy="10" r="1" fill={color} />
+    <circle cx="6" cy="10" r="1" fill={color} />
   </svg>
 );
 
-const statusItems = [
+type StatusItem = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  system?: boolean;
+  locked?: boolean;
+};
+
+const initialStatusItems: StatusItem[] = [
   {
     id: "draft",
     title: "Draft",
     description: "Internal drafting phase. The job is not visible to candidates or external job boards.",
-    category: "Preparation"
+    category: "Preparation",
+    system: true,
+    locked: true
   },
   {
     id: "open",
     title: "Open",
     description: "The role is actively recruiting. Applications are being accepted and the post is public.",
-    category: "Active"
+    category: "Active",
+    system: true,
+    locked: true
   },
   {
     id: "on-hold",
     title: "On Hold",
     description: "Recruitment is currently suspended. No new applications can be submitted.",
-    category: "Paused"
-  },
-  {
-    id: "filled",
-    title: "Filled",
-    description: "A candidate has been successfully hired and the position is no longer available.",
-    category: "Closed"
+    category: "Paused",
+    system: true,
+    locked: true
   },
   {
     id: "cancelled",
     title: "Cancelled",
     description: "The requisition is withdrawn before a hire was made. All activity is stopped.",
-    category: "Closed"
+    category: "Closed",
+    system: true,
+    locked: true
+  },
+  {
+    id: "filled",
+    title: "Filled",
+    description: "A candidate has been successfully hired and the position is no longer available.",
+    category: "Closed",
+    system: true,
+    locked: false
   },
   {
     id: "archived",
     title: "Archived",
     description: "Administrative archived state. Used for historical reporting once all tasks are done.",
-    category: "Closed"
+    category: "Closed",
+    system: true,
+    locked: false
   }
 ];
 
@@ -74,17 +96,30 @@ const JobStatus: React.FC = () => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const closeTimerRef = useRef<number | null>(null);
+  const [statusList, setStatusList] = useState<StatusItem[]>(initialStatusItems);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
   const [form, setForm] = useState({
     statusName: "",
     categoryGroup: "active",
     description: ""
   });
 
+  const categoryLabels = useMemo(
+    () => ({
+      active: "Active",
+      preparation: "Preparation",
+      paused: "Paused",
+      closed: "Closed"
+    }),
+    []
+  );
+
   const openPanel = () => {
     if (closeTimerRef.current) {
       window.clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
+    setForm({ statusName: "", categoryGroup: "active", description: "" });
     setIsPanelOpen(true);
     requestAnimationFrame(() => setIsPanelVisible(true));
   };
@@ -106,6 +141,80 @@ const JobStatus: React.FC = () => {
         setForm((prev) => ({ ...prev, [field]: event.target.value }));
       };
 
+  const canReorder = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+      return false;
+    }
+    if (statusList[toIndex]?.locked) {
+      return false;
+    }
+    const start = Math.min(fromIndex, toIndex);
+    const end = Math.max(fromIndex, toIndex);
+    return !statusList.slice(start, end + 1).some((status) => status.locked);
+  };
+
+  const handleDragStart = (statusId: string) => (event: React.DragEvent<HTMLButtonElement>) => {
+    setDraggingId(statusId);
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", statusId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingId(null);
+  };
+
+  const handleDragOver = (statusId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+    const sourceId = draggingId ?? event.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === statusId) {
+      return;
+    }
+    const fromIndex = statusList.findIndex((item) => item.id === sourceId);
+    const toIndex = statusList.findIndex((item) => item.id === statusId);
+    if (!canReorder(fromIndex, toIndex)) {
+      event.dataTransfer.dropEffect = "none";
+      return;
+    }
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (statusId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const sourceId = draggingId ?? event.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === statusId) {
+      return;
+    }
+    const fromIndex = statusList.findIndex((item) => item.id === sourceId);
+    const toIndex = statusList.findIndex((item) => item.id === statusId);
+    if (!canReorder(fromIndex, toIndex)) {
+      return;
+    }
+    const next = [...statusList];
+    const [moved] = next.splice(fromIndex, 1);
+    next.splice(toIndex, 0, moved);
+    setStatusList(next);
+    setDraggingId(null);
+  };
+
+  const handleSaveStatus = () => {
+    const trimmedName = form.statusName.trim();
+    if (!trimmedName) {
+      return;
+    }
+    const category = categoryLabels[form.categoryGroup as keyof typeof categoryLabels] ?? "Active";
+    const newId = `${trimmedName.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+    setStatusList((prev) => [
+      ...prev,
+      {
+        id: newId,
+        title: trimmedName,
+        description: form.description.trim(),
+        category
+      }
+    ]);
+    closePanel();
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
@@ -121,31 +230,111 @@ const JobStatus: React.FC = () => {
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] p-4">
         <div className="flex flex-col gap-4">
-          {statusItems.map((status) => (
-            <div
-              key={status.id}
-              className="flex gap-4 items-start border border-[#E6E6E6] rounded-[6px] bg-white px-4 py-3"
-            >
-              <div className="pt-6 text-[#333333]">
-                <GripIcon />
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-[12px]">
-                  <span className="px-3 h-[22px] rounded-full bg-[#EAEAEA]/25 border border-[#E6E6E6] text-[#333333] font-[500] text-[13px] flex items-center">
-                    {status.title}
-                  </span>
-                  <span className="flex items-center gap-1 px-2 h-[22px] rounded-full  bg-[#EAEAEA]/25  text-[#333333] font-[400] text-[13px]">
-                    <LockOutlinedIcon sx={{ fontSize: 12, color: "#999999" }} />
-                    System
-                  </span>
+          {statusList.map((status) => {
+            const isSystem = Boolean(status.system);
+            const isLocked = Boolean(status.locked);
+            const canDrag = !isLocked;
+            const gripColor = canDrag ? "rgba(51, 51, 51, 0.7)" : "rgba(51, 51, 51, 0.25)";
+            const lockedTooltip = "Certain status cannot be edited, deleted or moved.";
+            return (
+              <div
+                key={status.id}
+                className="flex gap-4 items-start border border-[#E6E6E6] rounded-[6px] bg-white px-4 py-3"
+                onDragOver={handleDragOver(status.id)}
+                onDrop={handleDrop(status.id)}
+              >
+                <div className="pt-6 text-[#333333]">
+                  <button
+                    type="button"
+                    draggable={canDrag}
+                    aria-label={canDrag ? `Reorder ${status.title}` : `${status.title} is locked`}
+                    aria-disabled={!canDrag}
+                    className={[
+                      "flex h-[22px] w-[22px] items-center justify-center rounded-[4px]",
+                      canDrag
+                        ? "text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+                        : "cursor-not-allowed opacity-70"
+                    ].join(" ")}
+                    onDragStart={canDrag ? handleDragStart(status.id) : undefined}
+                    onDragEnd={canDrag ? handleDragEnd : undefined}
+                    onClick={(event) => event.stopPropagation()}
+                    onMouseDown={(event) => event.stopPropagation()}
+                  >
+                    <GripIcon color={gripColor} />
+                  </button>
                 </div>
-                <div className="text-[13px] text-[#333333]/70">{status.description}</div>
-                <div className="text-[13px] text-[#333333]/70">
-                  Category: <span className="text-[#333333]">{status.category}</span>
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-[12px]">
+                    <span className="px-3 h-[22px] rounded-full bg-[#EAEAEA]/25 border border-[#E6E6E6] text-[#333333] font-[500] text-[13px] flex items-center">
+                      {status.title}
+                    </span>
+                    {isSystem ? (
+                      isLocked ? (
+
+                        <span className="flex items-center gap-1 px-2 h-[22px] rounded-full  bg-[#EAEAEA]/25  text-[#333333] font-[400] text-[13px]">
+                          <LockOutlinedIcon sx={{ fontSize: 12, color: "#999999" }} />
+                          System
+                        </span>
+
+                      ) : (
+                        <span className="flex items-center gap-1 px-2 h-[22px] rounded-full  bg-[#EAEAEA]/25  text-[#333333] font-[400] text-[13px]">
+                          <LockOutlinedIcon sx={{ fontSize: 12, color: "#999999" }} />
+                          System
+                        </span>
+                      )
+                    ) : (
+                      <span className="flex items-center gap-1 px-2 h-[22px] rounded-full  bg-[#EAEAEA]/25  text-[#333333] font-[400] text-[13px]">
+                        Custom
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[13px] text-[#333333]/70">{status.description}</div>
+                  <div className="text-[13px] text-[#333333]/70">
+                    Category: <span className="text-[#333333]">{status.category}</span>
+                  </div>
                 </div>
+                <div className="ml-auto" />
+                {status.id === "archived" || !status.system ? (
+                  <Tooltip
+                    title="You want to Remove this field? Your data associated with this field will be set as Empty!"
+                    arrow
+                    componentsProps={{
+                      tooltip: { sx: { bgcolor: "#797979", width: "560px" } },
+                      arrow: { sx: { color: "#797979" } },
+                      popper: { sx: { zIndex: 2400 } }
+                    }}
+                  >
+                    <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999] self-center">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M3 6h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        <path d="M8 6V4h8v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        <rect x="6.5" y="8" width="11" height="12" rx="2" stroke="currentColor" strokeWidth="1.6" />
+                        <path d="M10 11.5v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                        <path d="M14 11.5v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      </svg>
+                    </span>
+                  </Tooltip>
+                ) : (
+                  <div className="self-center">
+                    <Tooltip
+                      title={isLocked ? lockedTooltip : "Certain status cannot be edited, deleted or moved."}
+                      arrow
+                      componentsProps={{
+                        tooltip: { sx: { bgcolor: "#797979", width: "320px" } },
+                        arrow: { sx: { color: "#797979" } },
+                        popper: { sx: { zIndex: 2400 } },
+
+                      }}
+                    >
+                      <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999]">
+                        <InfoOutlinedIcon sx={{ fontSize: 16, color: "#999999" }} />
+                      </span>
+                    </Tooltip>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
@@ -163,7 +352,9 @@ const JobStatus: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] pr-[20px] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333] pt-3">Add Custom Job Status</span>
+              <span className="text-[16px] font-[500] text-[#333333] pt-3">
+                Add Custom Job Status
+              </span>
               <Tooltip
                 title="Close"
                 arrow
@@ -202,10 +393,10 @@ const JobStatus: React.FC = () => {
                   value={form.categoryGroup}
                   onValueChange={(value) => setForm((prev) => ({ ...prev, categoryGroup: value }))}
                   options={[
-                    { value: "active", label: "Active (Public / Recruiting)" },
-                    { value: "preparation", label: "Preparation (Drafting)" },
-                    { value: "paused", label: "Paused (On Hold)" },
-                    { value: "closed", label: "Closed (Filled / Cancelled)" }
+                    { value: "active", label: "Active" },
+                    { value: "preparation", label: "Preparation" },
+                    { value: "paused", label: "Paused" },
+                    { value: "closed", label: "Closed " }
                   ]}
                   placeholder="Select Category Group"
                 />
@@ -246,7 +437,7 @@ const JobStatus: React.FC = () => {
               <Button
                 variant="contained"
                 sx={primaryButtonSx}
-                onClick={closePanel}
+                onClick={handleSaveStatus}
               >
                 Create Status
               </Button>

@@ -70,7 +70,7 @@ const navigationSections: NavigationSection[] = [
       { id: "meeting-type", label: "Meeting Type", path: "/settings/customisation/meeting-type" },
       { id: "note-type", label: "Note Type", path: "/settings/customisation/note-type" },
       { id: "task-type", label: "Task Type", path: "/settings/customisation/task-type" },
-      { id: "interview-type", label: "Interview Type", path: "/settings/customisation/interview-type" },
+      // { id: "interview-type", label: "Interview Type", path: "/settings/customisation/interview-type" },
       { id: "tags", label: "Tags", path: "/settings/customisation/tags" },
       { id: "skill-set", label: "Skill Set", path: "/settings/customisation/skill-set" },
     ],

@@ -1,10 +1,10 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/x.svg";
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
@@ -28,6 +28,7 @@ const stageOptions = [
   { id: "applied", label: "Applied", locked: true },
   { id: "assigned", label: "Assigned", locked: true },
   { id: "phone-screening", label: "Phone Screening" },
+  { id: "interview-scheduled", label: "Interview Scheduled" },
   { id: "first-interview", label: "1st Interview" },
   { id: "second-interview", label: "2nd Interview" },
   { id: "third-interview", label: "3rd Interview" },
@@ -44,7 +45,7 @@ const HiringPipeline: React.FC = () => {
     {
       id: "default",
       name: "Hiring Pipeline (Default)",
-      stageIds: ["applied", "assigned", "phone-screening", "first-interview", "second-interview", "third-interview"]
+      stageIds: stageOptions.map((stage) => stage.id)
     }
   ]);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -52,9 +53,12 @@ const HiringPipeline: React.FC = () => {
   const closeTimerRef = useRef<number | null>(null);
   const [pipelineName, setPipelineName] = useState("");
   const [showErrors, setShowErrors] = useState(false);
+  const [editPipelineId, setEditPipelineId] = useState<string | null>(null);
   const [selectedStages, setSelectedStages] = useState<string[]>(
     stageOptions.map((stage) => stage.id)
   );
+  const [stageOrder, setStageOrder] = useState<string[]>(stageOptions.map((stage) => stage.id));
+  const [dragStageId, setDragStageId] = useState<string | null>(null);
 
   const stageMeta = useMemo(() => {
     return stageOptions.reduce<Record<string, { label: string; locked?: boolean }>>((acc, stage) => {
@@ -68,6 +72,11 @@ const HiringPipeline: React.FC = () => {
       window.clearTimeout(closeTimerRef.current);
       closeTimerRef.current = null;
     }
+    setEditPipelineId(null);
+    setPipelineName("");
+    setSelectedStages(stageOptions.map((stage) => stage.id));
+    setStageOrder(stageOptions.map((stage) => stage.id));
+    setShowErrors(false);
     setIsPanelOpen(true);
     requestAnimationFrame(() => setIsPanelVisible(true));
   };
@@ -79,8 +88,21 @@ const HiringPipeline: React.FC = () => {
     }
     closeTimerRef.current = window.setTimeout(() => {
       setIsPanelOpen(false);
+      setEditPipelineId(null);
       closeTimerRef.current = null;
     }, 300);
+  };
+
+  const openEditPanel = (pipelineId: string) => {
+    const pipeline = pipelines.find((item) => item.id === pipelineId);
+    if (pipeline) {
+      setPipelineName(pipeline.name);
+      setSelectedStages(pipeline.stageIds);
+      setStageOrder(pipeline.stageIds);
+    }
+    setEditPipelineId(pipelineId);
+    setIsPanelOpen(true);
+    requestAnimationFrame(() => setIsPanelVisible(true));
   };
 
   const toggleStage = (stageId: string, locked?: boolean) => {
@@ -92,17 +114,22 @@ const HiringPipeline: React.FC = () => {
 
   const handleCreatePipeline = () => {
     const trimmed = pipelineName.trim();
-    const picked = selectedStages.length ? selectedStages : stageOptions.filter((s) => s.locked).map((s) => s.id);
+    const picked = selectedStages.length
+      ? selectedStages
+      : stageOptions.filter((s) => s.locked).map((s) => s.id);
     if (!trimmed) {
       setShowErrors(true);
       return;
     }
+    const orderedPicked = stageOrder.filter(
+      (stageId) => picked.includes(stageId) || stageMeta[stageId]?.locked
+    );
     setPipelines((prev) => [
       ...prev,
       {
         id: `${trimmed.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
         name: trimmed,
-        stageIds: picked
+        stageIds: orderedPicked
       }
     ]);
     setPipelineName("");
@@ -111,16 +138,184 @@ const HiringPipeline: React.FC = () => {
     closePanel();
   };
 
-  const GripIcon = () => (
+  const handleSavePipeline = () => {
+    const trimmed = pipelineName.trim();
+    if (!trimmed) {
+      setShowErrors(true);
+      return;
+    }
+    const picked = selectedStages.length
+      ? selectedStages
+      : stageOptions.filter((s) => s.locked).map((s) => s.id);
+    const orderedPicked = stageOrder.filter(
+      (stageId) => picked.includes(stageId) || stageMeta[stageId]?.locked
+    );
+    setPipelines((prev) =>
+      prev.map((pipeline) =>
+        pipeline.id === editPipelineId
+          ? { ...pipeline, name: trimmed, stageIds: orderedPicked }
+          : pipeline
+      )
+    );
+    setShowErrors(false);
+    closePanel();
+  };
+
+  const canReorderStage = (fromIndex: number, toIndex: number) => {
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return false;
+    const fromId = stageOrder[fromIndex];
+    const toId = stageOrder[toIndex];
+    if (stageMeta[fromId]?.locked || stageMeta[toId]?.locked) return false;
+    const start = Math.min(fromIndex, toIndex);
+    const end = Math.max(fromIndex, toIndex);
+    return !stageOrder.slice(start, end + 1).some((id) => stageMeta[id]?.locked);
+  };
+
+  const handleDragStartStage =
+    (stageId: string) => (event: React.DragEvent<HTMLButtonElement>) => {
+      setDragStageId(stageId);
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", stageId);
+    };
+
+  const handleDragEndStage = () => {
+    setDragStageId(null);
+  };
+
+  const handleDragOverStage =
+    (targetStageId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+      const sourceId = dragStageId ?? event.dataTransfer.getData("text/plain");
+      if (!sourceId || sourceId === targetStageId) {
+        return;
+      }
+      const fromIndex = stageOrder.indexOf(sourceId);
+      const toIndex = stageOrder.indexOf(targetStageId);
+      if (!canReorderStage(fromIndex, toIndex)) {
+        event.dataTransfer.dropEffect = "none";
+        return;
+      }
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+    };
+
+  const handleDropStage =
+    (targetStageId: string) => (event: React.DragEvent<HTMLDivElement>) => {
+      event.preventDefault();
+      const sourceId = dragStageId ?? event.dataTransfer.getData("text/plain");
+      if (!sourceId || sourceId === targetStageId) {
+        return;
+      }
+      const fromIndex = stageOrder.indexOf(sourceId);
+      const toIndex = stageOrder.indexOf(targetStageId);
+      if (!canReorderStage(fromIndex, toIndex)) {
+        return;
+      }
+      setStageOrder((prev) => {
+        const next = [...prev];
+        const [moved] = next.splice(fromIndex, 1);
+        next.splice(toIndex, 0, moved);
+        return next;
+      });
+      setDragStageId(null);
+    };
+
+  const GripIcon: React.FC<{ locked?: boolean }> = ({ locked }) => (
     <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-      <circle cx="2" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
-      <circle cx="6" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
-      <circle cx="2" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
-      <circle cx="6" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
-      <circle cx="2" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
-      <circle cx="6" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
+      <circle cx="2" cy="2" r="1" fill={locked ? "rgba(170, 170, 170, 0.9)" : "rgba(51, 51, 51, 0.7)"} />
+      <circle cx="6" cy="2" r="1" fill={locked ? "rgba(170, 170, 170, 0.9)" : "rgba(51, 51, 51, 0.7)"} />
+      <circle cx="2" cy="6" r="1" fill={locked ? "rgba(170, 170, 170, 0.9)" : "rgba(51, 51, 51, 0.7)"} />
+      <circle cx="6" cy="6" r="1" fill={locked ? "rgba(170, 170, 170, 0.9)" : "rgba(51, 51, 51, 0.7)"} />
+      <circle cx="2" cy="10" r="1" fill={locked ? "rgba(170, 170, 170, 0.9)" : "rgba(51, 51, 51, 0.7)"} />
+      <circle cx="6" cy="10" r="1" fill={locked ? "rgba(170, 170, 170, 0.9)" : "rgba(51, 51, 51, 0.7)"} />
     </svg>
   );
+
+  const PipelineStages: React.FC<{ stageIds: string[] }> = ({ stageIds }) => {
+    const scrollRef = useRef<HTMLDivElement | null>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(false);
+
+    const updateScrollButtons = () => {
+      const el = scrollRef.current;
+      if (!el) return;
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      setCanScrollLeft(el.scrollLeft > 0);
+      setCanScrollRight(el.scrollLeft < maxScrollLeft - 1);
+    };
+
+    const scrollByAmount = (amount: number) => {
+      const el = scrollRef.current;
+      if (!el) return;
+      el.scrollBy({ left: amount, behavior: "smooth" });
+    };
+
+    useEffect(() => {
+      const handleResize = () => updateScrollButtons();
+      const raf = window.requestAnimationFrame(updateScrollButtons);
+      window.addEventListener("resize", handleResize);
+      return () => {
+        window.cancelAnimationFrame(raf);
+        window.removeEventListener("resize", handleResize);
+      };
+    }, [stageIds]);
+
+    return (
+      <div className="flex items-center gap-3 text-[13px] text-[#333333]">
+        <button
+          type="button"
+          className={[
+            "h-[24px] w-[24px] rounded-full flex items-center justify-center",
+            canScrollLeft ? "bg-[#EAEAEA]/60 text-[#666666]" : "bg-[#EAEAEA]/30 text-[#AAAAAA] cursor-not-allowed"
+          ].join(" ")}
+          aria-label="Scroll left"
+          onClick={() => scrollByAmount(-240)}
+          disabled={!canScrollLeft}
+        >
+          <ArrowBackIosNewRoundedIcon sx={{ fontSize: 12 }} />
+        </button>
+
+        <div
+          ref={scrollRef}
+          onScroll={updateScrollButtons}
+          className="flex items-center gap-3 overflow-x-auto flex-1 min-w-0 scroll-smooth no-scrollbar"
+        >
+          {stageIds.map((stageId, index) => {
+            const stage = stageMeta[stageId];
+            if (!stage) return null;
+            return (
+              <React.Fragment key={stageId}>
+                <div
+                  className={[
+                    "h-[36px] px-4 w-[auto] rounded-[6px] border text-[13px] flex items-center gap-2 whitespace-nowrap",
+                    stage.locked
+                      ? "bg-[#EAEAEA] border-[#D8D8D8] text-[#333333]"
+                      : "bg-white border-[#D8D8D8] text-[#333333]"
+                  ].join(" ")}
+                >
+                  {stage.locked && <LockOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />}
+                  <span>{stage.label}</span>
+                </div>
+                {index < stageIds.length - 1 && <ChevronRightIcon sx={{ fontSize: 18, color: "#666666" }} />}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          className={[
+            "h-[24px] w-[24px] rounded-full flex items-center justify-center",
+            canScrollRight ? "bg-[#5C5C5C] text-white" : "bg-[#5C5C5C]/30 text-white/70 cursor-not-allowed"
+          ].join(" ")}
+          aria-label="Scroll right"
+          onClick={() => scrollByAmount(240)}
+          disabled={!canScrollRight}
+        >
+          <ArrowForwardIosRoundedIcon sx={{ fontSize: 12 }} />
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="flex flex-col gap-4">
@@ -140,58 +335,28 @@ const HiringPipeline: React.FC = () => {
           <div key={pipeline.id} className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
             <div className="h-[52px] px-4 bg-[#EAEAEA]/15 flex items-center justify-between border-b border-[#CCCCCC80]">
               <span className="text-[14px] font-[500] text-[#333333]">{pipeline.name}</span>
-              <button
-                type="button"
-                aria-label="Edit pipeline"
-                className="h-[28px] w-[28px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+              <Tooltip
+                title="Edit"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
-              </button>
+                <button
+                  type="button"
+                  aria-label="Edit pipeline"
+                  className="h-[28px] w-[28px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+                  onClick={() => openEditPanel(pipeline.id)}
+                >
+                  <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
+                </button>
+              </Tooltip>
             </div>
 
             <div className="px-4 py-5">
-              <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                <button
-                  type="button"
-                  className="h-[24px] w-[24px] rounded-full bg-[#EAEAEA]/60 flex items-center justify-center text-[#666666]"
-                  aria-label="Scroll left"
-                >
-                  <ArrowBackIosNewRoundedIcon sx={{ fontSize: 12 }} />
-                </button>
-
-                <div className="flex items-center gap-3 overflow-hidden">
-                  {pipeline.stageIds.map((stageId, index) => {
-                    const stage = stageMeta[stageId];
-                    if (!stage) return null;
-                    return (
-                      <React.Fragment key={stageId}>
-                        <div
-                          className={[
-                            "h-[36px] px-4 w-[128px] rounded-[6px] border text-[13px] flex items-center gap-2 whitespace-nowrap",
-                            stage.locked
-                              ? "bg-[#EAEAEA] border-[#D8D8D8] text-[#333333]"
-                              : "bg-white border-[#D8D8D8] text-[#333333]"
-                          ].join(" ")}
-                        >
-                          {stage.locked && <LockOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />}
-                          <span>{stage.label}</span>
-                        </div>
-                        {index < pipeline.stageIds.length - 1 && (
-                          <ChevronRightIcon sx={{ fontSize: 18, color: "#666666" }} />
-                        )}
-                      </React.Fragment>
-                    );
-                  })}
-                </div>
-
-                <button
-                  type="button"
-                  className="h-[24px] w-[24px] rounded-full bg-[#5C5C5C] flex items-center justify-center text-white"
-                  aria-label="Scroll right"
-                >
-                  <ArrowForwardIosRoundedIcon sx={{ fontSize: 12 }} />
-                </button>
-              </div>
+              <PipelineStages stageIds={pipeline.stageIds} />
             </div>
           </div>
         ))}
@@ -206,89 +371,130 @@ const HiringPipeline: React.FC = () => {
         >
           <div
             className={[
-              "w-[60vw] max-w-[720px] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
+              "w-[60vw] max-w-[720px] h-full  bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
               isPanelVisible ? "translate-x-0" : "translate-x-full"
             ].join(" ")}
           >
             <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] pr-[20px] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333] pt-3">New Hiring Pipeline</span>
-              <button
-                type="button"
-                aria-label="Close panel"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
-                onClick={closePanel}
+              <span className="text-[16px] font-[500] text-[#333333] pt-3">
+                {editPipelineId ? "Edit Hiring Pipeline" : "New Hiring Pipeline"}
+              </span>
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close panel"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closePanel}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
 
             <div className="px-4 py-5">
               <div className="flex flex-col gap-4">
-                <FloatingLabelInput
-                  id="pipeline-name"
-                  label="Pipeline Name*"
-                  floatLabel
-                  placeholder="e.g., Executive Search"
-                  value={pipelineName}
-                  onChange={(event) => setPipelineName(event.target.value)}
-                  className={[
-                    "w-full h-[36px]",
-                    showErrors && !pipelineName.trim()
-                      ? "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                      : ""
-                  ].join(" ")}
-                />
-                {showErrors && !pipelineName.trim() && (
-                  <span className="text-[11px] text-[#E53935]">*Pipeline Name required.</span>
-                )}
+                <>
+                  <FloatingLabelInput
+                    id="pipeline-name"
+                    label="Pipeline Name*"
+                    floatLabel
+                    placeholder="e.g., Executive Search"
+                    value={pipelineName}
+                    onChange={(event) => setPipelineName(event.target.value)}
+                    className={[
+                      "w-full h-[36px]",
+                      showErrors && !pipelineName.trim()
+                        ? "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                        : ""
+                    ].join(" ")}
+                  />
+                  {showErrors && !pipelineName.trim() && (
+                    <span className="text-[11px] text-[#E53935]">*Pipeline Name required.</span>
+                  )}
 
-                <div className="text-[14px] text-[#333333]">Add Custom Stages</div>
+                  <div className="text-[14px] text-[#333333]">Add Custom Stages</div>
 
-                <div className="flex flex-col gap-3">
-                  {stageOptions.map((stage) => {
-                    const isSelected = selectedStages.includes(stage.id) || stage.locked;
-                    return (
-                      <div
-                        key={stage.id}
-                        className={[
-                          "flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[40px]",
-                          stage.locked ? "bg-[#EAEAEA]/25" : "bg-white"
-                        ].join(" ")}
-                      >
-                        <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                          <GripIcon />
-                          <span>{stage.label}</span>
-                        </div>
-                        {stage.locked ? (
-                          <LockOutlinedIcon sx={{ fontSize: 14, color: "#999999" }} />
-                        ) : (
-                          <button
-                            type="button"
-                            aria-pressed={isSelected}
-                            aria-label={`Toggle ${stage.label}`}
-                            onClick={() => toggleStage(stage.id, stage.locked)}
+                  <div className="flex flex-col gap-3">
+                    {stageOrder.map((stageId) => {
+                      const stage = stageMeta[stageId];
+                      if (!stage) return null;
+                      const isSelected = selectedStages.includes(stageId) || stage.locked;
+                      return (
+                        <div
+                          key={stageId}
+                          className={[
+                            "flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[40px]",
+                            stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7]" : "bg-white text-[#333333]"
+                          ].join(" ")}
+                          onDragOver={handleDragOverStage(stageId)}
+                          onDrop={handleDropStage(stageId)}
+                        >
+                          <div
                             className={[
-                              "h-[16px] w-[16px] rounded-[4px] border flex items-center justify-center",
-                              isSelected ? "border-[#6E41E2] bg-[#6E41E2]" : "border-[#D7D7D7] bg-white"
+                              "flex items-center gap-3 text-[13px]",
+                              stage.locked ? "text-[#A7A7A7]" : "text-[#333333]"
                             ].join(" ")}
                           >
-                            {isSelected && (
-                              <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                                <path
-                                  d="M1 4L3.5 6.5L9 1"
-                                  stroke="white"
-                                  strokeWidth="1.8"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
+                            {stage.locked ? (
+                              <span className="cursor-not-allowed">
+                                <GripIcon locked />
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                draggable
+                                aria-label={`Reorder ${stage.label}`}
+                                aria-disabled={false}
+                                className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] cursor-grab active:cursor-grabbing"
+                                onDragStart={handleDragStartStage(stageId)}
+                                onDragEnd={handleDragEndStage}
+                                onClick={(event) => event.stopPropagation()}
+                                onMouseDown={(event) => event.stopPropagation()}
+                              >
+                                <GripIcon />
+                              </button>
                             )}
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                            <span>{stage.label}</span>
+                          </div>
+                          {stage.locked ? (
+                            <LockOutlinedIcon sx={{ fontSize: 14, color: "#999999" }} />
+                          ) : (
+                            <button
+                              type="button"
+                              aria-pressed={isSelected}
+                              aria-label={`Toggle ${stage.label}`}
+                              onClick={() => toggleStage(stageId, stage.locked)}
+                              className={[
+                                "h-[16px] w-[16px] rounded-[4px] border flex items-center justify-center",
+                                isSelected ? "border-[#6E41E2] bg-[#6E41E2]" : "border-[#D7D7D7] bg-white"
+                              ].join(" ")}
+                            >
+                              {isSelected && (
+                                <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                  <path
+                                    d="M1 4L3.5 6.5L9 1"
+                                    stroke="white"
+                                    strokeWidth="1.8"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               </div>
             </div>
 
@@ -314,9 +520,15 @@ const HiringPipeline: React.FC = () => {
               >
                 Cancel
               </Button>
-              <Button variant="contained" sx={primaryButtonSx} onClick={handleCreatePipeline}>
-                Create Pipeline
-              </Button>
+              {editPipelineId ? (
+                <Button variant="contained" sx={primaryButtonSx} onClick={handleSavePipeline}>
+                  Save Changes
+                </Button>
+              ) : (
+                <Button variant="contained" sx={primaryButtonSx} onClick={handleCreatePipeline}>
+                  Create Pipeline
+                </Button>
+              )}
             </div>
           </div>
         </div>
