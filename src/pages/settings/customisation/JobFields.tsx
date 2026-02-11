@@ -22,22 +22,22 @@ const primaryButtonSx = {
     boxShadow: "none",
   },
 };
-const outlineButtonSx = {
-  height: "36px",
-  borderColor: "#CCCCCC80",
-  color: "#333333",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  width: "90px",
-  boxShadow: "none",
-  "&:hover": {
-    borderColor: "#CCCCCC80",
-    backgroundColor: "#F3F4F6",
-    boxShadow: "none",
-  },
-};
+// const outlineButtonSx = {
+//   height: "36px",
+//   borderColor: "#CCCCCC80",
+//   color: "#333333",
+//   textTransform: "none",
+//   fontSize: "12px",
+//   fontWeight: 500,
+//   borderRadius: "4px",
+//   width: "90px",
+//   boxShadow: "none",
+//   "&:hover": {
+//     borderColor: "#CCCCCC80",
+//     backgroundColor: "#F3F4F6",
+//     boxShadow: "none",
+//   },
+// };
 
 const CalendarIcon = () => (
   <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
@@ -472,7 +472,7 @@ export const JobFields: React.FC = () => {
     enableJobApplication: false,
     hiringTeam: ""
   });
-  const [showLayoutErrors, setShowLayoutErrors] = useState(false);
+  const [showLayoutErrors] = useState(false);
   const [dragSectionId, setDragSectionId] = useState<string | null>(null);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
@@ -774,46 +774,46 @@ export const JobFields: React.FC = () => {
       jobDescriptionRef.current.innerHTML = "";
     }
   }, [layoutForm.jobDescription]);
-  const validateLayout = () => {
-    const requiredFields: Array<{ sectionId: string; rowId: string }> = [
-      { sectionId: "jobDetails", rowId: "jobTitle" },
-      { sectionId: "jobDetails", rowId: "jobType" },
-      { sectionId: "jobDetails", rowId: "jobCategory" },
-      { sectionId: "jobDetails", rowId: "jobIndustry" },
-      { sectionId: "jobDetails", rowId: "jobLocationType" },
-      { sectionId: "jobDetails", rowId: "jobLevel" },
-      { sectionId: "jobDetails", rowId: "city" },
-      { sectionId: "jobDetails", rowId: "suburb" },
-      { sectionId: "jobDetails", rowId: "state" },
-      { sectionId: "jobDetails", rowId: "country" },
-      { sectionId: "jobDetails", rowId: "postalCode" },
-      { sectionId: "jobDetails", rowId: "minSalary" },
-      { sectionId: "jobDetails", rowId: "maxSalary" },
-      { sectionId: "jobDetails", rowId: "frequency" },
-      { sectionId: "jobDetails", rowId: "currency" },
-      { sectionId: "jobDetails", rowId: "educationalQualifications" },
-      { sectionId: "jobDetails", rowId: "jobDescription" },
-      { sectionId: "jobDetails", rowId: "skills" },
-      { sectionId: "jobDetails", rowId: "jobApplicationQuestions" },
-      { sectionId: "admin", rowId: "companyName" },
-      { sectionId: "admin", rowId: "contactName" },
-      { sectionId: "admin", rowId: "contactEmail" },
-      { sectionId: "admin", rowId: "contactPhone" },
-      { sectionId: "admin", rowId: "noOfPositions" },
-      { sectionId: "admin", rowId: "hiringPipeline" },
-      { sectionId: "admin", rowId: "targetDate" },
-      { sectionId: "admin", rowId: "minExperience" },
-      { sectionId: "admin", rowId: "maxExperience" },
-      { sectionId: "admin", rowId: "jobOpeningStatus" },
-      { sectionId: "admin", rowId: "jobOwner" },
-      { sectionId: "admin", rowId: "hiringManager" },
-      { sectionId: "admin", rowId: "interviewScorecard" },
-      { sectionId: "admin", rowId: "hiringTeamMembers" },
-      { sectionId: "admin", rowId: "enableJobApplication" }
-    ];
+  // const validateLayout = () => {
+  //   const requiredFields: Array<{ sectionId: string; rowId: string }> = [
+  //     { sectionId: "jobDetails", rowId: "jobTitle" },
+  //     { sectionId: "jobDetails", rowId: "jobType" },
+  //     { sectionId: "jobDetails", rowId: "jobCategory" },
+  //     { sectionId: "jobDetails", rowId: "jobIndustry" },
+  //     { sectionId: "jobDetails", rowId: "jobLocationType" },
+  //     { sectionId: "jobDetails", rowId: "jobLevel" },
+  //     { sectionId: "jobDetails", rowId: "city" },
+  //     { sectionId: "jobDetails", rowId: "suburb" },
+  //     { sectionId: "jobDetails", rowId: "state" },
+  //     { sectionId: "jobDetails", rowId: "country" },
+  //     { sectionId: "jobDetails", rowId: "postalCode" },
+  //     { sectionId: "jobDetails", rowId: "minSalary" },
+  //     { sectionId: "jobDetails", rowId: "maxSalary" },
+  //     { sectionId: "jobDetails", rowId: "frequency" },
+  //     { sectionId: "jobDetails", rowId: "currency" },
+  //     { sectionId: "jobDetails", rowId: "educationalQualifications" },
+  //     { sectionId: "jobDetails", rowId: "jobDescription" },
+  //     { sectionId: "jobDetails", rowId: "skills" },
+  //     { sectionId: "jobDetails", rowId: "jobApplicationQuestions" },
+  //     { sectionId: "admin", rowId: "companyName" },
+  //     { sectionId: "admin", rowId: "contactName" },
+  //     { sectionId: "admin", rowId: "contactEmail" },
+  //     { sectionId: "admin", rowId: "contactPhone" },
+  //     { sectionId: "admin", rowId: "noOfPositions" },
+  //     { sectionId: "admin", rowId: "hiringPipeline" },
+  //     { sectionId: "admin", rowId: "targetDate" },
+  //     { sectionId: "admin", rowId: "minExperience" },
+  //     { sectionId: "admin", rowId: "maxExperience" },
+  //     { sectionId: "admin", rowId: "jobOpeningStatus" },
+  //     { sectionId: "admin", rowId: "jobOwner" },
+  //     { sectionId: "admin", rowId: "hiringManager" },
+  //     { sectionId: "admin", rowId: "interviewScorecard" },
+  //     { sectionId: "admin", rowId: "hiringTeamMembers" },
+  //     { sectionId: "admin", rowId: "enableJobApplication" }
+  //   ];
 
-    return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
-  };
+  //   return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
+  // };
 
   const fieldsContent = (
     <div className="flex flex-col gap-6 pt-4">

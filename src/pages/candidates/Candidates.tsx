@@ -5,39 +5,39 @@ import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDouble
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
-import { Button, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 
-const primaryButtonSx = {
-  height: "36px",
-  backgroundColor: "#6E41E2",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  boxShadow: "none",
-  width: "120px",
-  color: "#FFFFFF",
-  "&:hover": {
-    backgroundColor: "#7B52F4",
-    boxShadow: "none",
-  },
-};
-const outlineButtonSx = {
-  height: "36px",
-  borderColor: "#CCCCCC80",
-  color: "#333333",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  width: "90px",
-  boxShadow: "none",
-  "&:hover": {
-    borderColor: "#CCCCCC80",
-    backgroundColor: "#F3F4F6",
-    boxShadow: "none",
-  },
-};
+// const primaryButtonSx = {
+//   height: "36px",
+//   backgroundColor: "#6E41E2",
+//   textTransform: "none",
+//   fontSize: "12px",
+//   fontWeight: 500,
+//   borderRadius: "4px",
+//   boxShadow: "none",
+//   width: "120px",
+//   color: "#FFFFFF",
+//   "&:hover": {
+//     backgroundColor: "#7B52F4",
+//     boxShadow: "none",
+//   },
+// };
+// const outlineButtonSx = {
+//   height: "36px",
+//   borderColor: "#CCCCCC80",
+//   color: "#333333",
+//   textTransform: "none",
+//   fontSize: "12px",
+//   fontWeight: 500,
+//   borderRadius: "4px",
+//   width: "90px",
+//   boxShadow: "none",
+//   "&:hover": {
+//     borderColor: "#CCCCCC80",
+//     backgroundColor: "#F3F4F6",
+//     boxShadow: "none",
+//   },
+// };
 type FieldRow = {
   id: string;
   label: string;
@@ -618,7 +618,7 @@ export const Candidates: React.FC = () => {
       currentHere: false
     }
   ]);
-  const [showLayoutErrors, setShowLayoutErrors] = useState(false);
+  const [showLayoutErrors] = useState(false);
   const [dragSectionId, setDragSectionId] = useState<string | null>(null);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
@@ -1037,55 +1037,55 @@ export const Candidates: React.FC = () => {
     setWorkEntries((prev) => prev.filter((entry) => entry.id !== entryId));
   };
 
-  const validateLayout = () => {
-    const requiredFields: Array<{ sectionId: string; rowId: string }> = [
-      { sectionId: "personal", rowId: "firstName" },
-      { sectionId: "personal", rowId: "lastName" },
-      { sectionId: "personal", rowId: "email" },
-      { sectionId: "personal", rowId: "phone" },
-      { sectionId: "personal", rowId: "gender" },
-      { sectionId: "personal", rowId: "birthDate" },
-      { sectionId: "personal", rowId: "address" },
-      { sectionId: "personal", rowId: "city" },
-      { sectionId: "personal", rowId: "suburb" },
-      { sectionId: "personal", rowId: "state" },
-      { sectionId: "personal", rowId: "country" },
-      { sectionId: "personal", rowId: "postal" },
-      { sectionId: "personal", rowId: "relocate" },
-      { sectionId: "professional", rowId: "employer" },
-      { sectionId: "professional", rowId: "jobTitle" },
-      { sectionId: "professional", rowId: "experience" },
-      { sectionId: "professional", rowId: "salaryCurrent" },
-      { sectionId: "professional", rowId: "salaryExpected" },
-      { sectionId: "professional", rowId: "employmentStatus" },
-      { sectionId: "professional", rowId: "notice" },
-      { sectionId: "professional", rowId: "availableFrom" },
-      { sectionId: "education", rowId: "institute" },
-      { sectionId: "education", rowId: "qualification" },
-      { sectionId: "education", rowId: "specialisation" },
-      { sectionId: "education", rowId: "duration" },
-      { sectionId: "education", rowId: "pursuing" },
-      { sectionId: "education", rowId: "summary" },
-      { sectionId: "workHistory", rowId: "job" },
-      { sectionId: "workHistory", rowId: "company" },
-      { sectionId: "workHistory", rowId: "employmentType" },
-      { sectionId: "workHistory", rowId: "industry" },
-      { sectionId: "workHistory", rowId: "arrangement" },
-      { sectionId: "workHistory", rowId: "current" },
-      { sectionId: "workHistory", rowId: "workDuration" },
-      { sectionId: "workHistory", rowId: "workSummary" },
-      { sectionId: "resumeSkills", rowId: "resume" },
-      { sectionId: "resumeSkills", rowId: "skills" },
-      { sectionId: "social", rowId: "linkedin" },
-      { sectionId: "social", rowId: "facebook" },
-      { sectionId: "social", rowId: "xprofile" },
-      { sectionId: "social", rowId: "github" },
-      { sectionId: "social", rowId: "website" },
-      { sectionId: "summary", rowId: "candidateSummary" }
-    ];
+  // const validateLayout = () => {
+  //   const requiredFields: Array<{ sectionId: string; rowId: string }> = [
+  //     { sectionId: "personal", rowId: "firstName" },
+  //     { sectionId: "personal", rowId: "lastName" },
+  //     { sectionId: "personal", rowId: "email" },
+  //     { sectionId: "personal", rowId: "phone" },
+  //     { sectionId: "personal", rowId: "gender" },
+  //     { sectionId: "personal", rowId: "birthDate" },
+  //     { sectionId: "personal", rowId: "address" },
+  //     { sectionId: "personal", rowId: "city" },
+  //     { sectionId: "personal", rowId: "suburb" },
+  //     { sectionId: "personal", rowId: "state" },
+  //     { sectionId: "personal", rowId: "country" },
+  //     { sectionId: "personal", rowId: "postal" },
+  //     { sectionId: "personal", rowId: "relocate" },
+  //     { sectionId: "professional", rowId: "employer" },
+  //     { sectionId: "professional", rowId: "jobTitle" },
+  //     { sectionId: "professional", rowId: "experience" },
+  //     { sectionId: "professional", rowId: "salaryCurrent" },
+  //     { sectionId: "professional", rowId: "salaryExpected" },
+  //     { sectionId: "professional", rowId: "employmentStatus" },
+  //     { sectionId: "professional", rowId: "notice" },
+  //     { sectionId: "professional", rowId: "availableFrom" },
+  //     { sectionId: "education", rowId: "institute" },
+  //     { sectionId: "education", rowId: "qualification" },
+  //     { sectionId: "education", rowId: "specialisation" },
+  //     { sectionId: "education", rowId: "duration" },
+  //     { sectionId: "education", rowId: "pursuing" },
+  //     { sectionId: "education", rowId: "summary" },
+  //     { sectionId: "workHistory", rowId: "job" },
+  //     { sectionId: "workHistory", rowId: "company" },
+  //     { sectionId: "workHistory", rowId: "employmentType" },
+  //     { sectionId: "workHistory", rowId: "industry" },
+  //     { sectionId: "workHistory", rowId: "arrangement" },
+  //     { sectionId: "workHistory", rowId: "current" },
+  //     { sectionId: "workHistory", rowId: "workDuration" },
+  //     { sectionId: "workHistory", rowId: "workSummary" },
+  //     { sectionId: "resumeSkills", rowId: "resume" },
+  //     { sectionId: "resumeSkills", rowId: "skills" },
+  //     { sectionId: "social", rowId: "linkedin" },
+  //     { sectionId: "social", rowId: "facebook" },
+  //     { sectionId: "social", rowId: "xprofile" },
+  //     { sectionId: "social", rowId: "github" },
+  //     { sectionId: "social", rowId: "website" },
+  //     { sectionId: "summary", rowId: "candidateSummary" }
+  //   ];
 
-    return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
-  };
+  //   return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
+  // };
 
   const fieldsContent = (
     <div className="flex flex-col gap-6 pt-4">

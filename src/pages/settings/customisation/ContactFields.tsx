@@ -22,22 +22,22 @@ const primaryButtonSx = {
     boxShadow: "none",
   },
 };
-const outlineButtonSx = {
-  height: "36px",
-  borderColor: "#CCCCCC80",
-  color: "#333333",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  width: "90px",
-  boxShadow: "none",
-  "&:hover": {
-    borderColor: "#CCCCCC80",
-    backgroundColor: "#F3F4F6",
-    boxShadow: "none",
-  },
-};
+// const outlineButtonSx = {
+//   height: "36px",
+//   borderColor: "#CCCCCC80",
+//   color: "#333333",
+//   textTransform: "none",
+//   fontSize: "12px",
+//   fontWeight: 500,
+//   borderRadius: "4px",
+//   width: "90px",
+//   boxShadow: "none",
+//   "&:hover": {
+//     borderColor: "#CCCCCC80",
+//     backgroundColor: "#F3F4F6",
+//     boxShadow: "none",
+//   },
+// };
 type FieldRow = {
   id: string;
   label: string;
@@ -474,7 +474,7 @@ export const ContactFields: React.FC = () => {
     facebook: "",
     website: ""
   });
-  const [showLayoutErrors, setShowLayoutErrors] = useState(false);
+  const [showLayoutErrors] = useState(false);
   const [dragSectionId, setDragSectionId] = useState<string | null>(null);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
@@ -702,34 +702,34 @@ export const ContactFields: React.FC = () => {
         const value = event.target.value;
         setLayoutForm((prev) => ({ ...prev, [key]: value }));
       };
-  const validateLayout = () => {
-    const requiredFields: Array<{ sectionId: string; rowId: string }> = [
-      { sectionId: "contactDetails", rowId: "firstName" },
-      { sectionId: "contactDetails", rowId: "lastName" },
-      { sectionId: "contactDetails", rowId: "title" },
-      { sectionId: "contactDetails", rowId: "contactType" },
-      { sectionId: "contactDetails", rowId: "contactStage" },
-      { sectionId: "recordDetails", rowId: "contactOwner" },
-      { sectionId: "recordDetails", rowId: "source" },
-      { sectionId: "contactAddressInfo", rowId: "fullAddress" },
-      { sectionId: "contactAddressInfo", rowId: "city" },
-      { sectionId: "contactAddressInfo", rowId: "state" },
-      { sectionId: "contactAddressInfo", rowId: "country" },
-      { sectionId: "contactAddressInfo", rowId: "postalCode" },
-      { sectionId: "contactCommunication", rowId: "email" },
-      { sectionId: "contactCommunication", rowId: "phone" },
-      { sectionId: "contactCommunication", rowId: "altEmail" },
-      { sectionId: "contactRelationship", rowId: "company" },
-      { sectionId: "contactRelationship", rowId: "department" },
-      { sectionId: "contactRelationship", rowId: "manager" },
-      { sectionId: "contactSocialLinks", rowId: "linkedin" },
-      { sectionId: "contactSocialLinks", rowId: "xprofile" },
-      { sectionId: "contactSocialLinks", rowId: "facebook" },
-      { sectionId: "contactSocialLinks", rowId: "website" }
-    ];
+  // const validateLayout = () => {
+  //   const requiredFields: Array<{ sectionId: string; rowId: string }> = [
+  //     { sectionId: "contactDetails", rowId: "firstName" },
+  //     { sectionId: "contactDetails", rowId: "lastName" },
+  //     { sectionId: "contactDetails", rowId: "title" },
+  //     { sectionId: "contactDetails", rowId: "contactType" },
+  //     { sectionId: "contactDetails", rowId: "contactStage" },
+  //     { sectionId: "recordDetails", rowId: "contactOwner" },
+  //     { sectionId: "recordDetails", rowId: "source" },
+  //     { sectionId: "contactAddressInfo", rowId: "fullAddress" },
+  //     { sectionId: "contactAddressInfo", rowId: "city" },
+  //     { sectionId: "contactAddressInfo", rowId: "state" },
+  //     { sectionId: "contactAddressInfo", rowId: "country" },
+  //     { sectionId: "contactAddressInfo", rowId: "postalCode" },
+  //     { sectionId: "contactCommunication", rowId: "email" },
+  //     { sectionId: "contactCommunication", rowId: "phone" },
+  //     { sectionId: "contactCommunication", rowId: "altEmail" },
+  //     { sectionId: "contactRelationship", rowId: "company" },
+  //     { sectionId: "contactRelationship", rowId: "department" },
+  //     { sectionId: "contactRelationship", rowId: "manager" },
+  //     { sectionId: "contactSocialLinks", rowId: "linkedin" },
+  //     { sectionId: "contactSocialLinks", rowId: "xprofile" },
+  //     { sectionId: "contactSocialLinks", rowId: "facebook" },
+  //     { sectionId: "contactSocialLinks", rowId: "website" }
+  //   ];
 
-    return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
-  };
+  //   return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
+  // };
 
   const fieldsContent = (
     <div className="flex flex-col gap-6 pt-4">

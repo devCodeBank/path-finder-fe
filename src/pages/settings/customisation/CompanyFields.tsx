@@ -5,39 +5,39 @@ import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDouble
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
-import { Button, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 
-const primaryButtonSx = {
-  height: "36px",
-  backgroundColor: "#6E41E2",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  boxShadow: "none",
-  width: "120px",
-  color: "#FFFFFF",
-  "&:hover": {
-    backgroundColor: "#7B52F4",
-    boxShadow: "none",
-  },
-};
-const outlineButtonSx = {
-  height: "36px",
-  borderColor: "#CCCCCC80",
-  color: "#333333",
-  textTransform: "none",
-  fontSize: "12px",
-  fontWeight: 500,
-  borderRadius: "4px",
-  width: "90px",
-  boxShadow: "none",
-  "&:hover": {
-    borderColor: "#CCCCCC80",
-    backgroundColor: "#F3F4F6",
-    boxShadow: "none",
-  },
-};
+// const primaryButtonSx = {
+//   height: "36px",
+//   backgroundColor: "#6E41E2",
+//   textTransform: "none",
+//   fontSize: "12px",
+//   fontWeight: 500,
+//   borderRadius: "4px",
+//   boxShadow: "none",
+//   width: "120px",
+//   color: "#FFFFFF",
+//   "&:hover": {
+//     backgroundColor: "#7B52F4",
+//     boxShadow: "none",
+//   },
+// };
+// const outlineButtonSx = {
+//   height: "36px",
+//   borderColor: "#CCCCCC80",
+//   color: "#333333",
+//   textTransform: "none",
+//   fontSize: "12px",
+//   fontWeight: 500,
+//   borderRadius: "4px",
+//   width: "90px",
+//   boxShadow: "none",
+//   "&:hover": {
+//     borderColor: "#CCCCCC80",
+//     backgroundColor: "#F3F4F6",
+//     boxShadow: "none",
+//   },
+// };
 type FieldRow = {
   id: string;
   label: string;
@@ -534,7 +534,7 @@ export const CompanyFields: React.FC = () => {
     contactDepartment: "",
     contactManager: ""
   });
-  const [showLayoutErrors, setShowLayoutErrors] = useState(false);
+  const [showLayoutErrors] = useState(false);
   const [dragSectionId, setDragSectionId] = useState<string | null>(null);
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
@@ -778,52 +778,52 @@ export const CompanyFields: React.FC = () => {
         const value = event.target.value;
         setLayoutForm((prev) => ({ ...prev, [key]: value }));
       };
-  const validateLayout = () => {
-    const requiredFields: Array<{ sectionId: string; rowId: string }> = [
-      { sectionId: "companyDetails", rowId: "companyName" },
-      { sectionId: "companyDetails", rowId: "industry" },
-      { sectionId: "companyDetails", rowId: "clientType" },
-      { sectionId: "companyDetails", rowId: "website" },
-      { sectionId: "companyDetails", rowId: "linkedin" },
-      { sectionId: "companyDetails", rowId: "companySize" },
-      { sectionId: "companyDetails", rowId: "facebook" },
-      { sectionId: "companyDetails", rowId: "existingContacts" },
-      { sectionId: "companyDetails", rowId: "xprofile" },
-      { sectionId: "companyDetails", rowId: "aboutCompany" },
-      { sectionId: "location", rowId: "fullAddress" },
-      { sectionId: "location", rowId: "city" },
-      { sectionId: "location", rowId: "state" },
-      { sectionId: "location", rowId: "country" },
-      { sectionId: "location", rowId: "postal" },
-      { sectionId: "accountManagement", rowId: "accountStatus" },
-      { sectionId: "accountManagement", rowId: "accountOwner" },
-      { sectionId: "accountManagement", rowId: "source" },
-      { sectionId: "accountManagement", rowId: "billingTerms" },
-      { sectionId: "accountManagement", rowId: "taxVatId" },
-      { sectionId: "accountManagement", rowId: "estRevenue" },
-      { sectionId: "contactDetails", rowId: "firstName" },
-      { sectionId: "contactDetails", rowId: "lastName" },
-      { sectionId: "contactDetails", rowId: "title" },
-      { sectionId: "contactDetails", rowId: "contactType" },
-      { sectionId: "contactDetails", rowId: "contactStage" },
-      { sectionId: "contactCommunication", rowId: "email" },
-      { sectionId: "contactCommunication", rowId: "phone" },
-      { sectionId: "contactCommunication", rowId: "altEmail" },
-      { sectionId: "contactSocialLinks", rowId: "linkedin" },
-      { sectionId: "contactSocialLinks", rowId: "xprofile" },
-      { sectionId: "contactSocialLinks", rowId: "facebook" },
-      { sectionId: "contactSocialLinks", rowId: "website" },
-      { sectionId: "contactAddressInfo", rowId: "fullAddress" },
-      { sectionId: "contactAddressInfo", rowId: "city" },
-      { sectionId: "contactAddressInfo", rowId: "state" },
-      { sectionId: "contactAddressInfo", rowId: "country" },
-      { sectionId: "contactAddressInfo", rowId: "postalCode" },
-      { sectionId: "contactRelationship", rowId: "department" },
-      { sectionId: "contactRelationship", rowId: "manager" }
-    ];
+  // const validateLayout = () => {
+  //   const requiredFields: Array<{ sectionId: string; rowId: string }> = [
+  //     { sectionId: "companyDetails", rowId: "companyName" },
+  //     { sectionId: "companyDetails", rowId: "industry" },
+  //     { sectionId: "companyDetails", rowId: "clientType" },
+  //     { sectionId: "companyDetails", rowId: "website" },
+  //     { sectionId: "companyDetails", rowId: "linkedin" },
+  //     { sectionId: "companyDetails", rowId: "companySize" },
+  //     { sectionId: "companyDetails", rowId: "facebook" },
+  //     { sectionId: "companyDetails", rowId: "existingContacts" },
+  //     { sectionId: "companyDetails", rowId: "xprofile" },
+  //     { sectionId: "companyDetails", rowId: "aboutCompany" },
+  //     { sectionId: "location", rowId: "fullAddress" },
+  //     { sectionId: "location", rowId: "city" },
+  //     { sectionId: "location", rowId: "state" },
+  //     { sectionId: "location", rowId: "country" },
+  //     { sectionId: "location", rowId: "postal" },
+  //     { sectionId: "accountManagement", rowId: "accountStatus" },
+  //     { sectionId: "accountManagement", rowId: "accountOwner" },
+  //     { sectionId: "accountManagement", rowId: "source" },
+  //     { sectionId: "accountManagement", rowId: "billingTerms" },
+  //     { sectionId: "accountManagement", rowId: "taxVatId" },
+  //     { sectionId: "accountManagement", rowId: "estRevenue" },
+  //     { sectionId: "contactDetails", rowId: "firstName" },
+  //     { sectionId: "contactDetails", rowId: "lastName" },
+  //     { sectionId: "contactDetails", rowId: "title" },
+  //     { sectionId: "contactDetails", rowId: "contactType" },
+  //     { sectionId: "contactDetails", rowId: "contactStage" },
+  //     { sectionId: "contactCommunication", rowId: "email" },
+  //     { sectionId: "contactCommunication", rowId: "phone" },
+  //     { sectionId: "contactCommunication", rowId: "altEmail" },
+  //     { sectionId: "contactSocialLinks", rowId: "linkedin" },
+  //     { sectionId: "contactSocialLinks", rowId: "xprofile" },
+  //     { sectionId: "contactSocialLinks", rowId: "facebook" },
+  //     { sectionId: "contactSocialLinks", rowId: "website" },
+  //     { sectionId: "contactAddressInfo", rowId: "fullAddress" },
+  //     { sectionId: "contactAddressInfo", rowId: "city" },
+  //     { sectionId: "contactAddressInfo", rowId: "state" },
+  //     { sectionId: "contactAddressInfo", rowId: "country" },
+  //     { sectionId: "contactAddressInfo", rowId: "postalCode" },
+  //     { sectionId: "contactRelationship", rowId: "department" },
+  //     { sectionId: "contactRelationship", rowId: "manager" }
+  //   ];
 
-    return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
-  };
+  //   return !requiredFields.some(({ sectionId, rowId }) => isFieldMissing(sectionId, rowId));
+  // };
 
   const getMissingLayoutFields = () => {
     const missing: string[] = [];
