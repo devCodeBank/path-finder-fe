@@ -154,6 +154,10 @@ const JobStatus: React.FC = () => {
   };
 
   const handleDragStart = (statusId: string) => (event: React.DragEvent<HTMLButtonElement>) => {
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-row='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
     setDraggingId(statusId);
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", statusId);
@@ -240,6 +244,7 @@ const JobStatus: React.FC = () => {
               <div
                 key={status.id}
                 className="flex gap-4 items-start border border-[#E6E6E6] rounded-[6px] bg-white px-4 py-3"
+                data-drag-row="true"
                 onDragOver={handleDragOver(status.id)}
                 onDrop={handleDrop(status.id)}
               >

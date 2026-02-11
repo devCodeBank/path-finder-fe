@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
@@ -288,6 +288,7 @@ const SectionCard = ({
     <div className="bg-white  border-[#CCCCCC80] rounded-[4px] overflow-hidden">
       <div
         className="h-[52px] px-4 flex items-center justify-between rounded-[4px] border border-[#CCCCCC80] bg-[#FAFAFA] cursor-pointer"
+        data-drag-section="true"
         onClick={() => onToggleCollapse(section.id)}
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
@@ -310,11 +311,13 @@ const SectionCard = ({
           <span className="text-[#333333] ">{section.title}</span>
         </div>
         <div className="flex items-center gap-10">
-          <Toggle
-            enabled={section.enabled}
-            onChange={(val) => onToggleSection(section.id, val)}
-            ariaLabel={`Toggle ${section.title}`}
-          />
+          {section.title !== "Personal Details" && (
+            <Toggle
+              enabled={section.enabled}
+              onChange={(val) => onToggleSection(section.id, val)}
+              ariaLabel={`Toggle ${section.title}`}
+            />
+          )}
           <Tooltip
             title="Edit"
             arrow
@@ -368,6 +371,7 @@ const SectionCard = ({
               <div
                 key={row.id}
                 className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr_0.8fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
+                data-drag-row="true"
                 onDragOver={(event) => onDragOverRow(section.id, event)}
                 onDrop={(event) => onDropRow(section.id, row.id, event)}
               >
@@ -422,6 +426,11 @@ const SectionCard = ({
 
 export const Candidates: React.FC = () => {
   const birthDateRef = useRef<HTMLInputElement | null>(null);
+  const availableFromRef = useRef<HTMLInputElement | null>(null);
+  const summaryRef = useRef<HTMLDivElement | null>(null);
+  const [summaryFont, setSummaryFont] = useState("Verdana");
+  const [summaryFontSize, setSummaryFontSize] = useState("10");
+  const [summaryLineHeight, setSummaryLineHeight] = useState("1.2");
   const initialSections: Section[] = useMemo(
     () => [
       {
@@ -649,6 +658,10 @@ export const Candidates: React.FC = () => {
     event: React.DragEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-section='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", sectionId);
     setDragSectionId(sectionId);
@@ -689,6 +702,10 @@ export const Candidates: React.FC = () => {
     event: React.DragEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-row='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", `${sectionId}:${rowId}`);
     setDragRow({ sectionId, rowId });
@@ -819,6 +836,9 @@ export const Candidates: React.FC = () => {
     return values[key];
   };
 
+  const getPlainTextFromHtml = (value: string) =>
+    value.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+
   const isFieldMissing = (sectionId: string, rowId: string) => {
     if (!isLayoutVisible(sectionId, rowId) || !isLayoutRequired(sectionId, rowId)) return false;
 
@@ -870,6 +890,9 @@ export const Candidates: React.FC = () => {
 
     const value = getFieldValue(sectionId, rowId);
     if (typeof value === "boolean") return !value;
+    if (sectionId === "summary" && rowId === "candidateSummary") {
+      return !getPlainTextFromHtml(String(value ?? ""));
+    }
     return !String(value ?? "").trim();
   };
 
@@ -885,6 +908,57 @@ export const Candidates: React.FC = () => {
     if (typeof value === "boolean") return !value;
     return !String(value ?? "").trim();
   };
+
+  const updateSummaryFromEditor = () => {
+    if (!summaryRef.current) return;
+    const text = summaryRef.current.textContent?.replace(/\u200B/g, "").trim() ?? "";
+    if (!text) {
+      if (summaryRef.current.innerHTML !== "") {
+        summaryRef.current.innerHTML = "";
+      }
+      setLayoutForm((prev) => ({ ...prev, candidateSummary: "" }));
+      return;
+    }
+    setLayoutForm((prev) => ({ ...prev, candidateSummary: summaryRef.current?.innerHTML ?? "" }));
+  };
+
+  const normalizeFontSizes = () => {
+    if (!summaryRef.current) return;
+    const sizeMap: Record<string, string> = {
+      "1": "8",
+      "2": "10",
+      "3": "12",
+      "4": "14",
+      "5": "16",
+      "6": "18",
+      "7": "24"
+    };
+    summaryRef.current.querySelectorAll("font[size]").forEach((node) => {
+      const size = (node as HTMLElement).getAttribute("size");
+      if (!size) return;
+      (node as HTMLElement).removeAttribute("size");
+      (node as HTMLElement).style.fontSize = `${sizeMap[size] ?? "12"}px`;
+    });
+  };
+
+  const applyEditorCommand = (command: string, value?: string) => {
+    if (!summaryRef.current) return;
+    summaryRef.current.focus();
+    document.execCommand(command, false, value);
+    normalizeFontSizes();
+    updateSummaryFromEditor();
+  };
+
+  useEffect(() => {
+    if (!summaryRef.current) return;
+    if (layoutForm.candidateSummary) {
+      if (summaryRef.current.innerHTML !== layoutForm.candidateSummary) {
+        summaryRef.current.innerHTML = layoutForm.candidateSummary;
+      }
+    } else if (summaryRef.current.innerHTML !== "") {
+      summaryRef.current.innerHTML = "";
+    }
+  }, [layoutForm.candidateSummary]);
 
   const openDatePicker = (ref: React.RefObject<HTMLInputElement | null>) => {
     if (!ref.current) return;
@@ -1117,7 +1191,7 @@ export const Candidates: React.FC = () => {
   );
 
   const layoutContent = (
-    <div className="flex flex-col gap-4 pt-4">
+    <div className="flex flex-col gap-4 pt-4 ">
       {isSectionEnabled("personal") && (
         <>
           <LayoutHeader
@@ -1126,279 +1200,276 @@ export const Candidates: React.FC = () => {
             onToggle={() => setLayoutOpen((p) => ({ ...p, personal: !p.personal }))}
           />
           {layoutOpen.personal && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("personal", "firstName") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="First Name"
-                required={isLayoutRequired("personal", "firstName")}
-                placeholder="e.g., John"
-                value={layoutForm.firstName}
-                onChange={handleLayoutChange("firstName")}
-                className={cn(
-                  showFieldError("personal", "firstName") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "firstName") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *First Name is required.
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
+              {isLayoutVisible("personal", "firstName") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="First Name"
+                    required={isLayoutRequired("personal", "firstName")}
+                    placeholder="e.g., John"
+                    value={layoutForm.firstName}
+                    onChange={handleLayoutChange("firstName")}
+                    className={cn(
+                      showFieldError("personal", "firstName") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "firstName") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *First Name is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("personal", "lastName") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Last Name"
+                    required={isLayoutRequired("personal", "lastName")}
+                    placeholder="e.g., Doe"
+                    value={layoutForm.lastName}
+                    onChange={handleLayoutChange("lastName")}
+                    className={cn(
+                      showFieldError("personal", "lastName") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "lastName") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Last Name is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("personal", "email") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Email"
+                    required={isLayoutRequired("personal", "email")}
+                    placeholder="e.g., john.doe@example.com"
+                    value={layoutForm.email}
+                    onChange={handleLayoutChange("email")}
+                    className={cn(
+                      showFieldError("personal", "email") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "email") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Email is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("personal", "phone") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Phone"
+                    required={isLayoutRequired("personal", "phone")}
+                    placeholder="e.g., +1 555-0123"
+                    value={layoutForm.phone}
+                    onChange={handleLayoutChange("phone")}
+                    className={cn(
+                      showFieldError("personal", "phone") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "phone") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Phone is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("personal", "gender") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelSelect
+                    label="Gender"
+                    placeholder="Select Gender"
+                    options={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                      { value: "other", label: "Other" }
+                    ]}
+                    value={layoutForm.gender}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, gender: value }))}
+                    className={cn(
+                      showFieldError("personal", "gender") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "gender") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Gender is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("personal", "birthDate") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Birth Date"
+                    required={isLayoutRequired("personal", "birthDate")}
+                    placeholder="DD/MM/YYYY"
+                    className={cn(
+                      "pr-9",
+                      "pf-hide-native-date-icon",
+                      showFieldError("personal", "birthDate") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                    type="date"
+                    ref={birthDateRef}
+                    value={layoutForm.birthDate}
+                    onChange={handleLayoutChange("birthDate")}
+                    onClick={() => openDatePicker(birthDateRef)}
+                  />
+                  <span className="pointer-events-none absolute right-3 top-11 -translate-y-1/2 text-[#666666]/70">
+                    <CalendarIcon />
                   </span>
-                )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "lastName") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Last Name"
-                required={isLayoutRequired("personal", "lastName")}
-                placeholder="e.g., Doe"
-                value={layoutForm.lastName}
-                onChange={handleLayoutChange("lastName")}
-                className={cn(
-                  showFieldError("personal", "lastName") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "lastName") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Last Name is required.
-                </span>
+                  {showFieldError("personal", "birthDate") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Birth Date is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "email") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Email"
-                required={isLayoutRequired("personal", "email")}
-                placeholder="e.g., john.doe@example.com"
-                value={layoutForm.email}
-                onChange={handleLayoutChange("email")}
-                className={cn(
-                  showFieldError("personal", "email") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "email") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Email is required.
-                </span>
+              {isLayoutVisible("personal", "address") && (
+                <div className="relative flex flex-col pb-[14px] md:col-span-2">
+                  <FloatingLabelInput
+                    label="Full Address"
+                    required={isLayoutRequired("personal", "address")}
+                    placeholder="e.g., 123 Wall St, Apt 4B"
+                    value={layoutForm.address}
+                    onChange={handleLayoutChange("address")}
+                    className={cn(
+                      showFieldError("personal", "address") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "address") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Full Address is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "phone") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Phone"
-                required={isLayoutRequired("personal", "phone")}
-                placeholder="e.g., +1 555-0123"
-                value={layoutForm.phone}
-                onChange={handleLayoutChange("phone")}
-                className={cn(
-                  showFieldError("personal", "phone") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "phone") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Phone is required.
-                </span>
+              {isLayoutVisible("personal", "city") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="City"
+                    required={isLayoutRequired("personal", "city")}
+                    placeholder="e.g., New York"
+                    value={layoutForm.city}
+                    onChange={handleLayoutChange("city")}
+                    className={cn(
+                      showFieldError("personal", "city") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "city") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *City is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "gender") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelSelect
-                label="Gender"
-                placeholder="Select Gender"
-                options={[
-                  { value: "male", label: "Male" },
-                  { value: "female", label: "Female" },
-                  { value: "other", label: "Other" }
-                ]}
-                value={layoutForm.gender}
-                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, gender: value }))}
-                className={cn(
-                  showFieldError("personal", "gender") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "gender") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Gender is required.
-                </span>
+              {isLayoutVisible("personal", "suburb") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Suburb"
+                    required={isLayoutRequired("personal", "suburb")}
+                    placeholder="e.g., Brooklyn"
+                    value={layoutForm.suburb}
+                    onChange={handleLayoutChange("suburb")}
+                    className={cn(
+                      showFieldError("personal", "suburb") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "suburb") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Suburb is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "birthDate") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Birth Date"
-                required={isLayoutRequired("personal", "birthDate")}
-                placeholder="DD/MM/YYYY"
-                className={cn(
-                  "pr-9",
-                  showFieldError("personal", "birthDate") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-                type="date"
-                ref={birthDateRef}
-                value={layoutForm.birthDate}
-                onChange={handleLayoutChange("birthDate")}
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666]/70"
-                onClick={() => openDatePicker(birthDateRef)}
-                aria-label="Select birth date"
-              >
-                <CalendarIcon />
-              </button>
-              {showFieldError("personal", "birthDate") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Birth Date is required.
-                </span>
+              {isLayoutVisible("personal", "state") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="State/Province"
+                    required={isLayoutRequired("personal", "state")}
+                    placeholder="e.g., NY"
+                    value={layoutForm.state}
+                    onChange={handleLayoutChange("state")}
+                    className={cn(
+                      showFieldError("personal", "state") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "state") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *State/Province is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "address") && (
-            <div className="relative flex flex-col pb-[14px] md:col-span-2">
-              <FloatingLabelInput
-                label="Full Address"
-                required={isLayoutRequired("personal", "address")}
-                placeholder="e.g., 123 Wall St, Apt 4B"
-                value={layoutForm.address}
-                onChange={handleLayoutChange("address")}
-                className={cn(
-                  showFieldError("personal", "address") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "address") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Full Address is required.
-                </span>
+              {isLayoutVisible("personal", "country") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Country"
+                    required={isLayoutRequired("personal", "country")}
+                    placeholder="Search or Add Country"
+                    value={layoutForm.country}
+                    onChange={handleLayoutChange("country")}
+                    className={cn(
+                      showFieldError("personal", "country") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "country") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Country is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "city") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="City"
-                required={isLayoutRequired("personal", "city")}
-                placeholder="e.g., New York"
-                value={layoutForm.city}
-                onChange={handleLayoutChange("city")}
-                className={cn(
-                  showFieldError("personal", "city") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "city") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *City is required.
-                  </span>
-                )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "suburb") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Suburb"
-                required={isLayoutRequired("personal", "suburb")}
-                placeholder="e.g., Brooklyn"
-                value={layoutForm.suburb}
-                onChange={handleLayoutChange("suburb")}
-                className={cn(
-                  showFieldError("personal", "suburb") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "suburb") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Suburb is required.
-                </span>
+              {isLayoutVisible("personal", "postal") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Postal Code"
+                    required={isLayoutRequired("personal", "postal")}
+                    placeholder="e.g., 10001"
+                    value={layoutForm.postalCode}
+                    onChange={handleLayoutChange("postalCode")}
+                    className={cn(
+                      showFieldError("personal", "postal") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("personal", "postal") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Postal Code is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "state") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="State/Province"
-                required={isLayoutRequired("personal", "state")}
-                placeholder="e.g., NY"
-                value={layoutForm.state}
-                onChange={handleLayoutChange("state")}
-                className={cn(
-                  showFieldError("personal", "state") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "state") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *State/Province is required.
-                </span>
+              {isLayoutVisible("personal", "relocate") && (
+                <div className="relative flex flex-col pb-[14px] pt-[24px]">
+                  <div className="flex items-center gap-3 h-[36px]">
+                    <span className="text-[14px] font-medium text-[#333333]/70">Willing to Relocate</span>
+                    <Toggle
+                      enabled={layoutForm.willingToRelocate}
+                      onChange={(val) => setLayoutForm((prev) => ({ ...prev, willingToRelocate: val }))}
+                      ariaLabel="Willing to relocate"
+                    />
+                  </div>
+                  {showFieldError("personal", "relocate") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Willing to Relocate is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "country") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Country"
-                required={isLayoutRequired("personal", "country")}
-                placeholder="Search or Add Country"
-                value={layoutForm.country}
-                onChange={handleLayoutChange("country")}
-                className={cn(
-                  showFieldError("personal", "country") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "country") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Country is required.
-                </span>
-              )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "postal") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Postal Code"
-                required={isLayoutRequired("personal", "postal")}
-                placeholder="e.g., 10001"
-                value={layoutForm.postalCode}
-                onChange={handleLayoutChange("postalCode")}
-                className={cn(
-                  showFieldError("personal", "postal") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("personal", "postal") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Postal Code is required.
-                </span>
-              )}
-            </div>
-          )}
-          {isLayoutVisible("personal", "relocate") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <div className="flex items-center gap-3 h-[40px]">
-                <span className="text-[14px] font-medium text-[#333333]/70">Willing to Relocate</span>
-                <Toggle
-                  enabled={layoutForm.willingToRelocate}
-                  onChange={(val) => setLayoutForm((prev) => ({ ...prev, willingToRelocate: val }))}
-                  ariaLabel="Willing to relocate"
-                />
-              </div>
-              {showFieldError("personal", "relocate") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Willing to Relocate is required.
-                </span>
-              )}
-            </div>
-          )}
             </div>
           )}
         </>
@@ -1412,174 +1483,178 @@ export const Candidates: React.FC = () => {
             onToggle={() => setLayoutOpen((p) => ({ ...p, professional: !p.professional }))}
           />
           {layoutOpen.professional && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {isLayoutVisible("professional", "employer") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Current Employer"
-                required={isLayoutRequired("professional", "employer")}
-                placeholder="e.g., Acme Corp"
-                value={layoutForm.currentEmployer}
-                onChange={handleLayoutChange("currentEmployer")}
-                className={cn(
-                  showFieldError("professional", "employer") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "employer") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Current Employer is required.
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
+              {isLayoutVisible("professional", "employer") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Current Employer"
+                    required={isLayoutRequired("professional", "employer")}
+                    placeholder="e.g., Acme Corp"
+                    value={layoutForm.currentEmployer}
+                    onChange={handleLayoutChange("currentEmployer")}
+                    className={cn(
+                      showFieldError("professional", "employer") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "employer") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Current Employer is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "jobTitle") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Current Job Title"
+                    required={isLayoutRequired("professional", "jobTitle")}
+                    placeholder="e.g., Software Engineer"
+                    value={layoutForm.currentJobTitle}
+                    onChange={handleLayoutChange("currentJobTitle")}
+                    className={cn(
+                      showFieldError("professional", "jobTitle") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "jobTitle") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Current Job Title is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "experience") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Experience in Years"
+                    required={isLayoutRequired("professional", "experience")}
+                    placeholder="e.g., 5"
+                    value={layoutForm.experienceYears}
+                    onChange={handleLayoutChange("experienceYears")}
+                    className={cn(
+                      showFieldError("professional", "experience") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "experience") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Experience in Years is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "salaryCurrent") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Current Salary"
+                    required={isLayoutRequired("professional", "salaryCurrent")}
+                    placeholder="e.g., 85,000"
+                    value={layoutForm.currentSalary}
+                    onChange={handleLayoutChange("currentSalary")}
+                    className={cn(
+                      showFieldError("professional", "salaryCurrent") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "salaryCurrent") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Current Salary is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "salaryExpected") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Expected Salary"
+                    required={isLayoutRequired("professional", "salaryExpected")}
+                    placeholder="e.g., 95,000"
+                    value={layoutForm.expectedSalary}
+                    onChange={handleLayoutChange("expectedSalary")}
+                    className={cn(
+                      showFieldError("professional", "salaryExpected") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "salaryExpected") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Expected Salary is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "employmentStatus") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelSelect
+                    label="Employment Status"
+                    placeholder="Select Status"
+                    options={[
+                      { value: "full-time", label: "Full Time" },
+                      { value: "part-time", label: "Part Time" },
+                      { value: "contract", label: "Contract" }
+                    ]}
+                    value={layoutForm.employmentStatus}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, employmentStatus: value }))}
+                    className={cn(
+                      showFieldError("professional", "employmentStatus") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "employmentStatus") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Employment Status is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "notice") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Notice Period"
+                    required={isLayoutRequired("professional", "notice")}
+                    placeholder="e.g., 4 weeks"
+                    value={layoutForm.noticePeriod}
+                    onChange={handleLayoutChange("noticePeriod")}
+                    className={cn(
+                      showFieldError("professional", "notice") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("professional", "notice") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Notice Period is required.
+                    </span>
+                  )}
+                </div>
+              )}
+              {isLayoutVisible("professional", "availableFrom") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Available from"
+                    placeholder="DD/MM/YYYY"
+                    className={cn(
+                      "pr-9",
+                      "pf-hide-native-date-icon",
+                      showFieldError("professional", "availableFrom") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                    type="date"
+                    ref={availableFromRef}
+                    value={layoutForm.availableFrom}
+                    onChange={handleLayoutChange("availableFrom")}
+                    onClick={() => openDatePicker(availableFromRef)}
+                  />
+                  <span className="pointer-events-none absolute right-3 top-11 -translate-y-1/2 text-[#666666]/70">
+                    <CalendarIcon />
                   </span>
-                )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "jobTitle") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Current Job Title"
-                required={isLayoutRequired("professional", "jobTitle")}
-                placeholder="e.g., Software Engineer"
-                value={layoutForm.currentJobTitle}
-                onChange={handleLayoutChange("currentJobTitle")}
-                className={cn(
-                  showFieldError("professional", "jobTitle") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "jobTitle") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Current Job Title is required.
-                  </span>
-                )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "experience") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Experience in Years"
-                required={isLayoutRequired("professional", "experience")}
-                placeholder="e.g., 5"
-                value={layoutForm.experienceYears}
-                onChange={handleLayoutChange("experienceYears")}
-                className={cn(
-                  showFieldError("professional", "experience") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "experience") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Experience in Years is required.
-                </span>
+                  {showFieldError("professional", "availableFrom") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Available From is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "salaryCurrent") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Current Salary"
-                required={isLayoutRequired("professional", "salaryCurrent")}
-                placeholder="e.g., 85,000"
-                value={layoutForm.currentSalary}
-                onChange={handleLayoutChange("currentSalary")}
-                className={cn(
-                  showFieldError("professional", "salaryCurrent") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "salaryCurrent") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Current Salary is required.
-                </span>
-              )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "salaryExpected") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Expected Salary"
-                required={isLayoutRequired("professional", "salaryExpected")}
-                placeholder="e.g., 95,000"
-                value={layoutForm.expectedSalary}
-                onChange={handleLayoutChange("expectedSalary")}
-                className={cn(
-                  showFieldError("professional", "salaryExpected") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "salaryExpected") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Expected Salary is required.
-                </span>
-              )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "employmentStatus") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelSelect
-                label="Employment Status"
-                placeholder="Select Status"
-                options={[
-                  { value: "full-time", label: "Full Time" },
-                  { value: "part-time", label: "Part Time" },
-                  { value: "contract", label: "Contract" }
-                ]}
-                value={layoutForm.employmentStatus}
-                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, employmentStatus: value }))}
-                className={cn(
-                  showFieldError("professional", "employmentStatus") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "employmentStatus") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Employment Status is required.
-                </span>
-              )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "notice") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Notice Period"
-                required={isLayoutRequired("professional", "notice")}
-                placeholder="e.g., 4 weeks"
-                value={layoutForm.noticePeriod}
-                onChange={handleLayoutChange("noticePeriod")}
-                className={cn(
-                  showFieldError("professional", "notice") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("professional", "notice") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Notice Period is required.
-                </span>
-              )}
-            </div>
-          )}
-          {isLayoutVisible("professional", "availableFrom") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Available from"
-                placeholder="DD/MM/YYYY"
-                className={cn(
-                  "pr-9",
-                  showFieldError("professional", "availableFrom") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-                value={layoutForm.availableFrom}
-                onChange={handleLayoutChange("availableFrom")}
-              />
-              <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
-                <CalendarIcon />
-              </span>
-              {showFieldError("professional", "availableFrom") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Available From is required.
-                </span>
-              )}
-            </div>
-          )}
             </div>
           )}
         </>
@@ -1618,139 +1693,139 @@ export const Candidates: React.FC = () => {
                         )}
                       </div>
                     )}
-              {(isLayoutVisible("education", "qualification") ||
-                isLayoutVisible("education", "specialisation")) && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {isLayoutVisible("education", "qualification") && (
-                      <div className="relative flex flex-col pb-[14px]">
-                        <FloatingLabelInput
-                          label="Educational Qualification"
-                          required={isLayoutRequired("education", "qualification")}
-                          placeholder="Add Qualification"
-                          value={entry.qualification}
-                          onChange={(e) => updateEducationEntry(entry.id, "qualification", e.target.value)}
-                          className={cn(
-                            showEntryFieldError("education", "qualification", entry.qualification) &&
-                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    {(isLayoutVisible("education", "qualification") ||
+                      isLayoutVisible("education", "specialisation")) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          {isLayoutVisible("education", "qualification") && (
+                            <div className="relative flex flex-col pb-[14px]">
+                              <FloatingLabelInput
+                                label="Educational Qualification"
+                                required={isLayoutRequired("education", "qualification")}
+                                placeholder="Add Qualification"
+                                value={entry.qualification}
+                                onChange={(e) => updateEducationEntry(entry.id, "qualification", e.target.value)}
+                                className={cn(
+                                  showEntryFieldError("education", "qualification", entry.qualification) &&
+                                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                                )}
+                              />
+                              {showEntryFieldError("education", "qualification", entry.qualification) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Educational Qualification is required.
+                                </span>
+                              )}
+                            </div>
                           )}
-                        />
-                        {showEntryFieldError("education", "qualification", entry.qualification) && (
-                            <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                              *Educational Qualification is required.
-                            </span>
+                          {isLayoutVisible("education", "specialisation") && (
+                            <div className="relative flex flex-col pb-[14px]">
+                              <FloatingLabelInput
+                                label="Specialisation"
+                                required={isLayoutRequired("education", "specialisation")}
+                                placeholder="e.g., Computer Science"
+                                value={entry.specialization}
+                                onChange={(e) => updateEducationEntry(entry.id, "specialization", e.target.value)}
+                                className={cn(
+                                  showEntryFieldError("education", "specialisation", entry.specialization) &&
+                                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                                )}
+                              />
+                              {showEntryFieldError("education", "specialisation", entry.specialization) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Specialisation is required.
+                                </span>
+                              )}
+                            </div>
                           )}
-                      </div>
-                    )}
-                    {isLayoutVisible("education", "specialisation") && (
-                      <div className="relative flex flex-col pb-[14px]">
-                        <FloatingLabelInput
-                          label="Specialisation"
-                          required={isLayoutRequired("education", "specialisation")}
-                          placeholder="e.g., Computer Science"
-                          value={entry.specialization}
-                          onChange={(e) => updateEducationEntry(entry.id, "specialization", e.target.value)}
-                          className={cn(
-                            showEntryFieldError("education", "specialisation", entry.specialization) &&
-                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                          )}
-                        />
-                        {showEntryFieldError("education", "specialisation", entry.specialization) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Specialisation is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              {(isLayoutVisible("education", "duration") ||
-                isLayoutVisible("education", "pursuing")) && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {isLayoutVisible("education", "duration") && (
-                      <div className="relative flex flex-col gap-1 pb-[14px]">
-                        <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
-                        <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Month"
-                            options={[]}
-                            value={entry.fromMonth}
-                            onValueChange={(value) => updateEducationEntry(entry.id, "fromMonth", value)}
-                          />
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Year"
-                            options={[]}
-                            value={entry.fromYear}
-                            onValueChange={(value) => updateEducationEntry(entry.id, "fromYear", value)}
-                          />
-                          <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Month"
-                            options={[]}
-                            value={entry.toMonth}
-                            onValueChange={(value) => updateEducationEntry(entry.id, "toMonth", value)}
-                          />
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Year"
-                            options={[]}
-                            value={entry.toYear}
-                            onValueChange={(value) => updateEducationEntry(entry.id, "toYear", value)}
-                          />
                         </div>
-                        {showEntryFieldError("education", "duration", durationValue) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Duration is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {isLayoutVisible("education", "pursuing") && (
-                      <div className="relative flex flex-col pb-[14px] justify-end">
-                        <div className="flex items-center gap-3 h-[40px]">
-                          <span className="text-[14px] font-medium text-[#333333]/70">Currently pursuing</span>
-                          <Toggle
-                            enabled={entry.currentlyPursuing}
-                            onChange={(val) => updateEducationEntry(entry.id, "currentlyPursuing", val)}
-                            ariaLabel="Currently pursuing"
-                          />
+                      )}
+                    {(isLayoutVisible("education", "duration") ||
+                      isLayoutVisible("education", "pursuing")) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          {isLayoutVisible("education", "duration") && (
+                            <div className="relative flex flex-col gap-1 pb-[14px]">
+                              <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
+                              <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Month"
+                                  options={[]}
+                                  value={entry.fromMonth}
+                                  onValueChange={(value) => updateEducationEntry(entry.id, "fromMonth", value)}
+                                />
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Year"
+                                  options={[]}
+                                  value={entry.fromYear}
+                                  onValueChange={(value) => updateEducationEntry(entry.id, "fromYear", value)}
+                                />
+                                <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Month"
+                                  options={[]}
+                                  value={entry.toMonth}
+                                  onValueChange={(value) => updateEducationEntry(entry.id, "toMonth", value)}
+                                />
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Year"
+                                  options={[]}
+                                  value={entry.toYear}
+                                  onValueChange={(value) => updateEducationEntry(entry.id, "toYear", value)}
+                                />
+                              </div>
+                              {showEntryFieldError("education", "duration", durationValue) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Duration is required.
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          {isLayoutVisible("education", "pursuing") && (
+                            <div className="relative flex flex-col pb-[14px] justify-end">
+                              <div className="flex items-center gap-3 h-[40px]">
+                                <span className="text-[14px] font-medium text-[#333333]/70">Currently pursuing</span>
+                                <Toggle
+                                  enabled={entry.currentlyPursuing}
+                                  onChange={(val) => updateEducationEntry(entry.id, "currentlyPursuing", val)}
+                                  ariaLabel="Currently pursuing"
+                                />
+                              </div>
+                              {showEntryFieldError("education", "pursuing", entry.currentlyPursuing) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Currently pursuing is required.
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        {showEntryFieldError("education", "pursuing", entry.currentlyPursuing) && (
+                      )}
+                    {isLayoutVisible("education", "summary") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <TextAreaField
+                          label="Summary"
+                          placeholder="Brief overview of your studies..."
+                          value={entry.summary}
+                          onChange={(e) => updateEducationEntry(entry.id, "summary", e.target.value)}
+                        />
+                        {showEntryFieldError("education", "summary", entry.summary) && (
                           <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Currently pursuing is required.
+                            *Summary is required.
                           </span>
                         )}
                       </div>
                     )}
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
+                        onClick={() => removeEducationEntry(entry.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                )}
-              {isLayoutVisible("education", "summary") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <TextAreaField
-                    label="Summary"
-                    placeholder="Brief overview of your studies..."
-                    value={entry.summary}
-                    onChange={(e) => updateEducationEntry(entry.id, "summary", e.target.value)}
-                  />
-                  {showEntryFieldError("education", "summary", entry.summary) && (
-                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Summary is required.
-                    </span>
-                  )}
-                </div>
-              )}
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
-                  onClick={() => removeEducationEntry(entry.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
                 );
               })}
             </div>
@@ -1798,192 +1873,192 @@ export const Candidates: React.FC = () => {
                         )}
                       </div>
                     )}
-              {(isLayoutVisible("workHistory", "company") ||
-                isLayoutVisible("workHistory", "employmentType")) && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {isLayoutVisible("workHistory", "company") && (
-                      <div className="relative flex flex-col pb-[14px]">
-                        <FloatingLabelInput
-                          label="Company"
-                          required={isLayoutRequired("workHistory", "company")}
-                          placeholder="e.g., Google"
-                          value={entry.company}
-                          onChange={(e) => updateWorkEntry(entry.id, "company", e.target.value)}
-                          className={cn(
-                            showEntryFieldError("workHistory", "company", entry.company) &&
-                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    {(isLayoutVisible("workHistory", "company") ||
+                      isLayoutVisible("workHistory", "employmentType")) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          {isLayoutVisible("workHistory", "company") && (
+                            <div className="relative flex flex-col pb-[14px]">
+                              <FloatingLabelInput
+                                label="Company"
+                                required={isLayoutRequired("workHistory", "company")}
+                                placeholder="e.g., Google"
+                                value={entry.company}
+                                onChange={(e) => updateWorkEntry(entry.id, "company", e.target.value)}
+                                className={cn(
+                                  showEntryFieldError("workHistory", "company", entry.company) &&
+                                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                                )}
+                              />
+                              {showEntryFieldError("workHistory", "company", entry.company) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Company is required.
+                                </span>
+                              )}
+                            </div>
                           )}
-                        />
-                        {showEntryFieldError("workHistory", "company", entry.company) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Company is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {isLayoutVisible("workHistory", "employmentType") && (
-                      <div className="relative flex flex-col pb-[14px]">
-                        <FloatingLabelSelect
-                          label="Employment Type"
-                          placeholder="Select Employment Type"
-                          options={[
-                            { value: "full-time", label: "Full Time" },
-                            { value: "part-time", label: "Part Time" },
-                            { value: "contract", label: "Contract" }
-                          ]}
-                          value={entry.employmentType}
-                          onValueChange={(value) => updateWorkEntry(entry.id, "employmentType", value)}
-                          className={cn(
-                            showEntryFieldError("workHistory", "employmentType", entry.employmentType) &&
-                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                          {isLayoutVisible("workHistory", "employmentType") && (
+                            <div className="relative flex flex-col pb-[14px]">
+                              <FloatingLabelSelect
+                                label="Employment Type"
+                                placeholder="Select Employment Type"
+                                options={[
+                                  { value: "full-time", label: "Full Time" },
+                                  { value: "part-time", label: "Part Time" },
+                                  { value: "contract", label: "Contract" }
+                                ]}
+                                value={entry.employmentType}
+                                onValueChange={(value) => updateWorkEntry(entry.id, "employmentType", value)}
+                                className={cn(
+                                  showEntryFieldError("workHistory", "employmentType", entry.employmentType) &&
+                                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                                )}
+                              />
+                              {showEntryFieldError("workHistory", "employmentType", entry.employmentType) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Employment Type is required.
+                                </span>
+                              )}
+                            </div>
                           )}
-                        />
-                        {showEntryFieldError("workHistory", "employmentType", entry.employmentType) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Employment Type is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              {(isLayoutVisible("workHistory", "industry") ||
-                isLayoutVisible("workHistory", "arrangement")) && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {isLayoutVisible("workHistory", "industry") && (
-                      <div className="relative flex flex-col pb-[14px]">
-                        <FloatingLabelSelect
-                          label="Industry"
-                          placeholder="Select Industry"
-                          options={[]}
-                          value={entry.industry}
-                          onValueChange={(value) => updateWorkEntry(entry.id, "industry", value)}
-                          className={cn(
-                            showEntryFieldError("workHistory", "industry", entry.industry) &&
-                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                          )}
-                        />
-                        {showEntryFieldError("workHistory", "industry", entry.industry) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Industry is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {isLayoutVisible("workHistory", "arrangement") && (
-                      <div className="relative flex flex-col pb-[14px]">
-                        <FloatingLabelSelect
-                          label="Work Arrangement Type"
-                          placeholder="Select Work Arrangement Type"
-                          options={[
-                            { value: "remote", label: "Remote" },
-                            { value: "hybrid", label: "Hybrid" },
-                            { value: "onsite", label: "Onsite" }
-                          ]}
-                          value={entry.arrangementType}
-                          onValueChange={(value) => updateWorkEntry(entry.id, "arrangementType", value)}
-                          className={cn(
-                            showEntryFieldError("workHistory", "arrangement", entry.arrangementType) &&
-                            "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                          )}
-                        />
-                        {showEntryFieldError("workHistory", "arrangement", entry.arrangementType) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Work Arrangement Type is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-              {(isLayoutVisible("workHistory", "workDuration") ||
-                isLayoutVisible("workHistory", "current")) && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {isLayoutVisible("workHistory", "workDuration") && (
-                      <div className="relative flex flex-col gap-1 pb-[14px]">
-                        <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
-                        <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Month"
-                            options={[]}
-                            value={entry.fromMonth}
-                            onValueChange={(value) => updateWorkEntry(entry.id, "fromMonth", value)}
-                          />
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Year"
-                            options={[]}
-                            value={entry.fromYear}
-                            onValueChange={(value) => updateWorkEntry(entry.id, "fromYear", value)}
-                          />
-                          <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Month"
-                            options={[]}
-                            value={entry.toMonth}
-                            onValueChange={(value) => updateWorkEntry(entry.id, "toMonth", value)}
-                          />
-                          <FloatingLabelSelect
-                            label=""
-                            placeholder="Year"
-                            options={[]}
-                            value={entry.toYear}
-                            onValueChange={(value) => updateWorkEntry(entry.id, "toYear", value)}
-                          />
                         </div>
-                        {showEntryFieldError("workHistory", "workDuration", durationValue) && (
-                          <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Duration is required.
-                          </span>
-                        )}
-                      </div>
-                    )}
-                    {isLayoutVisible("workHistory", "current") && (
-                      <div className="relative flex flex-col pb-[14px] justify-end">
-                        <div className="flex items-center gap-3 h-[40px]">
-                          <span className="text-[14px] font-medium text-[#333333]/70">I currently work here</span>
-                          <Toggle
-                            enabled={entry.currentHere}
-                            onChange={(val) => updateWorkEntry(entry.id, "currentHere", val)}
-                            ariaLabel="Currently work here"
-                          />
+                      )}
+                    {(isLayoutVisible("workHistory", "industry") ||
+                      isLayoutVisible("workHistory", "arrangement")) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          {isLayoutVisible("workHistory", "industry") && (
+                            <div className="relative flex flex-col pb-[14px]">
+                              <FloatingLabelSelect
+                                label="Industry"
+                                placeholder="Select Industry"
+                                options={[]}
+                                value={entry.industry}
+                                onValueChange={(value) => updateWorkEntry(entry.id, "industry", value)}
+                                className={cn(
+                                  showEntryFieldError("workHistory", "industry", entry.industry) &&
+                                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                                )}
+                              />
+                              {showEntryFieldError("workHistory", "industry", entry.industry) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Industry is required.
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          {isLayoutVisible("workHistory", "arrangement") && (
+                            <div className="relative flex flex-col pb-[14px]">
+                              <FloatingLabelSelect
+                                label="Work Arrangement Type"
+                                placeholder="Select Work Arrangement Type"
+                                options={[
+                                  { value: "remote", label: "Remote" },
+                                  { value: "hybrid", label: "Hybrid" },
+                                  { value: "onsite", label: "Onsite" }
+                                ]}
+                                value={entry.arrangementType}
+                                onValueChange={(value) => updateWorkEntry(entry.id, "arrangementType", value)}
+                                className={cn(
+                                  showEntryFieldError("workHistory", "arrangement", entry.arrangementType) &&
+                                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                                )}
+                              />
+                              {showEntryFieldError("workHistory", "arrangement", entry.arrangementType) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Work Arrangement Type is required.
+                                </span>
+                              )}
+                            </div>
+                          )}
                         </div>
-                        {showEntryFieldError("workHistory", "current", entry.currentHere) && (
+                      )}
+                    {(isLayoutVisible("workHistory", "workDuration") ||
+                      isLayoutVisible("workHistory", "current")) && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          {isLayoutVisible("workHistory", "workDuration") && (
+                            <div className="relative flex flex-col gap-1 pb-[14px]">
+                              <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
+                              <div className="grid grid-cols-[1fr_1fr_20px_1fr_1fr] gap-2">
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Month"
+                                  options={[]}
+                                  value={entry.fromMonth}
+                                  onValueChange={(value) => updateWorkEntry(entry.id, "fromMonth", value)}
+                                />
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Year"
+                                  options={[]}
+                                  value={entry.fromYear}
+                                  onValueChange={(value) => updateWorkEntry(entry.id, "fromYear", value)}
+                                />
+                                <div className="flex items-center justify-center text-[12px] text-[#666666]">To</div>
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Month"
+                                  options={[]}
+                                  value={entry.toMonth}
+                                  onValueChange={(value) => updateWorkEntry(entry.id, "toMonth", value)}
+                                />
+                                <FloatingLabelSelect
+                                  label=""
+                                  placeholder="Year"
+                                  options={[]}
+                                  value={entry.toYear}
+                                  onValueChange={(value) => updateWorkEntry(entry.id, "toYear", value)}
+                                />
+                              </div>
+                              {showEntryFieldError("workHistory", "workDuration", durationValue) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Duration is required.
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          {isLayoutVisible("workHistory", "current") && (
+                            <div className="relative flex flex-col pb-[14px] justify-end">
+                              <div className="flex items-center gap-3 h-[40px]">
+                                <span className="text-[14px] font-medium text-[#333333]/70">I currently work here</span>
+                                <Toggle
+                                  enabled={entry.currentHere}
+                                  onChange={(val) => updateWorkEntry(entry.id, "currentHere", val)}
+                                  ariaLabel="Currently work here"
+                                />
+                              </div>
+                              {showEntryFieldError("workHistory", "current", entry.currentHere) && (
+                                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                                  *Currently work here is required.
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    {isLayoutVisible("workHistory", "workSummary") && (
+                      <div className="relative flex flex-col pb-[14px]">
+                        <TextAreaField
+                          label="Summary"
+                          placeholder="Describe your responsibilities..."
+                          value={entry.summary}
+                          onChange={(e) => updateWorkEntry(entry.id, "summary", e.target.value)}
+                        />
+                        {showEntryFieldError("workHistory", "workSummary", entry.summary) && (
                           <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                            *Currently work here is required.
+                            *Summary is required.
                           </span>
                         )}
                       </div>
                     )}
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
+                        onClick={() => removeWorkEntry(entry.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                )}
-              {isLayoutVisible("workHistory", "workSummary") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <TextAreaField
-                    label="Summary"
-                    placeholder="Describe your responsibilities..."
-                    value={entry.summary}
-                    onChange={(e) => updateWorkEntry(entry.id, "summary", e.target.value)}
-                  />
-                  {showEntryFieldError("workHistory", "workSummary", entry.summary) && (
-                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Summary is required.
-                    </span>
-                  )}
-                </div>
-              )}
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
-                  onClick={() => removeWorkEntry(entry.id)}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
                 );
               })}
             </div>
@@ -2014,10 +2089,11 @@ export const Candidates: React.FC = () => {
                     showFieldError("resumeSkills", "resume") && "border-[#E53935]"
                   )}>
                     <div className="h-[28px] w-[28px] text-[#666666]">
-                      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                        <path d="M14 4V18" stroke="#666666" strokeWidth="1.8" strokeLinecap="round" />
-                        <path d="M9 9l5-5 5 5" stroke="#666666" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                        <rect x="4" y="18" width="20" height="6" rx="2" stroke="#CCCCCC" strokeWidth="1.5" />
+                      <svg width="23" height="28" viewBox="0 0 23 28" fill="none" aria-hidden="true">
+                        <path
+                          d="M6.57143 21.4118V11.5294H0L11.5 0L23 11.5294H16.4286V21.4118H6.57143ZM0 28V24.7059H23V28H0Z"
+                          fill="#666666"
+                        />
                       </svg>
                     </div>
                     <div className="text-[12px] text-[#333333] font-[500]">Upload Candidate Resume</div>
@@ -2032,32 +2108,32 @@ export const Candidates: React.FC = () => {
                   )}
                 </div>
               )}
-          {isLayoutVisible("resumeSkills", "skills") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Skills"
-                placeholder="Search and Add"
-                className={cn(
-                  "pr-9",
-                  showFieldError("resumeSkills", "skills") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-                value={layoutForm.skills}
-                onChange={handleLayoutChange("skills")}
-              />
-              <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <circle cx="9" cy="9" r="6" stroke="#666666" strokeWidth="1.5" />
-                  <path d="M14 14l3 3" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </span>
-              {showFieldError("resumeSkills", "skills") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Skills is required.
-                </span>
+              {isLayoutVisible("resumeSkills", "skills") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Skills"
+                    placeholder="Search and Add"
+                    className={cn(
+                      "pr-9",
+                      showFieldError("resumeSkills", "skills") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                    value={layoutForm.skills}
+                    onChange={handleLayoutChange("skills")}
+                  />
+                  <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#666666]">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <circle cx="9" cy="9" r="6" stroke="#666666" strokeWidth="1.5" />
+                      <path d="M14 14l3 3" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  {showFieldError("resumeSkills", "skills") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Skills is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
             </div>
           )}
         </>
@@ -2071,7 +2147,7 @@ export const Candidates: React.FC = () => {
             onToggle={() => setLayoutOpen((p) => ({ ...p, social: !p.social }))}
           />
           {layoutOpen.social && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
               {isLayoutVisible("social", "linkedin") && (
                 <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
@@ -2092,86 +2168,86 @@ export const Candidates: React.FC = () => {
                   )}
                 </div>
               )}
-          {isLayoutVisible("social", "facebook") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Facebook"
-                required={isLayoutRequired("social", "facebook")}
-                placeholder="http://www.facebook.com/johndoe"
-                value={layoutForm.facebook}
-                onChange={handleLayoutChange("facebook")}
-                className={cn(
-                  showFieldError("social", "facebook") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("social", "facebook") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Facebook is required.
-                </span>
+              {isLayoutVisible("social", "facebook") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Facebook"
+                    required={isLayoutRequired("social", "facebook")}
+                    placeholder="http://www.facebook.com/johndoe"
+                    value={layoutForm.facebook}
+                    onChange={handleLayoutChange("facebook")}
+                    className={cn(
+                      showFieldError("social", "facebook") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("social", "facebook") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Facebook is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("social", "xprofile") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="X"
-                required={isLayoutRequired("social", "xprofile")}
-                placeholder="http://www.x.com/johndoe"
-                value={layoutForm.xprofile}
-                onChange={handleLayoutChange("xprofile")}
-                className={cn(
-                  showFieldError("social", "xprofile") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("social", "xprofile") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *X is required.
-                </span>
+              {isLayoutVisible("social", "xprofile") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="X"
+                    required={isLayoutRequired("social", "xprofile")}
+                    placeholder="http://www.x.com/johndoe"
+                    value={layoutForm.xprofile}
+                    onChange={handleLayoutChange("xprofile")}
+                    className={cn(
+                      showFieldError("social", "xprofile") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("social", "xprofile") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *X is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("social", "github") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Github"
-                required={isLayoutRequired("social", "github")}
-                placeholder="http://github.com/johndoe"
-                value={layoutForm.github}
-                onChange={handleLayoutChange("github")}
-                className={cn(
-                  showFieldError("social", "github") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("social", "github") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Github is required.
-                </span>
+              {isLayoutVisible("social", "github") && (
+                <div className="relative flex flex-col pb-[14px]">
+                  <FloatingLabelInput
+                    label="Github"
+                    required={isLayoutRequired("social", "github")}
+                    placeholder="http://github.com/johndoe"
+                    value={layoutForm.github}
+                    onChange={handleLayoutChange("github")}
+                    className={cn(
+                      showFieldError("social", "github") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("social", "github") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Github is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
-          {isLayoutVisible("social", "website") && (
-            <div className="relative flex flex-col pb-[14px] md:col-span-2">
-              <FloatingLabelInput
-                label="Website"
-                required={isLayoutRequired("social", "website")}
-                placeholder="http://www.example.com"
-                value={layoutForm.website}
-                onChange={handleLayoutChange("website")}
-                className={cn(
-                  showFieldError("social", "website") &&
-                  "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showFieldError("social", "website") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Website is required.
-                </span>
+              {isLayoutVisible("social", "website") && (
+                <div className="relative flex flex-col pb-[14px] md:col-span-2">
+                  <FloatingLabelInput
+                    label="Website"
+                    required={isLayoutRequired("social", "website")}
+                    placeholder="http://www.example.com"
+                    value={layoutForm.website}
+                    onChange={handleLayoutChange("website")}
+                    className={cn(
+                      showFieldError("social", "website") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showFieldError("social", "website") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Website is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
             </div>
           )}
         </>
@@ -2192,24 +2268,170 @@ export const Candidates: React.FC = () => {
             showFieldError("summary", "candidateSummary") && "border-[#E53935]"
           )}>
             <div className="flex items-center gap-2 px-3 h-[36px] border-b border-[#E6E6E6] text-[12px] text-[#333333]">
-              <span className="font-[500]">B</span>
-              <span className="italic">I</span>
-              <span className="underline">U</span>
+              <button
+                type="button"
+                className="pf-editor-btn font-[600]"
+                onClick={() => applyEditorCommand("bold")}
+                aria-label="Bold"
+              >
+                B
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn italic"
+                onClick={() => applyEditorCommand("italic")}
+                aria-label="Italic"
+              >
+                I
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn underline"
+                onClick={() => applyEditorCommand("underline")}
+                aria-label="Underline"
+              >
+                U
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn line-through"
+                onClick={() => applyEditorCommand("strikeThrough")}
+                aria-label="Strikethrough"
+              >
+                S
+              </button>
               <span className="mx-1 text-[#999999]">|</span>
-              <span>Verdana</span>
+              <select
+                className="pf-editor-select"
+                value={summaryFont}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSummaryFont(value);
+                  applyEditorCommand("fontName", value);
+                }}
+                aria-label="Font family"
+              >
+                <option value="Verdana">Verdana</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Georgia">Georgia</option>
+              </select>
+              <select
+                className="pf-editor-select w-[52px]"
+                value={summaryFontSize}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  const sizeMap: Record<string, string> = {
+                    "10": "2",
+                    "12": "3",
+                    "14": "4",
+                    "16": "5",
+                    "18": "6",
+                    "24": "7"
+                  };
+                  setSummaryFontSize(value);
+                  applyEditorCommand("fontSize", sizeMap[value] ?? "3");
+                }}
+                aria-label="Font size"
+              >
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="14">14</option>
+                <option value="16">16</option>
+                <option value="18">18</option>
+                <option value="24">24</option>
+              </select>
+              <select
+                className="pf-editor-select w-[76px]"
+                value={summaryLineHeight}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSummaryLineHeight(value);
+                }}
+                aria-label="Line height"
+              >
+                <option value="1.2">1.2</option>
+                <option value="1.4">1.4</option>
+                <option value="1.6">1.6</option>
+                <option value="1.8">1.8</option>
+              </select>
               <span className="mx-1 text-[#999999]">|</span>
-              <span>10</span>
-              <span className="mx-1 text-[#999999]">|</span>
-              <span>(1.2) Normal</span>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => applyEditorCommand("insertUnorderedList")}
+                aria-label="Bulleted list"
+              >
+                •
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => applyEditorCommand("insertOrderedList")}
+                aria-label="Numbered list"
+              >
+                1.
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => applyEditorCommand("justifyLeft")}
+                aria-label="Align left"
+              >
+                L
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => applyEditorCommand("justifyCenter")}
+                aria-label="Align center"
+              >
+                C
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => applyEditorCommand("justifyRight")}
+                aria-label="Align right"
+              >
+                R
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => {
+                  const url = window.prompt("Enter URL");
+                  if (url) applyEditorCommand("createLink", url);
+                }}
+                aria-label="Insert link"
+              >
+                ⛓
+              </button>
+              <button
+                type="button"
+                className="pf-editor-btn"
+                onClick={() => applyEditorCommand("unlink")}
+                aria-label="Remove link"
+              >
+                ⨯
+              </button>
             </div>
-            <textarea
+            <div
+              ref={summaryRef}
               className={cn(
-                "min-h-[140px] w-full px-3 py-2 text-[13px] text-[#333333] placeholder:text-[#999999] focus:outline-none",
+                "pf-rich-editor min-h-[140px] w-full px-3 py-2 text-[13px] text-[#333333] focus:outline-none",
                 showFieldError("summary", "candidateSummary") && "border-[#E53935]"
               )}
-              placeholder="Summary of professional profile..."
-              value={layoutForm.candidateSummary}
-              onChange={handleLayoutChange("candidateSummary")}
+              style={{
+                fontFamily: summaryFont,
+                fontSize: `${summaryFontSize}px`,
+                lineHeight: summaryLineHeight,
+              }}
+              contentEditable
+              suppressContentEditableWarning
+              data-placeholder="Summary of professional profile..."
+              onInput={updateSummaryFromEditor}
+              onBlur={updateSummaryFromEditor}
             />
             {showFieldError("summary", "candidateSummary") && (
               <span className="absolute left-3 bottom-[4px] text-[11px] text-[#E53935]">
@@ -2221,7 +2443,12 @@ export const Candidates: React.FC = () => {
             <button
               type="button"
               className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
-              onClick={() => setLayoutForm((prev) => ({ ...prev, candidateSummary: "" }))}
+              onClick={() => {
+                setLayoutForm((prev) => ({ ...prev, candidateSummary: "" }));
+                if (summaryRef.current) {
+                  summaryRef.current.innerHTML = "";
+                }
+              }}
             >
               Delete
             </button>
@@ -2229,7 +2456,7 @@ export const Candidates: React.FC = () => {
         </>
       )}
 
-      <div className="flex justify-end gap-3 pt-2">
+      {/* <div className="flex justify-end gap-3 pt-2">
         <Button
           variant="outlined"
           sx={outlineButtonSx}
@@ -2252,12 +2479,58 @@ export const Candidates: React.FC = () => {
 
           Add Candidate
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 
   return (
     <div className="flex flex-col w-full">
+      <style>{`
+        .pf-hide-native-date-icon::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          display: none;
+        }
+        .pf-hide-native-date-icon::-webkit-clear-button,
+        .pf-hide-native-date-icon::-webkit-inner-spin-button {
+          display: none;
+        }
+        .pf-hide-native-date-icon {
+          -webkit-appearance: none;
+          appearance: none;
+        }
+        .pf-rich-editor:empty:before {
+          content: attr(data-placeholder);
+          color: #999999;
+        }
+        .pf-rich-editor a {
+          color: #6E41E2;
+          text-decoration: underline;
+        }
+        .pf-rich-editor ul,
+        .pf-rich-editor ol {
+          padding-left: 18px;
+        }
+        .pf-editor-btn {
+          height: 24px;
+          min-width: 24px;
+          padding: 0 6px;
+          border-radius: 4px;
+          color: #333333;
+          border: 1px solid transparent;
+        }
+        .pf-editor-btn:hover {
+          background: #F3F4F6;
+          border-color: #E6E6E6;
+        }
+        .pf-editor-select {
+          height: 24px;
+          border: 1px solid #E6E6E6;
+          border-radius: 4px;
+          padding: 0 6px;
+          background: #FFFFFF;
+          color: #333333;
+        }
+      `}</style>
 
       <TabsComponent
         tabs={[

@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
-import { Button, Tooltip } from "@mui/material";
+import { Button, Checkbox, Tooltip } from "@mui/material";
 
 const primaryButtonSx = {
   height: "36px",
@@ -38,6 +38,13 @@ const outlineButtonSx = {
     boxShadow: "none",
   },
 };
+
+const CalendarIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+    <rect x="3" y="4.5" width="14" height="12" rx="2" stroke="currentColor" strokeWidth="1.5" />
+    <path d="M6 3V6M14 3V6M3 8.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
 type FieldRow = {
   id: string;
   label: string;
@@ -224,6 +231,7 @@ const SectionCard = ({
     <div className="bg-white  border-[#CCCCCC80] rounded-[4px] overflow-hidden">
       <div
         className="h-[52px] px-4 flex items-center justify-between rounded-[4px] border border-[#CCCCCC80] bg-[#FAFAFA] cursor-pointer"
+        data-drag-section="true"
         onClick={() => onToggleCollapse(section.id)}
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
@@ -303,6 +311,7 @@ const SectionCard = ({
               <div
                 key={row.id}
                 className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
+                data-drag-row="true"
                 onDragOver={(event) => onDragOverRow(section.id, event)}
                 onDrop={(event) => onDropRow(section.id, row.id, event)}
               >
@@ -348,6 +357,11 @@ const SectionCard = ({
 };
 
 export const JobFields: React.FC = () => {
+  const targetDateRef = useRef<HTMLInputElement | null>(null);
+  const jobDescriptionRef = useRef<HTMLDivElement | null>(null);
+  const [jobDescFont, setJobDescFont] = useState("Verdana");
+  const [jobDescFontSize, setJobDescFontSize] = useState("10");
+  const [jobDescLineHeight, setJobDescLineHeight] = useState("1.2");
   const initialSections: Section[] = useMemo(
     () => [
       {
@@ -498,6 +512,10 @@ export const JobFields: React.FC = () => {
     event: React.DragEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-section='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", sectionId);
     setDragSectionId(sectionId);
@@ -538,6 +556,10 @@ export const JobFields: React.FC = () => {
     event: React.DragEvent<HTMLButtonElement>
   ) => {
     event.stopPropagation();
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-row='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.setData("text/plain", `${sectionId}:${rowId}`);
     setDragRow({ sectionId, rowId });
@@ -674,10 +696,16 @@ export const JobFields: React.FC = () => {
     return values[key];
   };
 
+  const getPlainTextFromHtml = (value: string) =>
+    value.replace(/<[^>]*>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
+
   const isFieldMissing = (sectionId: string, rowId: string) => {
     if (!isLayoutVisible(sectionId, rowId) || !isLayoutRequired(sectionId, rowId)) return false;
     const value = getFieldValue(sectionId, rowId);
     if (typeof value === "boolean") return !value;
+    if (sectionId === "jobDetails" && rowId === "jobDescription") {
+      return !getPlainTextFromHtml(String(value ?? ""));
+    }
     return !String(value ?? "").trim();
   };
 
@@ -687,6 +715,65 @@ export const JobFields: React.FC = () => {
         const value = event.target.value;
         setLayoutForm((prev) => ({ ...prev, [key]: value }));
       };
+
+  const updateJobDescriptionFromEditor = () => {
+    if (!jobDescriptionRef.current) return;
+    const text = jobDescriptionRef.current.textContent?.replace(/\u200B/g, "").trim() ?? "";
+    if (!text) {
+      if (jobDescriptionRef.current.innerHTML !== "") {
+        jobDescriptionRef.current.innerHTML = "";
+      }
+      setLayoutForm((prev) => ({ ...prev, jobDescription: "" }));
+      return;
+    }
+    setLayoutForm((prev) => ({ ...prev, jobDescription: jobDescriptionRef.current?.innerHTML ?? "" }));
+  };
+
+  const normalizeJobDescFontSizes = () => {
+    if (!jobDescriptionRef.current) return;
+    const sizeMap: Record<string, string> = {
+      "1": "8",
+      "2": "10",
+      "3": "12",
+      "4": "14",
+      "5": "16",
+      "6": "18",
+      "7": "24"
+    };
+    jobDescriptionRef.current.querySelectorAll("font[size]").forEach((node) => {
+      const size = (node as HTMLElement).getAttribute("size");
+      if (!size) return;
+      (node as HTMLElement).removeAttribute("size");
+      (node as HTMLElement).style.fontSize = `${sizeMap[size] ?? "12"}px`;
+    });
+  };
+
+  const applyJobDescCommand = (command: string, value?: string) => {
+    if (!jobDescriptionRef.current) return;
+    jobDescriptionRef.current.focus();
+    document.execCommand(command, false, value);
+    normalizeJobDescFontSizes();
+    updateJobDescriptionFromEditor();
+  };
+
+  const openDatePicker = (ref: React.RefObject<HTMLInputElement | null>) => {
+    if (!ref.current) return;
+    if (typeof ref.current.showPicker === "function") {
+      ref.current.showPicker();
+    }
+    ref.current.focus();
+  };
+
+  useEffect(() => {
+    if (!jobDescriptionRef.current) return;
+    if (layoutForm.jobDescription) {
+      if (jobDescriptionRef.current.innerHTML !== layoutForm.jobDescription) {
+        jobDescriptionRef.current.innerHTML = layoutForm.jobDescription;
+      }
+    } else if (jobDescriptionRef.current.innerHTML !== "") {
+      jobDescriptionRef.current.innerHTML = "";
+    }
+  }, [layoutForm.jobDescription]);
   const validateLayout = () => {
     const requiredFields: Array<{ sectionId: string; rowId: string }> = [
       { sectionId: "jobDetails", rowId: "jobTitle" },
@@ -842,7 +929,7 @@ export const JobFields: React.FC = () => {
           />
           {layoutOpen.jobDetails && (
             <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("jobDetails", "jobTitle") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -867,430 +954,619 @@ export const JobFields: React.FC = () => {
                       )}
                   </div>
                 )}
-            {isLayoutVisible("jobDetails", "jobType") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Job Type"
-                  placeholder="Select Job Type"
-                  options={[]}
-                  value={layoutForm.jobType}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobType: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "jobType") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "jobType") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Job Type is required.
-                  </span>
+                {isLayoutVisible("jobDetails", "jobType") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Job Type"
+                      placeholder="Select Job Type"
+                      options={[]}
+                      value={layoutForm.jobType}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobType: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "jobType") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "jobType") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Type is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "jobCategory") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Job Category"
+                      placeholder="Select Job Category"
+                      options={[]}
+                      value={layoutForm.jobCategory}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobCategory: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "jobCategory") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "jobCategory") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Category is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "jobIndustry") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Job Industry"
+                      placeholder="Select Job Industry"
+                      options={[]}
+                      value={layoutForm.jobIndustry}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobIndustry: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "jobIndustry") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "jobIndustry") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Industry is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "jobLocationType") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Job Location Type"
+                      placeholder="Select Job Location Type"
+                      options={[]}
+                      value={layoutForm.jobLocationType}
+                      onValueChange={(value) =>
+                        setLayoutForm((prev) => ({ ...prev, jobLocationType: value }))
+                      }
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "jobLocationType") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "jobLocationType") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Location Type is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "jobLevel") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Job Level"
+                      placeholder="Select Job Level"
+                      options={[]}
+                      value={layoutForm.jobLevel}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobLevel: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "jobLevel") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "jobLevel") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Level is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "city") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="City"
+                      required={isLayoutRequired("jobDetails", "city")}
+                      placeholder="Search or Enter City"
+                      value={layoutForm.city}
+                      onChange={handleLayoutChange("city")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "city") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "city") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *City is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "suburb") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Suburb"
+                      required={isLayoutRequired("jobDetails", "suburb")}
+                      placeholder="Search or Enter Suburb"
+                      value={layoutForm.suburb}
+                      onChange={handleLayoutChange("suburb")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "suburb") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "suburb") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Suburb is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "state") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="State / Province"
+                      required={isLayoutRequired("jobDetails", "state")}
+                      placeholder="Search or Enter State / Province"
+                      value={layoutForm.state}
+                      onChange={handleLayoutChange("state")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "state") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "state") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *State / Province is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "country") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Country"
+                      required={isLayoutRequired("jobDetails", "country")}
+                      placeholder="Search or Enter Country"
+                      value={layoutForm.country}
+                      onChange={handleLayoutChange("country")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "country") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "country") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Country is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "postalCode") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Postal Code"
+                      required={isLayoutRequired("jobDetails", "postalCode")}
+                      placeholder="Search or Enter Postal Code"
+                      value={layoutForm.postalCode}
+                      onChange={handleLayoutChange("postalCode")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "postalCode") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "postalCode") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Postal Code is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "minSalary") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Minimum Salary"
+                      required={isLayoutRequired("jobDetails", "minSalary")}
+                      placeholder="e.g., 80000"
+                      value={layoutForm.minSalary}
+                      onChange={handleLayoutChange("minSalary")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "minSalary") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "minSalary") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Minimum Salary is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "maxSalary") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Maximum Salary"
+                      required={isLayoutRequired("jobDetails", "maxSalary")}
+                      placeholder="e.g., 100000"
+                      value={layoutForm.maxSalary}
+                      onChange={handleLayoutChange("maxSalary")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "maxSalary") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "maxSalary") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Maximum Salary is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "frequency") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Frequency"
+                      placeholder="Select Salary Frequency"
+                      options={[]}
+                      value={layoutForm.frequency}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, frequency: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "frequency") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "frequency") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Frequency is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "currency") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Currency"
+                      placeholder="Select Salary Currency Type"
+                      options={[]}
+                      value={layoutForm.currency}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, currency: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "currency") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "currency") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Currency is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("jobDetails", "educationalQualifications") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Educational Qualification"
+                      required={isLayoutRequired("jobDetails", "educationalQualifications")}
+                      placeholder="e.g., Bachelor of Computer Science"
+                      value={layoutForm.educationalQualification}
+                      onChange={handleLayoutChange("educationalQualification")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "educationalQualifications") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("jobDetails", "educationalQualifications") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Educational Qualification is required.
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-            {isLayoutVisible("jobDetails", "jobCategory") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Job Category"
-                  placeholder="Select Job Category"
-                  options={[]}
-                  value={layoutForm.jobCategory}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobCategory: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "jobCategory") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "jobCategory") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Job Category is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "jobIndustry") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Job Industry"
-                  placeholder="Select Job Industry"
-                  options={[]}
-                  value={layoutForm.jobIndustry}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobIndustry: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "jobIndustry") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "jobIndustry") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Job Industry is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "jobLocationType") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Job Location Type"
-                  placeholder="Select Job Location Type"
-                  options={[]}
-                  value={layoutForm.jobLocationType}
-                  onValueChange={(value) =>
-                    setLayoutForm((prev) => ({ ...prev, jobLocationType: value }))
-                  }
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "jobLocationType") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "jobLocationType") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Job Location Type is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "jobLevel") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Job Level"
-                  placeholder="Select Job Level"
-                  options={[]}
-                  value={layoutForm.jobLevel}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobLevel: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "jobLevel") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "jobLevel") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Job Level is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "city") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="City"
-                  required={isLayoutRequired("jobDetails", "city")}
-                  placeholder="Search or Enter City"
-                  value={layoutForm.city}
-                  onChange={handleLayoutChange("city")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "city") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "city") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *City is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "suburb") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Suburb"
-                  required={isLayoutRequired("jobDetails", "suburb")}
-                  placeholder="Search or Enter Suburb"
-                  value={layoutForm.suburb}
-                  onChange={handleLayoutChange("suburb")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "suburb") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "suburb") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Suburb is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "state") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="State / Province"
-                  required={isLayoutRequired("jobDetails", "state")}
-                  placeholder="Search or Enter State / Province"
-                  value={layoutForm.state}
-                  onChange={handleLayoutChange("state")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "state") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "state") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *State / Province is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "country") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Country"
-                  required={isLayoutRequired("jobDetails", "country")}
-                  placeholder="Search or Enter Country"
-                  value={layoutForm.country}
-                  onChange={handleLayoutChange("country")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "country") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "country") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Country is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "postalCode") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Postal Code"
-                  required={isLayoutRequired("jobDetails", "postalCode")}
-                  placeholder="Search or Enter Postal Code"
-                  value={layoutForm.postalCode}
-                  onChange={handleLayoutChange("postalCode")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "postalCode") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "postalCode") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Postal Code is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "minSalary") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Minimum Salary"
-                  required={isLayoutRequired("jobDetails", "minSalary")}
-                  placeholder="e.g., 80000"
-                  value={layoutForm.minSalary}
-                  onChange={handleLayoutChange("minSalary")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "minSalary") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "minSalary") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Minimum Salary is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "maxSalary") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Maximum Salary"
-                  required={isLayoutRequired("jobDetails", "maxSalary")}
-                  placeholder="e.g., 100000"
-                  value={layoutForm.maxSalary}
-                  onChange={handleLayoutChange("maxSalary")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "maxSalary") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "maxSalary") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Maximum Salary is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "frequency") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Frequency"
-                  placeholder="Select Salary Frequency"
-                  options={[]}
-                  value={layoutForm.frequency}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, frequency: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "frequency") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "frequency") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Frequency is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "currency") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Currency"
-                  placeholder="Select Salary Currency Type"
-                  options={[]}
-                  value={layoutForm.currency}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, currency: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "currency") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "currency") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Currency is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("jobDetails", "educationalQualifications") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Educational Qualification"
-                  required={isLayoutRequired("jobDetails", "educationalQualifications")}
-                  placeholder="e.g., Bachelor of Computer Science"
-                  value={layoutForm.educationalQualification}
-                  onChange={handleLayoutChange("educationalQualification")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "educationalQualifications") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("jobDetails", "educationalQualifications") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Educational Qualification is required.
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
 
-          {isLayoutVisible("jobDetails", "jobDescription") && (
-            <div className="relative flex flex-col gap-3 pt-2">
-              <span className="text-[13px] font-[500] text-[#333333]">Job Description</span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FloatingLabelSelect
-                  label="Template"
-                  placeholder="Select a Job Description Template"
-                  options={[]}
-                  value={layoutForm.descriptionTemplate}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, descriptionTemplate: value }))}
-                />
-                <div className="relative">
+              {isLayoutVisible("jobDetails", "jobDescription") && (
+                <div className="relative flex flex-col gap-3 pt-2">
+                  <span className="text-[13px] font-[500] text-[#333333]">Job Description</span>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                    <FloatingLabelSelect
+                      label="Template"
+                      placeholder="Select a Job Description Template"
+                      options={[]}
+                      value={layoutForm.descriptionTemplate}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, descriptionTemplate: value }))}
+                    />
+                    <div className="relative">
+                      <FloatingLabelInput
+                        label="AI Assist"
+                        placeholder="Create Job Description with AI"
+                        className="pr-9"
+                        value={layoutForm.aiAssist}
+                        onChange={handleLayoutChange("aiAssist")}
+                      />
+                      <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#6E41E2]">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                          <path d="M10 3l1.5 3.5L15 8l-3.5 1.5L10 13l-1.5-3.5L5 8l3.5-1.5L10 3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                    </div>
+                  </div>
+                  <div className="border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden">
+                    <div className="flex flex-wrap items-center gap-2 px-3 py-1 min-h-[36px] border-b border-[#E6E6E6] text-[12px] text-[#333333]">
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn font-[600]"
+                        onClick={() => applyJobDescCommand("bold")}
+                        aria-label="Bold"
+                      >
+                        B
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn italic"
+                        onClick={() => applyJobDescCommand("italic")}
+                        aria-label="Italic"
+                      >
+                        I
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn underline"
+                        onClick={() => applyJobDescCommand("underline")}
+                        aria-label="Underline"
+                      >
+                        U
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn line-through"
+                        onClick={() => applyJobDescCommand("strikeThrough")}
+                        aria-label="Strikethrough"
+                      >
+                        S
+                      </button>
+                      <span className="mx-1 text-[#999999]">|</span>
+                      <select
+                        className="pf-job-editor-select"
+                        value={jobDescFont}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          setJobDescFont(value);
+                          applyJobDescCommand("fontName", value);
+                        }}
+                        aria-label="Font family"
+                      >
+                        <option value="Verdana">Verdana</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Georgia">Georgia</option>
+                      </select>
+                      <select
+                        className="pf-job-editor-select w-[52px]"
+                        value={jobDescFontSize}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          const sizeMap: Record<string, string> = {
+                            "10": "2",
+                            "12": "3",
+                            "14": "4",
+                            "16": "5",
+                            "18": "6",
+                            "24": "7"
+                          };
+                          setJobDescFontSize(value);
+                          applyJobDescCommand("fontSize", sizeMap[value] ?? "3");
+                        }}
+                        aria-label="Font size"
+                      >
+                        <option value="10">10</option>
+                        <option value="12">12</option>
+                        <option value="14">14</option>
+                        <option value="16">16</option>
+                        <option value="18">18</option>
+                        <option value="24">24</option>
+                      </select>
+                      <select
+                        className="pf-job-editor-select w-[82px]"
+                        value={jobDescLineHeight}
+                        onChange={(event) => {
+                          const value = event.target.value;
+                          setJobDescLineHeight(value);
+                        }}
+                        aria-label="Line height"
+                      >
+                        <option value="1.2">(1.2) Normal</option>
+                        <option value="1.4">(1.4) Relaxed</option>
+                        <option value="1.6">(1.6) Wide</option>
+                        <option value="1.8">(1.8) Extra</option>
+                      </select>
+                      <span className="mx-1 text-[#999999]">|</span>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("justifyLeft")}
+                        aria-label="Align left"
+                      >
+                        L
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("justifyCenter")}
+                        aria-label="Align center"
+                      >
+                        C
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("justifyRight")}
+                        aria-label="Align right"
+                      >
+                        R
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("insertUnorderedList")}
+                        aria-label="Bulleted list"
+                      >
+                        •
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("insertOrderedList")}
+                        aria-label="Numbered list"
+                      >
+                        1.
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("outdent")}
+                        aria-label="Outdent"
+                      >
+                        ‹
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("indent")}
+                        aria-label="Indent"
+                      >
+                        ›
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("superscript")}
+                        aria-label="Superscript"
+                      >
+                        x²
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("subscript")}
+                        aria-label="Subscript"
+                      >
+                        x₂
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => {
+                          const url = window.prompt("Enter URL");
+                          if (url) applyJobDescCommand("createLink", url);
+                        }}
+                        aria-label="Insert link"
+                      >
+                        ⛓
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => {
+                          const url = window.prompt("Enter image URL");
+                          if (url) applyJobDescCommand("insertImage", url);
+                        }}
+                        aria-label="Insert image"
+                      >
+                        ⧉
+                      </button>
+                      <button
+                        type="button"
+                        className="pf-job-editor-btn"
+                        onClick={() => applyJobDescCommand("removeFormat")}
+                        aria-label="Clear formatting"
+                      >
+                        ⨯
+                      </button>
+                    </div>
+                    <div
+                      ref={jobDescriptionRef}
+                      className={cn(
+                        "pf-job-editor min-h-[220px] w-full px-3 py-2 text-[13px] text-[#333333] focus:outline-none",
+                        showLayoutErrors &&
+                        isFieldMissing("jobDetails", "jobDescription") &&
+                        "border-t border-[#E53935]"
+                      )}
+                      style={{
+                        fontFamily: jobDescFont,
+                        fontSize: `${jobDescFontSize}px`,
+                        lineHeight: jobDescLineHeight,
+                      }}
+                      contentEditable
+                      suppressContentEditableWarning
+                      data-placeholder="Enter job description..."
+                      onInput={updateJobDescriptionFromEditor}
+                      onBlur={updateJobDescriptionFromEditor}
+                    />
+                  </div>
+                  {showLayoutErrors && isFieldMissing("jobDetails", "jobDescription") && (
+                    <span className="absolute left-0 -bottom-4 text-[11px] text-[#E53935]">
+                      *Job Description is required.
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {isLayoutVisible("jobDetails", "skills") && (
+                <div className="relative flex flex-col pb-[14px]">
                   <FloatingLabelInput
-                    label="AI Assist"
-                    placeholder="Create Job Description with AI"
-                    className="pr-9"
-                    value={layoutForm.aiAssist}
-                    onChange={handleLayoutChange("aiAssist")}
+                    label="Skills"
+                    required={isLayoutRequired("jobDetails", "skills")}
+                    placeholder="+ Add Skill"
+                    value={layoutForm.skills}
+                    onChange={handleLayoutChange("skills")}
+                    className={cn(
+                      showLayoutErrors &&
+                      isFieldMissing("jobDetails", "skills") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
                   />
-                  <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#6E41E2]">
-                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                      <path d="M10 3l1.5 3.5L15 8l-3.5 1.5L10 13l-1.5-3.5L5 8l3.5-1.5L10 3z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </div>
-              </div>
-              <div className="border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden">
-                <div className="flex items-center gap-2 px-3 h-[36px] border-b border-[#E6E6E6] text-[12px] text-[#333333]">
-                  <span className="font-[500]">B</span>
-                  <span className="italic">I</span>
-                  <span className="underline">U</span>
-                  <span className="mx-1 text-[#999999]">|</span>
-                  <span>Verdana</span>
-                  <span className="mx-1 text-[#999999]">|</span>
-                  <span>10</span>
-                  <span className="mx-1 text-[#999999]">|</span>
-                  <span>(1.2) Normal</span>
-                </div>
-                <textarea
-                  className={cn(
-                    "min-h-[220px] w-full px-3 py-2 text-[13px] text-[#333333] placeholder:text-[#999999] focus:outline-none",
-                    showLayoutErrors &&
-                      isFieldMissing("jobDetails", "jobDescription") &&
-                      "border-t border-[#E53935]"
+                  {showLayoutErrors && isFieldMissing("jobDetails", "skills") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Skills is required.
+                    </span>
                   )}
-                  placeholder=""
-                  value={layoutForm.jobDescription}
-                  onChange={handleLayoutChange("jobDescription")}
-                />
-              </div>
-              {showLayoutErrors && isFieldMissing("jobDetails", "jobDescription") && (
-                <span className="absolute left-0 -bottom-4 text-[11px] text-[#E53935]">
-                  *Job Description is required.
-                </span>
+                </div>
               )}
-            </div>
-          )}
 
-          {isLayoutVisible("jobDetails", "skills") && (
-            <div className="relative flex flex-col pb-[14px]">
-              <FloatingLabelInput
-                label="Skills"
-                required={isLayoutRequired("jobDetails", "skills")}
-                placeholder="+ Add Skill"
-                value={layoutForm.skills}
-                onChange={handleLayoutChange("skills")}
-                className={cn(
-                  showLayoutErrors &&
-                    isFieldMissing("jobDetails", "skills") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showLayoutErrors && isFieldMissing("jobDetails", "skills") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Skills is required.
-                </span>
+              {isLayoutVisible("jobDetails", "jobApplicationQuestions") && (
+                <div className="relative flex flex-col gap-2 pb-[14px]">
+                  <span className="text-[13px] font-[500] text-[#333333]">Job Application Questions for Candidates</span>
+                  <FloatingLabelSelect
+                    label="Select Questions"
+                    placeholder="Do you have experience in a sales role?"
+                    options={[]}
+                    value={layoutForm.jobQuestions}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobQuestions: value }))}
+                    className={cn(
+                      showLayoutErrors &&
+                      isFieldMissing("jobDetails", "jobApplicationQuestions") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  <div className="flex items-center justify-between text-[13px] text-[#333333]">
+                    <span>What is your expected annual salary?</span>
+                    {/* <button type="button" className="text-[#999999]">�</button> */}
+                  </div>
+                  {showLayoutErrors && isFieldMissing("jobDetails", "jobApplicationQuestions") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Job Application Questions is required.
+                    </span>
+                  )}            </div>
               )}
-            </div>
-          )}
-
-          {isLayoutVisible("jobDetails", "jobApplicationQuestions") && (
-            <div className="relative flex flex-col gap-2 pb-[14px]">
-              <span className="text-[13px] font-[500] text-[#333333]">Job Application Questions for Candidates</span>
-              <FloatingLabelSelect
-                label="Select Questions"
-                placeholder="Do you have experience in a sales role?"
-                options={[]}
-                value={layoutForm.jobQuestions}
-                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobQuestions: value }))}
-                className={cn(
-                  showLayoutErrors &&
-                    isFieldMissing("jobDetails", "jobApplicationQuestions") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              <div className="flex items-center justify-between text-[13px] text-[#333333]">
-                <span>What is your expected annual salary</span>
-                <button type="button" className="text-[#999999]">�</button>
-              </div>
-              {showLayoutErrors && isFieldMissing("jobDetails", "jobApplicationQuestions") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Job Application Questions is required.
-                </span>
-              )}            </div>
-          )}
             </div>
           )}
         </>
@@ -1305,350 +1581,367 @@ export const JobFields: React.FC = () => {
           />
           {layoutOpen.admin && (
             <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative">
-              <FloatingLabelInput
-                label="Job ID"
-                placeholder="System Generated ID"
-                value={layoutForm.jobId}
-                onChange={handleLayoutChange("jobId")}
-                className="pr-9"
-              />
-              <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#999999]">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <rect x="4" y="8" width="12" height="9" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </span>
-            </div>
-            <div className="relative">
-              <FloatingLabelInput
-                label="Job Status"
-                placeholder="Default Draft"
-                value={layoutForm.jobStatus}
-                onChange={handleLayoutChange("jobStatus")}
-                className="pr-9"
-              />
-              <span className="pointer-events-none absolute right-3 top-[38px] -translate-y-1/2 text-[#999999]">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-                  <rect x="4" y="8" width="12" height="9" rx="2" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </span>
-            </div>
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+                <div className="relative">
+                  <FloatingLabelInput
+                    label="Job ID"
+                    placeholder="System Generated ID"
+                    value={layoutForm.jobId}
+                    onChange={handleLayoutChange("jobId")}
+                    className="pr-9"
+                  />
+                  <span className="pointer-events-none absolute right-3 top-[44px] -translate-y-1/2 text-[#999999]">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <rect x="4" y="8" width="12" height="9" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </div>
+                <div className="relative">
+                  <FloatingLabelInput
+                    label="Job Status"
+                    placeholder="Default Draft"
+                    value={layoutForm.jobStatus}
+                    onChange={handleLayoutChange("jobStatus")}
+                    className="pr-9"
+                  />
+                  <span className="pointer-events-none absolute right-3 top-[44px] -translate-y-1/2 text-[#999999]">
+                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <rect x="4" y="8" width="12" height="9" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                      <path d="M7 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
 
-          {isLayoutVisible("admin", "companyName") && (
-            <div className="flex flex-col md:flex-row md:items-center gap-3">
-              <div className="relative flex-1 flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Company Name"
-                  required={isLayoutRequired("admin", "companyName")}
-                  placeholder="Select the company name you are hiring for"
-                  value={layoutForm.companyName}
-                  onChange={handleLayoutChange("companyName")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "companyName") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "companyName") && (
+              {isLayoutVisible("admin", "companyName") && (
+                <div className="flex flex-col md:flex-row md:items-center gap-3">
+                  <div className="relative flex-1 flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Company Name"
+                      required={isLayoutRequired("admin", "companyName")}
+                      placeholder="Select the company name you are hiring for"
+                      value={layoutForm.companyName}
+                      onChange={handleLayoutChange("companyName")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "companyName") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "companyName") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Company Name is required.
+                      </span>
+                    )}
+                  </div>
+                  <div className="md:pt-[14px]">
+                    <Button variant="contained" sx={primaryButtonSx}>
+                      Create New Company
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("admin", "contactName") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Contact Name"
+                      placeholder="Select Contact Name"
+                      options={[]}
+                      value={layoutForm.contactName}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactName: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "contactName") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "contactName") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Contact Name is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "contactEmail") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Contact Email"
+                      required={isLayoutRequired("admin", "contactEmail")}
+                      placeholder="Contact Email"
+                      value={layoutForm.contactEmail}
+                      onChange={handleLayoutChange("contactEmail")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "contactEmail") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "contactEmail") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Contact Email is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "contactPhone") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Contact Phone"
+                      required={isLayoutRequired("admin", "contactPhone")}
+                      placeholder="Contact Phone Number"
+                      value={layoutForm.contactPhone}
+                      onChange={handleLayoutChange("contactPhone")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "contactPhone") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "contactPhone") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Contact Phone is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "noOfPositions") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="No. of Positions"
+                      required={isLayoutRequired("admin", "noOfPositions")}
+                      placeholder="e.g., 1"
+                      value={layoutForm.positions}
+                      onChange={handleLayoutChange("positions")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "noOfPositions") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "noOfPositions") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *No. of Positions is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "hiringPipeline") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Hiring Pipeline"
+                      placeholder="Select Hiring Pipeline"
+                      options={[]}
+                      value={layoutForm.hiringPipeline}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, hiringPipeline: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "hiringPipeline") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "hiringPipeline") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Hiring Pipeline is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "targetDate") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Target Date"
+                      required={isLayoutRequired("admin", "targetDate")}
+                      placeholder="e.g., 31/10/2025"
+                      type="date"
+                      ref={targetDateRef}
+                      value={layoutForm.targetDate}
+                      onChange={handleLayoutChange("targetDate")}
+                      onClick={() => openDatePicker(targetDateRef)}
+                      className={cn(
+                        "pr-9 pf-hide-native-date-icon",
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "targetDate") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    <span className="pointer-events-none absolute right-3 top-11 -translate-y-1/2 text-[#666666]/70">
+                      <CalendarIcon />
+                    </span>
+                    {showLayoutErrors && isFieldMissing("admin", "targetDate") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Target Date is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "minExperience") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Minimum Experience"
+                      placeholder="0 Years"
+                      options={[]}
+                      value={layoutForm.minExperience}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, minExperience: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "minExperience") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "minExperience") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Minimum Experience is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "maxExperience") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Maximum Experience"
+                      placeholder="0 Years"
+                      options={[]}
+                      value={layoutForm.maxExperience}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, maxExperience: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "maxExperience") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "maxExperience") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Maximum Experience is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "jobOwner") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Job Owner"
+                      required={isLayoutRequired("admin", "jobOwner")}
+                      placeholder="Lead Recruiter for This Role"
+                      value={layoutForm.jobOwner}
+                      onChange={handleLayoutChange("jobOwner")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "jobOwner") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "jobOwner") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Job Owner is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "hiringManager") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Hiring Manager"
+                      required={isLayoutRequired("admin", "hiringManager")}
+                      placeholder="Search for Reporting Manager"
+                      value={layoutForm.hiringManager}
+                      onChange={handleLayoutChange("hiringManager")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "hiringManager") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "hiringManager") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Hiring Manager is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {isLayoutVisible("admin", "interviewScorecard") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Interview Scorecard"
+                      placeholder="e.g., Standard Engineering Template"
+                      options={[]}
+                      value={layoutForm.interviewScorecard}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, interviewScorecard: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isFieldMissing("admin", "interviewScorecard") &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors && isFieldMissing("admin", "interviewScorecard") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Interview Scorecard is required.
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {isLayoutVisible("admin", "enableJobApplication") && (
+                <div className="relative flex flex-col gap-2 pb-[14px]">
+                  <span className="text-[13px] border-b border-[#CCCCCC80] pb-2 font-[500] text-[#333333]">Job Application Form</span>
+                  <div className="flex items-center gap-3 pt-2">
+                    <Checkbox
+                      checked={layoutForm.enableJobApplication}
+                      onChange={(event) =>
+                        setLayoutForm((prev) => ({ ...prev, enableJobApplication: event.target.checked }))
+                      }
+                      size="small"
+                      sx={{
+                        padding: 0,
+                        "& .MuiSvgIcon-root": { fontSize: 18 },
+                        "&.Mui-checked": { color: "#22C55E" },
+                        "&.Mui-checked:hover": { backgroundColor: "transparent" },
+                        "&:hover": { backgroundColor: "transparent" },
+                      }}
+                      inputProps={{ "aria-label": "Enable Job Application Form" }}
+                    />
+                    <span className="text-[13px] text-[#333333]">Enable Job Application Form</span>
+                  </div>
+                  {showLayoutErrors && isFieldMissing("admin", "enableJobApplication") && (
                     <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Company Name is required.
+                      *Enable Job Application is required.
                     </span>
                   )}
-              </div>
-              <div className="md:pt-[14px]">
-                <Button variant="contained" sx={primaryButtonSx}>
-                  Create New Company
-                </Button>
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {isLayoutVisible("admin", "contactName") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Contact Name"
-                  placeholder="Select Contact Name"
-                  options={[]}
-                  value={layoutForm.contactName}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactName: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "contactName") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "contactName") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Contact Name is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "contactEmail") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Contact Email"
-                  required={isLayoutRequired("admin", "contactEmail")}
-                  placeholder="Contact Email"
-                  value={layoutForm.contactEmail}
-                  onChange={handleLayoutChange("contactEmail")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "contactEmail") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "contactEmail") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Contact Email is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "contactPhone") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Contact Phone"
-                  required={isLayoutRequired("admin", "contactPhone")}
-                  placeholder="Contact Phone Number"
-                  value={layoutForm.contactPhone}
-                  onChange={handleLayoutChange("contactPhone")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "contactPhone") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "contactPhone") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Contact Phone is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "noOfPositions") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="No. of Positions"
-                  required={isLayoutRequired("admin", "noOfPositions")}
-                  placeholder="e.g., 1"
-                  value={layoutForm.positions}
-                  onChange={handleLayoutChange("positions")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "noOfPositions") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "noOfPositions") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *No. of Positions is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "hiringPipeline") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Hiring Pipeline"
-                  placeholder="Select Hiring Pipeline"
-                  options={[]}
-                  value={layoutForm.hiringPipeline}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, hiringPipeline: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "hiringPipeline") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "hiringPipeline") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Hiring Pipeline is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "targetDate") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Target Date"
-                  required={isLayoutRequired("admin", "targetDate")}
-                  placeholder="e.g., 31/10/2025"
-                  value={layoutForm.targetDate}
-                  onChange={handleLayoutChange("targetDate")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "targetDate") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "targetDate") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Target Date is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "minExperience") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Minimum Experience"
-                  placeholder="0 Years"
-                  options={[]}
-                  value={layoutForm.minExperience}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, minExperience: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "minExperience") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "minExperience") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Minimum Experience is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "maxExperience") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Maximum Experience"
-                  placeholder="0 Years"
-                  options={[]}
-                  value={layoutForm.maxExperience}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, maxExperience: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "maxExperience") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "maxExperience") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Maximum Experience is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "jobOwner") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Job Owner"
-                  required={isLayoutRequired("admin", "jobOwner")}
-                  placeholder="Lead Recruiter for This Role"
-                  value={layoutForm.jobOwner}
-                  onChange={handleLayoutChange("jobOwner")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "jobOwner") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "jobOwner") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Job Owner is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "hiringManager") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelInput
-                  label="Hiring Manager"
-                  required={isLayoutRequired("admin", "hiringManager")}
-                  placeholder="Search for Reporting Manager"
-                  value={layoutForm.hiringManager}
-                  onChange={handleLayoutChange("hiringManager")}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "hiringManager") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "hiringManager") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Hiring Manager is required.
-                  </span>
-                )}
-              </div>
-            )}
-            {isLayoutVisible("admin", "interviewScorecard") && (
-              <div className="relative flex flex-col pb-[14px]">
-                <FloatingLabelSelect
-                  label="Interview Scorecard"
-                  placeholder="e.g., Standard Engineering Template"
-                  options={[]}
-                  value={layoutForm.interviewScorecard}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, interviewScorecard: value }))}
-                  className={cn(
-                    showLayoutErrors &&
-                      isFieldMissing("admin", "interviewScorecard") &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                  )}
-                />
-                {showLayoutErrors && isFieldMissing("admin", "interviewScorecard") && (
-                  <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                    *Interview Scorecard is required.
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-
-          {isLayoutVisible("admin", "enableJobApplication") && (
-            <div className="relative flex flex-col gap-2 pb-[14px]">
-              <span className="text-[13px] font-[500] text-[#333333]">Job Application Form</span>
-              <div className="flex items-center gap-3">
-                <Toggle
-                  enabled={layoutForm.enableJobApplication}
-                  onChange={(val) => setLayoutForm((prev) => ({ ...prev, enableJobApplication: val }))}
-                  ariaLabel="Enable Job Application Form"
-                />
-                <span className="text-[13px] text-[#333333]">Enable Job Application Form</span>
-              </div>
-              {showLayoutErrors && isFieldMissing("admin", "enableJobApplication") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Enable Job Application is required.
-                </span>
+                </div>
               )}
-            </div>
-          )}
 
-          {isLayoutVisible("admin", "hiringTeamMembers") && (
-            <div className="relative flex flex-col gap-2 pb-[14px]">
-              <span className="text-[13px] font-[500] text-[#333333]">Add Hiring Team Members</span>
-              <div className="text-[12px] text-[#666666]">Manage the hiring team involved with this position</div>
-              <FloatingLabelSelect
-                label="User / Team"
-                placeholder="Select a User or Team"
-                options={[]}
-                value={layoutForm.hiringTeam}
-                onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, hiringTeam: value }))}
-                className={cn(
-                  showLayoutErrors &&
-                    isFieldMissing("admin", "hiringTeamMembers") &&
-                    "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                )}
-              />
-              {showLayoutErrors && isFieldMissing("admin", "hiringTeamMembers") && (
-                <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                  *Hiring Team Members is required.
-                </span>
+              {isLayoutVisible("admin", "hiringTeamMembers") && (
+                <div className="relative flex flex-col gap-2 pb-[14px]">
+                  <span className="text-[13px] border-b border-[#CCCCCC80] font-[500] text-[#333333]  pb-2">Add Hiring Team Members</span>
+                  <div className="text-[12px]  pt-2 text-[#666666]">Manage the hiring team involved with this position</div>
+                  <FloatingLabelSelect
+                    label="User / Team"
+                    placeholder="Select a User or Team"
+                    options={[]}
+                    value={layoutForm.hiringTeam}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, hiringTeam: value }))}
+                    className={cn(
+                      showLayoutErrors &&
+                      isFieldMissing("admin", "hiringTeamMembers") &&
+                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                    )}
+                  />
+                  {showLayoutErrors && isFieldMissing("admin", "hiringTeamMembers") && (
+                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                      *Hiring Team Members is required.
+                    </span>
+                  )}
+                </div>
               )}
-            </div>
-          )}
             </div>
           )}
         </>
       )}
 
-      <div className="flex justify-end gap-3 pt-2">
+      {/* <div className="flex justify-end gap-3 pt-2">
         <Button
           variant="outlined"
           sx={outlineButtonSx}
@@ -1670,7 +1963,7 @@ export const JobFields: React.FC = () => {
         >
           Add Job
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 
@@ -1678,6 +1971,52 @@ export const JobFields: React.FC = () => {
 
   return (
     <div className="flex flex-col w-full">
+      <style>{`
+        .pf-job-editor:empty:before {
+          content: attr(data-placeholder);
+          color: #999999;
+        }
+        .pf-job-editor a {
+          color: #6E41E2;
+          text-decoration: underline;
+        }
+        .pf-job-editor ul,
+        .pf-job-editor ol {
+          padding-left: 18px;
+        }
+        .pf-job-editor-btn {
+          height: 24px;
+          min-width: 24px;
+          padding: 0 6px;
+          border-radius: 4px;
+          color: #333333;
+          border: 1px solid transparent;
+        }
+        .pf-job-editor-btn:hover {
+          background: #F3F4F6;
+          border-color: #E6E6E6;
+        }
+        .pf-job-editor-select {
+          height: 24px;
+          border: 1px solid #E6E6E6;
+          border-radius: 4px;
+          padding: 0 6px;
+          background: #FFFFFF;
+          color: #333333;
+        }
+        .pf-hide-native-date-icon::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          display: none;
+        }
+        .pf-hide-native-date-icon::-webkit-clear-button,
+        .pf-hide-native-date-icon::-webkit-inner-spin-button {
+          display: none;
+        }
+        .pf-hide-native-date-icon {
+          -webkit-appearance: none;
+          appearance: none;
+        }
+      `}</style>
 
       <TabsComponent
         tabs={[
@@ -1690,4 +2029,3 @@ export const JobFields: React.FC = () => {
 };
 
 export default JobFields;
-
