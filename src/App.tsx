@@ -71,6 +71,8 @@ const ContactStagePage = React.lazy(() => import("./pages/settings/customisation
 const MeetingTypePage = React.lazy(() => import("./pages/settings/customisation/MeetingType"));
 const NoteTypePage = React.lazy(() => import("./pages/settings/customisation/NoteType"));
 const TaskTypePage = React.lazy(() => import("./pages/settings/customisation/TaskType"));
+const CustomisationTagsPage = React.lazy(() => import("./pages/settings/customisation/Tags"));
+const CustomisationSkillSetPage = React.lazy(() => import("./pages/settings/customisation/SkillSet"));
 
 const LoadingFallback: React.FC = () => <LoadingSpinner isLoading />;
 
@@ -184,6 +186,8 @@ const App: React.FC = () => {
             <Route path="customisation/meeting-type" element={<MeetingTypePage />} />
             <Route path="customisation/note-type" element={<NoteTypePage />} />
             <Route path="customisation/task-type" element={<TaskTypePage />} />
+            <Route path="customisation/tags" element={<CustomisationTagsPage />} />
+            <Route path="customisation/skill-set" element={<CustomisationSkillSetPage />} />
           </Route>
         </Route>
 

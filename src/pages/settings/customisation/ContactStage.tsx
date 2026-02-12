@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import { Button, Tooltip } from "@mui/material";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
   height: "36px",
@@ -39,6 +39,10 @@ const ContactStage: React.FC = () => {
   const [stages, setStages] = useState(initialStages);
   const [isAdding, setIsAdding] = useState(false);
   const [newStage, setNewStage] = useState("");
+  const [dragStageId, setDragStageId] = useState<string | null>(null);
+
+  const deleteTooltip =
+    "You want to Remove this field? Your data associated with this field will be set as Empty!";
 
   const handleAddStage = () => {
     setIsAdding(true);
@@ -61,6 +65,48 @@ const ContactStage: React.FC = () => {
     handleCancelAdd();
   };
 
+  const handleDragStartStage = (stageId: string, event: React.DragEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-row='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", stageId);
+    setDragStageId(stageId);
+  };
+
+  const handleDragEndStage = () => {
+    setDragStageId(null);
+  };
+
+  const handleDragOverStage = (event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragStageId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDropStage = (targetStageId: string, event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const sourceId = dragStageId ?? event.dataTransfer.getData("text/plain");
+    if (!sourceId || sourceId === targetStageId) {
+      setDragStageId(null);
+      return;
+    }
+
+    setStages((prev) => {
+      const sourceIndex = prev.findIndex((stage) => stage.id === sourceId);
+      const targetIndex = prev.findIndex((stage) => stage.id === targetStageId);
+      if (sourceIndex === -1 || targetIndex === -1) return prev;
+      const next = [...prev];
+      const [moved] = next.splice(sourceIndex, 1);
+      next.splice(targetIndex, 0, moved);
+      return next;
+    });
+
+    setDragStageId(null);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
@@ -75,7 +121,7 @@ const ContactStage: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
-        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80]">
+        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#EAEAEA26]">
           <span className="text-[14px] font-[500] text-[#333333]">Contact Stage</span>
         </div>
 
@@ -85,13 +131,44 @@ const ContactStage: React.FC = () => {
               <div
                 key={stage.id}
                 className="flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[44px] bg-white"
+                data-drag-row="true"
+                onDragOver={handleDragOverStage}
+                onDrop={(event) => handleDropStage(stage.id, event)}
               >
                 <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                  <GripIcon />
+                  <button
+                    type="button"
+                    draggable
+                    aria-label={`Reorder ${stage.label}`}
+                    className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+                    onDragStart={(event) => handleDragStartStage(stage.id, event)}
+                    onDragEnd={handleDragEndStage}
+                    onClick={(event) => event.stopPropagation()}
+                    onMouseDown={(event) => event.stopPropagation()}
+                  >
+                    <GripIcon />
+                  </button>
                   <span>{stage.label}</span>
                 </div>
                 <div className="flex items-center justify-center text-[#666666]">
-                  <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                  <Tooltip
+                    title={deleteTooltip}
+                    placement="left"
+                    arrow
+                    componentsProps={{
+                      tooltip: { sx: { bgcolor: "#797979" } },
+                      arrow: { sx: { color: "#797979" } },
+                      popper: { sx: { zIndex: 2400 } }
+                    }}
+                  >
+                    <button
+                      type="button"
+                      aria-label={`Delete ${stage.label}`}
+                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6]"
+                    >
+                      <TrashIcon size={18} />
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             ))}
@@ -109,7 +186,24 @@ const ContactStage: React.FC = () => {
                   />
                 </div>
                 <div className="flex items-center justify-center text-[#666666]">
-                  <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                  <Tooltip
+                    title={deleteTooltip}
+                    placement="left"
+                    arrow
+                    componentsProps={{
+                      tooltip: { sx: { bgcolor: "#797979" } },
+                      arrow: { sx: { color: "#797979" } },
+                      popper: { sx: { zIndex: 2400 } }
+                    }}
+                  >
+                    <button
+                      type="button"
+                      aria-label="Delete new stage"
+                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6]"
+                    >
+                      <TrashIcon size={18} />
+                    </button>
+                  </Tooltip>
                 </div>
               </div>
             )}

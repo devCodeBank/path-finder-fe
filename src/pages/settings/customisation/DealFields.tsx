@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
+import { Tooltip } from "@mui/material";
 import { cn } from "@/lib/utils";
 
 type FieldRow = {
@@ -21,24 +22,29 @@ type Section = {
 const Toggle = ({
   enabled,
   onChange,
-  ariaLabel
+  ariaLabel,
+  disabled = false
 }: {
   enabled: boolean;
   onChange: (val: boolean) => void;
   ariaLabel: string;
+  disabled?: boolean;
 }) => {
   return (
     <button
       type="button"
       aria-pressed={enabled}
       aria-label={ariaLabel}
+      disabled={disabled}
       onClick={(event) => {
+        if (disabled) return;
         event.stopPropagation();
         onChange(!enabled);
       }}
       className={cn(
         "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 outline-none",
-        enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]"
+        enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]",
+        disabled && "cursor-not-allowed opacity-60"
       )}
     >
       <span
@@ -54,24 +60,29 @@ const Toggle = ({
 const Flag = ({
   checked,
   onChange,
-  ariaLabel
+  ariaLabel,
+  disabled = false
 }: {
   checked: boolean;
   onChange: (val: boolean) => void;
   ariaLabel: string;
+  disabled?: boolean;
 }) => {
   return (
     <button
       type="button"
       aria-pressed={checked}
       aria-label={ariaLabel}
+      disabled={disabled}
       onClick={(event) => {
+        if (disabled) return;
         event.stopPropagation();
         onChange(!checked);
       }}
       className={cn(
         "h-[14px] w-[14px] rounded-[3px] border flex items-center justify-center",
-        checked ? "bg-[#57CC4D] border-[#57CC4D]" : "bg-white border-[#D7D7D7]"
+        checked ? "bg-[#57CC4D] border-[#57CC4D]" : "bg-white border-[#D7D7D7]",
+        disabled && "cursor-not-allowed opacity-60"
       )}
     >
       {checked && (
@@ -104,11 +115,21 @@ const SectionCard = ({
   section,
   collapsed,
   onToggleCollapse,
+  onEditTitle,
+  onDragStartRow,
+  onDragEndRow,
+  onDragOverRow,
+  onDropRow,
   onToggleRow
 }: {
   section: Section;
   collapsed: boolean;
   onToggleCollapse: (sectionId: string) => void;
+  onEditTitle: (section: Section) => void;
+  onDragStartRow: (sectionId: string, rowId: string, event: React.DragEvent<HTMLButtonElement>) => void;
+  onDragEndRow: () => void;
+  onDragOverRow: (sectionId: string, event: React.DragEvent<HTMLDivElement>) => void;
+  onDropRow: (sectionId: string, rowId: string, event: React.DragEvent<HTMLDivElement>) => void;
   onToggleRow: (sectionId: string, rowId: string, key: keyof FieldRow, value: boolean) => void;
 }) => {
   return (
@@ -120,15 +141,28 @@ const SectionCard = ({
         <div className="flex items-center gap-2 text-[14px] text-[#333333] font-[500]">
           <span className="text-[#333333] ">{section.title}</span>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            aria-label={`Edit ${section.title}`}
-            className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
-            onClick={(event) => event.stopPropagation()}
+        <div className="flex items-center gap-10">
+          <Tooltip
+            title="Edit"
+            arrow
+            componentsProps={{
+              tooltip: { sx: { bgcolor: "#797979" } },
+              arrow: { sx: { color: "#797979" } },
+              popper: { sx: { zIndex: 2400 } }
+            }}
           >
-            <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
-          </button>
+            <button
+              type="button"
+              aria-label={`Edit ${section.title}`}
+              className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEditTitle(section);
+              }}
+            >
+              <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
+            </button>
+          </Tooltip>
           <button
             type="button"
             aria-label={`Toggle ${section.title}`}
@@ -160,9 +194,23 @@ const SectionCard = ({
               <div
                 key={row.id}
                 className="grid grid-cols-[32px_2.2fr_1.6fr_0.8fr_0.8fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[6px] bg-white"
+                data-drag-row="true"
+                onDragOver={(event) => onDragOverRow(section.id, event)}
+                onDrop={(event) => onDropRow(section.id, row.id, event)}
               >
                 <div className="flex items-center justify-center">
-                  <GripIcon />
+                  <button
+                    type="button"
+                    draggable
+                    aria-label={`Reorder ${row.label}`}
+                    className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+                    onDragStart={(event) => onDragStartRow(section.id, row.id, event)}
+                    onDragEnd={onDragEndRow}
+                    onClick={(event) => event.stopPropagation()}
+                    onMouseDown={(event) => event.stopPropagation()}
+                  >
+                    <GripIcon />
+                  </button>
                 </div>
                 <span className="font-[500] text-[13px]">{row.label}</span>
                 <span className="text-[13px] font-[400] text-[#333333]/70">{row.type}</span>
@@ -171,6 +219,7 @@ const SectionCard = ({
                     enabled={row.visibility}
                     onChange={(val) => onToggleRow(section.id, row.id, "visibility", val)}
                     ariaLabel={`Toggle visibility for ${row.label}`}
+                    disabled
                   />
                 </div>
                 <div className="flex justify-center">
@@ -178,6 +227,7 @@ const SectionCard = ({
                     checked={row.required}
                     onChange={(val) => onToggleRow(section.id, row.id, "required", val)}
                     ariaLabel={`Toggle required for ${row.label}`}
+                    disabled
                   />
                 </div>
               </div>
@@ -220,6 +270,9 @@ const DealFields: React.FC = () => {
 
   const [sections, setSections] = useState<Section[]>(initialSections);
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
+  const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
+  const [editingSectionTitle, setEditingSectionTitle] = useState("");
+  const [dragRow, setDragRow] = useState<{ sectionId: string; rowId: string } | null>(null);
 
   const handleToggleRow = (
     sectionId: string,
@@ -244,6 +297,95 @@ const DealFields: React.FC = () => {
     setCollapsedSections((prev) => ({ ...prev, [sectionId]: !prev[sectionId] }));
   };
 
+  const handleDragStartRow = (
+    sectionId: string,
+    rowId: string,
+    event: React.DragEvent<HTMLButtonElement>
+  ) => {
+    event.stopPropagation();
+    const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-row='true']") as HTMLElement | null;
+    if (dragTarget) {
+      event.dataTransfer.setDragImage(dragTarget, 0, 0);
+    }
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", `${sectionId}:${rowId}`);
+    setDragRow({ sectionId, rowId });
+  };
+
+  const handleDragEndRow = () => {
+    setDragRow(null);
+  };
+
+  const handleDragOverRow = (sectionId: string, event: React.DragEvent<HTMLDivElement>) => {
+    if (!dragRow || dragRow.sectionId !== sectionId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDropRow = (
+    sectionId: string,
+    targetRowId: string,
+    event: React.DragEvent<HTMLDivElement>
+  ) => {
+    event.preventDefault();
+    const sourcePayload = dragRow?.sectionId === sectionId ? dragRow : null;
+    if (!sourcePayload) {
+      const data = event.dataTransfer.getData("text/plain");
+      const [payloadSectionId, payloadRowId] = data.split(":");
+      if (payloadSectionId !== sectionId) {
+        setDragRow(null);
+        return;
+      }
+      if (!payloadRowId || payloadRowId === targetRowId) {
+        setDragRow(null);
+        return;
+      }
+      setDragRow({ sectionId: payloadSectionId, rowId: payloadRowId });
+    }
+
+    const sourceRowId = sourcePayload ? sourcePayload.rowId : dragRow?.rowId;
+    if (!sourceRowId || sourceRowId === targetRowId) {
+      setDragRow(null);
+      return;
+    }
+
+    setSections((prev) =>
+      prev.map((section) => {
+        if (section.id !== sectionId) return section;
+        const sourceIndex = section.rows.findIndex((row) => row.id === sourceRowId);
+        const targetIndex = section.rows.findIndex((row) => row.id === targetRowId);
+        if (sourceIndex === -1 || targetIndex === -1) return section;
+        const nextRows = [...section.rows];
+        const [moved] = nextRows.splice(sourceIndex, 1);
+        nextRows.splice(targetIndex, 0, moved);
+        return { ...section, rows: nextRows };
+      })
+    );
+    setDragRow(null);
+  };
+
+  const handleOpenEditSectionTitle = (section: Section) => {
+    setEditingSectionId(section.id);
+    setEditingSectionTitle(section.title);
+  };
+
+  const handleCloseEditSectionTitle = () => {
+    setEditingSectionId(null);
+    setEditingSectionTitle("");
+  };
+
+  const handleSaveEditSectionTitle = () => {
+    if (!editingSectionId) return;
+    const nextTitle = editingSectionTitle.trim();
+    if (!nextTitle) return;
+    setSections((prev) =>
+      prev.map((section) =>
+        section.id === editingSectionId ? { ...section, title: nextTitle } : section
+      )
+    );
+    handleCloseEditSectionTitle();
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-4">
@@ -253,10 +395,56 @@ const DealFields: React.FC = () => {
             section={section}
             collapsed={Boolean(collapsedSections[section.id])}
             onToggleCollapse={handleToggleCollapse}
+            onEditTitle={handleOpenEditSectionTitle}
+            onDragStartRow={handleDragStartRow}
+            onDragEndRow={handleDragEndRow}
+            onDragOverRow={handleDragOverRow}
+            onDropRow={handleDropRow}
             onToggleRow={handleToggleRow}
           />
         ))}
       </div>
+      {editingSectionId && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
+          onClick={handleCloseEditSectionTitle}
+        >
+          <div
+            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div className="text-[16px] font-[600] text-[#333333]">Edit Section Name</div>
+              <button
+                type="button"
+                aria-label="Close"
+                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
+                onClick={handleCloseEditSectionTitle}
+              >
+                x
+              </button>
+            </div>
+            <div className="mt-6">
+              <input
+                type="text"
+                value={editingSectionTitle}
+                onChange={(event) => setEditingSectionTitle(event.target.value)}
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                placeholder="Section name"
+              />
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                onClick={handleSaveEditSectionTitle}
+              >
+                Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

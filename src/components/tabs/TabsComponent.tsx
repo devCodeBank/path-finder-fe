@@ -11,6 +11,8 @@ interface TabsComponentProps {
     content: React.ReactNode;
   }[];
   defaultTab?: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 const StyledTabs = styled(Tabs)`
@@ -38,10 +40,15 @@ const StyledTabs = styled(Tabs)`
 `;
 
 export default function TabsComponent(props: TabsComponentProps) {
-  const [value, setValue] = useState(props.defaultTab || props.tabs[0].value);
+  const [internalValue, setInternalValue] = useState(props.defaultTab || props.tabs[0].value);
+  const value = props.value ?? internalValue;
 
   const handleChange = (_event: React.SyntheticEvent, newValue: string) => {
-    setValue(newValue);
+    if (props.onChange) {
+      props.onChange(newValue);
+      return;
+    }
+    setInternalValue(newValue);
   };
 
   return (

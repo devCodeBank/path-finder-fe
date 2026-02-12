@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
   height: "36px",
@@ -28,6 +28,8 @@ const TaskType: React.FC = () => {
   const [types, setTypes] = useState(initialTypes);
   const [isAdding, setIsAdding] = useState(false);
   const [newType, setNewType] = useState("");
+  const lockedTooltip = "Certain status cannot be edited, deleted or moved.";
+  const deleteTooltip = "You want to Remove this field? Your data associated with this field will be set as Empty!";
 
   const handleAddType = () => {
     setIsAdding(true);
@@ -64,7 +66,7 @@ const TaskType: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
-        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80]">
+        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#EAEAEA26]">
           <span className="text-[14px] font-[500] text-[#333333]">Task Type</span>
         </div>
 
@@ -80,9 +82,35 @@ const TaskType: React.FC = () => {
                 </div>
                 <div className="flex items-center justify-center text-[#666666]">
                   {type.icon === "delete" ? (
-                    <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                    <Tooltip
+                      title={deleteTooltip}
+                      arrow
+                      placement="left"
+                      componentsProps={{
+                        tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                        arrow: { sx: { color: "#797979" } },
+                        popper: { sx: { zIndex: 2400 } }
+                      }}
+                    >
+                      <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                        <TrashIcon size={18} />
+                      </span>
+                    </Tooltip>
                   ) : (
-                    <InfoOutlinedIcon sx={{ fontSize: 18 }} />
+                    <Tooltip
+                      title={lockedTooltip}
+                      arrow
+                      placement="left"
+                      componentsProps={{
+                        tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                        arrow: { sx: { color: "#797979" } },
+                        popper: { sx: { zIndex: 2400 } }
+                      }}
+                    >
+                      <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999]">
+                        <InfoOutlinedIcon sx={{ fontSize: 18, color: "#999999" }} />
+                      </span>
+                    </Tooltip>
                   )}
                 </div>
               </div>
@@ -100,7 +128,20 @@ const TaskType: React.FC = () => {
                   />
                 </div>
                 <div className="flex items-center justify-center text-[#666666]">
-                  <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                  <Tooltip
+                    title={deleteTooltip}
+                    arrow
+                    placement="left"
+                    componentsProps={{
+                      tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                      arrow: { sx: { color: "#797979" } },
+                      popper: { sx: { zIndex: 2400 } }
+                    }}
+                  >
+                    <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                      <TrashIcon size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
               </div>
             )}

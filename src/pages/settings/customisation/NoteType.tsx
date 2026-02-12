@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
   height: "36px",
@@ -19,14 +20,16 @@ const primaryButtonSx = {
 };
 
 const initialTypes = [
-  { id: "call", label: "Call" },
-  { id: "to-do", label: "To Do" }
+  { id: "call", label: "Call", deletable: false },
+  { id: "to-do", label: "To Do", deletable: false }
 ];
 
 const NoteType: React.FC = () => {
   const [types, setTypes] = useState(initialTypes);
   const [isAdding, setIsAdding] = useState(false);
   const [newType, setNewType] = useState("");
+  const lockedTooltip = "Certain status cannot be edited, deleted or moved.";
+  const deleteTooltip = "You want to Remove this field? Your data associated with this field will be set as Empty!";
 
   const handleAddType = () => {
     setIsAdding(true);
@@ -44,7 +47,7 @@ const NoteType: React.FC = () => {
     }
     setTypes((prev) => [
       ...prev,
-      { id: `${label.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`, label }
+      { id: `${label.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`, label, deletable: true }
     ]);
     handleCancelAdd();
   };
@@ -63,7 +66,7 @@ const NoteType: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
-        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80]">
+        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#EAEAEA26]">
           <span className="text-[14px] font-[500] text-[#333333]">Note Type</span>
         </div>
 
@@ -78,7 +81,37 @@ const NoteType: React.FC = () => {
                   <span>{type.label}</span>
                 </div>
                 <div className="flex items-center justify-center text-[#666666]">
-                  <InfoOutlinedIcon sx={{ fontSize: 18 }} />
+                  {type.deletable ? (
+                    <Tooltip
+                      title={deleteTooltip}
+                      arrow
+                      placement="left"
+                      componentsProps={{
+                        tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                        arrow: { sx: { color: "#797979" } },
+                        popper: { sx: { zIndex: 2400 } }
+                      }}
+                    >
+                      <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                        <TrashIcon size={18} />
+                      </span>
+                    </Tooltip>
+                  ) : (
+                    <Tooltip
+                      title={lockedTooltip}
+                      arrow
+                      placement="left"
+                      componentsProps={{
+                        tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                        arrow: { sx: { color: "#797979" } },
+                        popper: { sx: { zIndex: 2400 } }
+                      }}
+                    >
+                      <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999]">
+                        <InfoOutlinedIcon sx={{ fontSize: 18, color: "#999999" }} />
+                      </span>
+                    </Tooltip>
+                  )}
                 </div>
               </div>
             ))}
@@ -95,7 +128,20 @@ const NoteType: React.FC = () => {
                   />
                 </div>
                 <div className="flex items-center justify-center text-[#666666]">
-                  <InfoOutlinedIcon sx={{ fontSize: 18 }} />
+                  <Tooltip
+                    title={deleteTooltip}
+                    arrow
+                    placement="left"
+                    componentsProps={{
+                      tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                      arrow: { sx: { color: "#797979" } },
+                      popper: { sx: { zIndex: 2400 } }
+                    }}
+                  >
+                    <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                      <TrashIcon size={18} />
+                    </span>
+                  </Tooltip>
                 </div>
               </div>
             )}

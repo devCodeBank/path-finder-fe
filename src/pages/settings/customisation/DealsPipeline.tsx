@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
   height: "36px",
@@ -230,7 +230,7 @@ const DealsPipeline: React.FC = () => {
                           }}
                         >
                           <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
-                            <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                            <TrashIcon size={18} />
                           </span>
                         </Tooltip>
                       ) : (
@@ -280,7 +280,7 @@ const DealsPipeline: React.FC = () => {
                         <div className="h-[8px] w-full rounded-full bg-[#F5F5F5]" />
                       </div>
                       <div className="flex items-center justify-center text-[#666666]">
-                        <DeleteOutlineIcon sx={{ fontSize: 18 }} />
+                        <TrashIcon size={18} />
                       </div>
                     </div>
                   )}
