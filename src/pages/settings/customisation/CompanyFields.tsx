@@ -253,7 +253,7 @@ const SectionCard = ({
             ariaLabel={`Toggle ${section.title}`}
           />
           <Tooltip
-            title="Edit"
+            title="Edit Section Name"
             arrow
             placement="left"
             componentsProps={{
@@ -718,6 +718,17 @@ export const CompanyFields: React.FC = () => {
     return sections.find((section) => section.id === sectionId)?.enabled ?? true;
   };
 
+  const sectionOrder = useMemo(
+    () =>
+      sections.reduce<Record<string, number>>((acc, section, index) => {
+        acc[section.id] = index;
+        return acc;
+      }, {}),
+    [sections]
+  );
+
+  const getSectionOrder = (sectionId: string) => sectionOrder[sectionId] ?? Number.MAX_SAFE_INTEGER;
+
   const getFieldValue = (sectionId: string, rowId: string) => {
     const key = `${sectionId}.${rowId}`;
     const values: Record<string, string | boolean> = {
@@ -884,7 +895,7 @@ export const CompanyFields: React.FC = () => {
       <div className="flex justify-end">
         <button
           type="button"
-          className="h-[36px] px-4 rounded-[4px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+          className="h-[36px] px-4 rounded-[4px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4] cursor-pointer"
           onClick={() => {
             const state: Record<string, Record<string, FieldRow>> = {};
             sections.forEach((section) => {
@@ -961,148 +972,150 @@ export const CompanyFields: React.FC = () => {
           <div className="mt-1">{missingLayoutFields.join(", ")}</div>
         </div>
       )}
-      {isSectionEnabled("companyDetails") && (
-        <>
-          <LayoutHeader
-            title="Company Details"
-            collapsed={!layoutOpen.companyDetails}
-            onToggle={() => setLayoutOpen((p) => ({ ...p, companyDetails: !p.companyDetails }))}
-          />
-          {layoutOpen.companyDetails && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
-              {isLayoutVisible("companyDetails", "companyName") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    label="Company Name"
-                    required={isLayoutRequired("companyDetails", "companyName")}
-                    placeholder="e.g., Acme Corporation"
-                    value={layoutForm.companyName}
-                    onChange={handleLayoutChange("companyName")}
-                    className={cn(
-                      showLayoutErrors &&
+      <div style={{ order: getSectionOrder("companyDetails") }}>
+        {isSectionEnabled("companyDetails") && (
+          <>
+            <LayoutHeader
+              title="Company Details"
+              collapsed={!layoutOpen.companyDetails}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, companyDetails: !p.companyDetails }))}
+            />
+            {layoutOpen.companyDetails && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+                {isLayoutVisible("companyDetails", "companyName") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Company Name"
+                      required={isLayoutRequired("companyDetails", "companyName")}
+                      placeholder="e.g., Acme Corporation"
+                      value={layoutForm.companyName}
+                      onChange={handleLayoutChange("companyName")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("companyDetails", "companyName") &&
+                        !layoutForm.companyName.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
                       isLayoutRequired("companyDetails", "companyName") &&
-                      !layoutForm.companyName.trim() &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {showLayoutErrors &&
-                    isLayoutRequired("companyDetails", "companyName") &&
-                    !layoutForm.companyName.trim() && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Company Name is required.
-                      </span>
-                    )}
-                </div>
-              )}
-              {isLayoutVisible("companyDetails", "industry") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelSelect
-                    label="Industry"
-                    placeholder="Select Industry"
-                    options={[]}
-                    value={layoutForm.industry}
-                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, industry: value }))}
-                    className={cn(
-                      showLayoutErrors &&
+                      !layoutForm.companyName.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Company Name is required.
+                        </span>
+                      )}
+                  </div>
+                )}
+                {isLayoutVisible("companyDetails", "industry") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Industry"
+                      placeholder="Select Industry"
+                      options={[]}
+                      value={layoutForm.industry}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, industry: value }))}
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("companyDetails", "industry") &&
+                        !layoutForm.industry.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
                       isLayoutRequired("companyDetails", "industry") &&
-                      !layoutForm.industry.trim() &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
+                      !layoutForm.industry.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Industry is required.
+                        </span>
+                      )}
+                  </div>
+                )}
+                {isLayoutVisible("companyDetails", "clientType") && (
+                  <FloatingLabelSelect
+                    label="Client Type"
+                    placeholder="Select Client Type"
+                    options={[]}
+                    value={layoutForm.clientType}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, clientType: value }))}
                   />
-                  {showLayoutErrors &&
-                    isLayoutRequired("companyDetails", "industry") &&
-                    !layoutForm.industry.trim() && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Industry is required.
-                      </span>
-                    )}
-                </div>
-              )}
-              {isLayoutVisible("companyDetails", "clientType") && (
-                <FloatingLabelSelect
-                  label="Client Type"
-                  placeholder="Select Client Type"
-                  options={[]}
-                  value={layoutForm.clientType}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, clientType: value }))}
-                />
-              )}
-              {isLayoutVisible("companyDetails", "website") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    label="Website"
-                    required={isLayoutRequired("companyDetails", "website")}
-                    placeholder="http://www.example.com"
-                    value={layoutForm.website}
-                    onChange={handleLayoutChange("website")}
-                    className={cn(
-                      showLayoutErrors &&
+                )}
+                {isLayoutVisible("companyDetails", "website") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Website"
+                      required={isLayoutRequired("companyDetails", "website")}
+                      placeholder="http://www.example.com"
+                      value={layoutForm.website}
+                      onChange={handleLayoutChange("website")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("companyDetails", "website") &&
+                        !layoutForm.website.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
                       isLayoutRequired("companyDetails", "website") &&
-                      !layoutForm.website.trim() &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {showLayoutErrors &&
-                    isLayoutRequired("companyDetails", "website") &&
-                    !layoutForm.website.trim() && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Website is required.
-                      </span>
-                    )}
-                </div>
-              )}
-              {isLayoutVisible("companyDetails", "linkedin") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    label="LinkedIn Profile"
-                    placeholder="www.linkedin.com/acme"
-                    value={layoutForm.linkedin}
-                    onChange={handleLayoutChange("linkedin")}
-                  />
-                </div>
-              )}
+                      !layoutForm.website.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Website is required.
+                        </span>
+                      )}
+                  </div>
+                )}
+                {isLayoutVisible("companyDetails", "linkedin") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="LinkedIn Profile"
+                      placeholder="www.linkedin.com/acme"
+                      value={layoutForm.linkedin}
+                      onChange={handleLayoutChange("linkedin")}
+                    />
+                  </div>
+                )}
 
-              {isLayoutVisible("companyDetails", "companySize") && (
-                <FloatingLabelSelect
-                  label="Company Size"
-                  placeholder="Select Company Size"
-                  options={[]}
-                  value={layoutForm.companySize}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, companySize: value }))}
-                />
-              )}
-              {isLayoutVisible("companyDetails", "facebook") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    label="Facebook Profile"
-                    placeholder="www.facebook.com/acme"
-                    value={layoutForm.facebook}
-                    onChange={handleLayoutChange("facebook")}
+                {isLayoutVisible("companyDetails", "companySize") && (
+                  <FloatingLabelSelect
+                    label="Company Size"
+                    placeholder="Select Company Size"
+                    options={[]}
+                    value={layoutForm.companySize}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, companySize: value }))}
                   />
-                </div>
-              )}
-              {isLayoutVisible("companyDetails", "existingContacts") && (
-                <FloatingLabelInput
-                  label="Existing Contacts"
-                  placeholder="Search by Name or Email"
-                  value={layoutForm.existingContacts}
-                  onChange={handleLayoutChange("existingContacts")}
-                />
-              )}
-              {isLayoutVisible("companyDetails", "xprofile") && (
-                <div className="relative flex flex-col pb-[14px]">
+                )}
+                {isLayoutVisible("companyDetails", "facebook") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Facebook Profile"
+                      placeholder="www.facebook.com/acme"
+                      value={layoutForm.facebook}
+                      onChange={handleLayoutChange("facebook")}
+                    />
+                  </div>
+                )}
+                {isLayoutVisible("companyDetails", "existingContacts") && (
                   <FloatingLabelInput
-                    label="X Profile"
-                    placeholder="www.x.com/acme"
-                    value={layoutForm.xprofile}
-                    onChange={handleLayoutChange("xprofile")}
+                    label="Existing Contacts"
+                    placeholder="Search by Name or Email"
+                    value={layoutForm.existingContacts}
+                    onChange={handleLayoutChange("existingContacts")}
                   />
-                </div>
-              )}
-            </div>
-          )}
-        </>
-      )}
+                )}
+                {isLayoutVisible("companyDetails", "xprofile") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="X Profile"
+                      placeholder="www.x.com/acme"
+                      value={layoutForm.xprofile}
+                      onChange={handleLayoutChange("xprofile")}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {/* <LayoutHeader
         title="About Company"
@@ -1133,177 +1146,181 @@ export const CompanyFields: React.FC = () => {
         )
       )} */}
 
-      {isSectionEnabled("location") && (
-        <>
-          <LayoutHeader
-            title="Location"
-            collapsed={!layoutOpen.location}
-            onToggle={() => setLayoutOpen((p) => ({ ...p, location: !p.location }))}
-          />
-          {layoutOpen.location && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-              {isLayoutVisible("location", "fullAddress") && (
-                <div className="md:col-span-2">
+      <div style={{ order: getSectionOrder("location") }}>
+        {isSectionEnabled("location") && (
+          <>
+            <LayoutHeader
+              title="Location"
+              collapsed={!layoutOpen.location}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, location: !p.location }))}
+            />
+            {layoutOpen.location && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("location", "fullAddress") && (
+                  <div className="md:col-span-2">
+                    <FloatingLabelInput
+                      label="Full Address"
+                      placeholder="e.g., 123 Business Way, Suite 500"
+                      value={layoutForm.fullAddress}
+                      onChange={handleLayoutChange("fullAddress")}
+                    />
+                  </div>
+                )}
+                {isLayoutVisible("location", "city") && (
                   <FloatingLabelInput
-                    label="Full Address"
-                    placeholder="e.g., 123 Business Way, Suite 500"
-                    value={layoutForm.fullAddress}
-                    onChange={handleLayoutChange("fullAddress")}
+                    label="City"
+                    placeholder="Search or Enter City"
+                    value={layoutForm.city}
+                    onChange={handleLayoutChange("city")}
                   />
-                </div>
-              )}
-              {isLayoutVisible("location", "city") && (
-                <FloatingLabelInput
-                  label="City"
-                  placeholder="Search or Enter City"
-                  value={layoutForm.city}
-                  onChange={handleLayoutChange("city")}
-                />
-              )}
-              {isLayoutVisible("location", "state") && (
-                <FloatingLabelInput
-                  label="State / Province"
-                  placeholder="Search or Add State / Province"
-                  value={layoutForm.state}
-                  onChange={handleLayoutChange("state")}
-                />
-              )}
-              {isLayoutVisible("location", "country") && (
-                <div className="relative flex flex-col pb-[14px]">
+                )}
+                {isLayoutVisible("location", "state") && (
                   <FloatingLabelInput
-                    label="Country"
-                    required={isLayoutRequired("location", "country")}
-                    placeholder="Search or Enter Country"
-                    value={layoutForm.country}
-                    onChange={handleLayoutChange("country")}
-                    className={cn(
-                      showLayoutErrors &&
+                    label="State / Province"
+                    placeholder="Search or Add State / Province"
+                    value={layoutForm.state}
+                    onChange={handleLayoutChange("state")}
+                  />
+                )}
+                {isLayoutVisible("location", "country") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Country"
+                      required={isLayoutRequired("location", "country")}
+                      placeholder="Search or Enter Country"
+                      value={layoutForm.country}
+                      onChange={handleLayoutChange("country")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("location", "country") &&
+                        !layoutForm.country.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
                       isLayoutRequired("location", "country") &&
-                      !layoutForm.country.trim() &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {showLayoutErrors &&
-                    isLayoutRequired("location", "country") &&
-                    !layoutForm.country.trim() && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Country is required.
-                      </span>
-                    )}
-                </div>
-              )}
-              {isLayoutVisible("location", "postal") && (
-                <FloatingLabelInput
-                  label="Postal Code"
-                  placeholder="Search or Enter Postal Code"
-                  value={layoutForm.postalCode}
-                  onChange={handleLayoutChange("postalCode")}
-                />
-              )}
-            </div>
-          )}
-        </>
-      )}
-
-      {isSectionEnabled("accountManagement") && (
-        <>
-          <LayoutHeader
-            title="Account Management & Billing"
-            collapsed={!layoutOpen.accountManagement}
-            onToggle={() => setLayoutOpen((p) => ({ ...p, accountManagement: !p.accountManagement }))}
-          />
-          {layoutOpen.accountManagement && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
-              {isLayoutVisible("accountManagement", "accountStatus") && (
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelSelect
-                    label="Account Status"
-                    placeholder="Select Account Status"
-                    options={[]}
-                    value={layoutForm.accountStatus}
-                    onValueChange={(value) =>
-                      setLayoutForm((prev) => ({ ...prev, accountStatus: value }))
-                    }
-                    className={cn(
-                      showLayoutErrors &&
-                      isLayoutRequired("accountManagement", "accountStatus") &&
-                      !layoutForm.accountStatus.trim() &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {showLayoutErrors &&
-                    isLayoutRequired("accountManagement", "accountStatus") &&
-                    !layoutForm.accountStatus.trim() && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Account Status is required.
-                      </span>
-                    )}
-                </div>
-              )}
-              {isLayoutVisible("accountManagement", "accountOwner") && (
-                <div className="relative flex flex-col pb-[14px]">
+                      !layoutForm.country.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Country is required.
+                        </span>
+                      )}
+                  </div>
+                )}
+                {isLayoutVisible("location", "postal") && (
                   <FloatingLabelInput
-                    label="Account Owner"
-                    required={isLayoutRequired("accountManagement", "accountOwner")}
-                    placeholder="Search or Enter Account Owner"
-                    value={layoutForm.accountOwner}
-                    onChange={handleLayoutChange("accountOwner")}
-                    className={cn(
-                      showLayoutErrors &&
+                    label="Postal Code"
+                    placeholder="Search or Enter Postal Code"
+                    value={layoutForm.postalCode}
+                    onChange={handleLayoutChange("postalCode")}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <div style={{ order: getSectionOrder("accountManagement") }}>
+        {isSectionEnabled("accountManagement") && (
+          <>
+            <LayoutHeader
+              title="Account Management & Billing"
+              collapsed={!layoutOpen.accountManagement}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, accountManagement: !p.accountManagement }))}
+            />
+            {layoutOpen.accountManagement && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+                {isLayoutVisible("accountManagement", "accountStatus") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Account Status"
+                      placeholder="Select Account Status"
+                      options={[]}
+                      value={layoutForm.accountStatus}
+                      onValueChange={(value) =>
+                        setLayoutForm((prev) => ({ ...prev, accountStatus: value }))
+                      }
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("accountManagement", "accountStatus") &&
+                        !layoutForm.accountStatus.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
+                      isLayoutRequired("accountManagement", "accountStatus") &&
+                      !layoutForm.accountStatus.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Account Status is required.
+                        </span>
+                      )}
+                  </div>
+                )}
+                {isLayoutVisible("accountManagement", "accountOwner") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      label="Account Owner"
+                      required={isLayoutRequired("accountManagement", "accountOwner")}
+                      placeholder="Search or Enter Account Owner"
+                      value={layoutForm.accountOwner}
+                      onChange={handleLayoutChange("accountOwner")}
+                      className={cn(
+                        showLayoutErrors &&
+                        isLayoutRequired("accountManagement", "accountOwner") &&
+                        !layoutForm.accountOwner.trim() &&
+                        "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {showLayoutErrors &&
                       isLayoutRequired("accountManagement", "accountOwner") &&
-                      !layoutForm.accountOwner.trim() &&
-                      "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {showLayoutErrors &&
-                    isLayoutRequired("accountManagement", "accountOwner") &&
-                    !layoutForm.accountOwner.trim() && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Account Owner is required.
-                      </span>
-                    )}
-                </div>
-              )}
-              {isLayoutVisible("accountManagement", "source") && (
-                <div className="relative flex flex-col pb-[14px]">
+                      !layoutForm.accountOwner.trim() && (
+                        <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                          *Account Owner is required.
+                        </span>
+                      )}
+                  </div>
+                )}
+                {isLayoutVisible("accountManagement", "source") && (
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelSelect
+                      label="Source"
+                      placeholder="Select Source"
+                      options={[]}
+                      value={layoutForm.source}
+                      onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, source: value }))}
+                    />
+                  </div>
+                )}
+                {isLayoutVisible("accountManagement", "billingTerms") && (
                   <FloatingLabelSelect
-                    label="Source"
-                    placeholder="Select Source"
+                    label="Billing Terms"
+                    placeholder="Select Billing Terms"
                     options={[]}
-                    value={layoutForm.source}
-                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, source: value }))}
+                    value={layoutForm.billingTerms}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, billingTerms: value }))}
                   />
-                </div>
-              )}
-              {isLayoutVisible("accountManagement", "billingTerms") && (
-                <FloatingLabelSelect
-                  label="Billing Terms"
-                  placeholder="Select Billing Terms"
-                  options={[]}
-                  value={layoutForm.billingTerms}
-                  onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, billingTerms: value }))}
-                />
-              )}
-              {isLayoutVisible("accountManagement", "taxVatId") && (
-                <FloatingLabelInput
-                  label="Tax / VAT ID"
-                  placeholder="Add Tax / VAT ID"
-                  value={layoutForm.taxVatId}
-                  onChange={handleLayoutChange("taxVatId")}
-                />
-              )}
-              {isLayoutVisible("accountManagement", "estRevenue") && (
-                <FloatingLabelInput
-                  label="EST. Revenue"
-                  placeholder="Add Estimated Annual Revenue"
-                  value={layoutForm.estRevenue}
-                  onChange={handleLayoutChange("estRevenue")}
-                />
-              )}
-            </div>
-          )}
-        </>
-      )}
+                )}
+                {isLayoutVisible("accountManagement", "taxVatId") && (
+                  <FloatingLabelInput
+                    label="Tax / VAT ID"
+                    placeholder="Add Tax / VAT ID"
+                    value={layoutForm.taxVatId}
+                    onChange={handleLayoutChange("taxVatId")}
+                  />
+                )}
+                {isLayoutVisible("accountManagement", "estRevenue") && (
+                  <FloatingLabelInput
+                    label="EST. Revenue"
+                    placeholder="Add Estimated Annual Revenue"
+                    value={layoutForm.estRevenue}
+                    onChange={handleLayoutChange("estRevenue")}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {/* <LayoutHeader
         title="Contact Details"
@@ -1539,7 +1556,7 @@ export const CompanyFields: React.FC = () => {
 
 
   return (
-    <div className="flex flex-col w-full pt-4">
+    <div className="flex flex-col w-full">
 
       <div className="w-full rounded-[4px] border border-[#CCCCCC80] p-3">
         <TabsComponent

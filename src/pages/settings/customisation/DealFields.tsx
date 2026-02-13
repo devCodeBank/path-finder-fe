@@ -143,7 +143,7 @@ const SectionCard = ({
         </div>
         <div className="flex items-center gap-10">
           <Tooltip
-            title="Edit"
+            title="Edit Section Name"
             arrow
             placement="left"
             componentsProps={{
@@ -388,7 +388,7 @@ const DealFields: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col w-full pt-4">
+    <div className="flex flex-col w-full">
       <div className="w-full rounded-[4px] border border-[#CCCCCC80] p-3">
         <div className="flex flex-col gap-4">
           {sections.map((section) => (

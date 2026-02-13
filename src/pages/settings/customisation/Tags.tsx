@@ -313,13 +313,13 @@ const Tags: React.FC = () => {
                       setSearchByGroup((prev) => ({ ...prev, [group.id]: event.target.value }))
                     }
                     placeholder="Search tag"
-                    className="h-[30px] w-[180px] rounded-[4px] border border-[#D6D6D6] px-2 text-[12px] text-[#333333] focus:border-[#333333] focus:outline-none"
+                    className="h-[30px] w-[180px] rounded-[4px] border border-[#333333] px-2 text-[12px] text-[#333333] focus:border-[#333333] focus:outline-none"
                   />
                 )}
                 <Tooltip
                   title="Search"
                   arrow
-                  placement="left"
+                  placement="bottom"
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
@@ -337,7 +337,7 @@ const Tags: React.FC = () => {
                 <Tooltip
                   title="Edit"
                   arrow
-                  placement="left"
+                  placement="bottom"
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
@@ -355,7 +355,7 @@ const Tags: React.FC = () => {
                 <Tooltip
                   title="Delete"
                   arrow
-                  placement="left"
+                  placement="bottom"
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
@@ -421,27 +421,27 @@ const Tags: React.FC = () => {
                             />
                           </svg>
                         </div>
-                          <button
-                            type="button"
-                            className="text-[#888888] hover:text-[#666666]"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              openEditTag(tab, group.id, tag);
-                            }}
-                          >
-                            <EditOutlinedIcon sx={{ fontSize: 19 }} />
-                          </button>
-                          <button
-                            type="button"
-                            className="text-[#888888] hover:text-[#666666]"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              deleteTag(tab, group.id, tag.id);
-                            }}
-                          >
-                            <TrashIcon size={19} />
-                          </button>
-                        </div>
+                        <button
+                          type="button"
+                          className="text-[#888888] hover:text-[#666666]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            openEditTag(tab, group.id, tag);
+                          }}
+                        >
+                          <EditOutlinedIcon sx={{ fontSize: 19 }} />
+                        </button>
+                        <button
+                          type="button"
+                          className="text-[#888888] hover:text-[#666666]"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            deleteTag(tab, group.id, tag.id);
+                          }}
+                        >
+                          <TrashIcon size={19} />
+                        </button>
+                      </div>
                       <div className="flex items-center gap-12">
                         <span className="text-[13px] text-[#333333]">Tag Visibility</span>
                         <Checkbox
@@ -512,7 +512,7 @@ const Tags: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
+    <div className="flex flex-col gap-6 pt-2">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
