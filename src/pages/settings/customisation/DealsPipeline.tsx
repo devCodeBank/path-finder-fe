@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
 import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
@@ -144,8 +144,12 @@ const DealsPipeline: React.FC = () => {
     handleCancelAdd();
   };
 
+  const handleDeleteRow = (rowId: string) => {
+    setRows((prev) => prev.filter((row) => row.id !== rowId));
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -224,14 +228,22 @@ const DealsPipeline: React.FC = () => {
                           arrow
                           placement="left"
                           componentsProps={{
-                            tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                            tooltip: { sx: { bgcolor: "#797979", textAlign: "center" } },
                             arrow: { sx: { color: "#797979" } },
                             popper: { sx: { zIndex: 2400 } }
                           }}
                         >
-                          <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                          <button
+                            type="button"
+                            aria-label={`Delete ${row.label}`}
+                            className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleDeleteRow(row.id);
+                            }}
+                          >
                             <TrashIcon size={18} />
-                          </span>
+                          </button>
                         </Tooltip>
                       ) : (
                         <Tooltip
@@ -239,13 +251,13 @@ const DealsPipeline: React.FC = () => {
                           arrow
                           placement="left"
                           componentsProps={{
-                            tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                            tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
                             arrow: { sx: { color: "#797979" } },
                             popper: { sx: { zIndex: 2400 } }
                           }}
                         >
                           <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999]">
-                            <InfoOutlinedIcon sx={{ fontSize: 18, color: "#999999" }} />
+                            <InfoTooltipIcon width={18} height={18} />
                           </span>
                         </Tooltip>
                       )}
@@ -280,7 +292,14 @@ const DealsPipeline: React.FC = () => {
                         <div className="h-[8px] w-full rounded-full bg-[#F5F5F5]" />
                       </div>
                       <div className="flex items-center justify-center text-[#666666]">
-                        <TrashIcon size={18} />
+                        <button
+                          type="button"
+                          aria-label="Delete new status"
+                          className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
+                          onClick={handleCancelAdd}
+                        >
+                          <TrashIcon size={18} />
+                        </button>
                       </div>
                     </div>
                   )}

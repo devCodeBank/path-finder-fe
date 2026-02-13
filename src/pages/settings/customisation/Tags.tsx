@@ -1,12 +1,12 @@
 import TabsComponent from "@/components/tabs/TabsComponent";
 import AddIcon from "@mui/icons-material/Add";
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Checkbox, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TrashIcon from "@/components/icons/TrashIcon";
+import CloseXIcon from "@assets/icons/x.svg";
 
 type TabKey = "candidates" | "jobs" | "contacts" | "companies";
 
@@ -124,7 +124,6 @@ const Tags: React.FC = () => {
   const [newTagLabel, setNewTagLabel] = useState("");
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [selectedTag, setSelectedTag] = useState<{ tab: TabKey; groupId: string; tagId: string } | null>(null);
   const [editingTag, setEditingTag] = useState<{ tab: TabKey; groupId: string; tagId: string } | null>(null);
   const [editingTagLabel, setEditingTagLabel] = useState("");
 
@@ -255,22 +254,6 @@ const Tags: React.FC = () => {
         )
       };
     });
-    setSelectedTag({ tab, groupId: targetGroupId, tagId });
-  };
-
-  const copyTag = (tab: TabKey, groupId: string, tag: TagItem) => {
-    const nextLabel = `${tag.label} Copy`;
-    const copied: TagItem = {
-      id: `${nextLabel.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
-      label: nextLabel,
-      visible: tag.visible
-    };
-    setData((prev) => ({
-      ...prev,
-      [tab]: prev[tab].map((group) =>
-        group.id === groupId ? { ...group, tags: [...group.tags, copied] } : group
-      )
-    }));
   };
 
   const deleteTag = (tab: TabKey, groupId: string, tagId: string) => {
@@ -280,9 +263,6 @@ const Tags: React.FC = () => {
         group.id === groupId ? { ...group, tags: group.tags.filter((tag) => tag.id !== tagId) } : group
       )
     }));
-    if (selectedTag?.tagId === tagId) {
-      setSelectedTag(null);
-    }
   };
 
   const openEditTag = (tab: TabKey, groupId: string, tag: TagItem) => {
@@ -315,22 +295,6 @@ const Tags: React.FC = () => {
     closeEditTag();
   };
 
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (!target) return;
-      const clickedTagRow = target.closest("[data-tag-row='true']");
-      if (!clickedTagRow) {
-        setSelectedTag(null);
-      }
-    };
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
   const renderTabContent = (tab: TabKey) => (
     <div className="border border-[#CCCCCC80] rounded-[6px] p-4">
       <div className="flex flex-col gap-3">
@@ -349,12 +313,13 @@ const Tags: React.FC = () => {
                       setSearchByGroup((prev) => ({ ...prev, [group.id]: event.target.value }))
                     }
                     placeholder="Search tag"
-                    className="h-[30px] w-[180px] rounded-[4px] border border-[#D6D6D6] px-2 text-[12px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                    className="h-[30px] w-[180px] rounded-[4px] border border-[#D6D6D6] px-2 text-[12px] text-[#333333] focus:border-[#333333] focus:outline-none"
                   />
                 )}
                 <Tooltip
                   title="Search"
                   arrow
+                  placement="left"
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
@@ -372,6 +337,7 @@ const Tags: React.FC = () => {
                 <Tooltip
                   title="Edit"
                   arrow
+                  placement="left"
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
@@ -389,6 +355,7 @@ const Tags: React.FC = () => {
                 <Tooltip
                   title="Delete"
                   arrow
+                  placement="left"
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
@@ -409,87 +376,88 @@ const Tags: React.FC = () => {
                 return tag.label.toLowerCase().includes(keyword);
               })
               .map((tag) => (
-              (() => {
-                const isSelected =
-                  selectedTag?.tab === tab &&
-                  selectedTag.groupId === group.id &&
-                  selectedTag.tagId === tag.id;
-                return (
-              <div
-                key={tag.id}
-                className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-between cursor-pointer"
-                data-tag-row="true"
-                onClick={() => setSelectedTag({ tab, groupId: group.id, tagId: tag.id })}
-              >
-                <div className="flex items-center gap-3">
-                  <LocalOfferOutlinedIcon sx={{ fontSize: 22, color: "#7A7A7A" }} />
-                  <span className="text-[13px] text-[#333333]">{tag.label}</span>
-                </div>
-                {isSelected && (
-                  <div className="flex items-center gap-5">
-                    <select
-                      value={group.id}
-                      onClick={(event) => event.stopPropagation()}
-                      onChange={(event) => moveTagToGroup(tab, group.id, tag.id, event.target.value)}
-                      className="h-[30px] min-w-[140px] rounded-[4px] border border-[#D6D6D6] px-2 text-[12px] text-[#666666] bg-white focus:border-[#6E41E2] focus:outline-none"
+                (() => {
+                  return (
+                    <div
+                      key={tag.id}
+                      className="group h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-between"
+                      data-tag-row="true"
                     >
-                      <option value={group.id}>Move to...</option>
-                      {data[tab]
-                        .filter((g) => g.id !== group.id)
-                        .map((g) => (
-                          <option key={g.id} value={g.id}>
-                            {g.title}
-                          </option>
-                        ))}
-                    </select>
-                    <button
-                      type="button"
-                      className="text-[#888888] hover:text-[#666666]"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        copyTag(tab, group.id, tag);
-                      }}
-                    >
-                      <ContentCopyOutlinedIcon sx={{ fontSize: 19 }} />
-                    </button>
-                    <button
-                      type="button"
-                      className="text-[#888888] hover:text-[#666666]"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        openEditTag(tab, group.id, tag);
-                      }}
-                    >
-                      <EditOutlinedIcon sx={{ fontSize: 19 }} />
-                    </button>
-                    <button
-                      type="button"
-                      className="text-[#888888] hover:text-[#666666]"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        deleteTag(tab, group.id, tag.id);
-                      }}
-                    >
-                      <TrashIcon size={19} />
-                    </button>
-                  </div>
-                )}
-                <div className="flex items-center gap-12">
-                  <span className="text-[13px] text-[#333333]">Tag Visibility</span>
-                  <Checkbox
-                    checked={tag.visible}
-                    onChange={(event) => toggleTagVisibility(tab, group.id, tag.id, event.target.checked)}
-                    sx={{
-                      p: 0,
-                      color: "#57CC4D",
-                      "&.Mui-checked": { color: "#57CC4D" },
-                    }}
-                  />
-                </div>
-              </div>
-                );
-              })()
-            ))}
+                      <div className="flex items-center gap-3">
+                        <LocalOfferOutlinedIcon sx={{ fontSize: 22, color: "#7A7A7A" }} />
+                        <span className="text-[13px] text-[#333333]">{tag.label}</span>
+                      </div>
+                      <div className="hidden items-center gap-5 group-hover:flex">
+                        <div className="relative">
+                          <select
+                            value={group.id}
+                            onClick={(event) => event.stopPropagation()}
+                            onChange={(event) => moveTagToGroup(tab, group.id, tag.id, event.target.value)}
+                            className="h-[30px] min-w-[140px] rounded-[4px] border border-[#D6D6D6] pl-2 pr-8 text-[12px] text-[#666666] bg-white appearance-none focus:border-[#6E41E2] focus:outline-none"
+                          >
+                            <option value={group.id}>Move to...</option>
+                            {data[tab]
+                              .filter((g) => g.id !== group.id)
+                              .map((g) => (
+                                <option key={g.id} value={g.id}>
+                                  {g.title}
+                                </option>
+                              ))}
+                          </select>
+                          <svg
+                            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M6 8L10 12L14 8"
+                              stroke="#666666"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                          <button
+                            type="button"
+                            className="text-[#888888] hover:text-[#666666]"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              openEditTag(tab, group.id, tag);
+                            }}
+                          >
+                            <EditOutlinedIcon sx={{ fontSize: 19 }} />
+                          </button>
+                          <button
+                            type="button"
+                            className="text-[#888888] hover:text-[#666666]"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              deleteTag(tab, group.id, tag.id);
+                            }}
+                          >
+                            <TrashIcon size={19} />
+                          </button>
+                        </div>
+                      <div className="flex items-center gap-12">
+                        <span className="text-[13px] text-[#333333]">Tag Visibility</span>
+                        <Checkbox
+                          checked={tag.visible}
+                          onChange={(event) => toggleTagVisibility(tab, group.id, tag.id, event.target.checked)}
+                          sx={{
+                            p: 0,
+                            color: "#57CC4D",
+                            "&.Mui-checked": { color: "#57CC4D" },
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()
+              ))}
 
             {addingTagFor?.tab === tab && addingTagFor.groupId === group.id ? (
               <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-between gap-3">
@@ -544,7 +512,7 @@ const Tags: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -576,14 +544,24 @@ const Tags: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Section Name</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={closeEditModal}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                x
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closeEditModal}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
               <input
@@ -618,14 +596,24 @@ const Tags: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Add Tag Category</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={closeAddCategoryModal}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                x
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closeAddCategoryModal}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
               <input
@@ -670,14 +658,24 @@ const Tags: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Tag Name</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={closeEditTag}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                x
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closeEditTag}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
               <input

@@ -4,6 +4,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import TrashIcon from "@/components/icons/TrashIcon";
+import CloseXIcon from "@assets/icons/x.svg";
 
 type SkillCategory = {
   id: string;
@@ -159,7 +160,7 @@ const SkillSet: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -195,17 +196,17 @@ const SkillSet: React.FC = () => {
                         className="h-[30px] w-[180px] rounded-[4px] border border-[#D6D6D6] px-2 text-[12px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
                       />
                     )}
-                    <Tooltip title="Search" arrow componentsProps={tooltipProps}>
+                    <Tooltip title="Search" arrow placement="left" componentsProps={tooltipProps}>
                       <button type="button" onClick={() => toggleSearch(category.id)}>
                         <SearchOutlinedIcon sx={{ fontSize: 20 }} />
                       </button>
                     </Tooltip>
-                    <Tooltip title="Edit" arrow componentsProps={tooltipProps}>
+                    <Tooltip title="Edit" arrow placement="left" componentsProps={tooltipProps}>
                       <button type="button" onClick={() => openEditCategory(category)}>
                         <EditOutlinedIcon sx={{ fontSize: 20 }} />
                       </button>
                     </Tooltip>
-                    <Tooltip title="Delete" arrow componentsProps={tooltipProps}>
+                    <Tooltip title="Delete" arrow placement="left" componentsProps={tooltipProps}>
                       <button type="button" onClick={() => removeCategory(category.id)}>
                         <TrashIcon size={20} />
                       </button>
@@ -290,14 +291,24 @@ const SkillSet: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Add Skill Category</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={closeAddCategory}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                x
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closeAddCategory}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
               <input
@@ -342,14 +353,24 @@ const SkillSet: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Skill Category</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={closeEditCategory}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                x
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={closeEditCategory}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
               <input

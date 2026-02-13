@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
 import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
@@ -52,8 +52,12 @@ const TaskType: React.FC = () => {
     handleCancelAdd();
   };
 
+  const handleDeleteType = (typeId: string) => {
+    setTypes((prev) => prev.filter((type) => type.id !== typeId));
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -87,14 +91,19 @@ const TaskType: React.FC = () => {
                       arrow
                       placement="left"
                       componentsProps={{
-                        tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                        tooltip: { sx: { bgcolor: "#797979", textAlign: "center" } },
                         arrow: { sx: { color: "#797979" } },
                         popper: { sx: { zIndex: 2400 } }
                       }}
                     >
-                      <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                      <button
+                        type="button"
+                        aria-label={`Delete ${type.label}`}
+                        className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
+                        onClick={() => handleDeleteType(type.id)}
+                      >
                         <TrashIcon size={18} />
-                      </span>
+                      </button>
                     </Tooltip>
                   ) : (
                     <Tooltip
@@ -102,13 +111,13 @@ const TaskType: React.FC = () => {
                       arrow
                       placement="left"
                       componentsProps={{
-                        tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                        tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
                         arrow: { sx: { color: "#797979" } },
                         popper: { sx: { zIndex: 2400 } }
                       }}
                     >
                       <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999]">
-                        <InfoOutlinedIcon sx={{ fontSize: 18, color: "#999999" }} />
+                        <InfoTooltipIcon width={18} height={18} />
                       </span>
                     </Tooltip>
                   )}
@@ -133,14 +142,19 @@ const TaskType: React.FC = () => {
                     arrow
                     placement="left"
                     componentsProps={{
-                      tooltip: { sx: { bgcolor: "#797979", width: "600px" } },
+                      tooltip: { sx: { bgcolor: "#797979", width: "600px", textAlign: "center" } },
                       arrow: { sx: { color: "#797979" } },
                       popper: { sx: { zIndex: 2400 } }
                     }}
                   >
-                    <span className="flex h-[22px] w-[22px] items-center justify-center text-[#666666]">
+                    <button
+                      type="button"
+                      aria-label="Delete new task type"
+                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
+                      onClick={handleCancelAdd}
+                    >
                       <TrashIcon size={18} />
-                    </span>
+                    </button>
                   </Tooltip>
                 </div>
               </div>

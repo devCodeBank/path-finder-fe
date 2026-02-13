@@ -65,6 +65,10 @@ const ContactStage: React.FC = () => {
     handleCancelAdd();
   };
 
+  const handleDeleteStage = (stageId: string) => {
+    setStages((prev) => prev.filter((stage) => stage.id !== stageId));
+  };
+
   const handleDragStartStage = (stageId: string, event: React.DragEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     const dragTarget = (event.currentTarget as HTMLElement).closest("[data-drag-row='true']") as HTMLElement | null;
@@ -108,7 +112,7 @@ const ContactStage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -156,7 +160,7 @@ const ContactStage: React.FC = () => {
                     placement="left"
                     arrow
                     componentsProps={{
-                      tooltip: { sx: { bgcolor: "#797979" } },
+                      tooltip: { sx: { bgcolor: "#797979", textAlign: "center" } },
                       arrow: { sx: { color: "#797979" } },
                       popper: { sx: { zIndex: 2400 } }
                     }}
@@ -164,7 +168,8 @@ const ContactStage: React.FC = () => {
                     <button
                       type="button"
                       aria-label={`Delete ${stage.label}`}
-                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6]"
+                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
+                      onClick={() => handleDeleteStage(stage.id)}
                     >
                       <TrashIcon size={18} />
                     </button>
@@ -199,7 +204,8 @@ const ContactStage: React.FC = () => {
                     <button
                       type="button"
                       aria-label="Delete new stage"
-                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6]"
+                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
+                      onClick={handleCancelAdd}
                     >
                       <TrashIcon size={18} />
                     </button>

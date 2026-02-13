@@ -1,9 +1,10 @@
 import React, { useMemo, useRef, useState } from "react";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/x.svg";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
   height: "36px",
@@ -219,8 +220,12 @@ const JobStatus: React.FC = () => {
     closePanel();
   };
 
+  const handleDeleteStatus = (statusId: string) => {
+    setStatusList((prev) => prev.filter((status) => status.id !== statusId));
+  };
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -305,20 +310,19 @@ const JobStatus: React.FC = () => {
                     arrow
                     placement="left"
                     componentsProps={{
-                      tooltip: { sx: { bgcolor: "#797979", width: "560px" } },
+                      tooltip: { sx: { bgcolor: "#797979", width: "560px", textAlign: "center" } },
                       arrow: { sx: { color: "#797979" } },
                       popper: { sx: { zIndex: 2400 } }
                     }}
                   >
-                    <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999] self-center">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M3 6h18" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                        <path d="M8 6V4h8v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                        <rect x="6.5" y="8" width="11" height="12" rx="2" stroke="currentColor" strokeWidth="1.6" />
-                        <path d="M10 11.5v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                        <path d="M14 11.5v6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                      </svg>
-                    </span>
+                    <button
+                      type="button"
+                      aria-label={`Delete ${status.title}`}
+                      className="flex h-[24px] w-[24px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer self-center"
+                      onClick={() => handleDeleteStatus(status.id)}
+                    >
+                      <TrashIcon size={16} />
+                    </button>
                   </Tooltip>
                 ) : (
                   <div className="self-center">
@@ -327,14 +331,14 @@ const JobStatus: React.FC = () => {
                       arrow
                       placement="left"
                       componentsProps={{
-                        tooltip: { sx: { bgcolor: "#797979", width: "320px" } },
+                        tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
                         arrow: { sx: { color: "#797979" } },
                         popper: { sx: { zIndex: 2400 } },
 
                       }}
                     >
                       <span className="flex h-[22px] w-[22px] items-center justify-center text-[#999999]">
-                        <InfoOutlinedIcon sx={{ fontSize: 16, color: "#999999" }} />
+                        <InfoTooltipIcon width={16} height={16} />
                       </span>
                     </Tooltip>
                   </div>

@@ -318,7 +318,7 @@ const HiringPipeline: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 pt-4">
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -338,6 +338,7 @@ const HiringPipeline: React.FC = () => {
               <Tooltip
                 title="Edit"
                 arrow
+                placement="left"
                 componentsProps={{
                   tooltip: { sx: { bgcolor: "#797979" } },
                   arrow: { sx: { color: "#797979" } },

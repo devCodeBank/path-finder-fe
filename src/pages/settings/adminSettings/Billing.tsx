@@ -1,7 +1,8 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import React, { useState } from "react";
+import CloseXIcon from "@assets/icons/x.svg";
 
 const primaryButtonSx = {
   height: "36px",
@@ -52,21 +53,21 @@ const outlineButtonSx = {
 };
 
 
-// const successButtonSx = {
-//   height: "36px",
-//   backgroundColor: "#36C248",
-//   textTransform: "none",
-//   fontSize: "12px",
-//   fontWeight: 500,
-//   borderRadius: "4px",
-//   boxShadow: "none",
-//   color: "#FFFFFF",
-//   minWidth: "90px",
-//   "&:hover": {
-//     backgroundColor: "#4CD35C",
-//     boxShadow: "none",
-//   },
-// };
+const dangerButtonSx = {
+  height: "36px",
+  backgroundColor: "#F06B61",
+  textTransform: "none",
+  fontSize: "12px",
+  fontWeight: 500,
+  borderRadius: "4px",
+  boxShadow: "none",
+  color: "#FFFFFF",
+  minWidth: "90px",
+  "&:hover": {
+    backgroundColor: "#cc4c43",
+    boxShadow: "none",
+  },
+};
 
 const fieldWrapperClass = "flex flex-col gap-1.5";
 const fieldWrapperWithErrorClass = "relative flex flex-col pb-[14px]";
@@ -373,10 +374,10 @@ export const Billing: React.FC = () => {
         <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
           Active
         </span>
-        <span className="rounded-[4px] bg-[#F06B61] px-4 py-2 text-[12px] font-[500] text-white">
+        {/* <span className="rounded-[4px] bg-[#F06B61] px-4 py-2 text-[12px] font-[500] text-white">
           Cancel Subscription
-        </span>
-        {/* <Button variant="contained" sx={dangerButtonSx}>Cancel Subscription</Button> */}
+        </span> */}
+        <Button variant="contained" sx={dangerButtonSx}>Cancel Subscription</Button>
       </div>
 
       <TabsComponent
@@ -401,17 +402,27 @@ export const Billing: React.FC = () => {
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[500] text-[#333333]">Transfer Account Ownership</span>
-              <button
-                type="button"
-                aria-label="Close transfer ownership modal"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center text-[#666666] hover:text-[#333333]"
-                onClick={() => {
-                  setIsTransferModalVisible(false);
-                  window.setTimeout(() => setIsTransferModalOpen(false), 300);
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
                 }}
               >
-                ✕
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close transfer ownership modal"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={() => {
+                    setIsTransferModalVisible(false);
+                    window.setTimeout(() => setIsTransferModalOpen(false), 300);
+                  }}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
@@ -493,17 +504,27 @@ export const Billing: React.FC = () => {
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[500] text-[#333333]">Upgrade Subscription Plan</span>
-              <button
-                type="button"
-                aria-label="Close upgrade plan modal"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center text-[#666666] hover:text-[#333333]"
-                onClick={() => {
-                  setIsUpgradeModalVisible(false);
-                  window.setTimeout(() => setIsUpgradeModalOpen(false), 300);
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
                 }}
               >
-                ✕
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close upgrade plan modal"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={() => {
+                    setIsUpgradeModalVisible(false);
+                    window.setTimeout(() => setIsUpgradeModalOpen(false), 300);
+                  }}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
@@ -584,17 +605,27 @@ export const Billing: React.FC = () => {
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[500] text-[#333333]">Update Company Legal Name</span>
-              <button
-                type="button"
-                aria-label="Close update company modal"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center text-[#666666] hover:text-[#333333]"
-                onClick={() => {
-                  setIsCompanyModalVisible(false);
-                  window.setTimeout(() => setIsCompanyModalOpen(false), 300);
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
                 }}
               >
-                ✕
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close update company modal"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={() => {
+                    setIsCompanyModalVisible(false);
+                    window.setTimeout(() => setIsCompanyModalOpen(false), 300);
+                  }}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
@@ -636,7 +667,7 @@ export const Billing: React.FC = () => {
                     </Button>
                     <Button
                       variant="contained"
-                      sx={primaryButtonSx}
+                      sx={popButtonSx}
                       onClick={() => setShowCompanyErrors(true)}
                     >
                       Update
@@ -664,17 +695,27 @@ export const Billing: React.FC = () => {
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[500] text-[#333333]">Update Billing Email</span>
-              <button
-                type="button"
-                aria-label="Close update billing email modal"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center text-[#666666] hover:text-[#333333]"
-                onClick={() => {
-                  setIsBillingEmailModalVisible(false);
-                  window.setTimeout(() => setIsBillingEmailModalOpen(false), 300);
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
                 }}
               >
-                ✕
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close update billing email modal"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={() => {
+                    setIsBillingEmailModalVisible(false);
+                    window.setTimeout(() => setIsBillingEmailModalOpen(false), 300);
+                  }}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
@@ -741,17 +782,27 @@ export const Billing: React.FC = () => {
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
               <span className="text-[16px] font-[500] text-[#333333]">Update Credit Card Details</span>
-              <button
-                type="button"
-                aria-label="Close update card modal"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center text-[#666666] hover:text-[#333333]"
-                onClick={() => {
-                  setIsCardModalVisible(false);
-                  window.setTimeout(() => setIsCardModalOpen(false), 300);
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
                 }}
               >
-                ✕
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close update card modal"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={() => {
+                    setIsCardModalVisible(false);
+                    window.setTimeout(() => setIsCardModalOpen(false), 300);
+                  }}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">

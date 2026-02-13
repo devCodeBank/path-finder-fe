@@ -6,6 +6,7 @@ import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLa
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Button, Tooltip } from "@mui/material";
+import CloseXIcon from "@assets/icons/x.svg";
 
 const primaryButtonSx = {
   height: "36px",
@@ -223,9 +224,8 @@ const SectionCard = ({
   return (
     <div className="bg-white  border-[#CCCCCC80] rounded-[4px] overflow-hidden">
       <div
-        className="h-[52px] px-4 flex items-center justify-between border rounded-[4px]  border-[#CCCCCC80] bg-[#FAFAFA] cursor-pointer"
+        className="h-[52px] px-4 flex items-center justify-between border rounded-[4px]  border-[#CCCCCC80] bg-[#FAFAFA]"
         data-drag-section="true"
-        onClick={() => onToggleCollapse(section.id)}
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
@@ -255,6 +255,7 @@ const SectionCard = ({
           <Tooltip
             title="Edit"
             arrow
+            placement="left"
             componentsProps={{
               tooltip: { sx: { bgcolor: "#797979" } },
               arrow: { sx: { color: "#797979" } },
@@ -276,7 +277,7 @@ const SectionCard = ({
           <button
             type="button"
             aria-label={`Toggle ${section.title}`}
-            className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+            className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6] cursor-pointer"
             onClick={(event) => {
               event.stopPropagation();
               onToggleCollapse(section.id);
@@ -734,7 +735,7 @@ export const ContactFields: React.FC = () => {
   const fieldsContent = (
     <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[#FAFAFA]">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[white]">
           <div className="flex flex-col">
             <span className="text-[14px] text-[#333333] font-[500]">Enforce required fields on extension</span>
             <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">
@@ -801,14 +802,24 @@ export const ContactFields: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Section Name</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={handleCloseEditSectionTitle}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                ×
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={handleCloseEditSectionTitle}
+                >
+                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
               <input
@@ -1398,14 +1409,16 @@ export const ContactFields: React.FC = () => {
 
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full pt-4">
 
-      <TabsComponent
-        tabs={[
-          { label: "Fields", value: "fields", content: fieldsContent },
-          { label: "Layout", value: "layout", content: layoutContent }
-        ]}
-      />
+      <div className="w-full rounded-[4px] border border-[#CCCCCC80] p-3">
+        <TabsComponent
+          tabs={[
+            { label: "Fields", value: "fields", content: fieldsContent },
+            { label: "Layout", value: "layout", content: layoutContent }
+          ]}
+        />
+      </div>
     </div>
   );
 };

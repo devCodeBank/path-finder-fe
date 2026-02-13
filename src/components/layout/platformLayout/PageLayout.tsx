@@ -206,6 +206,7 @@ export const PageLayout: React.FC<PageLayoutProps> = ({ children, sidebar }) => 
             <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .custom-scrollbar { scrollbar-gutter: stable both-edges; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #CCCCCC; border-radius: 10px; }
