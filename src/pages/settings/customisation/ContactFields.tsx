@@ -735,7 +735,7 @@ export const ContactFields: React.FC = () => {
   const fieldsContent = (
     <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center justify-between bg-[white]">
+        <div className="px-4 h-[52px]  border-[#CCCCCC80] flex items-center justify-between bg-[white]">
           <div className="flex flex-col">
             <span className="text-[14px] text-[#333333] font-[500]">Enforce required fields on extension</span>
             <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">
