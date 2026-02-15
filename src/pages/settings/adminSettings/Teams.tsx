@@ -1,6 +1,5 @@
 import { CustomBreadCrumbs } from "@components/breadCrumbs/BreadCrumbs";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
-import AutoComplete from "@components/input/autoComplete/AutoComplete";
 import DropDownModal from "@components/popupModals/dropdownModal";
 import { SettingsHeader } from "@components/settingsHeader";
 import AddIcon from "@mui/icons-material/Add";
