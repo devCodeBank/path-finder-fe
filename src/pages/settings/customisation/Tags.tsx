@@ -313,7 +313,7 @@ const Tags: React.FC = () => {
                       setSearchByGroup((prev) => ({ ...prev, [group.id]: event.target.value }))
                     }
                     placeholder="Search tag"
-                    className="h-[30px] w-[180px] rounded-[4px] border border-[#333333] px-2 text-[12px] text-[#333333] focus:border-[#333333] focus:outline-none"
+                    className="h-[30px] w-[180px] rounded-[4px] border border-[#CCCCCC80] px-2 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666] focus:outline-none"
                   />
                 )}
                 <Tooltip
@@ -421,26 +421,48 @@ const Tags: React.FC = () => {
                             />
                           </svg>
                         </div>
-                        <button
-                          type="button"
-                          className="text-[#888888] hover:text-[#666666]"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            openEditTag(tab, group.id, tag);
+                        <Tooltip
+                          title="Edit"
+                          arrow
+                          placement="bottom"
+                          componentsProps={{
+                            tooltip: { sx: { bgcolor: "#797979" } },
+                            arrow: { sx: { color: "#797979" } },
+                            popper: { sx: { zIndex: 2400 } }
                           }}
                         >
-                          <EditOutlinedIcon sx={{ fontSize: 19 }} />
-                        </button>
-                        <button
-                          type="button"
-                          className="text-[#888888] hover:text-[#666666]"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            deleteTag(tab, group.id, tag.id);
+                          <button
+                            type="button"
+                            className="text-[#888888] hover:text-[#666666]"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              openEditTag(tab, group.id, tag);
+                            }}
+                          >
+                            <EditOutlinedIcon sx={{ fontSize: 19 }} />
+                          </button>
+                        </Tooltip>
+                        <Tooltip
+                          title="Delete"
+                          arrow
+                          placement="bottom"
+                          componentsProps={{
+                            tooltip: { sx: { bgcolor: "#797979" } },
+                            arrow: { sx: { color: "#797979" } },
+                            popper: { sx: { zIndex: 2400 } }
                           }}
                         >
-                          <TrashIcon size={19} />
-                        </button>
+                          <button
+                            type="button"
+                            className="text-[#888888] hover:text-[#666666]"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              deleteTag(tab, group.id, tag.id);
+                            }}
+                          >
+                            <TrashIcon size={19} />
+                          </button>
+                        </Tooltip>
                       </div>
                       <div className="flex items-center gap-12">
                         <span className="text-[13px] text-[#333333]">Tag Visibility</span>
@@ -469,7 +491,7 @@ const Tags: React.FC = () => {
                     if (event.key === "Enter") saveAddTag();
                   }}
                   placeholder="Add new tag"
-                  className="h-[32px] w-full rounded-[4px] border border-[#D6D6D6] px-3 text-[13px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                  className="h-[32px] w-full rounded-[4px] border border-[#CCCCCC80] px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none"
                 />
                 <div className="flex items-center gap-2">
                   <button
@@ -520,7 +542,7 @@ const Tags: React.FC = () => {
           startIcon={<AddIcon />}
           onClick={() => setIsAddCategoryOpen(true)}
         >
-          Tag Category
+          Add Tag Category
         </Button>
       </div>
 
@@ -595,7 +617,7 @@ const Tags: React.FC = () => {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <div className="text-[16px] font-[600] text-[#333333]">Add Tag Category</div>
+              <div className="text-[16px] font-[500] text-[#333333]">Add Tag Category</div>
               <Tooltip
                 title="Close"
                 arrow
@@ -624,20 +646,20 @@ const Tags: React.FC = () => {
                   if (event.key === "Enter") saveAddCategory();
                 }}
                 className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
-                placeholder="Category name"
+                placeholder="Category Name"
               />
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeAddCategoryModal}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveAddCategory}
               >
                 Save
@@ -692,14 +714,14 @@ const Tags: React.FC = () => {
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeEditTag}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveEditTag}
               >
                 Save

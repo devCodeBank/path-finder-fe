@@ -11,7 +11,6 @@ import React, { useRef, useState } from "react";
 import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
-import CloseXIcon from "@assets/icons/x.svg";
 
 const Container = styled(Box)`
   display: flex;
@@ -277,7 +276,8 @@ export const Users: React.FC = () => {
     const [firstName, ...rest] = row.name.split(" ");
     setEditingUser(row);
     setInviteMode("edit");
-    const assignedRoles = systemRoles.includes(row.role) ? [row.role] : [];
+    const assignedRoles =
+      systemRoles.includes(row.role) ? [row.role] : row.role === "Account Owner" ? ["Super Admin"] : [];
     setInviteForm((prev) => ({
       ...prev,
       firstName,
@@ -298,7 +298,8 @@ export const Users: React.FC = () => {
     const [firstName, ...rest] = row.name.split(" ");
     setEditingUser(row);
     setInviteMode("resend");
-    const assignedRoles = systemRoles.includes(row.role) ? [row.role] : [];
+    const assignedRoles =
+      systemRoles.includes(row.role) ? [row.role] : row.role === "Account Owner" ? ["Super Admin"] : [];
     setInviteForm((prev) => ({
       ...prev,
       firstName,
@@ -730,7 +731,22 @@ export const Users: React.FC = () => {
                       setInviteMode("invite");
                     }}
                   >
-                    <img src={CloseXIcon} alt="" className=" h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 4L12 12M12 4L4 12"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                    </svg>
                   </button>
                 </Tooltip>
               </div>
@@ -1072,7 +1088,22 @@ export const Users: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeDetailsPanel}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]" />
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 4L12 12M12 4L4 12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                 </button>
               </Tooltip>
             </div>

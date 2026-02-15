@@ -41,6 +41,7 @@ const stageOptions = [
 ];
 
 const HiringPipeline: React.FC = () => {
+  const lockedTooltip = "Certain status cannot be edited, deleted or moved.";
   const [pipelines, setPipelines] = useState([
     {
       id: "default",
@@ -265,7 +266,7 @@ const HiringPipeline: React.FC = () => {
           type="button"
           className={[
             "h-[24px] w-[24px] rounded-full flex items-center justify-center",
-            canScrollLeft ? "bg-[#EAEAEA]/60 text-[#666666]" : "bg-[#EAEAEA]/30 text-[#AAAAAA] cursor-not-allowed"
+            canScrollLeft ? "bg-[#5C5C5C] text-white" : "bg-[#EAEAEA]/30 text-[#AAAAAA] cursor-not-allowed"
           ].join(" ")}
           aria-label="Scroll left"
           onClick={() => scrollByAmount(-240)}
@@ -292,7 +293,22 @@ const HiringPipeline: React.FC = () => {
                       : "bg-white border-[#D8D8D8] text-[#333333]"
                   ].join(" ")}
                 >
-                  {stage.locked && <LockOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />}
+                  {stage.locked && (
+                    <Tooltip
+                      title={lockedTooltip}
+                      arrow
+                      placement="bottom"
+                      componentsProps={{
+                        tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
+                        arrow: { sx: { color: "#797979" } },
+                        popper: { sx: { zIndex: 2400 } }
+                      }}
+                    >
+                      <span className="flex items-center justify-center">
+                        <LockOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
+                      </span>
+                    </Tooltip>
+                  )}
                   <span>{stage.label}</span>
                 </div>
                 {index < stageIds.length - 1 && <ChevronRightIcon sx={{ fontSize: 18, color: "#666666" }} />}
@@ -305,7 +321,7 @@ const HiringPipeline: React.FC = () => {
           type="button"
           className={[
             "h-[24px] w-[24px] rounded-full flex items-center justify-center",
-            canScrollRight ? "bg-[#5C5C5C] text-white" : "bg-[#5C5C5C]/30 text-white/70 cursor-not-allowed"
+            canScrollRight ? "bg-[#5C5C5C] text-white" : "bg-[#EAEAEA]/30 text-[#AAAAAA] cursor-not-allowed"
           ].join(" ")}
           aria-label="Scroll right"
           onClick={() => scrollByAmount(240)}
@@ -323,10 +339,10 @@ const HiringPipeline: React.FC = () => {
         <Button
           variant="contained"
           sx={primaryButtonSx}
-          startIcon={<span className="text-[16px]">+</span>}
+          startIcon={<span className="inline-flex items-center justify-center text-[16px] leading-none -translate-y-[1px]">+</span>}
           onClick={openPanel}
         >
-          New Pipeline
+          Add New Pipline
         </Button>
       </div>
 
@@ -461,7 +477,20 @@ const HiringPipeline: React.FC = () => {
                             <span>{stage.label}</span>
                           </div>
                           {stage.locked ? (
-                            <LockOutlinedIcon sx={{ fontSize: 14, color: "#999999" }} />
+                            <Tooltip
+                              title={lockedTooltip}
+                              arrow
+                              placement="left"
+                              componentsProps={{
+                                tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
+                                arrow: { sx: { color: "#797979" } },
+                                popper: { sx: { zIndex: 2400 } }
+                              }}
+                            >
+                              <span className="flex items-center justify-center">
+                                <LockOutlinedIcon sx={{ fontSize: 14, color: "#999999" }} />
+                              </span>
+                            </Tooltip>
                           ) : (
                             <button
                               type="button"
@@ -500,6 +529,8 @@ const HiringPipeline: React.FC = () => {
                 onClick={closePanel}
                 sx={{
                   height: "36px",
+                  px: "20px",
+                  minWidth: "78px",
                   borderColor: "#CCCCCC80",
                   color: "#333333",
                   textTransform: "none",

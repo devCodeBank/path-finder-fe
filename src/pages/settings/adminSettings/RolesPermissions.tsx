@@ -39,10 +39,10 @@ const DescriptionCell: React.FC<{ text: string; maxWidth?: number }> = ({ text, 
       componentsProps={{
         tooltip: {
           sx: {
-            minWidth: "220px",
-            maxWidth: "260px",
-            width: "230px",
-            minHeight: "36px",
+            minWidth: "260px",
+            maxWidth: "300px",
+            width: "auto",
+            minHeight: "auto",
             bgcolor: "#666666",
             color: "#FFFFFF",
             fontSize: "12px",

@@ -131,15 +131,17 @@ export const Profile: React.FC = () => {
 
     // Edit Mode
     if (options.length > 0) {
+      const isSelectDisabled = fieldKey === "role" || fieldKey === "currency";
+
       return (
         <FloatingLabelSelect
           id={fieldKey}
           label={label}
-          className="text-[#707070]"
+          className={cn(isSelectDisabled ? "text-[#707070]" : "text-[#333333]")}
           value={value}
           onValueChange={handleSelectChange(fieldKey)}
           options={options}
-          disabled={fieldKey === 'role' || fieldKey === 'currency'}
+          disabled={isSelectDisabled}
           maxVisibleOptions={fieldKey === "timeZone" ? 10 : undefined}
         />
       );

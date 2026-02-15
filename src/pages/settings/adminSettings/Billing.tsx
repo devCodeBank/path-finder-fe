@@ -227,13 +227,13 @@ export const Billing: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-          <div className="text-[13px] text-[#333333] font-[500]">Account Activation Date</div>
+          <div className="text-[14px] text-[#333333]/70 font-[500]">Account Activation Date</div>
           <div className="text-[13px] text-[#333333] font-[400]">21 / 08 / 2025</div>
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80] flex items-center justify-between gap-4">
           <div>
-            <div className="text-[13px] text-[#333333] font-[500]">Account Owner</div>
+            <div className="text-[14px] text-[#333333]/70 font-[500]">Account Owner</div>
             <div className="text-[13px] text-[#333333] font-[400]">John Doe</div>
           </div>
           <Button
@@ -250,12 +250,12 @@ export const Billing: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-          <div className="text-[13px] text-[#333333] font-[500]">Active User(s)</div>
-          <div className="text-[16px] font-[600] text-[#333333] ">10</div>
+          <div className="text-[14px] text-[#333333]/70 font-[500]">Active User(s)</div>
+          <div className="text-[13px] text-[#333333] font-[400]">10</div>
         </div>
 
         <div className="px-4 py-4">
-          <div className="text-[13px] text-[#333333] font-[500]">Account ID</div>
+          <div className="text-[14px] text-[#333333]/70 font-[500]">Account ID</div>
           <div className="text-[13px] text-[#333333] font-[400]">PFAC1057</div>
         </div>
       </div>

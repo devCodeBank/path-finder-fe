@@ -62,7 +62,6 @@ const SkillSet: React.FC = () => {
   const [editingCategoryName, setEditingCategoryName] = useState("");
   const [searchOpenByCategory, setSearchOpenByCategory] = useState<Record<string, boolean>>({});
   const [searchByCategory, setSearchByCategory] = useState<Record<string, string>>({});
-  const [selectedSkill, setSelectedSkill] = useState<{ categoryId: string; index: number } | null>(null);
 
   const closeAddCategory = () => {
     setIsAddCategoryOpen(false);
@@ -154,9 +153,6 @@ const SkillSet: React.FC = () => {
           : category
       )
     );
-    setSelectedSkill((prev) =>
-      prev && prev.categoryId === categoryId && prev.index === index ? null : prev
-    );
   };
 
   return (
@@ -168,7 +164,7 @@ const SkillSet: React.FC = () => {
           startIcon={<AddIcon />}
           onClick={() => setIsAddCategoryOpen(true)}
         >
-          Skill Category
+          Add Skill Category
         </Button>
       </div>
 
@@ -193,7 +189,7 @@ const SkillSet: React.FC = () => {
                           setSearchByCategory((prev) => ({ ...prev, [category.id]: event.target.value }))
                         }
                         placeholder="Search skill"
-                        className="h-[30px] w-[180px] rounded-[4px] border border-[#333333] px-2 text-[12px] text-[#333333] focus:border-[#333333] focus:outline-none"
+                        className="h-[30px] w-[180px] rounded-[4px] border border-[#CCCCCC80] px-2 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666] focus:outline-none"
                       />
                     )}
                     <Tooltip title="Search" arrow placement="bottom" componentsProps={tooltipProps}>
@@ -218,22 +214,19 @@ const SkillSet: React.FC = () => {
                   {skills.map(({ skill, index }) => (
                     <div
                       key={`${category.id}-${skill}-${index}`}
-                      className="h-[52px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white text-[13px] text-[#333333] flex items-center justify-between cursor-pointer"
-                      onClick={() => setSelectedSkill({ categoryId: category.id, index })}
+                      className="group h-[52px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white text-[13px] text-[#333333] flex items-center justify-between"
                     >
                       <span>{skill}</span>
-                      {selectedSkill?.categoryId === category.id && selectedSkill.index === index && (
-                        <button
-                          type="button"
-                          className="text-[#888888] hover:text-[#666666]"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            removeSkill(category.id, index);
-                          }}
-                        >
-                          <TrashIcon size={18} />
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        className="text-[#888888] opacity-0 transition-opacity group-hover:opacity-100 hover:text-[#666666]"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          removeSkill(category.id, index);
+                        }}
+                      >
+                        <TrashIcon size={18} />
+                      </button>
                     </div>
                   ))}
                   {addingSkillFor === category.id ? (
@@ -246,7 +239,7 @@ const SkillSet: React.FC = () => {
                           if (event.key === "Enter") saveAddSkill();
                         }}
                         placeholder="Add new skill"
-                        className="h-[32px] w-full rounded-[4px] border border-[#D6D6D6] px-2 text-[13px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                        className="h-[32px] w-full rounded-[4px] border border-[#CCCCCC80] px-2 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none"
                       />
                       <button
                         type="button"
@@ -290,7 +283,7 @@ const SkillSet: React.FC = () => {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <div className="text-[16px] font-[600] text-[#333333]">Add Skill Category</div>
+              <div className="text-[16px] font-[500] text-[#333333]">Add Skill Category</div>
               <Tooltip
                 title="Close"
                 arrow
@@ -319,20 +312,20 @@ const SkillSet: React.FC = () => {
                   if (event.key === "Enter") saveAddCategory();
                 }}
                 className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
-                placeholder="Category name"
+                placeholder="Category Name"
               />
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeAddCategory}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveAddCategory}
               >
                 Save
@@ -352,7 +345,7 @@ const SkillSet: React.FC = () => {
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between">
-              <div className="text-[16px] font-[600] text-[#333333]">Edit Skill Category</div>
+              <div className="text-[16px] font-[500] text-[#333333]">Edit Skill Category</div>
               <Tooltip
                 title="Close"
                 arrow
@@ -381,20 +374,20 @@ const SkillSet: React.FC = () => {
                   if (event.key === "Enter") saveEditCategory();
                 }}
                 className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
-                placeholder="Category name"
+                placeholder="Category Name"
               />
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeEditCategory}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] px-4 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveEditCategory}
               >
                 Save

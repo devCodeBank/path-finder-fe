@@ -53,7 +53,7 @@ export const CompanyDetails: React.FC = () => {
   const [formData, setFormData] = useState<CompanyDetailsFormData>({
     companyName: "Acme Corporation",
     country: "New Zealand",
-    website: "Not available",
+    website: "",
     accountOwner: "John Doe",
     accountId: "PFAC1057",
     accountType: "Agency",
@@ -104,6 +104,7 @@ export const CompanyDetails: React.FC = () => {
       let displayValue = value;
       if (fieldKey === "currency") displayValue = getCurrencyLabel(value);
       if (fieldKey === "timeZone") displayValue = getTimeZoneLabel(value);
+      if (fieldKey === "website" && !value) displayValue = "Not available";
 
       return (
         <div className="flex flex-col gap-1.5">
@@ -128,15 +129,20 @@ export const CompanyDetails: React.FC = () => {
       );
     }
 
+    const isWebsiteField = fieldKey === "website";
+
     return (
       <FloatingLabelInput
         id={fieldKey}
         label={label}
-
+        placeholder={isWebsiteField ? "Add Website" : undefined}
         value={value}
         onChange={handleInputChange(fieldKey)}
         disabled={isFieldReadOnly(fieldKey)}
-        className={cn("w-full h-[36px]")}
+        className={cn(
+          "w-full h-[36px]",
+          isWebsiteField && "placeholder:text-[13px] placeholder:text-[#333333]/70"
+        )}
       />
     );
   };

@@ -142,9 +142,9 @@ export const Notifications: React.FC = () => {
   return (
     <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-[0px]">
       {/* Do Not Disturb Section */}
-      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[40px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[400] text-[#333333]">Do Not Disturb</h3>
+      <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px] w-full">
+        <div className="px-4 h-[46px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
         </div>
 
         <div className="px-4 min-h-[95px] flex items-center">
@@ -179,7 +179,7 @@ export const Notifications: React.FC = () => {
                   type="time"
                   value={settings.doNotDisturbFrom}
                   onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbFrom: e.target.value }))}
-                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#666666] disabled:cursor-not-allowed"
+                  className="dnd-time-input w-[110px] h-[46px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#666666] disabled:cursor-not-allowed"
                   disabled={!settings.doNotDisturb || isTimeLocked}
                 />
                 <button
@@ -199,7 +199,7 @@ export const Notifications: React.FC = () => {
                   type="time"
                   value={settings.doNotDisturbTo}
                   onChange={(e) => setSettings(prev => ({ ...prev, doNotDisturbTo: e.target.value }))}
-                  className="dnd-time-input w-[110px] h-[36px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#666666] disabled:cursor-not-allowed"
+                  className="dnd-time-input w-[110px] h-[46px] border border-[#CCCCCC80] rounded-md pl-2 pr-7 text-[13px] font-[400] focus:outline-none focus:border-[#666666] hover:border-[#666666] disabled:bg-[#F3F4F6] disabled:text-[#666666] disabled:cursor-not-allowed"
                   disabled={!settings.doNotDisturb || isTimeLocked}
                 />
                 <button
@@ -256,8 +256,8 @@ export const Notifications: React.FC = () => {
 
       {/* Days Off Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[400] text-[#333333]">Do not disturb me on my days off</h3>
+        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
 
         <div className="p-4 min-h-[95px] flex items-center">
@@ -282,8 +282,8 @@ export const Notifications: React.FC = () => {
 
       {/* Email Notifications Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
-          <h3 className="text-[14px] font-[400] text-[#333333]">Email Notifications</h3>
+        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+          <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
         </div>
 
         <div className="p-4 min-h-[95px] flex items-center">
@@ -301,7 +301,7 @@ export const Notifications: React.FC = () => {
 
       {/* List Preferences Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="px-4 h-[36px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
           <p className="text-[14px] font-[500] text-[#333333]">
             Send email and push notifications for:
           </p>
@@ -386,7 +386,7 @@ export const Notifications: React.FC = () => {
         <Button
           variant="contained"
           sx={{
-            width: '110px',
+            width: 'auto',
             height: '36px',
             backgroundColor: '#6E41E2',
             textTransform: 'none',
@@ -402,7 +402,7 @@ export const Notifications: React.FC = () => {
             color: "white",
           }}
         >
-          Save
+          Save Changes
         </Button>
       </div>
 

@@ -117,10 +117,10 @@ const ContactStage: React.FC = () => {
         <Button
           variant="contained"
           sx={primaryButtonSx}
-          startIcon={<span className="text-[16px]">+</span>}
+          startIcon={<span className="inline-flex items-center justify-center text-[16px] leading-none -translate-y-[1px]">+</span>}
           onClick={handleAddStage}
         >
-          Contact Stage
+          Add Contact Stage
         </Button>
       </div>
 
@@ -222,7 +222,9 @@ const ContactStage: React.FC = () => {
               variant="outlined"
               onClick={handleCancelAdd}
               sx={{
-                height: "32px",
+                height: "36px",
+                px: "20px",
+                minWidth: "78px",
                 borderColor: "#CCCCCC80",
                 color: "#333333",
                 textTransform: "none",

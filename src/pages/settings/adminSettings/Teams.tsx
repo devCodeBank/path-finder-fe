@@ -1,5 +1,6 @@
 import { CustomBreadCrumbs } from "@components/breadCrumbs/BreadCrumbs";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import AutoComplete from "@components/input/autoComplete/AutoComplete";
 import DropDownModal from "@components/popupModals/dropdownModal";
 import { SettingsHeader } from "@components/settingsHeader";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,6 +23,19 @@ import DeleteMemberModal from "@components/popupModals/deleteMemberModal";
 
 import type { Team, TeamRow } from "../../../types/teams";
 
+type TeamMemberOption = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+const TEAM_MEMBER_OPTIONS: TeamMemberOption[] = [
+  { id: "u1", name: "John Doe", email: "john.d@acmecorp.com" },
+  { id: "u2", name: "David Miller", email: "david.m@acmecorp.com" },
+  { id: "u3", name: "Jessica Lee", email: "j.lee@acmecorp.com" },
+  { id: "u4", name: "Alex Rivera", email: "a.rivera@acmecorp.com" },
+  { id: "u5", name: "Sophie Taylor", email: "s.taylor@acmecorp.com" },
+];
 const StyledSettingsHeader = styled(SettingsHeader)`
   margin-bottom: ${({ theme }) => theme.spacing(1)};
 `;
@@ -171,6 +185,29 @@ export const Teams: React.FC = () => {
   const status = useAppSelector(selectTeamsStatus);
   const error = useAppSelector(selectTeamsError);
   const [teamItems, setTeamItems] = useState<Team[]>([]);
+  const availableMemberOptions = useMemo(
+    () => TEAM_MEMBER_OPTIONS.filter((option) => option.name.toLowerCase() !== teamAdmin.trim().toLowerCase()),
+    [teamAdmin]
+  );
+  const teamMemberSelectOptions = useMemo(
+    () =>
+      availableMemberOptions.map((option) => ({
+        value: option.name,
+        label: `${option.name} (${option.email})`,
+      })),
+    [availableMemberOptions]
+  );
+
+  const handleSelectTeamMember = (memberName: string) => {
+    if (!memberName) return;
+    setTeamMembers((prev) => {
+      if (prev.some((name) => name.toLowerCase() === memberName.toLowerCase())) {
+        return prev;
+      }
+      return [...prev, memberName];
+    });
+    setTeamMembersInput("");
+  };
 
   useEffect(() => {
     if (status === "idle") {
@@ -228,6 +265,7 @@ export const Teams: React.FC = () => {
     []
   );
 
+
   const resetCreateForm = () => {
     setTeamName("");
     setTeamAdmin("");
@@ -243,36 +281,17 @@ export const Teams: React.FC = () => {
     const adminMember = team.members.find((member) => member.role.toLowerCase() === "administrator");
     const fallbackAdmin = team.members[0];
     const resolvedAdmin = adminMember?.name || fallbackAdmin?.name || "";
-    const nonAdminMembers = team.members
-      .filter((member) => member.name !== resolvedAdmin)
-      .map((member) => member.name);
+    const memberNames = team.members.map((member) => member.name);
     const statusFromMember = team.members[0]?.status?.toLowerCase() === "inactive" ? "inactive" : "active";
 
     setTeamName(team.teamName);
     setTeamAdmin(resolvedAdmin);
-    setTeamMembers(nonAdminMembers);
+    setTeamMembers(memberNames);
     setTeamMembersInput("");
     setTeamStatus(statusFromMember);
     setShowCreateErrors(false);
     setEditingTeamId(teamId);
     handleOpenCreatePanel();
-  };
-
-  const parseMemberNames = (value: string) =>
-    value
-      .split(",")
-      .map((name) => name.trim())
-      .filter(Boolean);
-
-  const addMembersFromInput = (value: string) => {
-    const names = parseMemberNames(value);
-    if (names.length === 0) return;
-    setTeamMembers((prev) => {
-      const existing = new Set(prev.map((name) => name.toLowerCase()));
-      const uniqueNames = names.filter((name) => !existing.has(name.toLowerCase()));
-      return uniqueNames.length > 0 ? [...prev, ...uniqueNames] : prev;
-    });
-    setTeamMembersInput("");
   };
 
   const handleSubmitCreateTeam = () => {
@@ -283,9 +302,9 @@ export const Teams: React.FC = () => {
     }
 
     const statusLabel = teamStatus === "active" ? "Active" : "Inactive";
-    const memberNames = [...teamMembers, ...parseMemberNames(teamMembersInput)].filter(
-      (name, index, all) => all.findIndex((value) => value.toLowerCase() === name.toLowerCase()) === index
-    );
+    const memberNames = teamMembers
+      .filter((name, index, all) => all.findIndex((value) => value.toLowerCase() === name.toLowerCase()) === index)
+      .filter((name) => name.toLowerCase() !== teamAdmin.trim().toLowerCase());
 
     const members: TeamRow[] = [
       {
@@ -380,11 +399,12 @@ export const Teams: React.FC = () => {
             startIcon={<AddIcon fontSize="small" />}
             sx={{
               height: "36px",
+              width: "136px",
               backgroundColor: "#6E41E2",
               textTransform: "none",
               fontSize: "12px",
               fontWeight: 500,
-              minWidth: "150px",
+              minWidth: "121px",
               borderRadius: "4px",
               boxShadow: "none",
               color: "#FFFFFF",
@@ -532,22 +552,14 @@ export const Teams: React.FC = () => {
                     </span>
                   )}
                 </div>
-                <FloatingLabelInput
+                <FloatingLabelSelect
                   id="create-team-members"
                   label="Team Members"
-
-                  floatLabel
-                  placeholder="Start Typing Name or Email"
+                  className="text-[#333333]"
                   value={teamMembersInput}
-                  onChange={(event) => setTeamMembersInput(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter" || event.key === ",") {
-                      event.preventDefault();
-                      addMembersFromInput(teamMembersInput);
-                    }
-                  }}
-                  onBlur={() => addMembersFromInput(teamMembersInput)}
-                  className="w-full h-[36px]"
+                  onValueChange={handleSelectTeamMember}
+                  options={teamMemberSelectOptions}
+                  placeholder="Select Team Members"
                 />
                 <FloatingLabelSelect
                   id="create-team-status"
