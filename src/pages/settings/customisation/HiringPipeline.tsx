@@ -297,7 +297,7 @@ const HiringPipeline: React.FC = () => {
                     <Tooltip
                       title={lockedTooltip}
                       arrow
-                      placement="bottom"
+                      placement="right"
                       componentsProps={{
                         tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
                         arrow: { sx: { color: "#797979" } },
@@ -444,7 +444,7 @@ const HiringPipeline: React.FC = () => {
                       const stage = stageMeta[stageId];
                       if (!stage) return null;
                       const isSelected = selectedStages.includes(stageId) || stage.locked;
-                      return (
+                      const rowContent = (
                         <div
                           key={stageId}
                           draggable={!stage.locked}
@@ -459,38 +459,39 @@ const HiringPipeline: React.FC = () => {
                           onDragOver={handleDragOverStage(stageId)}
                           onDrop={handleDropStage(stageId)}
                         >
-                          <div
-                            className={[
-                              "flex items-center gap-3 text-[13px]",
-                              stage.locked ? "text-[#A7A7A7]" : "text-[#333333]"
-                            ].join(" ")}
-                          >
-                            {stage.locked ? (
-                              <span>
-                                <GripIcon locked />
-                              </span>
-                            ) : (
-                              <span className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666]">
-                                <GripIcon />
-                              </span>
-                            )}
-                            <span>{stage.label}</span>
-                          </div>
                           {stage.locked ? (
                             <Tooltip
                               title={lockedTooltip}
                               arrow
-                              placement="left"
+                              placement="right-start"
+                              PopperProps={{
+                                disablePortal: true
+                              }}
                               componentsProps={{
                                 tooltip: { sx: { bgcolor: "#797979", maxWidth: "none", whiteSpace: "nowrap" } },
                                 arrow: { sx: { color: "#797979" } },
                                 popper: { sx: { zIndex: 2400 } }
                               }}
                             >
-                              <span className="flex items-center justify-center">
-                                <LockOutlinedIcon sx={{ fontSize: 14, color: "#999999" }} />
-                              </span>
+                              <div className="flex items-center gap-3 text-[13px] text-[#A7A7A7]">
+                                <span>
+                                  <GripIcon locked />
+                                </span>
+                                <span>{stage.label}</span>
+                              </div>
                             </Tooltip>
+                          ) : (
+                            <div className="flex items-center gap-3 text-[13px] text-[#333333]">
+                              <span className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666]">
+                                <GripIcon />
+                              </span>
+                              <span>{stage.label}</span>
+                            </div>
+                          )}
+                          {stage.locked ? (
+                            <span className="flex items-center justify-center">
+                              <LockOutlinedIcon sx={{ fontSize: 14, color: "#999999" }} />
+                            </span>
                           ) : (
                             <button
                               type="button"
@@ -517,6 +518,8 @@ const HiringPipeline: React.FC = () => {
                           )}
                         </div>
                       );
+
+                      return rowContent;
                     })}
                   </div>
                 </>
