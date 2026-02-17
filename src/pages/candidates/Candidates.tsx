@@ -207,18 +207,22 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <button
-    type="button"
-    onClick={onToggle}
-    className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#FAFAFA] text-[14px] font-[500] text-[#333333]"
-  >
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#FAFAFA] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
-    {collapsed ? (
-      <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
-    ) : (
-      <KeyboardDoubleArrowUpRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
-    )}
-  </button>
+    <button
+      type="button"
+      aria-label={`Toggle ${title}`}
+      aria-expanded={!collapsed}
+      onClick={onToggle}
+      className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] hover:bg-[#F3F4F6]"
+    >
+      {collapsed ? (
+        <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
+      ) : (
+        <KeyboardDoubleArrowUpRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
+      )}
+    </button>
+  </div>
 );
 
 const TextAreaField = ({
@@ -553,8 +557,8 @@ export const Candidates: React.FC = () => {
   const [layoutOpen, setLayoutOpen] = useState<Record<string, boolean>>({
     personal: true,
     professional: true,
-    education: false,
-    work: false,
+    education: true,
+    work: true,
     resume: true,
     social: true
   });
@@ -1212,7 +1216,7 @@ export const Candidates: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, personal: !p.personal }))}
             />
             {layoutOpen.personal && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                 {isLayoutVisible("personal", "firstName") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -1497,7 +1501,7 @@ export const Candidates: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, professional: !p.professional }))}
             />
             {layoutOpen.professional && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
+              <div className="grid grid-cols-1 mt-6 md:grid-cols-2 gap-y-4 gap-x-10">
                 {isLayoutVisible("professional", "employer") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -1684,11 +1688,11 @@ export const Candidates: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, education: !p.education }))}
             />
             {layoutOpen.education && (
-              <div className="flex flex-col gap-4">
+              <div className="mt-6 flex flex-col gap-4">
                 {educationEntries.map((entry) => {
                   const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
                   return (
-                    <div key={entry.id} className="flex flex-col gap-4 border border-[#E6E6E6] rounded-[4px] p-4 bg-white">
+                    <div key={entry.id} className="flex flex-col gap-4  border-[#E6E6E6] rounded-[4px] p-4 bg-white">
                       {isLayoutVisible("education", "institute") && (
                         <div className="relative flex flex-col pb-[14px]">
                           <FloatingLabelInput
@@ -1844,15 +1848,16 @@ export const Candidates: React.FC = () => {
                     </div>
                   );
                 })}
+                <button
+                  type="button"
+                  className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                  onClick={addEducationEntry}
+                >
+                  + Add Educational Details
+                </button>
               </div>
             )}
-            <button
-              type="button"
-              className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
-              onClick={addEducationEntry}
-            >
-              + Add Educational Details
-            </button>
+
           </>
         )}
       </div>
@@ -1870,7 +1875,7 @@ export const Candidates: React.FC = () => {
                 {workEntries.map((entry) => {
                   const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
                   return (
-                    <div key={entry.id} className="flex flex-col gap-4 border border-[#E6E6E6] rounded-[4px] p-4 bg-white">
+                    <div key={entry.id} className="flex flex-col gap-4  border-[#E6E6E6] rounded-[4px] p-4 bg-white">
                       {isLayoutVisible("workHistory", "job") && (
                         <div className="relative flex flex-col pb-[14px]">
                           <FloatingLabelInput
@@ -2079,15 +2084,17 @@ export const Candidates: React.FC = () => {
                     </div>
                   );
                 })}
+                <button
+                  type="button"
+                  className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                  onClick={addWorkEntry}
+                >
+                  + Add Work History
+                </button>
               </div>
+
             )}
-            <button
-              type="button"
-              className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
-              onClick={addWorkEntry}
-            >
-              + Add Work History
-            </button>
+
           </>
         )}
       </div>
@@ -2101,7 +2108,7 @@ export const Candidates: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, resume: !p.resume }))}
             />
             {layoutOpen.resume && (
-              <div className="flex flex-col gap-4">
+              <div className="flex pt-6 flex-col gap-4">
                 {isLayoutVisible("resumeSkills", "resume") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <div className={cn(
@@ -2169,7 +2176,7 @@ export const Candidates: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, social: !p.social }))}
             />
             {layoutOpen.social && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+              <div className="grid pt-6 grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
                 {isLayoutVisible("social", "linkedin") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -2288,7 +2295,7 @@ export const Candidates: React.FC = () => {
             </button>
 
             <div className={cn(
-              "relative border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden pb-[14px]",
+              "relative mt-6 border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden pb-[14px]",
               showFieldError("summary", "candidateSummary") && "border-[#E53935]"
             )}>
               <div className="flex items-center gap-2 px-3 h-[36px] border-b border-[#E6E6E6] text-[12px] text-[#333333]">
@@ -2463,7 +2470,7 @@ export const Candidates: React.FC = () => {
                 </span>
               )}
             </div>
-            <div className="flex justify-end">
+            <div className="flex mt-6 justify-end">
               <button
                 type="button"
                 className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"

@@ -174,18 +174,22 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <button
-    type="button"
-    onClick={onToggle}
-    className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#FAFAFA] text-[14px] font-[500] text-[#333333]"
-  >
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#FAFAFA] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
-    {collapsed ? (
-      <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
-    ) : (
-      <KeyboardDoubleArrowUpRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
-    )}
-  </button>
+    <button
+      type="button"
+      aria-label={`Toggle ${title}`}
+      aria-expanded={!collapsed}
+      onClick={onToggle}
+      className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] hover:bg-[#F3F4F6]"
+    >
+      {collapsed ? (
+        <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
+      ) : (
+        <KeyboardDoubleArrowUpRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
+      )}
+    </button>
+  </div>
 );
 
 const SectionCard = ({
@@ -981,7 +985,7 @@ export const CompanyFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, companyDetails: !p.companyDetails }))}
             />
             {layoutOpen.companyDetails && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("companyDetails", "companyName") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -1155,7 +1159,7 @@ export const CompanyFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, location: !p.location }))}
             />
             {layoutOpen.location && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
                 {isLayoutVisible("location", "fullAddress") && (
                   <div className="md:col-span-2">
                     <FloatingLabelInput
@@ -1229,7 +1233,7 @@ export const CompanyFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, accountManagement: !p.accountManagement }))}
             />
             {layoutOpen.accountManagement && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("accountManagement", "accountStatus") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelSelect

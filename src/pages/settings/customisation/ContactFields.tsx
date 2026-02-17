@@ -174,18 +174,22 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <button
-    type="button"
-    onClick={onToggle}
-    className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#FAFAFA] text-[14px] font-[500] text-[#333333]"
-  >
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#FAFAFA] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
-    {collapsed ? (
-      <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
-    ) : (
-      <KeyboardDoubleArrowUpRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
-    )}
-  </button>
+    <button
+      type="button"
+      aria-label={`Toggle ${title}`}
+      aria-expanded={!collapsed}
+      onClick={onToggle}
+      className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] hover:bg-[#F3F4F6]"
+    >
+      {collapsed ? (
+        <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
+      ) : (
+        <KeyboardDoubleArrowUpRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
+      )}
+    </button>
+  </div>
 );
 
 const SectionCard = ({
@@ -867,7 +871,7 @@ export const ContactFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, contactDetails: !p.contactDetails }))}
             />
             {layoutOpen.contactDetails && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("contactDetails", "firstName") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -983,7 +987,7 @@ export const ContactFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, recordDetails: !p.recordDetails }))}
             />
             {layoutOpen.recordDetails && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("recordDetails", "contactOwner") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelSelect
@@ -1039,7 +1043,7 @@ export const ContactFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, contactAddressInfo: !p.contactAddressInfo }))}
             />
             {layoutOpen.contactAddressInfo && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("contactAddressInfo", "fullAddress") && (
                   <div className="relative flex flex-col pb-[14px] md:col-span-2">
                     <FloatingLabelInput
@@ -1155,7 +1159,7 @@ export const ContactFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, contactCommunication: !p.contactCommunication }))}
             />
             {layoutOpen.contactCommunication && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("contactCommunication", "email") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
@@ -1231,7 +1235,7 @@ export const ContactFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, contactRelationship: !p.contactRelationship }))}
             />
             {layoutOpen.contactRelationship && (
-              <div className="flex flex-col gap-4">
+              <div className="mt-6 flex flex-col gap-4">
                 {isLayoutVisible("contactRelationship", "company") && (
                   <div className="flex flex-col md:flex-row md:items-center gap-3">
                     <div className="relative flex-1 flex flex-col pb-[14px]">
@@ -1316,7 +1320,7 @@ export const ContactFields: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, contactSocialLinks: !p.contactSocialLinks }))}
             />
             {layoutOpen.contactSocialLinks && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
                 {isLayoutVisible("contactSocialLinks", "linkedin") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
