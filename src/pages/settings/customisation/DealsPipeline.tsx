@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
 import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
 import TrashIcon from "@/components/icons/TrashIcon";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 const primaryButtonSx = {
   height: "36px",
@@ -273,7 +274,7 @@ const DealsPipeline: React.FC = () => {
                     <div className="grid grid-cols-[2.2fr_2fr_0.6fr] gap-4 items-center border border-[#E6E6E6] rounded-[6px] px-3 h-[44px] bg-white">
                       <div className="flex items-center gap-3 text-[13px] text-[#333333]">
                         <GripIcon color="rgba(51, 51, 51, 0.25)" />
-                        <input
+                        <FloatingLabelInput
                           type="text"
                           placeholder=""
                           value={newStatus}

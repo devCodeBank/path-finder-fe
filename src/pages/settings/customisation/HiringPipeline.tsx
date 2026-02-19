@@ -463,7 +463,7 @@ const HiringPipeline: React.FC = () => {
                             <Tooltip
                               title={lockedTooltip}
                               arrow
-                              placement="right-start"
+                              placement="bottom-start"
                               PopperProps={{
                                 disablePortal: true
                               }}
@@ -500,7 +500,7 @@ const HiringPipeline: React.FC = () => {
                               onClick={() => toggleStage(stageId, stage.locked)}
                               className={[
                                 "h-[16px] w-[16px] rounded-[4px] border flex items-center justify-center",
-                                isSelected ? "border-[#6E41E2] bg-[#6E41E2]" : "border-[#D7D7D7] bg-white"
+                                isSelected ? "border-[#22C55E] bg-[#22C55E]" : "border-[#D7D7D7] bg-white"
                               ].join(" ")}
                             >
                               {isSelected && (

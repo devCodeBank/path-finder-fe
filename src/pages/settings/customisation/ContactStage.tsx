@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
 import TrashIcon from "@/components/icons/TrashIcon";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 const primaryButtonSx = {
   height: "36px",
@@ -182,7 +183,7 @@ const ContactStage: React.FC = () => {
               <div className="flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[44px] bg-white">
                 <div className="flex items-center gap-3 text-[13px] text-[#333333]">
                   <GripIcon />
-                  <input
+                  <FloatingLabelInput
                     type="text"
                     placeholder="Add new contact stage"
                     value={newStage}

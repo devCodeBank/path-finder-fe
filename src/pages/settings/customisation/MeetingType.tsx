@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
 import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
 import TrashIcon from "@/components/icons/TrashIcon";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 const primaryButtonSx = {
   height: "36px",
@@ -128,7 +129,7 @@ const MeetingType: React.FC = () => {
             {isAdding && (
               <div className="flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[44px] bg-white">
                 <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                  <input
+                  <FloatingLabelInput
                     type="text"
                     placeholder="Add new meeting type"
                     value={newType}
