@@ -1,13 +1,14 @@
-import TabsComponent from "@/components/tabs/TabsComponent";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Checkbox, Tooltip } from "@mui/material";
-import React, { useState } from "react";
-import TrashIcon from "@/components/icons/TrashIcon";
-import CloseXIcon from "@assets/icons/close-pop-up.svg";
+import React, { useEffect, useState } from "react";
+
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import TrashIcon from "@/components/icons/TrashIcon";
+import TabsComponent from "@/components/tabs/TabsComponent";
 
 type TabKey = "candidates" | "jobs" | "contacts" | "companies";
 
@@ -30,17 +31,17 @@ const initialData: Record<TabKey, TagGroup[]> = {
       title: "Technical Skills",
       tags: [
         { id: "react", label: "React", visible: true },
-        { id: "node-js", label: "Node.Js", visible: true }
-      ]
+        { id: "node-js", label: "Node.Js", visible: true },
+      ],
     },
     {
       id: "hiring-status",
       title: "Hiring Status",
       tags: [
         { id: "urgent-hire", label: "Urgent Hire", visible: true },
-        { id: "blacklisted", label: "Blacklisted", visible: true }
-      ]
-    }
+        { id: "blacklisted", label: "Blacklisted", visible: true },
+      ],
+    },
   ],
   jobs: [
     {
@@ -48,17 +49,17 @@ const initialData: Record<TabKey, TagGroup[]> = {
       title: "Priority Level",
       tags: [
         { id: "high-priority", label: "High Priority", visible: true },
-        { id: "low-priority", label: "Low Priority", visible: true }
-      ]
+        { id: "low-priority", label: "Low Priority", visible: true },
+      ],
     },
     {
       id: "employment-type",
       title: "Employment Type",
       tags: [
         { id: "contract", label: "Contract", visible: true },
-        { id: "fixed-term", label: "Fixed Term", visible: true }
-      ]
-    }
+        { id: "fixed-term", label: "Fixed Term", visible: true },
+      ],
+    },
   ],
   contacts: [
     {
@@ -66,17 +67,17 @@ const initialData: Record<TabKey, TagGroup[]> = {
       title: "Influence Level",
       tags: [
         { id: "decision-maker", label: "Decision Maker", visible: true },
-        { id: "gatekeeper", label: "Gatekeeper", visible: true }
-      ]
+        { id: "gatekeeper", label: "Gatekeeper", visible: true },
+      ],
     },
     {
       id: "engagement-status",
       title: "Engagement Status",
       tags: [
         { id: "warm-lead", label: "Warm Lead", visible: true },
-        { id: "cold-lead", label: "Cold Lead", visible: true }
-      ]
-    }
+        { id: "cold-lead", label: "Cold Lead", visible: true },
+      ],
+    },
   ],
   companies: [
     {
@@ -84,18 +85,18 @@ const initialData: Record<TabKey, TagGroup[]> = {
       title: "Account Tier",
       tags: [
         { id: "tier-1-key-account", label: "Tier 1 (Key Account)", visible: true },
-        { id: "tier-3-small", label: "Tier 3 (Small)", visible: true }
-      ]
+        { id: "tier-3-small", label: "Tier 3 (Small)", visible: true },
+      ],
     },
     {
       id: "industry-sector",
       title: "Industry Sector",
       tags: [
         { id: "fintech", label: "FinTech", visible: true },
-        { id: "healthtech", label: "HealthTech", visible: true }
-      ]
-    }
-  ]
+        { id: "healthtech", label: "HealthTech", visible: true },
+      ],
+    },
+  ],
 };
 
 const primaryButtonSx = {
@@ -110,8 +111,8 @@ const primaryButtonSx = {
   color: "#FFFFFF",
   "&:hover": {
     backgroundColor: "#7B52F4",
-    boxShadow: "none"
-  }
+    boxShadow: "none",
+  },
 };
 
 const Tags: React.FC = () => {
@@ -127,6 +128,17 @@ const Tags: React.FC = () => {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [editingTag, setEditingTag] = useState<{ tab: TabKey; groupId: string; tagId: string } | null>(null);
   const [editingTagLabel, setEditingTagLabel] = useState("");
+
+  useEffect(() => {
+    const handleClickOutsideSearch = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("[data-tag-search-zone='true']")) return;
+      setSearchOpenByGroup({});
+    };
+
+    document.addEventListener("mousedown", handleClickOutsideSearch);
+    return () => document.removeEventListener("mousedown", handleClickOutsideSearch);
+  }, []);
 
   const openEditModal = (tab: TabKey, group: TagGroup) => {
     setEditing({ tab, groupId: group.id });
@@ -144,9 +156,7 @@ const Tags: React.FC = () => {
     if (!nextTitle) return;
     setData((prev) => ({
       ...prev,
-      [editing.tab]: prev[editing.tab].map((group) =>
-        group.id === editing.groupId ? { ...group, title: nextTitle } : group
-      )
+      [editing.tab]: prev[editing.tab].map((group) => (group.id === editing.groupId ? { ...group, title: nextTitle } : group)),
     }));
     closeEditModal();
   };
@@ -157,11 +167,11 @@ const Tags: React.FC = () => {
       [tab]: prev[tab].map((group) =>
         group.id === groupId
           ? {
-            ...group,
-            tags: group.tags.map((tag) => (tag.id === tagId ? { ...tag, visible } : tag))
-          }
-          : group
-      )
+              ...group,
+              tags: group.tags.map((tag) => (tag.id === tagId ? { ...tag, visible } : tag)),
+            }
+          : group,
+      ),
     }));
   };
 
@@ -194,18 +204,18 @@ const Tags: React.FC = () => {
       [addingTagFor.tab]: prev[addingTagFor.tab].map((group) =>
         group.id === addingTagFor.groupId
           ? {
-            ...group,
-            tags: [
-              ...group.tags,
-              {
-                id: `${next.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
-                label: next,
-                visible: true
-              }
-            ]
-          }
-          : group
-      )
+              ...group,
+              tags: [
+                ...group.tags,
+                {
+                  id: `${next.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
+                  label: next,
+                  visible: true,
+                },
+              ],
+            }
+          : group,
+      ),
     }));
     cancelAddTag();
   };
@@ -225,9 +235,9 @@ const Tags: React.FC = () => {
         {
           id: `${activeTab}-${next.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
           title: next,
-          tags: []
-        }
-      ]
+          tags: [],
+        },
+      ],
     }));
     closeAddCategoryModal();
   };
@@ -250,9 +260,7 @@ const Tags: React.FC = () => {
       if (!movingTag) return prev;
       return {
         ...prev,
-        [tab]: removed.map((group) =>
-          group.id === targetGroupId ? { ...group, tags: [...group.tags, movingTag as TagItem] } : group
-        )
+        [tab]: removed.map((group) => (group.id === targetGroupId ? { ...group, tags: [...group.tags, movingTag as TagItem] } : group)),
       };
     });
   };
@@ -260,9 +268,7 @@ const Tags: React.FC = () => {
   const deleteTag = (tab: TabKey, groupId: string, tagId: string) => {
     setData((prev) => ({
       ...prev,
-      [tab]: prev[tab].map((group) =>
-        group.id === groupId ? { ...group, tags: group.tags.filter((tag) => tag.id !== tagId) } : group
-      )
+      [tab]: prev[tab].map((group) => (group.id === groupId ? { ...group, tags: group.tags.filter((tag) => tag.id !== tagId) } : group)),
     }));
   };
 
@@ -285,13 +291,11 @@ const Tags: React.FC = () => {
       [editingTag.tab]: prev[editingTag.tab].map((group) =>
         group.id === editingTag.groupId
           ? {
-            ...group,
-            tags: group.tags.map((tag) =>
-              tag.id === editingTag.tagId ? { ...tag, label: nextLabel } : tag
-            )
-          }
-          : group
-      )
+              ...group,
+              tags: group.tags.map((tag) => (tag.id === editingTag.tagId ? { ...tag, label: nextLabel } : tag)),
+            }
+          : group,
+      ),
     }));
     closeEditTag();
   };
@@ -305,14 +309,12 @@ const Tags: React.FC = () => {
               <div className="flex items-center gap-3 min-w-0">
                 <span className="text-[14px] font-[500] text-[#333333] truncate">{group.title}</span>
               </div>
-              <div className="flex items-center gap-6 text-[#888888]">
+              <div className="flex items-center gap-6 text-[#888888]" data-tag-search-zone="true">
                 {searchOpenByGroup[group.id] && (
                   <input
                     type="text"
                     value={searchByGroup[group.id] || ""}
-                    onChange={(event) =>
-                      setSearchByGroup((prev) => ({ ...prev, [group.id]: event.target.value }))
-                    }
+                    onChange={(event) => setSearchByGroup((prev) => ({ ...prev, [group.id]: event.target.value }))}
                     placeholder="Search tag"
                     className="h-[30px] w-[180px] rounded-[4px] border border-[#CCCCCC80] px-2 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666] focus:outline-none"
                   />
@@ -324,14 +326,10 @@ const Tags: React.FC = () => {
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
-                    popper: { sx: { zIndex: 2400 } }
+                    popper: { sx: { zIndex: 2400 } },
                   }}
                 >
-                  <button
-                    type="button"
-                    className="hover:text-[#666666]"
-                    onClick={() => toggleSearch(group.id)}
-                  >
+                  <button type="button" className="hover:text-[#666666]" onClick={() => toggleSearch(group.id)}>
                     <SearchOutlinedIcon sx={{ fontSize: 20 }} />
                   </button>
                 </Tooltip>
@@ -342,14 +340,10 @@ const Tags: React.FC = () => {
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
-                    popper: { sx: { zIndex: 2400 } }
+                    popper: { sx: { zIndex: 2400 } },
                   }}
                 >
-                  <button
-                    type="button"
-                    className="hover:text-[#666666]"
-                    onClick={() => openEditModal(tab, group)}
-                  >
+                  <button type="button" className="hover:text-[#666666]" onClick={() => openEditModal(tab, group)}>
                     <EditOutlinedIcon sx={{ fontSize: 20 }} />
                   </button>
                 </Tooltip>
@@ -360,7 +354,7 @@ const Tags: React.FC = () => {
                   componentsProps={{
                     tooltip: { sx: { bgcolor: "#797979" } },
                     arrow: { sx: { color: "#797979" } },
-                    popper: { sx: { zIndex: 2400 } }
+                    popper: { sx: { zIndex: 2400 } },
                   }}
                 >
                   <button type="button" className="hover:text-[#666666]">
@@ -376,7 +370,7 @@ const Tags: React.FC = () => {
                 if (!keyword) return true;
                 return tag.label.toLowerCase().includes(keyword);
               })
-              .map((tag) => (
+              .map((tag) =>
                 (() => {
                   return (
                     <div
@@ -413,13 +407,7 @@ const Tags: React.FC = () => {
                             fill="none"
                             aria-hidden="true"
                           >
-                            <path
-                              d="M6 8L10 12L14 8"
-                              stroke="#666666"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
+                            <path d="M6 8L10 12L14 8" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
                         </div>
                         <Tooltip
@@ -429,7 +417,7 @@ const Tags: React.FC = () => {
                           componentsProps={{
                             tooltip: { sx: { bgcolor: "#797979" } },
                             arrow: { sx: { color: "#797979" } },
-                            popper: { sx: { zIndex: 2400 } }
+                            popper: { sx: { zIndex: 2400 } },
                           }}
                         >
                           <button
@@ -450,7 +438,7 @@ const Tags: React.FC = () => {
                           componentsProps={{
                             tooltip: { sx: { bgcolor: "#797979" } },
                             arrow: { sx: { color: "#797979" } },
-                            popper: { sx: { zIndex: 2400 } }
+                            popper: { sx: { zIndex: 2400 } },
                           }}
                         >
                           <button
@@ -479,8 +467,8 @@ const Tags: React.FC = () => {
                       </div>
                     </div>
                   );
-                })()
-              ))}
+                })(),
+              )}
 
             {addingTagFor?.tab === tab && addingTagFor.groupId === group.id ? (
               <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-between gap-3">
@@ -531,40 +519,24 @@ const Tags: React.FC = () => {
     { label: "Candidates", value: "candidates", content: renderTabContent("candidates") },
     { label: "Jobs", value: "jobs", content: renderTabContent("jobs") },
     { label: "Contacts", value: "contacts", content: renderTabContent("contacts") },
-    { label: "Companies", value: "companies", content: renderTabContent("companies") }
+    { label: "Companies", value: "companies", content: renderTabContent("companies") },
   ];
 
   return (
     <div className="flex flex-col gap-6 pt-2">
       <div className="flex items-center justify-end">
-        <Button
-          variant="contained"
-          sx={primaryButtonSx}
-          startIcon={<AddIcon />}
-          onClick={() => setIsAddCategoryOpen(true)}
-        >
+        <Button variant="contained" sx={primaryButtonSx} startIcon={<AddIcon />} onClick={() => setIsAddCategoryOpen(true)}>
           Add Tag Category
         </Button>
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden p-4">
-        <TabsComponent
-          tabs={tabs}
-          defaultTab="candidates"
-          value={activeTab}
-          onChange={(value) => setActiveTab(value as TabKey)}
-        />
+        <TabsComponent tabs={tabs} defaultTab="candidates" value={activeTab} onChange={(value) => setActiveTab(value as TabKey)} />
       </div>
 
       {editing && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
-          onClick={closeEditModal}
-        >
-          <div
-            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4" onClick={closeEditModal}>
+          <div className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Section Name</div>
               <Tooltip
@@ -573,7 +545,7 @@ const Tags: React.FC = () => {
                 componentsProps={{
                   tooltip: { sx: { bgcolor: "#797979" } },
                   arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } }
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button
@@ -609,14 +581,8 @@ const Tags: React.FC = () => {
       )}
 
       {isAddCategoryOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
-          onClick={closeAddCategoryModal}
-        >
-          <div
-            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4" onClick={closeAddCategoryModal}>
+          <div className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[500] text-[#333333]">Add Tag Category</div>
               <Tooltip
@@ -625,7 +591,7 @@ const Tags: React.FC = () => {
                 componentsProps={{
                   tooltip: { sx: { bgcolor: "#797979" } },
                   arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } }
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button
@@ -671,14 +637,8 @@ const Tags: React.FC = () => {
       )}
 
       {editingTag && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
-          onClick={closeEditTag}
-        >
-          <div
-            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4" onClick={closeEditTag}>
+          <div className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Tag Name</div>
               <Tooltip
@@ -687,7 +647,7 @@ const Tags: React.FC = () => {
                 componentsProps={{
                   tooltip: { sx: { bgcolor: "#797979" } },
                   arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } }
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button

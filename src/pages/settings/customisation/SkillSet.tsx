@@ -1,11 +1,12 @@
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import AddIcon from "@mui/icons-material/Add";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Tooltip } from "@mui/material";
-import React, { useState } from "react";
-import TrashIcon from "@/components/icons/TrashIcon";
-import CloseXIcon from "@assets/icons/close-pop-up.svg";
+import React, { useEffect, useState } from "react";
+
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import TrashIcon from "@/components/icons/TrashIcon";
 
 type SkillCategory = {
   id: string;
@@ -17,24 +18,24 @@ const initialCategories: SkillCategory[] = [
   {
     id: "frontend-development",
     title: "Frontend Development",
-    skills: ["React", "Vue", "Tailwind", "TypeScript"]
+    skills: ["React", "Vue", "Tailwind", "TypeScript"],
   },
   {
     id: "backend-development",
     title: "Backend Development",
-    skills: ["Node.js", "Python", "PostgreSQL", "Redis"]
+    skills: ["Node.js", "Python", "PostgreSQL", "Redis"],
   },
   {
     id: "soft-skills",
     title: "Soft Skills",
-    skills: ["Leadership", "Communication"]
-  }
+    skills: ["Leadership", "Communication"],
+  },
 ];
 
 const tooltipProps = {
   tooltip: { sx: { bgcolor: "#797979" } },
   arrow: { sx: { color: "#797979" } },
-  popper: { sx: { zIndex: 2400 } }
+  popper: { sx: { zIndex: 2400 } },
 } as const;
 
 const primaryButtonSx = {
@@ -49,8 +50,8 @@ const primaryButtonSx = {
   color: "#FFFFFF",
   "&:hover": {
     backgroundColor: "#7B52F4",
-    boxShadow: "none"
-  }
+    boxShadow: "none",
+  },
 };
 
 const SkillSet: React.FC = () => {
@@ -64,6 +65,17 @@ const SkillSet: React.FC = () => {
   const [searchOpenByCategory, setSearchOpenByCategory] = useState<Record<string, boolean>>({});
   const [searchByCategory, setSearchByCategory] = useState<Record<string, string>>({});
 
+  useEffect(() => {
+    const handleClickOutsideSearch = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("[data-skill-search-zone='true']")) return;
+      setSearchOpenByCategory({});
+    };
+
+    document.addEventListener("mousedown", handleClickOutsideSearch);
+    return () => document.removeEventListener("mousedown", handleClickOutsideSearch);
+  }, []);
+
   const closeAddCategory = () => {
     setIsAddCategoryOpen(false);
     setNewCategoryName("");
@@ -72,14 +84,14 @@ const SkillSet: React.FC = () => {
   const saveAddCategory = () => {
     const next = newCategoryName.trim();
     if (!next) return;
-    setCategories((prev) => ([
+    setCategories((prev) => [
       ...prev,
       {
         id: `${next.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
         title: next,
-        skills: []
-      }
-    ]));
+        skills: [],
+      },
+    ]);
     closeAddCategory();
   };
 
@@ -98,11 +110,7 @@ const SkillSet: React.FC = () => {
     const next = newSkillName.trim();
     if (!next) return;
     setCategories((prev) =>
-      prev.map((category) =>
-        category.id === addingSkillFor
-          ? { ...category, skills: [...category.skills, next] }
-          : category
-      )
+      prev.map((category) => (category.id === addingSkillFor ? { ...category, skills: [...category.skills, next] } : category)),
     );
     closeAddSkill();
   };
@@ -121,11 +129,7 @@ const SkillSet: React.FC = () => {
     if (!editingCategory) return;
     const next = editingCategoryName.trim();
     if (!next) return;
-    setCategories((prev) =>
-      prev.map((category) =>
-        category.id === editingCategory.id ? { ...category, title: next } : category
-      )
-    );
+    setCategories((prev) => prev.map((category) => (category.id === editingCategory.id ? { ...category, title: next } : category)));
     closeEditCategory();
   };
 
@@ -149,22 +153,15 @@ const SkillSet: React.FC = () => {
   const removeSkill = (categoryId: string, index: number) => {
     setCategories((prev) =>
       prev.map((category) =>
-        category.id === categoryId
-          ? { ...category, skills: category.skills.filter((_, skillIndex) => skillIndex !== index) }
-          : category
-      )
+        category.id === categoryId ? { ...category, skills: category.skills.filter((_, skillIndex) => skillIndex !== index) } : category,
+      ),
     );
   };
 
   return (
     <div className="flex flex-col gap-6 pt-2">
       <div className="flex items-center justify-end">
-        <Button
-          variant="contained"
-          sx={primaryButtonSx}
-          startIcon={<AddIcon />}
-          onClick={() => setIsAddCategoryOpen(true)}
-        >
+        <Button variant="contained" sx={primaryButtonSx} startIcon={<AddIcon />} onClick={() => setIsAddCategoryOpen(true)}>
           Add Skill Category
         </Button>
       </div>
@@ -181,14 +178,12 @@ const SkillSet: React.FC = () => {
               <div key={category.id} className="flex flex-col gap-2">
                 <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#EAEAEA26] flex items-center justify-between">
                   <span className="text-[14px] font-[500] text-[#333333]">{category.title}</span>
-                  <div className="flex items-center gap-5 text-[#888888]">
+                  <div className="flex items-center gap-5 text-[#888888]" data-skill-search-zone="true">
                     {searchOpenByCategory[category.id] && (
                       <input
                         type="text"
                         value={searchByCategory[category.id] || ""}
-                        onChange={(event) =>
-                          setSearchByCategory((prev) => ({ ...prev, [category.id]: event.target.value }))
-                        }
+                        onChange={(event) => setSearchByCategory((prev) => ({ ...prev, [category.id]: event.target.value }))}
                         placeholder="Search skill"
                         className="h-[30px] w-[180px] rounded-[4px] border border-[#CCCCCC80] px-2 text-[12px] text-[#333333] hover:border-[#666666] focus:border-[#666666] focus:outline-none"
                       />
@@ -275,14 +270,8 @@ const SkillSet: React.FC = () => {
       </div>
 
       {isAddCategoryOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
-          onClick={closeAddCategory}
-        >
-          <div
-            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4" onClick={closeAddCategory}>
+          <div className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[500] text-[#333333]">Add Skill Category</div>
               <Tooltip
@@ -291,7 +280,7 @@ const SkillSet: React.FC = () => {
                 componentsProps={{
                   tooltip: { sx: { bgcolor: "#797979" } },
                   arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } }
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button
@@ -337,14 +326,8 @@ const SkillSet: React.FC = () => {
       )}
 
       {editingCategory && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4"
-          onClick={closeEditCategory}
-        >
-          <div
-            className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl"
-            onClick={(event) => event.stopPropagation()}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4" onClick={closeEditCategory}>
+          <div className="w-full max-w-[520px] rounded-[10px] bg-white p-8 shadow-xl" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[500] text-[#333333]">Edit Skill Category</div>
               <Tooltip
@@ -353,7 +336,7 @@ const SkillSet: React.FC = () => {
                 componentsProps={{
                   tooltip: { sx: { bgcolor: "#797979" } },
                   arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } }
+                  popper: { sx: { zIndex: 2400 } },
                 }}
               >
                 <button
