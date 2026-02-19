@@ -17,7 +17,7 @@ import { addTeam, fetchTeams } from "@redux/slices/teamsSlice";
 import theme from "@theme/index";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import DeleteMemberModal from "@components/popupModals/deleteMemberModal";
 
 import type { Team, TeamRow } from "../../../types/teams";
@@ -504,7 +504,7 @@ export const Teams: React.FC = () => {
                   <img
                     src={CloseXIcon}
                     alt=""
-                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    className="h-[24px] w-[24px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
                   />
                 </button>
               </Tooltip>

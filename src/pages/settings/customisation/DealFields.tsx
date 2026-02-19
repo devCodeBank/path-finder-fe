@@ -4,7 +4,8 @@ import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoub
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
 import { Tooltip } from "@mui/material";
 import { cn } from "@/lib/utils";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 type FieldRow = {
   id: string;
@@ -433,12 +434,12 @@ const DealFields: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={handleCloseEditSectionTitle}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}

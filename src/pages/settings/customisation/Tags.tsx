@@ -6,7 +6,8 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Checkbox, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import TrashIcon from "@/components/icons/TrashIcon";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 type TabKey = "candidates" | "jobs" | "contacts" | "companies";
 
@@ -581,12 +582,12 @@ const Tags: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeEditModal}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={editingTitle}
                 onChange={(event) => setEditingTitle(event.target.value)}
@@ -633,12 +634,12 @@ const Tags: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeAddCategoryModal}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={newCategoryName}
                 onChange={(event) => setNewCategoryName(event.target.value)}
@@ -695,12 +696,12 @@ const Tags: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeEditTag}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={editingTagLabel}
                 onChange={(event) => setEditingTagLabel(event.target.value)}

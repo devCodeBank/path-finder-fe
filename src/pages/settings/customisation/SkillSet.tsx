@@ -4,7 +4,8 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Tooltip } from "@mui/material";
 import React, { useState } from "react";
 import TrashIcon from "@/components/icons/TrashIcon";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
+import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 type SkillCategory = {
   id: string;
@@ -299,12 +300,12 @@ const SkillSet: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeAddCategory}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={newCategoryName}
                 onChange={(event) => setNewCategoryName(event.target.value)}
@@ -361,12 +362,12 @@ const SkillSet: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeEditCategory}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={editingCategoryName}
                 onChange={(event) => setEditingCategoryName(event.target.value)}

@@ -6,6 +6,7 @@ import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLa
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@mui/material";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 
 // const primaryButtonSx = {
 //   height: "36px",
@@ -1153,17 +1154,27 @@ export const Candidates: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div className="text-[16px] font-[600] text-[#333333]">Edit Section Name</div>
-              <button
-                type="button"
-                aria-label="Close"
-                className="h-[28px] w-[28px] rounded-[6px] text-[#666666] hover:bg-[#F3F4F6]"
-                onClick={handleCloseEditSectionTitle}
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } }
+                }}
               >
-                ×
-              </button>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  onClick={handleCloseEditSectionTitle}
+                >
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
+                </button>
+              </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}

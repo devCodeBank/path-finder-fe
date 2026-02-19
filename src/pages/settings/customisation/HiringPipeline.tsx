@@ -5,7 +5,7 @@ import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRound
 import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Button, Tooltip } from "@mui/material";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
 const primaryButtonSx = {
@@ -411,7 +411,7 @@ const HiringPipeline: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closePanel}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>

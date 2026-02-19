@@ -2,7 +2,7 @@ import { Button, Tooltip } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import React, { useState } from "react";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 
 const primaryButtonSx = {
   height: "36px",
@@ -420,7 +420,7 @@ export const Billing: React.FC = () => {
                     window.setTimeout(() => setIsTransferModalOpen(false), 300);
                   }}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
@@ -522,7 +522,7 @@ export const Billing: React.FC = () => {
                     window.setTimeout(() => setIsUpgradeModalOpen(false), 300);
                   }}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
@@ -623,7 +623,7 @@ export const Billing: React.FC = () => {
                     window.setTimeout(() => setIsCompanyModalOpen(false), 300);
                   }}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
@@ -713,7 +713,7 @@ export const Billing: React.FC = () => {
                     window.setTimeout(() => setIsBillingEmailModalOpen(false), 300);
                   }}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
@@ -800,7 +800,7 @@ export const Billing: React.FC = () => {
                     window.setTimeout(() => setIsCardModalOpen(false), 300);
                   }}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>

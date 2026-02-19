@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Button, Tooltip } from "@mui/material";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import TrashIcon from "@/components/icons/TrashIcon";
 
@@ -381,7 +381,7 @@ const JobStatus: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closePanel}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>

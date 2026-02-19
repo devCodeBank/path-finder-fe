@@ -6,7 +6,7 @@ import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLa
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Button, Tooltip } from "@mui/material";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 
 const primaryButtonSx = {
   height: "36px",
@@ -832,12 +832,12 @@ export const ContactFields: React.FC = () => {
                   className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
                   onClick={handleCloseEditSectionTitle}
                 >
-                  <img src={CloseXIcon} alt="" className="h-[15px] w-[15px]" />
+                  <img src={CloseXIcon} alt="" width={24} height={24} />
                 </button>
               </Tooltip>
             </div>
             <div className="mt-6">
-              <input
+              <FloatingLabelInput
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}

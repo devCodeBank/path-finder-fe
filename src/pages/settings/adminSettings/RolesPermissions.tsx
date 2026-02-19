@@ -10,7 +10,7 @@ import { Button, IconButton, Menu, MenuItem, SvgIcon, Tooltip } from "@mui/mater
 import React, { useRef, useState } from "react";
 import CreateCustomRole from "@pages/settings/adminSettings/rolesPermissions/CustomRole/CreateCustomRole";
 import SystemRoles from "@pages/settings/adminSettings/rolesPermissions/SystemRoles/SystemRoles";
-import CloseXIcon from "@assets/icons/x.svg";
+import CloseXIcon from "@assets/icons/close-pop-up.svg";
 
 interface RoleRow {
   id: string;
@@ -451,7 +451,7 @@ export const RolesPermissions: React.FC = () => {
                   <img
                     src={CloseXIcon}
                     alt=""
-                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    className="h-[24px] w-[24px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
                   />
                 </button>
               </Tooltip>
@@ -553,7 +553,7 @@ export const RolesPermissions: React.FC = () => {
                   <img
                     src={CloseXIcon}
                     alt=""
-                    className="h-[15px] w-[15px]transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    className="h-[24px] w-[24px]transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
                   />
                 </button>
               </Tooltip>
