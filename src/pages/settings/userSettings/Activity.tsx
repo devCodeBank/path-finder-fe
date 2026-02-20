@@ -23,6 +23,7 @@ type SessionRow = {
   ipAddress?: string;
   operatingSystem?: string;
   appVersion?: string;
+  signOutTime?: string;
 };
 
 const initialActiveSessions: SessionRow[] = [
@@ -56,6 +57,7 @@ const activityHistory: SessionRow[] = [
     status: "none",
     sessionName: "pathfinder ats crm",
     signInTime: "17/01/2026",
+    signOutTime: "18/01/2026",
     deviceName: "iMac",
     referrer: "pathfinderatscrm.com",
     ipAddress: "134.12.65.198",
@@ -70,6 +72,7 @@ const activityHistory: SessionRow[] = [
     status: "expired",
     sessionName: "pathfinder ats crm",
     signInTime: "17/01/2026",
+    signOutTime: "18/01/2026",
     deviceName: "iMac",
     referrer: "pathfinderatscrm.com",
     ipAddress: "134.12.65.198",
@@ -118,6 +121,7 @@ const SessionItem = ({
   onTerminate,
   onCurrentInfoClick,
   onHistoryInfoClick,
+  onExpiredInfoClick,
 }: {
   row: SessionRow;
   withAppIcon?: boolean;
@@ -125,11 +129,11 @@ const SessionItem = ({
   onTerminate?: (id: string) => void;
   onCurrentInfoClick?: (session: SessionRow) => void;
   onHistoryInfoClick?: (session: SessionRow) => void;
+  onExpiredInfoClick?: (session: SessionRow) => void;
 }) => (
   <div
     className={[
-      "group flex flex-col gap-3 py-4 first:pt-0 last:pb-0 md:flex-row md:items-center md:gap-6",
-      showTerminateOnHover || withAppIcon ? "rounded-[4px] transition-colors hover:bg-[#F8F8F8]" : "",
+      "group flex flex-col gap-3 rounded-[4px] px-4 py-4 transition-colors hover:bg-[#F8F8F8]  md:-mx-4 md:flex-row md:items-center md:gap-6",
     ].join(" ")}
   >
     <div className="mr-26 flex min-w-[240px] flex-1 items-center gap-3">
@@ -216,20 +220,31 @@ const SessionItem = ({
       {row.status === "expired" && (
         <span className="mr-6 inline-flex items-center gap-1 text-[13px] text-[#E24A4A]">
           Session Expired
-          <Tooltip
-            title="Session expired as per your organisation's policy."
-            arrow
-            placement="left"
-            componentsProps={{
-              tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
-              arrow: { sx: { color: "#797979" } },
-              popper: { sx: { zIndex: 2400 } },
-            }}
-          >
-            <span className="inline-flex items-center justify-center">
+          {onExpiredInfoClick ? (
+            <button
+              type="button"
+              className="inline-flex cursor-pointer items-center justify-center"
+              onClick={() => onExpiredInfoClick(row)}
+              aria-label="View expired session details"
+            >
               <InfoOutlinedIcon sx={{ fontSize: 14, color: "#E24A4A" }} />
-            </span>
-          </Tooltip>
+            </button>
+          ) : (
+            <Tooltip
+              title="Session expired as per your organisation's policy."
+              arrow
+              placement="left"
+              componentsProps={{
+                tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
+                arrow: { sx: { color: "#797979" } },
+                popper: { sx: { zIndex: 2400 } },
+              }}
+            >
+              <span className="inline-flex items-center justify-center">
+                <InfoOutlinedIcon sx={{ fontSize: 14, color: "#E24A4A" }} />
+              </span>
+            </Tooltip>
+          )}
         </span>
       )}
       {row.status === "none" && showTerminateOnHover && onTerminate && (
@@ -249,6 +264,7 @@ export const Activity: React.FC = () => {
   const [activeSessions, setActiveSessions] = React.useState<SessionRow[]>(initialActiveSessions);
   const [selectedCurrentSession, setSelectedCurrentSession] = React.useState<SessionRow | null>(null);
   const [selectedHistorySession, setSelectedHistorySession] = React.useState<SessionRow | null>(null);
+  const [selectedExpiredSession, setSelectedExpiredSession] = React.useState<SessionRow | null>(null);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = React.useState(false);
   const [isTerminateOtherModalOpen, setIsTerminateOtherModalOpen] = React.useState(false);
   const hasOtherSessions = activeSessions.some((session) => session.status !== "current");
@@ -284,45 +300,55 @@ export const Activity: React.FC = () => {
           </button>
         }
       >
-        <div className="divide-y divide-[#ECECEC]">
-          {activeSessions.map((row) => (
-            <SessionItem
-              key={row.id}
-              row={row}
-              showTerminateOnHover
-              onTerminate={handleTerminateSession}
-              onCurrentInfoClick={setSelectedCurrentSession}
-            />
-          ))}
-        </div>
+        <div className="-mt-5">
+          <div>
+            {activeSessions.map((row) => (
+              <SessionItem
+                key={row.id}
+                row={row}
+                showTerminateOnHover
+                onTerminate={handleTerminateSession}
+                onCurrentInfoClick={setSelectedCurrentSession}
+              />
+            ))}
+          </div>
 
-        <div className="pt-12 text-center">
-          <button
-            type="button"
-            className="cursor-pointer text-[14px] font-[400] text-[#E24A4A] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
-            onClick={() => setIsTerminateOtherModalOpen(true)}
-            disabled={!hasOtherSessions}
-          >
-            Terminate all other sessions
-          </button>
+          <div className="px-4 pt-12 text-center">
+            <button
+              type="button"
+              className="cursor-pointer text-[14px] font-[400] text-[#E24A4A] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+              onClick={() => setIsTerminateOtherModalOpen(true)}
+              disabled={!hasOtherSessions}
+            >
+              Terminate all other sessions
+            </button>
+          </div>
         </div>
       </Section>
 
       <Section title="Activity History">
-        <div className="divide-y divide-[#ECECEC]">
-          {activityHistory.map((row) => (
-            <SessionItem key={row.id} row={row} withAppIcon onHistoryInfoClick={setSelectedHistorySession} />
-          ))}
-        </div>
+        <div className="-mx-4 -mt-5">
+          <div>
+            {activityHistory.map((row) => (
+              <SessionItem
+                key={row.id}
+                row={row}
+                withAppIcon
+                onHistoryInfoClick={setSelectedHistorySession}
+                onExpiredInfoClick={setSelectedExpiredSession}
+              />
+            ))}
+          </div>
 
-        <div className="pt-12 text-center">
-          <button
-            type="button"
-            className="cursor-pointer text-[13px] text-[#4A4DFF] hover:underline"
-            onClick={() => setIsHistoryModalOpen(true)}
-          >
-            View More
-          </button>
+          <div className="px-4 pt-12 text-center">
+            <button
+              type="button"
+              className="cursor-pointer text-[13px] text-[#4A4DFF] hover:underline"
+              onClick={() => setIsHistoryModalOpen(true)}
+            >
+              View More
+            </button>
+          </div>
         </div>
       </Section>
 
@@ -462,6 +488,79 @@ export const Activity: React.FC = () => {
         </div>
       )}
 
+      {selectedExpiredSession && (
+        <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-[#00000066] p-4">
+          <div className="w-full max-w-[740px] rounded-[10px] border border-[#D8D8D8] bg-white p-7 shadow-[0px_10px_14px_0px_#00000024]">
+            <div className="mb-8 flex items-start justify-between">
+              <div className="flex items-center gap-3">
+                <BrandLogo2Icon width={28} height={28} />
+                <div>
+                  <p className="text-[14px] font-[500] text-[#333333]">{selectedExpiredSession.sessionName ?? "pathfinder ats crm"}</p>
+                  <p className="text-[10px] text-[#7A7A7A]">{selectedExpiredSession.timeAgo}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                className="cursor-pointer text-[24px] leading-none text-[#888888] hover:text-[#555555]"
+                onClick={() => setSelectedExpiredSession(null)}
+                aria-label="Close expired session details"
+              >
+                <ClosePopupIcon width={24} height={24} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+              <div className="space-y-7">
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">Sign-in time</p>
+                  <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedExpiredSession.signInTime ?? "-"}</p>
+                </div>
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">Operating System</p>
+                  <div className="mt-2 flex items-center gap-2 text-[13px] text-[#333333]">
+                    <MacIcon width={20} height={20} />
+                    <span>{selectedExpiredSession.operatingSystem ?? "macOS"}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">App</p>
+                  <div className="mt-2 flex items-center gap-2 text-[13px] text-[#333333]">
+                    <ChromeIcon width={20} height={20} />
+                    <span>{selectedExpiredSession.appVersion ?? "Google Chrome 123.0.0"}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">IP Address</p>
+                  <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedExpiredSession.ipAddress ?? "-"}</p>
+                </div>
+              </div>
+
+              <div className="space-y-7">
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">Sign out time</p>
+                  <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedExpiredSession.signOutTime ?? "-"}</p>
+                </div>
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">Device</p>
+                  <div className="mt-2 flex items-center gap-2 text-[13px] text-[#333333]">
+                    <ImacIcon width={18} height={18} />
+                    <span>{selectedExpiredSession.deviceName ?? "iMac"}</span>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">Referrer</p>
+                  <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedExpiredSession.referrer ?? "-"}</p>
+                </div>
+                <div>
+                  <p className="text-[13px] font-[500] text-[#666666]">Location</p>
+                  <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedExpiredSession.location}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {isHistoryModalOpen && (
         <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-[#00000066] p-4">
           <div className="w-full max-w-[1220px] rounded-[10px] border border-[#D8D8D8] bg-white p-6 shadow-[0px_10px_14px_0px_#00000024]">
@@ -481,9 +580,9 @@ export const Activity: React.FC = () => {
             </div>
 
             <div className="max-h-[60vh] overflow-y-auto">
-              <div className="divide-y divide-[#ECECEC]">
+              <div>
                 {activityHistory.map((row) => (
-                  <div key={`recent-${row.id}`} className="rounded-[4px] py-4 transition-colors hover:bg-[#F8F8F8]">
+                  <div key={`recent-${row.id}`} className="rounded-[4px] py-4 transition-colors hover:bg-[#F8F8F8] md:-mx-4 md:px-4">
                     <SessionItem row={row} withAppIcon onHistoryInfoClick={setSelectedHistorySession} />
                   </div>
                 ))}
@@ -495,29 +594,27 @@ export const Activity: React.FC = () => {
 
       {isTerminateOtherModalOpen && (
         <div className="fixed inset-0 z-[2600] flex items-center justify-center bg-[#00000080] p-4">
-          <div className="w-full max-w-[620px] overflow-hidden rounded-[10px] border border-[#D8D8D8] bg-white shadow-[0px_10px_14px_0px_#00000024]">
-            <div className="flex items-center justify-between border-b border-[#ECECEC] px-8 py-7">
-              <p className="text-[16px] font-[500] text-[#1F1F1F]">Terminate all the browsers sessions.</p>
-              <button
-                type="button"
-                className="cursor-pointer rounded-full  p-2 text-[#9A9A9A] "
-                onClick={() => setIsTerminateOtherModalOpen(false)}
-                aria-label="Close terminate sessions confirmation"
-              >
-                <ClosePopupIcon width={24} height={24} strokeWidth={1.5} />
-              </button>
-            </div>
+          <div className="relative w-full max-w-[640px] overflow-hidden rounded-[10px] border border-[#D8D8D8] bg-white shadow-[0px_10px_14px_0px_#00000024]">
+            <button
+              type="button"
+              className="absolute right-4 top-4 cursor-pointer rounded-full p-2 text-[#9A9A9A] hover:text-[#5F5F5F]"
+              onClick={() => setIsTerminateOtherModalOpen(false)}
+              aria-label="Close terminate sessions confirmation"
+            >
+              <ClosePopupIcon width={20} height={20} strokeWidth={1.5} />
+            </button>
 
-            <div className="px-8 py-8">
-              <p className="mb-8 text-[14px] font-[400] text-[#333333]">
-                This will sign you out of all your Zoho account sessions that are active in browsers.
+            <div className="px-8 py-10 text-center">
+              <p className="text-[16px] font-[500] text-[#1F1F1F]">Terminate all the browsers session?</p>
+              <p className="mx-auto mt-3 max-w-[520px] text-[13px] text-[#8A8A8A]">
+                Note: This will sign you out from all active Pathfinder sessions across all browsers.
               </p>
               <button
                 type="button"
-                className="cursor-pointer rounded-[6px] bg-[#E65858] px-4 py-2 text-[13px] font-[500] text-white hover:bg-[#D74C4C]"
+                className="mt-8 cursor-pointer rounded-[6px] bg-[#E65858] px-4 py-2 text-[13px] font-[500] text-white hover:bg-[#D74C4C]"
                 onClick={handleConfirmTerminateAllOtherSessions}
               >
-                Terminate all Active Sessions
+                Terminate
               </button>
             </div>
           </div>

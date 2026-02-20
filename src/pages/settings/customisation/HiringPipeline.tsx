@@ -162,14 +162,15 @@ const HiringPipeline: React.FC = () => {
     closePanel();
   };
 
-  const canReorderStage = (fromIndex: number, toIndex: number) => {
-    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return false;
-    const fromId = stageOrder[fromIndex];
-    const toId = stageOrder[toIndex];
+  const canReorderStage = (order: string[], fromIndex: number, toIndex: number) => {
+    if (fromIndex === -1 || toIndex < 0 || toIndex > order.length || fromIndex === toIndex) return false;
+    const boundedToIndex = Math.min(toIndex, order.length - 1);
+    const fromId = order[fromIndex];
+    const toId = order[boundedToIndex];
     if (stageMeta[fromId]?.locked || stageMeta[toId]?.locked) return false;
     const start = Math.min(fromIndex, toIndex);
     const end = Math.max(fromIndex, toIndex);
-    return !stageOrder.slice(start, end + 1).some((id) => stageMeta[id]?.locked);
+    return !order.slice(start, end + 1).some((id) => stageMeta[id]?.locked);
   };
 
   const handleDragStartStage =
@@ -191,7 +192,7 @@ const HiringPipeline: React.FC = () => {
       }
       const fromIndex = stageOrder.indexOf(sourceId);
       const toIndex = stageOrder.indexOf(targetStageId);
-      if (!canReorderStage(fromIndex, toIndex)) {
+      if (!canReorderStage(stageOrder, fromIndex, toIndex)) {
         event.dataTransfer.dropEffect = "none";
         return;
       }
@@ -202,19 +203,26 @@ const HiringPipeline: React.FC = () => {
   const handleDropStage =
     (targetStageId: string) => (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
+      const targetRect = event.currentTarget.getBoundingClientRect();
+      const shouldInsertAfter = event.clientY > targetRect.top + targetRect.height / 2;
       const sourceId = dragStageId ?? event.dataTransfer.getData("text/plain");
       if (!sourceId || sourceId === targetStageId) {
         return;
       }
-      const fromIndex = stageOrder.indexOf(sourceId);
-      const toIndex = stageOrder.indexOf(targetStageId);
-      if (!canReorderStage(fromIndex, toIndex)) {
-        return;
-      }
       setStageOrder((prev) => {
+        const fromIndex = prev.indexOf(sourceId);
+        const targetIndex = prev.indexOf(targetStageId);
+        if (fromIndex === -1 || targetIndex === -1) {
+          return prev;
+        }
+        const toIndex = shouldInsertAfter ? targetIndex + 1 : targetIndex;
+        const adjustedToIndex = fromIndex < toIndex ? toIndex - 1 : toIndex;
+        if (!canReorderStage(prev, fromIndex, adjustedToIndex)) {
+          return prev;
+        }
         const next = [...prev];
         const [moved] = next.splice(fromIndex, 1);
-        next.splice(toIndex, 0, moved);
+        next.splice(adjustedToIndex, 0, moved);
         return next;
       });
       setDragStageId(null);
@@ -452,7 +460,7 @@ const HiringPipeline: React.FC = () => {
                           aria-disabled={stage.locked}
                           className={[
                             "flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[40px]",
-                            stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7] cursor-not-allowed" : "bg-white text-[#333333] cursor-move"
+                            stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7] cursor-not-allowed" : "bg-white text-[#333333] cursor-default"
                           ].join(" ")}
                           onDragStart={stage.locked ? undefined : handleDragStartStage(stageId)}
                           onDragEnd={stage.locked ? undefined : handleDragEndStage}
@@ -482,9 +490,11 @@ const HiringPipeline: React.FC = () => {
                             </Tooltip>
                           ) : (
                             <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                              <span className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666]">
+                              <span className="group/drag flex h-[20px] w-[20px] items-center justify-center rounded-[4px]  text-[#666666] hover:border-[#D7D7D7] cursor-grab">
+
                                 <GripIcon />
                               </span>
+
                               <span>{stage.label}</span>
                             </div>
                           )}
