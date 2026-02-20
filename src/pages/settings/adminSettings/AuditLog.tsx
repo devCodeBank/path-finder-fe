@@ -24,7 +24,7 @@ const ResultsHeader = styled(Box)`
   color: #333333;
   font-size: 14px;
   font-weight: 500;
-  background-color: #FAFAFA;
+  background-color: #F9FAFB;
 `;
 
 const Row = styled(Box)`

@@ -167,9 +167,9 @@ const Tags: React.FC = () => {
       [tab]: prev[tab].map((group) =>
         group.id === groupId
           ? {
-              ...group,
-              tags: group.tags.map((tag) => (tag.id === tagId ? { ...tag, visible } : tag)),
-            }
+            ...group,
+            tags: group.tags.map((tag) => (tag.id === tagId ? { ...tag, visible } : tag)),
+          }
           : group,
       ),
     }));
@@ -204,16 +204,16 @@ const Tags: React.FC = () => {
       [addingTagFor.tab]: prev[addingTagFor.tab].map((group) =>
         group.id === addingTagFor.groupId
           ? {
-              ...group,
-              tags: [
-                ...group.tags,
-                {
-                  id: `${next.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
-                  label: next,
-                  visible: true,
-                },
-              ],
-            }
+            ...group,
+            tags: [
+              ...group.tags,
+              {
+                id: `${next.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
+                label: next,
+                visible: true,
+              },
+            ],
+          }
           : group,
       ),
     }));
@@ -291,9 +291,9 @@ const Tags: React.FC = () => {
       [editingTag.tab]: prev[editingTag.tab].map((group) =>
         group.id === editingTag.groupId
           ? {
-              ...group,
-              tags: group.tags.map((tag) => (tag.id === editingTag.tagId ? { ...tag, label: nextLabel } : tag)),
-            }
+            ...group,
+            tags: group.tags.map((tag) => (tag.id === editingTag.tagId ? { ...tag, label: nextLabel } : tag)),
+          }
           : group,
       ),
     }));
@@ -305,7 +305,7 @@ const Tags: React.FC = () => {
       <div className="flex flex-col gap-3">
         {data[tab].map((group) => (
           <div key={group.id} className="flex flex-col gap-2">
-            <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#EAEAEA26] flex items-center justify-between">
+            <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#F9FAFB] flex items-center justify-between">
               <div className="flex items-center gap-3 min-w-0">
                 <span className="text-[14px] font-[500] text-[#333333] truncate">{group.title}</span>
               </div>

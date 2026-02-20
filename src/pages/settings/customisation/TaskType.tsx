@@ -71,7 +71,7 @@ const TaskType: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
-        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#EAEAEA26]">
+        <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#F9FAFB]">
           <span className="text-[14px] font-[500] text-[#333333]">Task Type</span>
         </div>
 

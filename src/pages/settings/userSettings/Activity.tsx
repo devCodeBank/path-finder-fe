@@ -83,7 +83,7 @@ const activityHistory: SessionRow[] = [
 
 const Section = ({ title, headerAction, children }: { title: string; headerAction?: React.ReactNode; children: React.ReactNode }) => (
   <section className="overflow-hidden rounded-[4px] border border-[#D6D6D6] bg-white">
-    <div className="flex h-[46px] items-center justify-between border-b border-[#D6D6D6] bg-[#FAFAFA] px-4">
+    <div className="flex h-[52px] items-center justify-between border-b border-[#D6D6D6] bg-[#F9FAFB] px-4">
       <h2 className="text-[14px] font-[500] text-[#2C2C2C]">{title}</h2>
       {headerAction}
     </div>
@@ -133,7 +133,7 @@ const SessionItem = ({
 }) => (
   <div
     className={[
-      "group flex flex-col gap-3 rounded-[4px] px-4 py-4 transition-colors hover:bg-[#F8F8F8]  md:-mx-4 md:flex-row md:items-center md:gap-6",
+      "group flex flex-col gap-3 rounded-[4px] px-4 py-4 transition-colors hover:bg-[#F9FAFB]  md:-mx-4 md:flex-row md:items-center md:gap-6",
     ].join(" ")}
   >
     <div className="mr-26 flex min-w-[240px] flex-1 items-center gap-3">

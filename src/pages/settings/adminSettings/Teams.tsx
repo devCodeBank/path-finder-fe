@@ -45,7 +45,7 @@ const StyledCollapsibleHeader = styled(Box)`
   align-items: center;
   gap: 16px;
   cursor: default;
-  background-color: #FAFAFA;
+  background-color: #F9FAFB;
   padding: 14px 16px;
  
   border-top-left-radius: 6px;

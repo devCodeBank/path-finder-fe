@@ -494,10 +494,10 @@ export const Users: React.FC = () => {
           {rows.map((row) => (
             <div
               key={row.id}
-              className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
+              className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#F9FAFB]"
             >
               <div className="flex items-center gap-3">
-                <div className="h-[32px] w-[32px] rounded-full bg-[#EAEAEA]/25 flex items-center justify-center text-[11px] text-[#333333]">
+                <div className="h-[32px] w-[32px] rounded-full bg-[#F9FAFB] flex items-center justify-center text-[11px] text-[#333333]">
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                 </div>
                 <div className=" flex flex-col ">

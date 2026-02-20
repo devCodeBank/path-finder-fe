@@ -149,7 +149,7 @@ export const Billing: React.FC = () => {
   const billingContent = (
     <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
-        <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80] ">
+        <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80] ">
           <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
         </div>
         <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
@@ -198,7 +198,7 @@ export const Billing: React.FC = () => {
   const subscriptionContent = (
     <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
-        <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+        <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
           <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
 
           <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
@@ -261,7 +261,7 @@ export const Billing: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+        <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
           <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
         </div>
         <div className="p-4">
@@ -320,7 +320,7 @@ export const Billing: React.FC = () => {
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+        <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
           <span className="text-[14px] font-[500] text-[#333333]">Billing Details</span>
         </div>
         <div className="divide-y divide-[#CCCCCC80]">
@@ -426,14 +426,14 @@ export const Billing: React.FC = () => {
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-                <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">Current Account Owner</span>
                 </div>
                 <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="font-[500]">John Doe</div>
                   <div className="text-[#333333]/70 mt-1">john.doe@example.com</div>
                 </div>
-                <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">New Account Owner</span>
                 </div>
                 <div className="p-4">
@@ -528,7 +528,7 @@ export const Billing: React.FC = () => {
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-                <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
                   <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
                     Currency: USD
@@ -629,7 +629,7 @@ export const Billing: React.FC = () => {
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-                <div className="h-[46px] px-4 flex items-center justify-between bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">Company Name</span>
                   <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white text-center">
                     Current
@@ -638,7 +638,7 @@ export const Billing: React.FC = () => {
                 <div className="px-4 py-4 font-[500]  text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="text-[#333333]" >Acme Corporation Limited</div>
                 </div>
-                <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">New Company Name</span>
                 </div>
                 <div className="p-4">
@@ -719,13 +719,13 @@ export const Billing: React.FC = () => {
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-                <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">Billing Email</span>
                 </div>
                 <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="text-[#333333]/70">Not available</div>
                 </div>
-                <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">New Billing Email</span>
                 </div>
                 <div className="p-4">
@@ -806,7 +806,7 @@ export const Billing: React.FC = () => {
             </div>
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-                <div className="h-[46px] px-4 flex items-center bg-[#FAFAFA] border-b border-[#CCCCCC80]">
+                <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
                   <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
                 </div>
                 <div className="p-4">

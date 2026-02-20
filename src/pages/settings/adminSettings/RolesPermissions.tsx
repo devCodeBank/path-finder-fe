@@ -270,7 +270,7 @@ export const RolesPermissions: React.FC = () => {
             <span>{rows.length} custom roles</span>
           </div>
         </div>
-        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr_0.5fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#EAEAEA]/25 items-center">
+        <div className="grid h-[52px] grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr_0.5fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#F9FAFB] items-center">
           <span>Custom Role Name</span>
           <span>Description</span>
           <span>Created By</span>
@@ -282,7 +282,7 @@ export const RolesPermissions: React.FC = () => {
           {rows.map((row) => (
             <div
               key={row.id}
-              className="grid grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr_0.5fr] gap-2 px-4 py-3 text-[13px] font-[400] text-[#333333] items-center transition-colors hover:bg-[#EAEAEA]/25"
+              className="grid grid-cols-[2.2fr_2.8fr_1.4fr_0.6fr_0.5fr] gap-2 px-4 py-3 text-[13px] font-[400] text-[#333333] items-center transition-colors hover:bg-[#F9FAFB]"
             >
               <span className="font-[400] text-[13px]">{row.customRoleName}</span>
               <DescriptionCell text={row.description} />

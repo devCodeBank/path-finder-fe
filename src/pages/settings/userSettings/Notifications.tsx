@@ -143,7 +143,7 @@ export const Notifications: React.FC = () => {
     <div className="flex flex-col gap-[18px] w-full max-w-full font-sans pb-[0px]">
       {/* Do Not Disturb Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px] w-full">
-        <div className="px-4 h-[46px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
         </div>
 
@@ -256,7 +256,7 @@ export const Notifications: React.FC = () => {
 
       {/* Days Off Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
 
@@ -282,7 +282,7 @@ export const Notifications: React.FC = () => {
 
       {/* Email Notifications Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
-        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
         </div>
 
@@ -301,7 +301,7 @@ export const Notifications: React.FC = () => {
 
       {/* List Preferences Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
-        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <p className="text-[14px] font-[500] text-[#333333]">
             Send email and push notifications for:
           </p>

@@ -176,7 +176,7 @@ const SkillSet: React.FC = () => {
 
             return (
               <div key={category.id} className="flex flex-col gap-2">
-                <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#EAEAEA26] flex items-center justify-between">
+                <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#F9FAFB] flex items-center justify-between">
                   <span className="text-[14px] font-[500] text-[#333333]">{category.title}</span>
                   <div className="flex items-center gap-5 text-[#888888]" data-skill-search-zone="true">
                     {searchOpenByCategory[category.id] && (

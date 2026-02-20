@@ -137,7 +137,7 @@ const SectionCard = ({
   return (
     <div className="bg-white border-[#CCCCCC80] rounded-[6px] overflow-hidden">
       <div
-        className="h-[52px] px-4 flex items-center justify-between rounded-[6px] border border-[#CCCCCC80] bg-[#FAFAFA]"
+        className="h-[52px] px-4 flex items-center justify-between rounded-[6px] border border-[#CCCCCC80] bg-[#F9FAFB]"
       >
         <div className="flex items-center gap-2 text-[14px] text-[#333333] font-[500]">
           <span className="text-[#333333] ">{section.title}</span>

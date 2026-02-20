@@ -92,7 +92,7 @@ export const PrivacySecurity: React.FC = () => {
     <div className="flex flex-col gap-[18px] w-full max-w-full font-sans ">
       {/* Default Security Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] w-full">
-        <div className="px-4 h-[46px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Default Security</h3>
         </div>
 
@@ -134,7 +134,7 @@ export const PrivacySecurity: React.FC = () => {
 
       {/* Login Security Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
-        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Login Security</h3>
         </div>
         <div className="px-5">
@@ -157,7 +157,7 @@ export const PrivacySecurity: React.FC = () => {
 
       {/* Verification Methods Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
-        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Verification Methods</h3>
         </div>
         <div className="px-5">
@@ -276,7 +276,7 @@ export const PrivacySecurity: React.FC = () => {
 
       {/* Notifications Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
-        <div className="px-4 h-[46px] border-b border-[#CCCCCC80] flex items-center bg-[#EAEAEA]/25">
+        <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
           <h3 className="text-[14px] font-[500] text-[#333333]">Notifications</h3>
         </div>
         <div className="px-5">
