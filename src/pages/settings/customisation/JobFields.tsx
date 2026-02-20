@@ -1321,7 +1321,7 @@ export const JobFields: React.FC = () => {
                         formats={jobDescFormats}
                         placeholder="Enter job description..."
                         value={layoutForm.jobDescription}
-                        onChange={(value) => {
+                        onChange={(value: string) => {
                           const isEmpty = !getPlainTextFromHtml(value);
                           setLayoutForm((prev) => ({ ...prev, jobDescription: isEmpty ? "" : value }));
                         }}

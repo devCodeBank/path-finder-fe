@@ -2325,7 +2325,7 @@ export const Candidates: React.FC = () => {
                   formats={summaryFormats}
                   placeholder="Summary of professional profile..."
                   value={layoutForm.candidateSummary}
-                  onChange={(value) => {
+                  onChange={(value: string) => {
                     const isEmpty = !getPlainTextFromHtml(value);
                     setLayoutForm((prev) => ({ ...prev, candidateSummary: isEmpty ? "" : value }));
                   }}
