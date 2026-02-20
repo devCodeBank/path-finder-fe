@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
@@ -7,6 +7,8 @@ import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Button, Checkbox, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 const primaryButtonSx = {
   height: "36px",
@@ -363,10 +365,47 @@ const SectionCard = ({
 
 export const JobFields: React.FC = () => {
   const targetDateRef = useRef<HTMLInputElement | null>(null);
-  const jobDescriptionRef = useRef<HTMLDivElement | null>(null);
-  const [jobDescFont, setJobDescFont] = useState("Verdana");
-  const [jobDescFontSize, setJobDescFontSize] = useState("10");
-  const [jobDescLineHeight, setJobDescLineHeight] = useState("1.2");
+  const jobDescModules = useMemo(
+    () => ({
+      toolbar: [
+        [{ font: [] }, { size: [] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike", "blockquote", "code-block"],
+        [{ color: [] }, { background: [] }],
+        [{ script: "sub" }, { script: "super" }],
+        [{ align: [] }],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ indent: "-1" }, { indent: "+1" }, { direction: "rtl" }],
+        ["link", "image", "video"],
+        ["clean"]
+      ]
+    }),
+    []
+  );
+  const jobDescFormats = useMemo(
+    () => [
+      "font",
+      "size",
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "blockquote",
+      "code-block",
+      "color",
+      "background",
+      "script",
+      "align",
+      "list",
+      "indent",
+      "direction",
+      "link",
+      "image",
+      "video"
+    ],
+    []
+  );
   const initialSections: Section[] = useMemo(
     () => [
       {
@@ -732,46 +771,6 @@ export const JobFields: React.FC = () => {
         setLayoutForm((prev) => ({ ...prev, [key]: value }));
       };
 
-  const updateJobDescriptionFromEditor = () => {
-    if (!jobDescriptionRef.current) return;
-    const text = jobDescriptionRef.current.textContent?.replace(/\u200B/g, "").trim() ?? "";
-    if (!text) {
-      if (jobDescriptionRef.current.innerHTML !== "") {
-        jobDescriptionRef.current.innerHTML = "";
-      }
-      setLayoutForm((prev) => ({ ...prev, jobDescription: "" }));
-      return;
-    }
-    setLayoutForm((prev) => ({ ...prev, jobDescription: jobDescriptionRef.current?.innerHTML ?? "" }));
-  };
-
-  const normalizeJobDescFontSizes = () => {
-    if (!jobDescriptionRef.current) return;
-    const sizeMap: Record<string, string> = {
-      "1": "8",
-      "2": "10",
-      "3": "12",
-      "4": "14",
-      "5": "16",
-      "6": "18",
-      "7": "24"
-    };
-    jobDescriptionRef.current.querySelectorAll("font[size]").forEach((node) => {
-      const size = (node as HTMLElement).getAttribute("size");
-      if (!size) return;
-      (node as HTMLElement).removeAttribute("size");
-      (node as HTMLElement).style.fontSize = `${sizeMap[size] ?? "12"}px`;
-    });
-  };
-
-  const applyJobDescCommand = (command: string, value?: string) => {
-    if (!jobDescriptionRef.current) return;
-    jobDescriptionRef.current.focus();
-    document.execCommand(command, false, value);
-    normalizeJobDescFontSizes();
-    updateJobDescriptionFromEditor();
-  };
-
   const openDatePicker = (ref: React.RefObject<HTMLInputElement | null>) => {
     if (!ref.current) return;
     if (typeof ref.current.showPicker === "function") {
@@ -779,17 +778,6 @@ export const JobFields: React.FC = () => {
     }
     ref.current.focus();
   };
-
-  useEffect(() => {
-    if (!jobDescriptionRef.current) return;
-    if (layoutForm.jobDescription) {
-      if (jobDescriptionRef.current.innerHTML !== layoutForm.jobDescription) {
-        jobDescriptionRef.current.innerHTML = layoutForm.jobDescription;
-      }
-    } else if (jobDescriptionRef.current.innerHTML !== "") {
-      jobDescriptionRef.current.innerHTML = "";
-    }
-  }, [layoutForm.jobDescription]);
   // const validateLayout = () => {
   //   const requiredFields: Array<{ sectionId: string; rowId: string }> = [
   //     { sectionId: "jobDetails", rowId: "jobTitle" },
@@ -1327,216 +1315,22 @@ export const JobFields: React.FC = () => {
                       </div>
                     </div>
                     <div className="border border-[#E6E6E6] rounded-[4px] bg-white overflow-hidden">
-                      <div className="flex flex-wrap items-center gap-2 px-3 py-1 min-h-[36px] border-b border-[#E6E6E6] text-[12px] text-[#333333]">
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn font-[600]"
-                          onClick={() => applyJobDescCommand("bold")}
-                          aria-label="Bold"
-                        >
-                          B
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn italic"
-                          onClick={() => applyJobDescCommand("italic")}
-                          aria-label="Italic"
-                        >
-                          I
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn underline"
-                          onClick={() => applyJobDescCommand("underline")}
-                          aria-label="Underline"
-                        >
-                          U
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn line-through"
-                          onClick={() => applyJobDescCommand("strikeThrough")}
-                          aria-label="Strikethrough"
-                        >
-                          S
-                        </button>
-                        <span className="mx-1 text-[#999999]">|</span>
-                        <select
-                          className="pf-job-editor-select"
-                          value={jobDescFont}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            setJobDescFont(value);
-                            applyJobDescCommand("fontName", value);
-                          }}
-                          aria-label="Font family"
-                        >
-                          <option value="Verdana">Verdana</option>
-                          <option value="Arial">Arial</option>
-                          <option value="Times New Roman">Times New Roman</option>
-                          <option value="Georgia">Georgia</option>
-                        </select>
-                        <select
-                          className="pf-job-editor-select w-[52px]"
-                          value={jobDescFontSize}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            const sizeMap: Record<string, string> = {
-                              "10": "2",
-                              "12": "3",
-                              "14": "4",
-                              "16": "5",
-                              "18": "6",
-                              "24": "7"
-                            };
-                            setJobDescFontSize(value);
-                            applyJobDescCommand("fontSize", sizeMap[value] ?? "3");
-                          }}
-                          aria-label="Font size"
-                        >
-                          <option value="10">10</option>
-                          <option value="12">12</option>
-                          <option value="14">14</option>
-                          <option value="16">16</option>
-                          <option value="18">18</option>
-                          <option value="24">24</option>
-                        </select>
-                        <select
-                          className="pf-job-editor-select w-[82px]"
-                          value={jobDescLineHeight}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            setJobDescLineHeight(value);
-                          }}
-                          aria-label="Line height"
-                        >
-                          <option value="1.2">(1.2) Normal</option>
-                          <option value="1.4">(1.4) Relaxed</option>
-                          <option value="1.6">(1.6) Wide</option>
-                          <option value="1.8">(1.8) Extra</option>
-                        </select>
-                        <span className="mx-1 text-[#999999]">|</span>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("justifyLeft")}
-                          aria-label="Align left"
-                        >
-                          L
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("justifyCenter")}
-                          aria-label="Align center"
-                        >
-                          C
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("justifyRight")}
-                          aria-label="Align right"
-                        >
-                          R
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("insertUnorderedList")}
-                          aria-label="Bulleted list"
-                        >
-                          •
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("insertOrderedList")}
-                          aria-label="Numbered list"
-                        >
-                          1.
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("outdent")}
-                          aria-label="Outdent"
-                        >
-                          ‹
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("indent")}
-                          aria-label="Indent"
-                        >
-                          ›
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("superscript")}
-                          aria-label="Superscript"
-                        >
-                          x²
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("subscript")}
-                          aria-label="Subscript"
-                        >
-                          x₂
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => {
-                            const url = window.prompt("Enter URL");
-                            if (url) applyJobDescCommand("createLink", url);
-                          }}
-                          aria-label="Insert link"
-                        >
-                          ⛓
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => {
-                            const url = window.prompt("Enter image URL");
-                            if (url) applyJobDescCommand("insertImage", url);
-                          }}
-                          aria-label="Insert image"
-                        >
-                          ⧉
-                        </button>
-                        <button
-                          type="button"
-                          className="pf-job-editor-btn"
-                          onClick={() => applyJobDescCommand("removeFormat")}
-                          aria-label="Clear formatting"
-                        >
-                          ⨯
-                        </button>
-                      </div>
-                      <div
-                        ref={jobDescriptionRef}
+                      <ReactQuill
+                        theme="snow"
+                        modules={jobDescModules}
+                        formats={jobDescFormats}
+                        placeholder="Enter job description..."
+                        value={layoutForm.jobDescription}
+                        onChange={(value) => {
+                          const isEmpty = !getPlainTextFromHtml(value);
+                          setLayoutForm((prev) => ({ ...prev, jobDescription: isEmpty ? "" : value }));
+                        }}
                         className={cn(
-                          "pf-job-editor min-h-[220px] w-full px-3 py-2 text-[13px] text-[#333333] focus:outline-none",
+                          "pf-job-quill",
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "jobDescription") &&
-                          "border-t border-[#E53935]"
+                          "pf-job-quill-error"
                         )}
-                        style={{
-                          fontFamily: jobDescFont,
-                          fontSize: `${jobDescFontSize}px`,
-                          lineHeight: jobDescLineHeight,
-                        }}
-                        contentEditable
-                        suppressContentEditableWarning
-                        data-placeholder="Enter job description..."
-                        onInput={updateJobDescriptionFromEditor}
-                        onBlur={updateJobDescriptionFromEditor}
                       />
                     </div>
                     {showLayoutErrors && isFieldMissing("jobDetails", "jobDescription") && (
@@ -2002,37 +1796,28 @@ export const JobFields: React.FC = () => {
   return (
     <div className="flex flex-col w-full ">
       <style>{`
-        .pf-job-editor:empty:before {
-          content: attr(data-placeholder);
+        .pf-job-quill .ql-toolbar.ql-snow {
+          border: 0;
+          border-bottom: 1px solid #E6E6E6;
+          background: #FAFAFA;
+        }
+        .pf-job-quill .ql-container.ql-snow {
+          border: 0;
+          min-height: 220px;
+          font-size: 13px;
+          color: #333333;
+        }
+        .pf-job-quill .ql-editor {
+          min-height: 220px;
+          line-height: 1.4;
+        }
+        .pf-job-quill .ql-editor.ql-blank::before {
           color: #999999;
+          font-style: normal;
         }
-        .pf-job-editor a {
-          color: #6E41E2;
-          text-decoration: underline;
-        }
-        .pf-job-editor ul,
-        .pf-job-editor ol {
-          padding-left: 18px;
-        }
-        .pf-job-editor-btn {
-          height: 24px;
-          min-width: 24px;
-          padding: 0 6px;
-          border-radius: 4px;
-          color: #333333;
-          border: 1px solid transparent;
-        }
-        .pf-job-editor-btn:hover {
-          background: #F3F4F6;
-          border-color: #E6E6E6;
-        }
-        .pf-job-editor-select {
-          height: 24px;
-          border: 1px solid #E6E6E6;
-          border-radius: 4px;
-          padding: 0 6px;
-          background: #FFFFFF;
-          color: #333333;
+        .pf-job-quill-error .ql-toolbar.ql-snow,
+        .pf-job-quill-error .ql-container.ql-snow {
+          border-color: #E53935;
         }
         .pf-hide-native-date-icon::-webkit-calendar-picker-indicator {
           opacity: 0;
