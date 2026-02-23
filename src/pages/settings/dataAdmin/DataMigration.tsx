@@ -201,20 +201,20 @@ const DataMigration: React.FC = () => {
             </div>
 
             <div className="px-4 py-5">
-              <p className="text-[14px] font-[500] text-[#333333]">Your Information</p>
+              <p className="text-[16px] text-[#666666]">Your Information</p>
 
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
                   <FloatingLabelInput
                     label="First Name"
-                    placeholder=""
+                    placeholder="Add First Name"
                     className="h-[32px] rounded-[4px] border-[#CCCCCC] text-[13px]"
                   />
                 </div>
                 <div>
                   <FloatingLabelInput
                     label="Last Name"
-                    placeholder=""
+                    placeholder="Add Last Name"
                     className="h-[32px] rounded-[4px] border-[#CCCCCC] text-[13px]"
                   />
                 </div>
@@ -222,14 +222,14 @@ const DataMigration: React.FC = () => {
                   <FloatingLabelInput
                     label="Email"
                     type="email"
-                    placeholder=""
+                    placeholder="Add Email"
                     className="h-[32px] rounded-[4px] border-[#CCCCCC] text-[13px]"
                   />
                 </div>
                 <div>
                   <FloatingLabelInput
                     label="Phone Number"
-                    placeholder=""
+                    placeholder="Add Phone Number"
                     className="h-[32px] rounded-[4px] border-[#CCCCCC] text-[13px]"
                   />
                 </div>
@@ -237,7 +237,7 @@ const DataMigration: React.FC = () => {
                   <FloatingLabelInput
                     label="Company"
                     defaultValue="Acme Corporation"
-                    placeholder=""
+                    placeholder="Add Company"
                     className="h-[32px] rounded-[4px] border-[#CCCCCC] text-[13px]"
                   />
                 </div>
@@ -312,7 +312,7 @@ const DataMigration: React.FC = () => {
             </div>
 
             <div className="border-t border-[#E6E6E6] px-4 py-5">
-              <p className="text-[14px] font-[500] text-[#333333]">Migration Details</p>
+              <p className="text-[16px] text-[#666666]">Migration Details</p>
 
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
