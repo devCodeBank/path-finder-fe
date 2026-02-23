@@ -1,8 +1,8 @@
 import BrandLogoIcon from "@assets/logos/brand-logo.svg?react";
 import SearchCircleIcon from "@assets/icons/search-circle.svg?react";
 import BrowserMaximizeIcon from "@assets/icons/Icon-browser-maximize.svg?react";
+import ScrollRightHiringPipelineIcon from "@assets/icons/scroll-right-hiring-pipeline.svg?react";
 import CloseIcon from "@mui/icons-material/Close";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Tooltip } from "@mui/material";
@@ -23,7 +23,7 @@ const DataMigration: React.FC = () => {
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-3">
             <span className="mt-[2px] inline-flex h-[24px] w-[24px] items-center justify-center rounded-full bg-[#6E41E2] text-white">
-              <InfoOutlinedIcon sx={{ fontSize: 14 }} />
+              <ScrollRightHiringPipelineIcon width={24} height={24} />
             </span>
             <p className="mt-1 text-[13px] text-[#333333] text-center md:text-left">
               Before starting the data migration, ensure that all custom fields are created in your Pathfinder ATS CRM account to
@@ -76,8 +76,16 @@ const DataMigration: React.FC = () => {
   );
 
   const historyContent = (
-    <div className="flex min-h-[420px] items-center justify-center rounded-[6px] border border-[#CCCCCC80] bg-[#FAFAFA]">
-      <p className="text-[14px] text-[#7A7A7A]">No import history found.</p>
+    <div className="rounded-[6px] border border-[#CCCCCC80] min-h-[520px] p-4 mt-6">
+      <div className="rounded-[6px] bg-[#F9FAFB] min-h-[180px] flex flex-col items-center justify-center text-center px-4">
+        <span className="inline-flex h-[30px] w-[30px] items-center justify-center">
+          <ScrollRightHiringPipelineIcon width={30} height={30} />
+        </span>
+        <p className="mt-4 text-[16px] font-[500] text-[#333333]">No recent import found</p>
+        <p className="mt-3 text-[13px] text-[#666666]">
+          Your data migration history will appear here once you initiate your first import.
+        </p>
+      </div>
     </div>
   );
 
