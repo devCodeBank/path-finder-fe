@@ -294,7 +294,7 @@ const SectionCard = ({
   return (
     <div className="bg-white  border-[#CCCCCC80] rounded-[4px] overflow-hidden">
       <div
-        className="h-[52px] px-4 flex items-center justify-between rounded-[4px] border border-[#CCCCCC80] bg-[#F9FAFB]"
+        className="h-[52px] px-4 flex items-center justify-between rounded-[4px]  border-[#CCCCCC80] bg-[#F9FAFB]"
         data-drag-section="true"
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}

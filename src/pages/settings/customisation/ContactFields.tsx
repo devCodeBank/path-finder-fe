@@ -175,7 +175,7 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <div className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
+  <div className="w-full h-[52px] px-4 flex items-center justify-between  border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
     <button
       type="button"
@@ -229,7 +229,7 @@ const SectionCard = ({
   return (
     <div className="bg-white  border-[#CCCCCC80] rounded-[4px] overflow-hidden">
       <div
-        className="h-[52px] px-4 flex items-center justify-between border rounded-[4px]  border-[#CCCCCC80] bg-[#F9FAFB]"
+        className="h-[52px] px-4 flex items-center justify-between  rounded-[4px]  border-[#CCCCCC80] bg-[#F9FAFB]"
         data-drag-section="true"
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
