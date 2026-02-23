@@ -301,7 +301,7 @@ const SkillSet: React.FC = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") saveAddCategory();
                 }}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Category Name"
               />
             </div>
@@ -357,7 +357,7 @@ const SkillSet: React.FC = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") saveEditCategory();
                 }}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Category Name"
               />
             </div>

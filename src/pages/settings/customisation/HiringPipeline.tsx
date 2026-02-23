@@ -372,7 +372,7 @@ const HiringPipeline: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Edit pipeline"
-                  className="h-[28px] w-[28px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+                  className="h-[28px] w-[28px] cursor-pointer flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
                   onClick={() => openEditPanel(pipeline.id)}
                 >
                   <EditOutlinedIcon sx={{ fontSize: 14, color: "#666666" }} />
