@@ -48,7 +48,7 @@ const initialActiveSessions: SessionRow[] = [
   },
 ];
 
-const activityHistory: SessionRow[] = [
+const initialActivityHistory: SessionRow[] = [
   {
     id: "history-1",
     title: "pathfinder atc crm",
@@ -184,6 +184,32 @@ const SessionItem = ({
             <InfoTooltipIcon width={16} height={16} />
           </button>
         </Tooltip>
+      ) : row.status === "expired" && onExpiredInfoClick ? (
+        <Tooltip
+          title={
+            <>
+              The location is approximated based on the accessed
+              <br />
+              IP address. Click to view the exact IP address.
+            </>
+          }
+          arrow
+          placement="bottom"
+          componentsProps={{
+            tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
+            arrow: { sx: { color: "#797979" } },
+            popper: { sx: { zIndex: 2400 } },
+          }}
+        >
+          <button
+            type="button"
+            className="inline-flex cursor-pointer items-center justify-center"
+            onClick={() => onExpiredInfoClick(row)}
+            aria-label="View expired session details"
+          >
+            <InfoTooltipIcon width={16} height={16} />
+          </button>
+        </Tooltip>
       ) : withAppIcon && onHistoryInfoClick ? (
         <Tooltip
           title={
@@ -220,31 +246,20 @@ const SessionItem = ({
       {row.status === "expired" && (
         <span className="mr-6 inline-flex items-center gap-1 text-[13px] text-[#E24A4A]">
           Session Expired
-          {onExpiredInfoClick ? (
-            <button
-              type="button"
-              className="inline-flex cursor-pointer items-center justify-center"
-              onClick={() => onExpiredInfoClick(row)}
-              aria-label="View expired session details"
-            >
+          <Tooltip
+            title="Session expired as per your organisation's policy."
+            arrow
+            placement="bottom"
+            componentsProps={{
+              tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
+              arrow: { sx: { color: "#797979" } },
+              popper: { sx: { zIndex: 2400 } },
+            }}
+          >
+            <span className="inline-flex items-center justify-center">
               <InfoOutlinedIcon sx={{ fontSize: 14, color: "#E24A4A" }} />
-            </button>
-          ) : (
-            <Tooltip
-              title="Session expired as per your organisation's policy."
-              arrow
-              placement="left"
-              componentsProps={{
-                tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
-                arrow: { sx: { color: "#797979" } },
-                popper: { sx: { zIndex: 2400 } },
-              }}
-            >
-              <span className="inline-flex items-center justify-center">
-                <InfoOutlinedIcon sx={{ fontSize: 14, color: "#E24A4A" }} />
-              </span>
-            </Tooltip>
-          )}
+            </span>
+          </Tooltip>
         </span>
       )}
       {row.status === "none" && showTerminateOnHover && onTerminate && (
@@ -262,6 +277,7 @@ const SessionItem = ({
 
 export const Activity: React.FC = () => {
   const [activeSessions, setActiveSessions] = React.useState<SessionRow[]>(initialActiveSessions);
+  const [activityHistory, setActivityHistory] = React.useState<SessionRow[]>(initialActivityHistory);
   const [selectedCurrentSession, setSelectedCurrentSession] = React.useState<SessionRow | null>(null);
   const [selectedHistorySession, setSelectedHistorySession] = React.useState<SessionRow | null>(null);
   const [selectedExpiredSession, setSelectedExpiredSession] = React.useState<SessionRow | null>(null);
@@ -278,6 +294,22 @@ export const Activity: React.FC = () => {
   };
 
   const handleTerminateAllOtherSessions = () => {
+    const terminatedSessions = activeSessions.filter((session) => session.status !== "current");
+
+    if (terminatedSessions.length === 0) {
+      return;
+    }
+
+    const terminatedHistoryRows = terminatedSessions.map((session, index) => ({
+      ...session,
+      id: `history-terminated-${session.id}-${Date.now()}-${index}`,
+      status: "none" as const,
+      timeAgo: "Just now",
+      signInTime: session.startedTime ?? session.signInTime,
+      signOutTime: session.signOutTime ?? new Date().toLocaleDateString("en-GB"),
+    }));
+
+    setActivityHistory((prevHistory) => [...terminatedHistoryRows, ...prevHistory]);
     setActiveSessions((prev) => prev.filter((session) => session.status === "current"));
   };
 
@@ -313,21 +345,22 @@ export const Activity: React.FC = () => {
             ))}
           </div>
 
-          <div className="px-4 pt-12 text-center">
-            <button
-              type="button"
-              className="cursor-pointer text-[14px] font-[400] text-[#E24A4A] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
-              onClick={() => setIsTerminateOtherModalOpen(true)}
-              disabled={!hasOtherSessions}
-            >
-              Terminate all other sessions
-            </button>
-          </div>
+          {hasOtherSessions && (
+            <div className="px-4 pt-12 text-center">
+              <button
+                type="button"
+                className="cursor-pointer text-[14px] font-[400] text-[#E24A4A] hover:underline"
+                onClick={() => setIsTerminateOtherModalOpen(true)}
+              >
+                Terminate all other sessions
+              </button>
+            </div>
+          )}
         </div>
       </Section>
 
       <Section title="Activity History">
-        <div className="-mx-4 -mt-5">
+        <div className=" -mt-5">
           <div>
             {activityHistory.map((row) => (
               <SessionItem
