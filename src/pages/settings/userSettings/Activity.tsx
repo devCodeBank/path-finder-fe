@@ -596,7 +596,7 @@ export const Activity: React.FC = () => {
 
       {isHistoryModalOpen && (
         <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-[#00000066] p-4">
-          <div className="w-full max-w-[1220px] rounded-[10px] border border-[#D8D8D8] bg-white p-6 shadow-[0px_10px_14px_0px_#00000024]">
+          <div className="w-full max-w-[1100px] rounded-[10px] border border-[#D8D8D8] bg-white p-6 shadow-[0px_10px_14px_0px_#00000024]">
             <div className="mb-4 flex items-start justify-between border-b border-[#ECECEC] pb-4">
               <div>
                 <p className="text-[16px] font-[500] text-[#333333]">Recent Activity History</p>
@@ -612,11 +612,11 @@ export const Activity: React.FC = () => {
               </button>
             </div>
 
-            <div className="max-h-[60vh] overflow-y-auto">
+            <div className="max-h-[60vh] ">
               <div>
                 {activityHistory.map((row) => (
                   <div key={`recent-${row.id}`} className="rounded-[4px] py-4 transition-colors hover:bg-[#F8F8F8] md:-mx-4 md:px-4">
-                    <SessionItem row={row} withAppIcon onHistoryInfoClick={setSelectedHistorySession} />
+                    <SessionItem row={row} withAppIcon />
                   </div>
                 ))}
               </div>
