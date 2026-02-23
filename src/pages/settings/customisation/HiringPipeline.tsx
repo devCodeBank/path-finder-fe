@@ -481,7 +481,7 @@ const HiringPipeline: React.FC = () => {
                                 popper: { sx: { zIndex: 2400 } }
                               }}
                             >
-                              <div className="flex items-center gap-3 text-[13px] text-[#A7A7A7]">
+                              <div className="flex items-center gap-3 text-[13px] text-[#333333]">
                                 <span>
                                   <GripIcon locked />
                                 </span>
