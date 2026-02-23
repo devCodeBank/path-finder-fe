@@ -210,7 +210,7 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <div className="w-full h-[52px] px-4 flex items-center justify-between border border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
+  <div className="w-full h-[52px] px-4 flex items-center justify-between  border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
     <button
       type="button"
@@ -1697,7 +1697,7 @@ export const Candidates: React.FC = () => {
               </button>
             )}
             {layoutOpen.education && (
-              <div className="mt-6 flex flex-col gap-4">
+              <div className="mt-2 flex flex-col gap-4">
                 {educationEntries.map((entry) => {
                   const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
                   return (
@@ -1724,7 +1724,7 @@ export const Candidates: React.FC = () => {
                       )}
                       {(isLayoutVisible("education", "qualification") ||
                         isLayoutVisible("education", "specialisation")) && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                             {isLayoutVisible("education", "qualification") && (
                               <div className="relative flex flex-col pb-[14px]">
                                 <FloatingLabelInput
@@ -1769,7 +1769,7 @@ export const Candidates: React.FC = () => {
                         )}
                       {(isLayoutVisible("education", "duration") ||
                         isLayoutVisible("education", "pursuing")) && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                             {isLayoutVisible("education", "duration") && (
                               <div className="relative flex flex-col gap-1 pb-[14px]">
                                 <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
@@ -1889,7 +1889,7 @@ export const Candidates: React.FC = () => {
               </button>
             )}
             {layoutOpen.work && (
-              <div className="mt-6 flex flex-col gap-4">
+              <div className="mt-2 flex flex-col gap-4">
                 {workEntries.map((entry) => {
                   const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
                   return (
@@ -1916,7 +1916,7 @@ export const Candidates: React.FC = () => {
                       )}
                       {(isLayoutVisible("workHistory", "company") ||
                         isLayoutVisible("workHistory", "employmentType")) && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                             {isLayoutVisible("workHistory", "company") && (
                               <div className="relative flex flex-col pb-[14px]">
                                 <FloatingLabelInput
@@ -1965,7 +1965,7 @@ export const Candidates: React.FC = () => {
                         )}
                       {(isLayoutVisible("workHistory", "industry") ||
                         isLayoutVisible("workHistory", "arrangement")) && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                             {isLayoutVisible("workHistory", "industry") && (
                               <div className="relative flex flex-col pb-[14px]">
                                 <FloatingLabelSelect
@@ -2014,7 +2014,7 @@ export const Candidates: React.FC = () => {
                         )}
                       {(isLayoutVisible("workHistory", "workDuration") ||
                         isLayoutVisible("workHistory", "current")) && (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                             {isLayoutVisible("workHistory", "workDuration") && (
                               <div className="relative flex flex-col gap-1 pb-[14px]">
                                 <label className="text-[14px] font-medium text-[#333333]/70">Duration</label>
@@ -2194,7 +2194,7 @@ export const Candidates: React.FC = () => {
               onToggle={() => setLayoutOpen((p) => ({ ...p, social: !p.social }))}
             />
             {layoutOpen.social && (
-              <div className="grid pt-6 grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+              <div className="grid pt-6 grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-10">
                 {isLayoutVisible("social", "linkedin") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelInput
