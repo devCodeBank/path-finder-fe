@@ -290,15 +290,15 @@ export const Activity: React.FC = () => {
     <div className="flex w-full max-w-full flex-col gap-4 pb-2 font-sans">
       <Section
         title="Active Sessions"
-        headerAction={
-          <button
-            type="button"
-            className="cursor-pointer rounded-[4px] bg-[#D9534F] px-4 py-1.5 text-[12px] font-[500] text-white hover:bg-[#CA4742]"
-            onClick={handleTerminateAllSessions}
-          >
-            Terminate All Sessions
-          </button>
-        }
+      // headerAction={
+      //   <button
+      //     type="button"
+      //     className="cursor-pointer rounded-[4px] bg-[#D9534F] px-4 py-1.5 text-[12px] font-[500] text-white hover:bg-[#CA4742]"
+      //     onClick={handleTerminateAllSessions}
+      //   >
+      //     Terminate All Sessions
+      //   </button>
+      // }
       >
         <div className="-mt-5">
           <div>
@@ -594,7 +594,7 @@ export const Activity: React.FC = () => {
 
       {isTerminateOtherModalOpen && (
         <div className="fixed inset-0 z-[2600] flex items-center justify-center bg-[#00000080] p-4">
-          <div className="relative w-full max-w-[640px] overflow-hidden rounded-[10px] border border-[#D8D8D8] bg-white shadow-[0px_10px_14px_0px_#00000024]">
+          <div className="relative w-full max-w-[600px] overflow-hidden rounded-[10px] border border-[#D8D8D8] bg-white shadow-[0px_10px_14px_0px_#00000024]">
             <button
               type="button"
               className="absolute right-4 top-4 cursor-pointer rounded-full p-2 text-[#9A9A9A] hover:text-[#5F5F5F]"
@@ -604,10 +604,10 @@ export const Activity: React.FC = () => {
               <ClosePopupIcon width={20} height={20} strokeWidth={1.5} />
             </button>
 
-            <div className="px-8 py-10 text-center">
-              <p className="text-[16px] font-[500] text-[#1F1F1F]">Terminate all the browsers session?</p>
-              <p className="mx-auto mt-3 max-w-[520px] text-[13px] text-[#8A8A8A]">
-                Note: This will sign you out from all active Pathfinder sessions across all browsers.
+            <div className="px-24 py-10 text-center">
+              <p className="text-[16px] font-[500] text-[#1F1F1F]">Terminate Other Active Sessions?</p>
+              <p className="mx-auto mt-3 max-w-[520px] text-[13px] text-[#8A8A8A] text-center">
+                This will sign you out of all active Pathfinder sessions across other browsers, except for this one.
               </p>
               <button
                 type="button"
