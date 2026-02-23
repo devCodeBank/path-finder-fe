@@ -130,6 +130,11 @@ const routeLabels: Record<string, string> = {
   "system-roles": "System Roles",
   "create-custom": "Create Custom Role",
   create: "Create",
+  data: "Data Admin",
+  migration: "Data Migration",
+  "export-data": "Export Data",
+  storage: "Storage",
+  "recycle-bin": "Recycle Bin",
 };
 
 const getBreadcrumbPath = (pathname: string): string[] => {

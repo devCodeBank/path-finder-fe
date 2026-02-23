@@ -73,6 +73,7 @@ const NoteTypePage = React.lazy(() => import("./pages/settings/customisation/Not
 const TaskTypePage = React.lazy(() => import("./pages/settings/customisation/TaskType"));
 const CustomisationTagsPage = React.lazy(() => import("./pages/settings/customisation/Tags"));
 const CustomisationSkillSetPage = React.lazy(() => import("./pages/settings/customisation/SkillSet"));
+const DataMigrationPage = React.lazy(() => import("./pages/settings/dataAdmin/DataMigration"));
 
 const LoadingFallback: React.FC = () => <LoadingSpinner isLoading />;
 
@@ -188,6 +189,7 @@ const App: React.FC = () => {
             <Route path="customisation/task-type" element={<TaskTypePage />} />
             <Route path="customisation/tags" element={<CustomisationTagsPage />} />
             <Route path="customisation/skill-set" element={<CustomisationSkillSetPage />} />
+            <Route path="data/migration" element={<DataMigrationPage />} />
           </Route>
         </Route>
 
