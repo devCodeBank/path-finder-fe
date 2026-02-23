@@ -6,7 +6,7 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Checkbox, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import TrashIcon from "@/components/icons/TrashIcon";
 import TabsComponent from "@/components/tabs/TabsComponent";
 
@@ -101,6 +101,7 @@ const initialData: Record<TabKey, TagGroup[]> = {
 
 const primaryButtonSx = {
   height: "36px",
+  cursor: "pointer",
   backgroundColor: "#6E41E2",
   textTransform: "none",
   fontSize: "12px",
@@ -329,7 +330,7 @@ const Tags: React.FC = () => {
                     popper: { sx: { zIndex: 2400 } },
                   }}
                 >
-                  <button type="button" className="hover:text-[#666666]" onClick={() => toggleSearch(group.id)}>
+                  <button type="button" className="cursor-pointer hover:text-[#666666]" onClick={() => toggleSearch(group.id)}>
                     <SearchOutlinedIcon sx={{ fontSize: 20 }} />
                   </button>
                 </Tooltip>
@@ -343,7 +344,7 @@ const Tags: React.FC = () => {
                     popper: { sx: { zIndex: 2400 } },
                   }}
                 >
-                  <button type="button" className="hover:text-[#666666]" onClick={() => openEditModal(tab, group)}>
+                  <button type="button" className="cursor-pointer hover:text-[#666666]" onClick={() => openEditModal(tab, group)}>
                     <EditOutlinedIcon sx={{ fontSize: 20 }} />
                   </button>
                 </Tooltip>
@@ -383,32 +384,19 @@ const Tags: React.FC = () => {
                         <span className="text-[13px] text-[#333333]">{tag.label}</span>
                       </div>
                       <div className="hidden items-center gap-5 group-hover:flex">
-                        <div className="relative">
-                          <select
-                            value={group.id}
-                            onClick={(event) => event.stopPropagation()}
-                            onChange={(event) => moveTagToGroup(tab, group.id, tag.id, event.target.value)}
-                            className="h-[30px] min-w-[140px] rounded-[4px] border border-[#D6D6D6] pl-2 pr-8 text-[12px] text-[#666666] bg-white appearance-none focus:border-[#6E41E2] focus:outline-none"
-                          >
-                            <option value={group.id}>Move to...</option>
-                            {data[tab]
+                        <div className="min-w-[140px]" onClick={(event) => event.stopPropagation()}>
+                          <FloatingLabelSelect
+                            value=""
+                            onValueChange={(value) => {
+                              if (!value) return;
+                              moveTagToGroup(tab, group.id, tag.id, value);
+                            }}
+                            options={data[tab]
                               .filter((g) => g.id !== group.id)
-                              .map((g) => (
-                                <option key={g.id} value={g.id}>
-                                  {g.title}
-                                </option>
-                              ))}
-                          </select>
-                          <svg
-                            className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path d="M6 8L10 12L14 8" stroke="#666666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
+                              .map((g) => ({ value: g.id, label: g.title }))}
+                            placeholder="Move to..."
+                            className="h-[30px] min-w-[140px] text-[12px] text-[#666666]"
+                          />
                         </div>
                         <Tooltip
                           title="Edit"
@@ -422,7 +410,7 @@ const Tags: React.FC = () => {
                         >
                           <button
                             type="button"
-                            className="text-[#888888] hover:text-[#666666]"
+                            className="cursor-pointer text-[#888888] hover:text-[#666666]"
                             onClick={(event) => {
                               event.stopPropagation();
                               openEditTag(tab, group.id, tag);
@@ -443,7 +431,7 @@ const Tags: React.FC = () => {
                         >
                           <button
                             type="button"
-                            className="text-[#888888] hover:text-[#666666]"
+                            className="cursor-pointer text-[#888888] hover:text-[#666666]"
                             onClick={(event) => {
                               event.stopPropagation();
                               deleteTag(tab, group.id, tag.id);
@@ -460,6 +448,7 @@ const Tags: React.FC = () => {
                           onChange={(event) => toggleTagVisibility(tab, group.id, tag.id, event.target.checked)}
                           sx={{
                             p: 0,
+                            cursor: "pointer",
                             color: "#57CC4D",
                             "&.Mui-checked": { color: "#57CC4D" },
                           }}
@@ -485,14 +474,14 @@ const Tags: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    className="h-[30px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] hover:bg-[#F3F4F6]"
+                    className="h-[30px] cursor-pointer px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] hover:bg-[#F3F4F6]"
                     onClick={cancelAddTag}
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
-                    className="h-[30px] px-3 rounded-[4px] bg-[#6E41E2] text-[12px] text-white hover:bg-[#7B52F4]"
+                    className="h-[30px] cursor-pointer px-3 rounded-[4px] bg-[#6E41E2] text-[12px] text-white hover:bg-[#7B52F4]"
                     onClick={saveAddTag}
                   >
                     Save
@@ -502,7 +491,7 @@ const Tags: React.FC = () => {
             ) : (
               <button
                 type="button"
-                className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-center gap-2 text-[#6E41E2] text-[14px] font-[500]"
+                className="h-[54px] cursor-pointer px-4 border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-center gap-2 text-[#6E41E2] text-[14px] font-[500]"
                 onClick={() => openAddTag(tab, group.id)}
               >
                 <span className="text-[20px] leading-none">+</span>
@@ -551,7 +540,7 @@ const Tags: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeEditModal}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -563,14 +552,14 @@ const Tags: React.FC = () => {
                 type="text"
                 value={editingTitle}
                 onChange={(event) => setEditingTitle(event.target.value)}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Section name"
               />
             </div>
             <div className="mt-6 flex justify-end">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[36px] cursor-pointer px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveEditModal}
               >
                 Save
@@ -597,7 +586,7 @@ const Tags: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeAddCategoryModal}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -612,21 +601,21 @@ const Tags: React.FC = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") saveAddCategory();
                 }}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Category Name"
               />
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[32px] px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] cursor-pointer px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeAddCategoryModal}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[32px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] cursor-pointer px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveAddCategory}
               >
                 Save
@@ -653,7 +642,7 @@ const Tags: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeEditTag}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -668,21 +657,21 @@ const Tags: React.FC = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") saveEditTag();
                 }}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Tag name"
               />
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[32px] px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] cursor-pointer px-5 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeEditTag}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[32px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] cursor-pointer px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveEditTag}
               >
                 Save

@@ -40,6 +40,7 @@ const tooltipProps = {
 
 const primaryButtonSx = {
   height: "36px",
+  cursor: "pointer",
   backgroundColor: "#6E41E2",
   textTransform: "none",
   fontSize: "12px",
@@ -189,17 +190,17 @@ const SkillSet: React.FC = () => {
                       />
                     )}
                     <Tooltip title="Search" arrow placement="bottom" componentsProps={tooltipProps}>
-                      <button type="button" onClick={() => toggleSearch(category.id)}>
+                      <button type="button" className="cursor-pointer" onClick={() => toggleSearch(category.id)}>
                         <SearchOutlinedIcon sx={{ fontSize: 20 }} />
                       </button>
                     </Tooltip>
                     <Tooltip title="Edit" arrow placement="bottom" componentsProps={tooltipProps}>
-                      <button type="button" onClick={() => openEditCategory(category)}>
+                      <button type="button" className="cursor-pointer" onClick={() => openEditCategory(category)}>
                         <EditOutlinedIcon sx={{ fontSize: 20 }} />
                       </button>
                     </Tooltip>
                     <Tooltip title="Delete" arrow placement="bottom" componentsProps={tooltipProps}>
-                      <button type="button" onClick={() => removeCategory(category.id)}>
+                      <button type="button" className="cursor-pointer" onClick={() => removeCategory(category.id)}>
                         <TrashIcon size={20} />
                       </button>
                     </Tooltip>
@@ -215,7 +216,7 @@ const SkillSet: React.FC = () => {
                       <span>{skill}</span>
                       <button
                         type="button"
-                        className="text-[#888888] opacity-0 transition-opacity group-hover:opacity-100 hover:text-[#666666]"
+                        className="cursor-pointer text-[#888888] opacity-0 transition-opacity group-hover:opacity-100 hover:text-[#666666]"
                         onClick={(event) => {
                           event.stopPropagation();
                           removeSkill(category.id, index);
@@ -239,14 +240,14 @@ const SkillSet: React.FC = () => {
                       />
                       <button
                         type="button"
-                        className="h-[30px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] hover:bg-[#F3F4F6]"
+                        className="h-[30px] cursor-pointer px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] hover:bg-[#F3F4F6]"
                         onClick={closeAddSkill}
                       >
                         Cancel
                       </button>
                       <button
                         type="button"
-                        className="h-[30px] px-3 rounded-[4px] bg-[#6E41E2] text-[12px] text-white hover:bg-[#7B52F4]"
+                        className="h-[30px] cursor-pointer px-3 rounded-[4px] bg-[#6E41E2] text-[12px] text-white hover:bg-[#7B52F4]"
                         onClick={saveAddSkill}
                       >
                         Save
@@ -255,7 +256,7 @@ const SkillSet: React.FC = () => {
                   ) : (
                     <button
                       type="button"
-                      className="h-[52px] border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-center gap-2 text-[#6E41E2] text-[14px] font-[500]"
+                      className="h-[52px] cursor-pointer border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-center gap-2 text-[#6E41E2] text-[14px] font-[500]"
                       onClick={() => openAddSkill(category.id)}
                     >
                       <span className="text-[20px] leading-none">+</span>
@@ -286,7 +287,7 @@ const SkillSet: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeAddCategory}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -308,14 +309,14 @@ const SkillSet: React.FC = () => {
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[32px] px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] cursor-pointer px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeAddCategory}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[32px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] cursor-pointer px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveAddCategory}
               >
                 Save
@@ -342,7 +343,7 @@ const SkillSet: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={closeEditCategory}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -364,14 +365,14 @@ const SkillSet: React.FC = () => {
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                className="h-[32px] px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
+                className="h-[32px] cursor-pointer px-4 rounded-[6px] border border-[#CCCCCC80] text-[#333333] text-[12px] font-[500] hover:bg-[#F3F4F6]"
                 onClick={closeEditCategory}
               >
                 Cancel
               </button>
               <button
                 type="button"
-                className="h-[32px] px-4 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[32px] cursor-pointer px-4 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={saveEditCategory}
               >
                 Save

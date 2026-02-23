@@ -289,9 +289,9 @@ export const Activity: React.FC = () => {
     setActiveSessions((prev) => prev.filter((session) => session.id !== sessionId));
   };
 
-  const handleTerminateAllSessions = () => {
-    setActiveSessions([]);
-  };
+  // const handleTerminateAllSessions = () => {
+  //   setActiveSessions([]);
+  // };
 
   const handleTerminateAllOtherSessions = () => {
     const terminatedSessions = activeSessions.filter((session) => session.status !== "current");
