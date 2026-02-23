@@ -44,7 +44,7 @@ const Toggle = ({
         onChange(!enabled);
       }}
       className={cn(
-        "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 outline-none",
+        "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none",
         enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]",
         disabled && "cursor-not-allowed opacity-60"
       )}
@@ -82,7 +82,7 @@ const Flag = ({
         onChange(!checked);
       }}
       className={cn(
-        "h-[14px] w-[14px] rounded-[3px] border flex items-center justify-center",
+        "h-[14px] w-[14px] cursor-pointer rounded-[3px] border flex items-center justify-center",
         checked ? "bg-[#57CC4D] border-[#57CC4D]" : "bg-white border-[#D7D7D7]",
         disabled && "cursor-not-allowed opacity-60"
       )}
@@ -156,7 +156,7 @@ const SectionCard = ({
             <button
               type="button"
               aria-label={`Edit ${section.title}`}
-              className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
+              className="h-[24px] w-[24px] cursor-pointer flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6]"
               onClick={(event) => {
                 event.stopPropagation();
                 onEditTitle(section);
@@ -431,7 +431,7 @@ const DealFields: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={handleCloseEditSectionTitle}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -443,14 +443,14 @@ const DealFields: React.FC = () => {
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Section name"
               />
             </div>
             <div className="mt-6 flex justify-end">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[36px] cursor-pointer px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={handleSaveEditSectionTitle}
               >
                 Save

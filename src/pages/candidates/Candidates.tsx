@@ -115,7 +115,7 @@ const Toggle = ({
           onChange(!enabled);
         }}
         className={cn(
-          "relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 outline-none",
+          "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 outline-none",
           enabled ? "bg-[#57CC4D]" : "bg-[#CCCCCC]",
           disabled ? "opacity-60 cursor-not-allowed" : ""
         )}
@@ -156,7 +156,7 @@ const Flag = ({
         onChange(!checked);
       }}
       className={cn(
-        "h-[14px] w-[14px] rounded-[3px] border flex items-center justify-center",
+        "h-[14px] w-[14px] cursor-pointer rounded-[3px] border flex items-center justify-center",
         checked ? "bg-[#57CC4D] border-[#57CC4D]" : "bg-white border-[#D7D7D7]",
         disabled ? "opacity-60 cursor-not-allowed" : ""
       )}
@@ -217,7 +217,7 @@ const LayoutHeader = ({
       aria-label={`Toggle ${title}`}
       aria-expanded={!collapsed}
       onClick={onToggle}
-      className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] hover:bg-[#F3F4F6]"
+      className="h-[24px] w-[24px] cursor-pointer flex items-center justify-center rounded-[4px] hover:bg-[#F3F4F6]"
     >
       {collapsed ? (
         <KeyboardDoubleArrowDownRoundedIcon sx={{ fontSize: 16, color: "#666666" }} />
@@ -337,7 +337,7 @@ const SectionCard = ({
             <button
               type="button"
               aria-label={`Edit ${section.title}`}
-              className="h-[24px] w-[24px] flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#EAAEAEA]"
+              className="h-[24px] w-[24px] cursor-pointer flex items-center justify-center rounded-[4px] border border-[#CCCCCC80] text-[#666666] hover:bg-[#EAAEAEA]"
               onClick={(event) => {
                 event.stopPropagation();
                 onEditTitle(section);
@@ -1155,7 +1155,7 @@ export const Candidates: React.FC = () => {
                 <button
                   type="button"
                   aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                  className="inline-flex h-[24px] w-[24px] cursor-pointer items-center justify-center transition-opacity hover:opacity-80"
                   onClick={handleCloseEditSectionTitle}
                 >
                   <img src={CloseXIcon} alt="" width={24} height={24} />
@@ -1174,7 +1174,7 @@ export const Candidates: React.FC = () => {
             <div className="mt-6 flex justify-end">
               <button
                 type="button"
-                className="h-[36px] px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
+                className="h-[36px] cursor-pointer px-5 rounded-[6px] bg-[#6E41E2] text-white text-[12px] font-[500] hover:bg-[#7B52F4]"
                 onClick={handleSaveEditSectionTitle}
               >
                 Save
@@ -1690,7 +1690,7 @@ export const Candidates: React.FC = () => {
             {!layoutOpen.education && (
               <button
                 type="button"
-                className="mt-4 w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                className="mt-4 w-full h-[44px] cursor-pointer border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
                 onClick={() => setLayoutOpen((prev) => ({ ...prev, education: true }))}
               >
                 + Add Educational Details
@@ -1848,7 +1848,7 @@ export const Candidates: React.FC = () => {
                       <div className="flex justify-end">
                         <button
                           type="button"
-                          className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
+                          className="h-[32px] cursor-pointer px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
                           onClick={() => removeEducationEntry(entry.id)}
                         >
                           Delete
@@ -1859,7 +1859,7 @@ export const Candidates: React.FC = () => {
                 })}
                 <button
                   type="button"
-                  className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                  className="w-full h-[44px] cursor-pointer border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
                   onClick={addEducationEntry}
                 >
                   + Add Educational Details
@@ -1882,7 +1882,7 @@ export const Candidates: React.FC = () => {
             {!layoutOpen.work && (
               <button
                 type="button"
-                className="mt-4 w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                className="mt-4 w-full h-[44px] cursor-pointer border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
                 onClick={() => setLayoutOpen((prev) => ({ ...prev, work: true }))}
               >
                 + Add Work History
@@ -2093,7 +2093,7 @@ export const Candidates: React.FC = () => {
                       <div className="flex justify-end">
                         <button
                           type="button"
-                          className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
+                          className="h-[32px] cursor-pointer px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
                           onClick={() => removeWorkEntry(entry.id)}
                         >
                           Delete
@@ -2104,7 +2104,7 @@ export const Candidates: React.FC = () => {
                 })}
                 <button
                   type="button"
-                  className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                  className="w-full h-[44px] cursor-pointer border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
                   onClick={addWorkEntry}
                 >
                   + Add Work History
@@ -2307,7 +2307,7 @@ export const Candidates: React.FC = () => {
             {!layoutOpen.summary && (
               <button
                 type="button"
-                className="w-full h-[44px] border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
+                className="w-full h-[44px] cursor-pointer border border-[#E6E6E6] rounded-[4px] text-[#6E41E2] text-[13px] font-[500] bg-white"
                 onClick={() => setLayoutOpen((prev) => ({ ...prev, summary: true }))}
               >
                 + Add Candidate Summary
@@ -2345,7 +2345,7 @@ export const Candidates: React.FC = () => {
               <div className="flex mt-6 justify-end">
                 <button
                   type="button"
-                  className="h-[32px] px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
+                  className="h-[32px] cursor-pointer px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
                   onClick={() => {
                     setLayoutForm((prev) => ({ ...prev, candidateSummary: "" }));
                   }}
