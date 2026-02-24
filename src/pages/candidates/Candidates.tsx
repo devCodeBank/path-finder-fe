@@ -434,6 +434,34 @@ const SectionCard = ({
 export const Candidates: React.FC = () => {
   const birthDateRef = useRef<HTMLInputElement | null>(null);
   const availableFromRef = useRef<HTMLInputElement | null>(null);
+  const monthOptions = useMemo(
+    () => [
+      { value: "01", label: "Jan" },
+      { value: "02", label: "Feb" },
+      { value: "03", label: "Mar" },
+      { value: "04", label: "Apr" },
+      { value: "05", label: "May" },
+      { value: "06", label: "Jun" },
+      { value: "07", label: "Jul" },
+      { value: "08", label: "Aug" },
+      { value: "09", label: "Sep" },
+      { value: "10", label: "Oct" },
+      { value: "11", label: "Nov" },
+      { value: "12", label: "Dec" }
+    ],
+    []
+  );
+  const yearOptions = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const earliestYear = currentYear - 60;
+    const latestYear = currentYear + 5;
+    const options = [];
+    for (let year = latestYear; year >= earliestYear; year -= 1) {
+      const value = String(year);
+      options.push({ value, label: value });
+    }
+    return options;
+  }, []);
   const summaryModules = useMemo(
     () => ({
       toolbar: [
@@ -1777,14 +1805,14 @@ export const Candidates: React.FC = () => {
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Month"
-                                    options={[]}
+                                    options={monthOptions}
                                     value={entry.fromMonth}
                                     onValueChange={(value) => updateEducationEntry(entry.id, "fromMonth", value)}
                                   />
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Year"
-                                    options={[]}
+                                    options={yearOptions}
                                     value={entry.fromYear}
                                     onValueChange={(value) => updateEducationEntry(entry.id, "fromYear", value)}
                                   />
@@ -1792,14 +1820,14 @@ export const Candidates: React.FC = () => {
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Month"
-                                    options={[]}
+                                    options={monthOptions}
                                     value={entry.toMonth}
                                     onValueChange={(value) => updateEducationEntry(entry.id, "toMonth", value)}
                                   />
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Year"
-                                    options={[]}
+                                    options={yearOptions}
                                     value={entry.toYear}
                                     onValueChange={(value) => updateEducationEntry(entry.id, "toYear", value)}
                                   />
@@ -2022,14 +2050,14 @@ export const Candidates: React.FC = () => {
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Month"
-                                    options={[]}
+                                    options={monthOptions}
                                     value={entry.fromMonth}
                                     onValueChange={(value) => updateWorkEntry(entry.id, "fromMonth", value)}
                                   />
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Year"
-                                    options={[]}
+                                    options={yearOptions}
                                     value={entry.fromYear}
                                     onValueChange={(value) => updateWorkEntry(entry.id, "fromYear", value)}
                                   />
@@ -2037,14 +2065,14 @@ export const Candidates: React.FC = () => {
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Month"
-                                    options={[]}
+                                    options={monthOptions}
                                     value={entry.toMonth}
                                     onValueChange={(value) => updateWorkEntry(entry.id, "toMonth", value)}
                                   />
                                   <FloatingLabelSelect
                                     label=""
                                     placeholder="Year"
-                                    options={[]}
+                                    options={yearOptions}
                                     value={entry.toYear}
                                     onValueChange={(value) => updateWorkEntry(entry.id, "toYear", value)}
                                   />
@@ -2348,6 +2376,7 @@ export const Candidates: React.FC = () => {
                   className="h-[32px] cursor-pointer px-4 rounded-[4px] bg-[#E4554A] text-white text-[12px] font-[500]"
                   onClick={() => {
                     setLayoutForm((prev) => ({ ...prev, candidateSummary: "" }));
+                    setLayoutOpen((prev) => ({ ...prev, summary: false }));
                   }}
                 >
                   Delete

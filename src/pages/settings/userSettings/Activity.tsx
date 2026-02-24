@@ -105,7 +105,7 @@ const LocationInfoTooltip = () => (
     componentsProps={{
       tooltip: { sx: { bgcolor: "#797979", width: "fit-content", maxWidth: "none", textAlign: "center", whiteSpace: "nowrap" } },
       arrow: { sx: { color: "#797979" } },
-      popper: { sx: { zIndex: 2400 } },
+      popper: { sx: { zIndex: 3000 } },
     }}
   >
     <span className="inline-flex items-center justify-center">
@@ -172,7 +172,7 @@ const SessionItem = ({
           componentsProps={{
             tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
             arrow: { sx: { color: "#797979" } },
-            popper: { sx: { zIndex: 2400 } },
+            popper: { sx: { zIndex: 3000 } },
           }}
         >
           <button
@@ -198,7 +198,7 @@ const SessionItem = ({
           componentsProps={{
             tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
             arrow: { sx: { color: "#797979" } },
-            popper: { sx: { zIndex: 2400 } },
+            popper: { sx: { zIndex: 3000 } },
           }}
         >
           <button
@@ -224,7 +224,7 @@ const SessionItem = ({
           componentsProps={{
             tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
             arrow: { sx: { color: "#797979" } },
-            popper: { sx: { zIndex: 2400 } },
+            popper: { sx: { zIndex: 3000 } },
           }}
         >
           <button
@@ -253,7 +253,7 @@ const SessionItem = ({
             componentsProps={{
               tooltip: { sx: { bgcolor: "#797979", textAlign: "center", maxWidth: "none", whiteSpace: "nowrap" } },
               arrow: { sx: { color: "#797979" } },
-              popper: { sx: { zIndex: 2400 } },
+              popper: { sx: { zIndex: 3000 } },
             }}
           >
             <span className="inline-flex items-center justify-center">
@@ -395,7 +395,7 @@ export const Activity: React.FC = () => {
       </Section>
 
       {selectedCurrentSession && (
-        <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-[#00000066] p-4">
+        <div className="fixed inset-0 z-[2700] flex items-center justify-center bg-[#00000066] p-4">
           <div className="w-full max-w-[680px] rounded-[10px] border border-[#D8D8D8] bg-white p-7 shadow-[0px_10px_14px_0px_#00000024]">
             <div className="mb-8 flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -453,7 +453,7 @@ export const Activity: React.FC = () => {
       )}
 
       {selectedHistorySession && (
-        <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-[#00000066] p-4">
+        <div className="fixed inset-0 z-[2700] flex items-center justify-center bg-[#00000066] p-4">
           <div className="w-full max-w-[680px] rounded-[10px] border border-[#D8D8D8] bg-white p-7 shadow-[0px_10px_14px_0px_#00000024]">
             <div className="mb-8 flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -522,7 +522,7 @@ export const Activity: React.FC = () => {
       )}
 
       {selectedExpiredSession && (
-        <div className="fixed inset-0 z-[2500] flex items-center justify-center bg-[#00000066] p-4">
+        <div className="fixed inset-0 z-[2700] flex items-center justify-center bg-[#00000066] p-4">
           <div className="w-full max-w-[740px] rounded-[10px] border border-[#D8D8D8] bg-white p-7 shadow-[0px_10px_14px_0px_#00000024]">
             <div className="mb-8 flex items-start justify-between">
               <div className="flex items-center gap-3">
@@ -616,7 +616,12 @@ export const Activity: React.FC = () => {
               <div>
                 {activityHistory.map((row) => (
                   <div key={`recent-${row.id}`} className="rounded-[4px] py-4 transition-colors hover:bg-[#F8F8F8] md:-mx-4 md:px-4">
-                    <SessionItem row={row} withAppIcon />
+                    <SessionItem
+                      row={row}
+                      withAppIcon
+                      onHistoryInfoClick={setSelectedHistorySession}
+                      onExpiredInfoClick={setSelectedExpiredSession}
+                    />
                   </div>
                 ))}
               </div>

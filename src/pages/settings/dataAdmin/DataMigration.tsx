@@ -18,7 +18,7 @@ const DataMigration: React.FC = () => {
   const [supportUsersToMigrate, setSupportUsersToMigrate] = React.useState("");
 
   const migrationContent = (
-    <div className="rounded-[6px]  border-[#CCCCCC80] p-4">
+    <div className="rounded-[6px]  border-[#CCCCCC80] mt-4">
       <div className="rounded-[6px] bg-[#f9fafb] p-5">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start gap-3">
@@ -201,7 +201,7 @@ const DataMigration: React.FC = () => {
             </div>
 
             <div className="px-4 py-5">
-              <p className="text-[16px] text-[#666666]">Your Information</p>
+              <p className="text-[16px] text-[#333333]">Your Information</p>
 
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
@@ -312,7 +312,7 @@ const DataMigration: React.FC = () => {
             </div>
 
             <div className="border-t border-[#E6E6E6] px-4 py-5">
-              <p className="text-[16px] text-[#666666]">Migration Details</p>
+              <p className="text-[16px] text-[#333333]">Migration Details</p>
 
               <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2">
                 <div>
@@ -362,7 +362,7 @@ const DataMigration: React.FC = () => {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="mb-2 block text-[16px] text-[#666666]">Specific Requirements / Description</label>
+                  <label className="mb-2 block text-[14px] text-[#666666]">Specific Requirements / Description</label>
                   <textarea
                     rows={6}
                     placeholder="Describe any custom field concerns or specific data needs..."
