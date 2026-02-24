@@ -60,6 +60,10 @@ const HiringPipeline: React.FC = () => {
   );
   const [stageOrder, setStageOrder] = useState<string[]>(stageOptions.map((stage) => stage.id));
   const [dragStageId, setDragStageId] = useState<string | null>(null);
+  const [dragOverStageId, setDragOverStageId] = useState<string | null>(null);
+  const [dragOverPosition, setDragOverPosition] = useState<"before" | "after" | null>(null);
+  const [recentlyMovedStageId, setRecentlyMovedStageId] = useState<string | null>(null);
+  const reorderTimerRef = useRef<number | null>(null);
 
   const stageMeta = useMemo(() => {
     return stageOptions.reduce<Record<string, { label: string; locked?: boolean }>>((acc, stage) => {
@@ -182,6 +186,13 @@ const HiringPipeline: React.FC = () => {
 
   const handleDragEndStage = () => {
     setDragStageId(null);
+    setDragOverStageId(null);
+    setDragOverPosition(null);
+    if (reorderTimerRef.current) {
+      window.clearTimeout(reorderTimerRef.current);
+      reorderTimerRef.current = null;
+    }
+    setRecentlyMovedStageId(null);
   };
 
   const handleDragOverStage =
@@ -196,8 +207,40 @@ const HiringPipeline: React.FC = () => {
         event.dataTransfer.dropEffect = "none";
         return;
       }
+      const targetRect = event.currentTarget.getBoundingClientRect();
+      const shouldInsertAfter = event.clientY > targetRect.top + targetRect.height / 2;
+      setDragOverStageId(targetStageId);
+      setDragOverPosition(shouldInsertAfter ? "after" : "before");
       event.preventDefault();
       event.dataTransfer.dropEffect = "move";
+
+      setStageOrder((prev) => {
+        const currentFromIndex = prev.indexOf(sourceId);
+        const currentTargetIndex = prev.indexOf(targetStageId);
+        if (currentFromIndex === -1 || currentTargetIndex === -1) {
+          return prev;
+        }
+        const nextIndex = shouldInsertAfter ? currentTargetIndex + 1 : currentTargetIndex;
+        const adjustedToIndex = currentFromIndex < nextIndex ? nextIndex - 1 : nextIndex;
+        if (currentFromIndex === adjustedToIndex) {
+          return prev;
+        }
+        if (!canReorderStage(prev, currentFromIndex, adjustedToIndex)) {
+          return prev;
+        }
+        const next = [...prev];
+        const [moved] = next.splice(currentFromIndex, 1);
+        next.splice(adjustedToIndex, 0, moved);
+        setRecentlyMovedStageId(sourceId);
+        if (reorderTimerRef.current) {
+          window.clearTimeout(reorderTimerRef.current);
+        }
+        reorderTimerRef.current = window.setTimeout(() => {
+          setRecentlyMovedStageId(null);
+          reorderTimerRef.current = null;
+        }, 180);
+        return next;
+      });
     };
 
   const handleDropStage =
@@ -226,6 +269,8 @@ const HiringPipeline: React.FC = () => {
         return next;
       });
       setDragStageId(null);
+      setDragOverStageId(null);
+      setDragOverPosition(null);
     };
 
   const GripIcon: React.FC<{ locked?: boolean }> = ({ locked }) => (
@@ -343,6 +388,25 @@ const HiringPipeline: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6 pt-2">
+      <style>{`
+        @keyframes hp-reorder-pop {
+          0% {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 0 0 rgba(110, 65, 226, 0);
+          }
+          45% {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 18px rgba(110, 65, 226, 0.18);
+          }
+          100% {
+            transform: translateY(0) scale(1);
+            box-shadow: 0 0 0 rgba(110, 65, 226, 0);
+          }
+        }
+        .hp-stage-row-moved {
+          animation: hp-reorder-pop 240ms cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+      `}</style>
       <div className="flex items-center justify-end">
         <Button
           variant="contained"
@@ -452,6 +516,9 @@ const HiringPipeline: React.FC = () => {
                       const stage = stageMeta[stageId];
                       if (!stage) return null;
                       const isSelected = selectedStages.includes(stageId) || stage.locked;
+                      const showDropBefore = dragStageId && dragOverStageId === stageId && dragOverPosition === "before";
+                      const showDropAfter = dragStageId && dragOverStageId === stageId && dragOverPosition === "after";
+                      const isRecentlyMoved = recentlyMovedStageId === stageId;
                       const rowContent = (
                         <div
                           key={stageId}
@@ -459,7 +526,10 @@ const HiringPipeline: React.FC = () => {
                           aria-label={stage.locked ? `${stage.label} is locked` : `Reorder ${stage.label}`}
                           aria-disabled={stage.locked}
                           className={[
-                            "flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[40px]",
+                            "hp-stage-row flex items-center justify-between border border-[#E6E6E6] rounded-[6px] px-3 h-[40px] transition-[transform,box-shadow] duration-150 ease-out",
+                            showDropBefore ? "border-t-2 border-t-[#6E41E2]" : "",
+                            showDropAfter ? "border-b-2 border-b-[#6E41E2]" : "",
+                            isRecentlyMoved ? "hp-stage-row-moved" : "",
                             stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7] cursor-not-allowed" : "bg-white text-[#333333] cursor-default"
                           ].join(" ")}
                           onDragStart={stage.locked ? undefined : handleDragStartStage(stageId)}
