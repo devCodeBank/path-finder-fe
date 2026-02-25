@@ -65,6 +65,7 @@ const HiringPipeline: React.FC = () => {
   const [dragOverPosition, setDragOverPosition] = useState<"before" | "after" | null>(null);
   const [recentlyMovedStageId, setRecentlyMovedStageId] = useState<string | null>(null);
   const reorderTimerRef = useRef<number | null>(null);
+  const transparentDragImageRef = useRef<HTMLImageElement | null>(null);
 
   const stageMeta = useMemo(() => {
     return stageOptions.reduce<Record<string, { label: string; locked?: boolean }>>((acc, stage) => {
@@ -183,6 +184,13 @@ const HiringPipeline: React.FC = () => {
       setDragStageId(stageId);
       event.dataTransfer.effectAllowed = "move";
       event.dataTransfer.setData("text/plain", stageId);
+      if (!transparentDragImageRef.current) {
+        const img = new Image();
+        img.src =
+          "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+        transparentDragImageRef.current = img;
+      }
+      event.dataTransfer.setDragImage(transparentDragImageRef.current, 0, 0);
     };
 
   const handleDragEndStage = () => {
@@ -532,7 +540,7 @@ const HiringPipeline: React.FC = () => {
                             showDropBefore ? "border-t-2 border-t-[#6E41E2]" : "",
                             showDropAfter ? "border-b-2 border-b-[#6E41E2]" : "",
                             isRecentlyMoved ? "hp-stage-row-moved" : "",
-                            isDraggingRow ? "bg-[#E9F6FF] text-[#8CA1B3]" : "",
+                            isDraggingRow ? "bg-white text-[#333333]" : "",
                             stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7] cursor-not-allowed" : "bg-white text-[#333333] cursor-default"
                           ].join(" ")}
                           onDragStart={stage.locked ? undefined : handleDragStartStage(stageId)}
@@ -564,11 +572,11 @@ const HiringPipeline: React.FC = () => {
                           ) : (
                             <div className={cn(
                               "flex items-center gap-3 text-[13px]",
-                              isDraggingRow ? "text-[#8CA1B3]" : "text-[#333333]"
+                              "text-[#333333]"
                             )}>
                               <span className={cn(
                                 "group/drag flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] hover:border-[#D7D7D7] cursor-grab",
-                                isDraggingRow && "text-[#B7C5D3]"
+                                isDraggingRow && "text-[#666666]"
                               )}>
 
                                 <GripIcon />
