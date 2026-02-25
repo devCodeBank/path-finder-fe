@@ -16,6 +16,7 @@ const ForgotPasswordPage = React.lazy(() => import("./pages/authentication/forgo
 const ResetPasswordPage = React.lazy(() => import("./pages/authentication/resetPassword/ResetPassword"));
 const DashboardPage = React.lazy(() => import("./pages/dashboard/Dashboard"));
 const CandidatesPage = React.lazy(() => import("./pages/candidates/Candidates"));
+const SettingCandidatesPage = React.lazy(() => import("./pages/settings/customisation/Candidates"));
 const JobsPage = React.lazy(() => import("./pages/jobs/Jobs"));
 const CompaniesPage = React.lazy(() => import("./pages/companies/Companies"));
 const ContactsPage = React.lazy(() => import("./pages/contacts/Contacts"));
@@ -173,7 +174,7 @@ const App: React.FC = () => {
             <Route path="job/page" element={<PagePage />} />
 
             {/* Customisation Routes */}
-            <Route path="customisation/candidate-fields" element={<CandidatesPage />} />
+            <Route path="customisation/candidate-fields" element={<SettingCandidatesPage />} />
             <Route path="customisation/company-fields" element={<CompanyFieldsPage />} />
             <Route path="customisation/contact-fields" element={<ContactFieldsPage />} />
             <Route path="customisation/job-fields" element={<JobFieldsPage />} />
