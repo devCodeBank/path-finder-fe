@@ -7,6 +7,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
+import { cn } from "@/lib/utils";
 
 const primaryButtonSx = {
   height: "36px",
@@ -518,6 +519,7 @@ const HiringPipeline: React.FC = () => {
                       const isSelected = selectedStages.includes(stageId) || stage.locked;
                       const showDropBefore = dragStageId && dragOverStageId === stageId && dragOverPosition === "before";
                       const showDropAfter = dragStageId && dragOverStageId === stageId && dragOverPosition === "after";
+                      const isDraggingRow = dragStageId === stageId;
                       const isRecentlyMoved = recentlyMovedStageId === stageId;
                       const rowContent = (
                         <div
@@ -530,6 +532,7 @@ const HiringPipeline: React.FC = () => {
                             showDropBefore ? "border-t-2 border-t-[#6E41E2]" : "",
                             showDropAfter ? "border-b-2 border-b-[#6E41E2]" : "",
                             isRecentlyMoved ? "hp-stage-row-moved" : "",
+                            isDraggingRow ? "bg-[#E9F6FF] text-[#8CA1B3]" : "",
                             stage.locked ? "bg-[#EAEAEA]/25 text-[#A7A7A7] cursor-not-allowed" : "bg-white text-[#333333] cursor-default"
                           ].join(" ")}
                           onDragStart={stage.locked ? undefined : handleDragStartStage(stageId)}
@@ -559,8 +562,14 @@ const HiringPipeline: React.FC = () => {
                               </div>
                             </Tooltip>
                           ) : (
-                            <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                              <span className="group/drag flex h-[20px] w-[20px] items-center justify-center rounded-[4px]  text-[#666666] hover:border-[#D7D7D7] cursor-grab">
+                            <div className={cn(
+                              "flex items-center gap-3 text-[13px]",
+                              isDraggingRow ? "text-[#8CA1B3]" : "text-[#333333]"
+                            )}>
+                              <span className={cn(
+                                "group/drag flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] hover:border-[#D7D7D7] cursor-grab",
+                                isDraggingRow && "text-[#B7C5D3]"
+                              )}>
 
                                 <GripIcon />
                               </span>
