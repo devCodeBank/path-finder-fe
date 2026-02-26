@@ -1,4 +1,3 @@
-import { SvgIcon } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -7,10 +6,12 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
+import resetFilterIcon from "@/assets/icons/Icon_filter-reset.svg";
+import filterIcon from "@/assets/icons/filter01.svg";
 
 const Container = styled(Box)`
   display: flex;
@@ -27,6 +28,7 @@ const Toolbar = styled(Box)`
 `;
 
 type UserStatus = "Active" | "Pending" | "Link Expired" | "Disabled" | "Locked Out";
+type ActivityOperator = "any-time" | "on-or-after" | "on-or-before";
 
 interface UserRow {
   id: string;
@@ -60,6 +62,14 @@ interface InviteUserForm {
   country: string;
   roles: string[];
   customRoles: string[];
+}
+
+interface UsersAdvancedFilters {
+  roles: string[];
+  statuses: UserStatus[];
+  teams: string[];
+  activityOperator: ActivityOperator;
+  activityDate: string;
 }
 
 const getTimeZoneOffsetLabel = (timeZone: string) => {
@@ -131,6 +141,77 @@ const customRoles = [
     description: "Manage third-party job board integrations and external posting permissions",
   },
 ];
+
+const statusFilterOptions: UserStatus[] = ["Active", "Disabled", "Pending", "Link Expired", "Locked Out"];
+const teamFilterOptions = ["Default", "Sales"];
+const roleFilterOptions = [...systemRoles, ...customRoles.map((role) => role.name)];
+
+const defaultUsersFilters: UsersAdvancedFilters = {
+  roles: [],
+  statuses: [],
+  teams: [],
+  activityOperator: "any-time",
+  activityDate: "",
+};
+
+const normalizeRoleForFilter = (role: string) => (role === "Account Owner" ? "Super Admin" : role);
+
+const parseDayFirstDate = (value: string): Date | null => {
+  const [dayRaw, monthRaw, yearRaw] = value.split("/");
+  const day = Number(dayRaw);
+  const month = Number(monthRaw);
+  const year = Number(yearRaw);
+  if (!day || !month || !year) {
+    return null;
+  }
+  const parsed = new Date(year, month - 1, day);
+  if (
+    Number.isNaN(parsed.getTime()) ||
+    parsed.getFullYear() !== year ||
+    parsed.getMonth() !== month - 1 ||
+    parsed.getDate() !== day
+  ) {
+    return null;
+  }
+  return parsed;
+};
+
+const applyUsersFilters = (rows: UserRow[], filters: UsersAdvancedFilters): UserRow[] => {
+  const selectedDate = filters.activityDate ? new Date(`${filters.activityDate}T00:00:00`) : null;
+
+  return rows.filter((row) => {
+    const matchesRole =
+      filters.roles.length === 0 || filters.roles.includes(normalizeRoleForFilter(row.role));
+    if (!matchesRole) {
+      return false;
+    }
+
+    const matchesStatus = filters.statuses.length === 0 || filters.statuses.includes(row.status);
+    if (!matchesStatus) {
+      return false;
+    }
+
+    const matchesTeam = filters.teams.length === 0 || filters.teams.includes(row.teams ?? "");
+    if (!matchesTeam) {
+      return false;
+    }
+
+    if (filters.activityOperator === "any-time" || !selectedDate) {
+      return true;
+    }
+
+    const rowDate = parseDayFirstDate(row.lastActivityDate);
+    if (!rowDate) {
+      return false;
+    }
+
+    if (filters.activityOperator === "on-or-after") {
+      return rowDate.getTime() >= selectedDate.getTime();
+    }
+
+    return rowDate.getTime() <= selectedDate.getTime();
+  });
+};
 
 const getMockUsers = (): UserRow[] => {
   return [
@@ -228,8 +309,12 @@ const getMockUsers = (): UserRow[] => {
 };
 
 export const Users: React.FC = () => {
-  const rows: UserRow[] = getMockUsers();
+  const allRows = useMemo<UserRow[]>(() => getMockUsers(), []);
   const [anchorByRowId, setAnchorByRowId] = useState<Record<string, HTMLElement | null>>({});
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  const [draftFilters, setDraftFilters] = useState<UsersAdvancedFilters>(defaultUsersFilters);
+  const [appliedFilters, setAppliedFilters] = useState<UsersAdvancedFilters>(defaultUsersFilters);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isInviteVisible, setIsInviteVisible] = useState(false);
   const [showInviteErrors, setShowInviteErrors] = useState(false);
@@ -238,6 +323,7 @@ export const Users: React.FC = () => {
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<UserRow | null>(null);
   const [inviteMode, setInviteMode] = useState<"invite" | "edit" | "resend">("invite");
+  const filterCloseTimerRef = useRef<number | null>(null);
   const inviteCloseTimerRef = useRef<number | null>(null);
   const detailsCloseTimerRef = useRef<number | null>(null);
   const createDefaultInviteForm = (): InviteUserForm => ({
@@ -270,6 +356,27 @@ export const Users: React.FC = () => {
     setInviteMode("invite");
     setInviteForm(createDefaultInviteForm());
     openInvitePanel();
+  };
+
+  const openFilterPanel = () => {
+    if (filterCloseTimerRef.current) {
+      window.clearTimeout(filterCloseTimerRef.current);
+      filterCloseTimerRef.current = null;
+    }
+    setDraftFilters(appliedFilters);
+    setIsFilterOpen(true);
+    requestAnimationFrame(() => setIsFilterVisible(true));
+  };
+
+  const closeFilterPanel = () => {
+    setIsFilterVisible(false);
+    if (filterCloseTimerRef.current) {
+      window.clearTimeout(filterCloseTimerRef.current);
+    }
+    filterCloseTimerRef.current = window.setTimeout(() => {
+      setIsFilterOpen(false);
+      filterCloseTimerRef.current = null;
+    }, 300);
   };
 
   const handleEditUser = (row: UserRow) => {
@@ -358,7 +465,7 @@ export const Users: React.FC = () => {
     }, 300);
   };
   const handleFilterClick = () => {
-    console.warn("Filter clicked");
+    openFilterPanel();
   };
 
   const handleInviteInputChange = (field: keyof InviteUserForm) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -389,6 +496,59 @@ export const Users: React.FC = () => {
 
   const isInviteMissing = (value: string) => showInviteErrors && value.trim() === "";
 
+  const toggleDraftStringFilter = (key: "roles" | "teams", value: string) => {
+    setDraftFilters((prev) => ({
+      ...prev,
+      [key]: prev[key].includes(value)
+        ? prev[key].filter((item) => item !== value)
+        : [...prev[key], value],
+    }));
+  };
+
+  const toggleDraftStatusFilter = (status: UserStatus) => {
+    setDraftFilters((prev) => ({
+      ...prev,
+      statuses: prev.statuses.includes(status)
+        ? prev.statuses.filter((item) => item !== status)
+        : [...prev.statuses, status],
+    }));
+  };
+
+  const hasInvalidDateSelection =
+    draftFilters.activityOperator !== "any-time" && !draftFilters.activityDate;
+
+  const handleApplyFilters = () => {
+    if (hasInvalidDateSelection) {
+      return;
+    }
+    setAppliedFilters(draftFilters);
+    closeFilterPanel();
+  };
+
+  const handleResetFilters = () => {
+    setDraftFilters(defaultUsersFilters);
+    setAppliedFilters(defaultUsersFilters);
+  };
+
+  const filteredRows = useMemo(
+    () => applyUsersFilters(allRows, appliedFilters),
+    [allRows, appliedFilters]
+  );
+  const draftMatchCount = useMemo(
+    () => applyUsersFilters(allRows, draftFilters).length,
+    [allRows, draftFilters]
+  );
+  const appliedFilterCount = useMemo(() => {
+    const activityCount =
+      appliedFilters.activityOperator !== "any-time" && appliedFilters.activityDate ? 1 : 0;
+    return (
+      appliedFilters.roles.length +
+      appliedFilters.statuses.length +
+      appliedFilters.teams.length +
+      activityCount
+    );
+  }, [appliedFilters]);
+
   const getMenuState = (status: UserStatus) => {
     return {
       edit: status === "Active",
@@ -402,7 +562,7 @@ export const Users: React.FC = () => {
     };
   };
   const rowsPerPage = 20;
-  const totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
   const isSinglePage = totalPages <= 1;
 
   return (
@@ -413,41 +573,42 @@ export const Users: React.FC = () => {
         <Button
           variant="outlined"
           onClick={handleFilterClick}
-          startIcon={
-            <SvgIcon
-              fontSize="small"
-              viewBox="0 0 20 20"
-              sx={{ stroke: "currentColor", fill: "none", color: "#666666", opacity: "50%" }}
-            >
-              <path
-                d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </SvgIcon>
-          }
+          startIcon={<img src={filterIcon} alt="" className="h-[14px] w-[14px]" aria-hidden="true" />}
           sx={{
-            width: "94px",
+            minWidth: "94px",
+            px: appliedFilterCount > 0 ? "10px" : "14px",
             height: "36px",
             borderColor: "#CCCCCC80",
-            color: "#333333",
+            color: appliedFilterCount > 0 ? "#3730A3" : "#333333",
+            backgroundColor: appliedFilterCount > 0 ? "#EEF0FA" : "#FFFFFF",
             textTransform: "none",
             fontSize: "12px",
             fontWeight: 400,
-            borderRadius: "4px",
+
             boxShadow: "none",
+            width: "100px",
+            borderRadius: "4px",
+
             "& .MuiButton-startIcon": {
               borderRadius: "4px",
+              marginRight: "6px",
+              opacity: appliedFilterCount > 0 ? 1 : 0.5,
             },
             "&:hover": {
               borderColor: "#CCCCCC80",
-              backgroundColor: "#F3F4F6",
+              backgroundColor: appliedFilterCount > 0 ? "#E8EAFE" : "#F3F4F6",
               boxShadow: "none",
             },
           }}
         >
-          Filters
+          <span className="flex items-center gap-2">
+            <span>Filter</span>
+            {appliedFilterCount > 0 && (
+              <span className="inline-flex h-[24px] min-w-[24px] items-center justify-center rounded-full bg-[#6E41E2] px-1 text-[12px] font-[600] text-white">
+                {appliedFilterCount}
+              </span>
+            )}
+          </span>
         </Button>
         <Button
           variant="contained"
@@ -478,7 +639,7 @@ export const Users: React.FC = () => {
         <div className="px-4 h-[52px] flex items-center">
           <div className="flex items-center gap-3 text-[13px] text-[#333333]">
             <PeopleOutlineIcon fontSize="small" />
-            <span>{rows.length} total users</span>
+            <span>{filteredRows.length} total users</span>
           </div>
         </div>
         <div className="grid h-[52px] grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
@@ -491,7 +652,7 @@ export const Users: React.FC = () => {
           <span>Actions</span>
         </div>
         <div className="divide-y divide-[#CCCCCC80]">
-          {rows.map((row) => (
+          {filteredRows.map((row) => (
             <div
               key={row.id}
               className="grid grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 py-3 text-[13px] text-[#333333] items-center transition-colors hover:bg-[#F9FAFB]"
@@ -541,67 +702,71 @@ export const Users: React.FC = () => {
                 >
                   {(() => {
                     const menuState = getMenuState(row.status);
-                    return (
-                      <>
-                        <MenuItem
-                          onClick={() => {
-                            handleCloseRowMenu(row.id)();
-                            handleEditUser(row);
-                          }}
-                          disabled={!menuState.edit}
-                          sx={{ fontSize: "13px", color: menuState.edit ? "#333333" : "#999999" }}
-                        >
-                          Edit
-                        </MenuItem>
-                        <MenuItem
-                          disabled={!menuState.resendInvite}
-                          onClick={() => {
-                            handleCloseRowMenu(row.id)();
-                            handleResendInvite(row);
-                          }}
-                          sx={{ fontSize: "13px", color: menuState.resendInvite ? "#333333" : "#999999" }}
-                        >
-                          Resend Invite
-                        </MenuItem>
-                        <MenuItem disabled={!menuState.copyInviteLink} sx={{ fontSize: "13px", color: menuState.copyInviteLink ? "#333333" : "#999999" }}>
-                          Copy Invite Link
-                        </MenuItem>
-                        <MenuItem
-                          disabled={!menuState.deleteUser}
-                          onClick={handleCloseRowMenu(row.id)}
-                          sx={{ fontSize: "13px", color: menuState.deleteUser ? "#333333" : "#999999" }}
-                        >
-                          Delete User
-                        </MenuItem>
-                        <MenuItem
-                          disabled={!menuState.disableUser}
-                          onClick={handleCloseRowMenu(row.id)}
-                          sx={{ fontSize: "13px", color: menuState.disableUser ? "#333333" : "#999999" }}
-                        >
-                          Disable User
-                        </MenuItem>
-                        <MenuItem disabled={!menuState.reactivateUser} sx={{ fontSize: "13px", color: menuState.reactivateUser ? "#333333" : "#999999" }}>
-                          Reactivate User
-                        </MenuItem>
-                        <MenuItem
-                          disabled={!menuState.viewDetails}
-                          onClick={() => {
-                            handleCloseRowMenu(row.id)();
-                            openDetailsPanel(row);
-                          }}
-                          sx={{ fontSize: "13px", color: menuState.viewDetails ? "#333333" : "#999999" }}
-                        >
-                          View User Details
-                        </MenuItem>
-                        <MenuItem
-                          disabled={!menuState.unlockUser}
-                          onClick={handleCloseRowMenu(row.id)}
-                          sx={{ fontSize: "13px", color: menuState.unlockUser ? "#333333" : "#999999" }}
-                        >
-                          Unlock User
-                        </MenuItem>
-                      </>
-                    );
+                    return [
+                      <MenuItem
+                        key="edit"
+                        onClick={() => {
+                          handleCloseRowMenu(row.id)();
+                          handleEditUser(row);
+                        }}
+                        disabled={!menuState.edit}
+                        sx={{ fontSize: "13px", color: menuState.edit ? "#333333" : "#999999" }}
+                      >
+                        Edit
+                      </MenuItem>,
+                      <MenuItem
+                        key="resend-invite"
+                        disabled={!menuState.resendInvite}
+                        onClick={() => {
+                          handleCloseRowMenu(row.id)();
+                          handleResendInvite(row);
+                        }}
+                        sx={{ fontSize: "13px", color: menuState.resendInvite ? "#333333" : "#999999" }}
+                      >
+                        Resend Invite
+                      </MenuItem>,
+                      <MenuItem key="copy-invite-link" disabled={!menuState.copyInviteLink} sx={{ fontSize: "13px", color: menuState.copyInviteLink ? "#333333" : "#999999" }}>
+                        Copy Invite Link
+                      </MenuItem>,
+                      <MenuItem
+                        key="delete-user"
+                        disabled={!menuState.deleteUser}
+                        onClick={handleCloseRowMenu(row.id)}
+                        sx={{ fontSize: "13px", color: menuState.deleteUser ? "#333333" : "#999999" }}
+                      >
+                        Delete User
+                      </MenuItem>,
+                      <MenuItem
+                        key="disable-user"
+                        disabled={!menuState.disableUser}
+                        onClick={handleCloseRowMenu(row.id)}
+                        sx={{ fontSize: "13px", color: menuState.disableUser ? "#333333" : "#999999" }}
+                      >
+                        Disable User
+                      </MenuItem>,
+                      <MenuItem key="reactivate-user" disabled={!menuState.reactivateUser} sx={{ fontSize: "13px", color: menuState.reactivateUser ? "#333333" : "#999999" }}>
+                        Reactivate User
+                      </MenuItem>,
+                      <MenuItem
+                        key="view-user-details"
+                        disabled={!menuState.viewDetails}
+                        onClick={() => {
+                          handleCloseRowMenu(row.id)();
+                          openDetailsPanel(row);
+                        }}
+                        sx={{ fontSize: "13px", color: menuState.viewDetails ? "#333333" : "#999999" }}
+                      >
+                        View User Details
+                      </MenuItem>,
+                      <MenuItem
+                        key="unlock-user"
+                        disabled={!menuState.unlockUser}
+                        onClick={handleCloseRowMenu(row.id)}
+                        sx={{ fontSize: "13px", color: menuState.unlockUser ? "#333333" : "#999999" }}
+                      >
+                        Unlock User
+                      </MenuItem>,
+                    ];
                   })()}
                 </Menu>
               </div>
@@ -609,7 +774,7 @@ export const Users: React.FC = () => {
           ))}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 text-[12px] text-[#333333]/70 border-t border-[#CCCCCC80]">
-          <span>Showing 1 to {rows.length} of {rows.length} results</span>
+          <span>Showing 1 to {filteredRows.length} of {filteredRows.length} results</span>
           <div className="flex items-center gap-2">
             <span>Rows per page</span>
             <div className="relative">
@@ -682,6 +847,312 @@ export const Users: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {isFilterOpen && (
+        <div
+          className={[
+            "fixed inset-0 z-[1900] flex justify-start bg-[#00000066] transition-opacity duration-300",
+            isFilterVisible ? "opacity-100" : "opacity-0 pointer-events-none",
+          ].join(" ")}
+          onClick={closeFilterPanel}
+        >
+          <div
+            className={[
+              "h-full w-[400px] max-w-[400vw] bg-white flex flex-col transition-transform duration-300 ease-out",
+              isFilterVisible ? "translate-x-0" : "-translate-x-full",
+            ].join(" ")}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="h-[69px] px-5  border-b border-[#CCCCCC80] flex items-center justify-between">
+              <div>
+                <p className="text-[16px] font-[500] text-[#333333] leading-[10px]">Advanced Filter</p>
+                <p className="text-[13px] text-[#333333]/70 mt-1">Users</p>
+              </div>
+
+              <Tooltip
+                title="Close"
+                arrow
+                componentsProps={{
+                  tooltip: { sx: { bgcolor: "#797979" } },
+                  arrow: { sx: { color: "#797979" } },
+                  popper: { sx: { zIndex: 2400 } },
+                }}
+              >
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="inline-flex h-[24px] w-[24px] items-center  justify-center transition-opacity hover:opacity-80"
+                  onClick={closeFilterPanel}
+                >
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M4 4L12 12M12 4L4 12"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              </Tooltip>
+            </div>
+            <div className="flex-1 overflow-y-auto px-5 py-6 text-[#333333]">
+              <div>
+                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Roles & Permissions</p>
+                <div className="space-y-5">
+                  {roleFilterOptions.map((role) => (
+                    <div key={role} className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[14px] font-[500]  leading-[20px]">{role}</p>
+                        <p className="text-[12px] text-[#666666] mt-1">
+                          {systemRoles.includes(role) ? "System Role" : "Custom Role"}
+                        </p>
+                      </div>
+                      <label className="mt-1 flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={draftFilters.roles.includes(role)}
+                          onChange={() => toggleDraftStringFilter("roles", role)}
+                        />
+                        <span
+                          className={cn(
+                            "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
+                            draftFilters.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
+                          )}
+                        >
+                          <svg
+                            viewBox="0 0 12 12"
+                            className={cn(
+                              "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
+                              draftFilters.roles.includes(role) ? "opacity-100" : "opacity-0"
+                            )}
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M2.2 6.2L4.9 8.9L9.8 3.8"
+                              stroke="#FFFFFF"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Status</p>
+                <div className="space-y-8">
+                  {statusFilterOptions.map((status) => (
+                    <div key={status} className="flex items-center justify-between gap-3">
+                      <p className="text-[14px] font-[500] leading-[20px]">{status}</p>
+                      <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={draftFilters.statuses.includes(status)}
+                          onChange={() => toggleDraftStatusFilter(status)}
+                        />
+                        <span
+                          className={cn(
+                            "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
+                            draftFilters.statuses.includes(status) && "bg-[#57CC4D] border-[#57CC4D]"
+                          )}
+                        >
+                          <svg
+                            viewBox="0 0 12 12"
+                            className={cn(
+                              "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
+                              draftFilters.statuses.includes(status) ? "opacity-100" : "opacity-0"
+                            )}
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M2.2 6.2L4.9 8.9L9.8 3.8"
+                              stroke="#FFFFFF"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Teams</p>
+                <div className="space-y-8">
+                  {teamFilterOptions.map((team) => (
+                    <div key={team} className="flex items-center justify-between gap-3">
+                      <p className="text-[14px] font-[500] leading-[20px]">{team}</p>
+                      <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          checked={draftFilters.teams.includes(team)}
+                          onChange={() => toggleDraftStringFilter("teams", team)}
+                        />
+                        <span
+                          className={cn(
+                            "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
+                            draftFilters.teams.includes(team) && "bg-[#57CC4D] border-[#57CC4D]"
+                          )}
+                        >
+                          <svg
+                            viewBox="0 0 12 12"
+                            className={cn(
+                              "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
+                              draftFilters.teams.includes(team) ? "opacity-100" : "opacity-0"
+                            )}
+                            fill="none"
+                            aria-hidden="true"
+                          >
+                            <path
+                              d="M2.2 6.2L4.9 8.9L9.8 3.8"
+                              stroke="#FFFFFF"
+                              strokeWidth="1.7"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-8">
+                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Activity</p>
+                <div className="grid grid-cols-3 mt-6 gap-2 border-b border-[#CCCCCC80]">
+                  {[
+                    { id: "any-time", label: "Any Time" },
+                    { id: "on-or-after", label: "On or After" },
+                    { id: "on-or-before", label: "On or Before" },
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={cn(
+                        "pb-2 text-[14px] font-[500] text-[#333333] border-b-2 transition-colors",
+                        draftFilters.activityOperator === item.id ? "border-[#6E41E2]" : "border-transparent"
+                      )}
+                      onClick={() =>
+                        setDraftFilters((prev) => ({
+                          ...prev,
+                          activityOperator: item.id as ActivityOperator,
+                          activityDate: item.id === "any-time" ? "" : prev.activityDate,
+                        }))
+                      }
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+                {draftFilters.activityOperator !== "any-time" && (
+                  <div className="mt-5">
+                    <input
+                      type="date"
+                      placeholder="MM/DD/YYYY"
+                      value={draftFilters.activityDate}
+                      onChange={(event) =>
+                        setDraftFilters((prev) => ({
+                          ...prev,
+                          activityDate: event.target.value,
+                        }))
+                      }
+                      className={cn(
+                        "w-full h-[44px] rounded-[4px] border bg-[#F9FAFB] px-3 text-[14px] text-[#333333] focus:outline-none focus:ring-0",
+                        hasInvalidDateSelection ? "border-[#E15555]" : "border-[#CCCCCC80]"
+                      )}
+                    />
+                    {hasInvalidDateSelection && (
+                      <p className="mt-2 text-[11px] text-[#E15555]">
+                        Select a date for this activity filter.
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="px-5 py-4 border-t border-[#CCCCCC80]">
+              <div className="flex items-center justify-between text-[14px] font-[500] text-[#666666] mb-4">
+                <span>Total Matches</span>
+                <span className="text-[#333333]">{draftMatchCount} {draftMatchCount === 1 ? "User" : "Users"}</span>
+              </div>
+              <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
+                <Button
+                  variant="outlined"
+                  onClick={handleResetFilters}
+                  startIcon={<img src={resetFilterIcon} alt="" className="h-[14px] w-[14px]" aria-hidden="true" />}
+                  sx={{
+                    height: "36px",
+                    borderColor: "#CCCCCC80",
+                    color: "#333333",
+                    textTransform: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    borderRadius: "4px",
+                    boxShadow: "none",
+                    "&:hover": {
+                      borderColor: "#CCCCCC80",
+                      backgroundColor: "#F3F4F6",
+                      boxShadow: "none",
+                    },
+                    "& .MuiButton-startIcon": {
+                      marginRight: "6px",
+                    },
+                  }}
+                >
+                  Reset All Filters
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleApplyFilters}
+                  disabled={hasInvalidDateSelection}
+                  sx={{
+                    height: "36px",
+                    backgroundColor: "#6E41E2",
+                    textTransform: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    borderRadius: "4px",
+                    boxShadow: "none",
+                    color: "#FFFFFF",
+                    "&:hover": {
+                      backgroundColor: "#7B52F4",
+                      boxShadow: "none",
+                    },
+                    "&.Mui-disabled": {
+                      backgroundColor: "#C9B6F7",
+                      color: "#FFFFFF",
+                    },
+                  }}
+
+                >
+                  Apply & View
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {isInviteOpen && (
         <div
