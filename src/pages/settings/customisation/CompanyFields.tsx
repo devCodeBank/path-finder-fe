@@ -58,6 +58,83 @@ type Section = {
   rows: FieldRow[];
 };
 
+const companyTypeOptions = [
+  { value: "direct-company-hire", label: "Direct Company Hire" },
+  { value: "direct-employee", label: "Direct Employee" },
+  { value: "recruitment-agency-partner", label: "Recruitment Agency / Partner" },
+  { value: "msp-managed-service-provider", label: "MSP (Managed Service Provider)" },
+  { value: "rpo-recruitment-process-outsourcing", label: "RPO (Recruitment Process Outsourcing)" },
+  { value: "consultancy-outsourcing", label: "Consultancy / Outsourcing" },
+  { value: "government-non-profit", label: "Government / Non-Profit" },
+  { value: "vendor-supplier", label: "Vendor / Supplier" }
+];
+
+const industryOptions = [
+  { value: "technology-software", label: "Technology & Software" },
+  { value: "finance-legal", label: "Finance & Legal" },
+  { value: "manufacturing-industrial", label: "Manufacturing & Industrial" },
+  { value: "healthcare-science", label: "Healthcare & Science" },
+  { value: "media-entertainment", label: "Media & Entertainment" },
+  { value: "service-industry", label: "Service Industry" },
+  { value: "public-sector-non-profit", label: "Public Sector & Non-Profit" },
+  { value: "energy-utilities", label: "Energy & Utilities" },
+  { value: "transportation-logistics", label: "Transportation & Logistics" }
+];
+
+const companySizeOptions = [
+  { value: "1-10", label: "1 - 10" },
+  { value: "11-50", label: "11 - 50" },
+  { value: "51-200", label: "51 - 200" },
+  { value: "201-500", label: "201 - 500" },
+  { value: "501-1000", label: "501 - 1,000" },
+  { value: "1000-plus", label: "1,000 +" }
+];
+
+const accountStatusOptions = [
+  { value: "lead", label: "Lead" },
+  { value: "prospect", label: "Prospect" },
+  { value: "active-client", label: "Active Client" },
+  { value: "dormant-inactive", label: "Dormant / Inactive" },
+  { value: "blacklisted-do-not-use", label: "Blacklisted / Do Not Use" },
+  { value: "target-account", label: "Target Account" },
+  { value: "on-hold", label: "On Hold" },
+  { value: "competitor", label: "Competitor" }
+];
+
+const sourceOptions = [
+  { value: "website-organic", label: "Website / Organic" },
+  { value: "paid-advertising", label: "Paid Advertising" },
+  { value: "social-media", label: "Social Media" },
+  { value: "trade-show-event", label: "Trade Show / Event" },
+  { value: "webinar-digital-event", label: "Webinar / Digital Event" },
+  { value: "email-marketing", label: "Email Marketing" },
+  { value: "cold-outreach", label: "Cold Outreach" },
+  { value: "referral-customer", label: "Referral - Customer" },
+  { value: "referral-partner", label: "Referral - Partner" },
+  { value: "unknown", label: "Unknown" }
+];
+
+const billingTermsOptions = [
+  { value: "net-30", label: "Net 30" },
+  { value: "net-60", label: "Net 60" },
+  { value: "net-90", label: "Net 90" },
+  { value: "net-120", label: "Net 120" },
+  { value: "net-150", label: "Net 150" },
+  { value: "net-180", label: "Net 180" }
+];
+
+const contactTypeOptions = [
+  { value: "decision-maker", label: "Decision Maker" },
+  { value: "influencer", label: "Influencer" },
+  { value: "advocate", label: "Advocate" }
+];
+
+const contactStageOptions = [
+  { value: "lead", label: "Lead" },
+  { value: "engaged", label: "Engaged" },
+  { value: "qualified", label: "Qualified" }
+];
+
 
 const Toggle = ({
   enabled,
@@ -373,7 +450,7 @@ export const CompanyFields: React.FC = () => {
         rows: [
           { id: "companyName", label: "Company Name*", type: "Text", visibility: true, required: true, extension: true, visibilityLocked: true, requiredLocked: true, extensionLocked: true },
           { id: "industry", label: "Industry*", type: "Single-Select Dropdown", visibility: true, required: true, extension: true, visibilityLocked: true, requiredLocked: true, extensionLocked: true },
-          { id: "clientType", label: "Client Type", type: "Single-Select Dropdown", visibility: true, required: false, extension: false },
+          { id: "companyType", label: "Company Type", type: "Single-Select Dropdown", visibility: true, required: false, extension: false },
           { id: "website", label: "Website*", type: "Text (URL)", visibility: true, required: true, extension: true, visibilityLocked: true, requiredLocked: true, extensionLocked: true },
           { id: "linkedin", label: "LinkedIn Profile", type: "Text (URL)", visibility: true, required: false, extension: false },
           { id: "companySize", label: "Company Size", type: "Single-Select Dropdown", visibility: true, required: false, extension: false },
@@ -415,60 +492,60 @@ export const CompanyFields: React.FC = () => {
           { id: "estRevenue", label: "EST. Revenue", type: "Currency", visibility: true, required: false, extension: false }
         ]
       },
-      // {
-      //   id: "contactDetails",
-      //   title: "Contact Details",
-      //   enabled: true,
-      //   rows: [
-      //     { id: "firstName", label: "First Name", type: "Text", visibility: true, required: false, extension: true },
-      //     { id: "lastName", label: "Last Name", type: "Text", visibility: true, required: false, extension: true },
-      //     { id: "title", label: "Title", type: "Text", visibility: true, required: false, extension: true },
-      //     { id: "contactType", label: "Contact Type", type: "Single-Select Dropdown", visibility: true, required: false, extension: true },
-      //     { id: "contactStage", label: "Contact Stage", type: "Single-Select Dropdown", visibility: true, required: false, extension: true }
-      //   ]
-      // },
-      // {
-      //   id: "contactCommunication",
-      //   title: "Contact Communication",
-      //   enabled: true,
-      //   rows: [
-      //     { id: "email", label: "Email", type: "Text (Email)", visibility: true, required: false, extension: true },
-      //     { id: "phone", label: "Phone Number", type: "Text (Phone)", visibility: true, required: false, extension: true },
-      //     { id: "altEmail", label: "Alt. Email", type: "Text (Email)", visibility: true, required: false, extension: true }
-      //   ]
-      // },
-      // {
-      //   id: "contactSocial",
-      //   title: "Contact Social Links",
-      //   enabled: true,
-      //   rows: [
-      //     { id: "linkedin", label: "LinkedIn Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-      //     { id: "xprofile", label: "X Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-      //     { id: "facebook", label: "Facebook Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
-      //     { id: "website", label: "Website", type: "Text (URL)", visibility: true, required: false, extension: true }
-      //   ]
-      // },
-      // {
-      //   id: "contactAddress",
-      //   title: "Contact Address Info",
-      //   enabled: true,
-      //   rows: [
-      //     { id: "fullAddress", label: "Full Address", type: "Text", visibility: true, required: false, extension: false },
-      //     { id: "city", label: "City", type: "Text", visibility: true, required: false, extension: false },
-      //     { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: false },
-      //     { id: "country", label: "Country", type: "Text", visibility: true, required: false, extension: false },
-      //     { id: "postal", label: "Postal Code", type: "Text", visibility: true, required: false, extension: false }
-      //   ]
-      // },
-      // {
-      //   id: "contactRelationship",
-      //   title: "Contact Relationship",
-      //   enabled: true,
-      //   rows: [
-      //     { id: "department", label: "Department", type: "Text", visibility: true, required: false, extension: true },
-      //     { id: "manager", label: "Manager", type: "Text", visibility: true, required: false, extension: true }
-      //   ]
-      // }
+      {
+        id: "contactDetails",
+        title: "Contact Details",
+        enabled: true,
+        rows: [
+          { id: "firstName", label: "First Name", type: "Text", visibility: true, required: false, extension: true },
+          { id: "lastName", label: "Last Name", type: "Text", visibility: true, required: false, extension: true },
+          { id: "title", label: "Title", type: "Text", visibility: true, required: false, extension: true },
+          { id: "contactType", label: "Contact Type", type: "Single-Select Dropdown", visibility: true, required: false, extension: true },
+          { id: "contactStage", label: "Contact Stage", type: "Single-Select Dropdown", visibility: true, required: false, extension: true }
+        ]
+      },
+      {
+        id: "contactCommunication",
+        title: "Contact Communication",
+        enabled: true,
+        rows: [
+          { id: "email", label: "Email", type: "Text (Email)", visibility: true, required: false, extension: true },
+          { id: "phone", label: "Phone Number", type: "Text (Phone)", visibility: true, required: false, extension: true },
+          { id: "altEmail", label: "Alt. Email", type: "Text (Email)", visibility: true, required: false, extension: true }
+        ]
+      },
+      {
+        id: "contactSocial",
+        title: "Contact Social Links",
+        enabled: true,
+        rows: [
+          { id: "linkedin", label: "LinkedIn Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
+          { id: "xprofile", label: "X Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
+          { id: "facebook", label: "Facebook Profile", type: "Text (URL)", visibility: true, required: false, extension: true },
+          { id: "website", label: "Website", type: "Text (URL)", visibility: true, required: false, extension: true }
+        ]
+      },
+      {
+        id: "contactAddress",
+        title: "Contact Address Info",
+        enabled: true,
+        rows: [
+          { id: "fullAddress", label: "Full Address", type: "Text", visibility: true, required: false, extension: false },
+          { id: "city", label: "City", type: "Text", visibility: true, required: false, extension: false },
+          { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: false },
+          { id: "country", label: "Country", type: "Text", visibility: true, required: false, extension: false },
+          { id: "postal", label: "Postal Code", type: "Text", visibility: true, required: false, extension: false }
+        ]
+      },
+      {
+        id: "contactRelationship",
+        title: "Contact Relationship",
+        enabled: true,
+        rows: [
+          { id: "department", label: "Department", type: "Text", visibility: true, required: false, extension: true },
+          { id: "manager", label: "Manager", type: "Text", visibility: true, required: false, extension: true }
+        ]
+      }
     ],
     []
   );
@@ -491,16 +568,16 @@ export const CompanyFields: React.FC = () => {
     aboutCompany: true,
     location: false,
     accountManagement: false,
-    contactDetails: true,
-    contactCommunication: true,
-    contactSocial: true,
+    contactDetails: false,
+    contactCommunication: false,
+    contactSocial: false,
     contactAddress: false,
     contactRelationship: false
   });
   const [layoutForm, setLayoutForm] = useState({
     companyName: "",
     industry: "",
-    clientType: "",
+    companyType: "",
     website: "",
     linkedin: "",
     companySize: "",
@@ -738,7 +815,7 @@ export const CompanyFields: React.FC = () => {
     const values: Record<string, string | boolean> = {
       "companyDetails.companyName": layoutForm.companyName,
       "companyDetails.industry": layoutForm.industry,
-      "companyDetails.clientType": layoutForm.clientType,
+      "companyDetails.companyType": layoutForm.companyType,
       "companyDetails.website": layoutForm.website,
       "companyDetails.linkedin": layoutForm.linkedin,
       "companyDetails.companySize": layoutForm.companySize,
@@ -765,15 +842,15 @@ export const CompanyFields: React.FC = () => {
       "contactCommunication.email": layoutForm.contactEmail,
       "contactCommunication.phone": layoutForm.contactPhone,
       "contactCommunication.altEmail": layoutForm.contactAltEmail,
-      "contactSocialLinks.linkedin": layoutForm.contactLinkedin,
-      "contactSocialLinks.xprofile": layoutForm.contactX,
-      "contactSocialLinks.facebook": layoutForm.contactFacebook,
-      "contactSocialLinks.website": layoutForm.contactWebsite,
-      "contactAddressInfo.fullAddress": layoutForm.contactAddress,
-      "contactAddressInfo.city": layoutForm.contactCity,
-      "contactAddressInfo.state": layoutForm.contactState,
-      "contactAddressInfo.country": layoutForm.contactCountry,
-      "contactAddressInfo.postalCode": layoutForm.contactPostalCode,
+      "contactSocial.linkedin": layoutForm.contactLinkedin,
+      "contactSocial.xprofile": layoutForm.contactX,
+      "contactSocial.facebook": layoutForm.contactFacebook,
+      "contactSocial.website": layoutForm.contactWebsite,
+      "contactAddress.fullAddress": layoutForm.contactAddress,
+      "contactAddress.city": layoutForm.contactCity,
+      "contactAddress.state": layoutForm.contactState,
+      "contactAddress.country": layoutForm.contactCountry,
+      "contactAddress.postal": layoutForm.contactPostalCode,
       "contactRelationship.department": layoutForm.contactDepartment,
       "contactRelationship.manager": layoutForm.contactManager
     };
@@ -798,7 +875,7 @@ export const CompanyFields: React.FC = () => {
   //   const requiredFields: Array<{ sectionId: string; rowId: string }> = [
   //     { sectionId: "companyDetails", rowId: "companyName" },
   //     { sectionId: "companyDetails", rowId: "industry" },
-  //     { sectionId: "companyDetails", rowId: "clientType" },
+  //     { sectionId: "companyDetails", rowId: "companyType" },
   //     { sectionId: "companyDetails", rowId: "website" },
   //     { sectionId: "companyDetails", rowId: "linkedin" },
   //     { sectionId: "companyDetails", rowId: "companySize" },
@@ -1015,7 +1092,7 @@ export const CompanyFields: React.FC = () => {
                     <FloatingLabelSelect
                       label="Industry"
                       placeholder="Select Industry"
-                      options={[]}
+                      options={industryOptions}
                       value={layoutForm.industry}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, industry: value }))}
                       className={cn(
@@ -1034,13 +1111,13 @@ export const CompanyFields: React.FC = () => {
                       )}
                   </div>
                 )}
-                {isLayoutVisible("companyDetails", "clientType") && (
+                {isLayoutVisible("companyDetails", "companyType") && (
                   <FloatingLabelSelect
-                    label="Client Type"
-                    placeholder="Select Client Type"
-                    options={[]}
-                    value={layoutForm.clientType}
-                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, clientType: value }))}
+                    label="Company Type"
+                    placeholder="Select Company Type"
+                    options={companyTypeOptions}
+                    value={layoutForm.companyType}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, companyType: value }))}
                   />
                 )}
                 {isLayoutVisible("companyDetails", "website") && (
@@ -1082,7 +1159,7 @@ export const CompanyFields: React.FC = () => {
                   <FloatingLabelSelect
                     label="Company Size"
                     placeholder="Select Company Size"
-                    options={[]}
+                    options={companySizeOptions}
                     value={layoutForm.companySize}
                     onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, companySize: value }))}
                   />
@@ -1239,7 +1316,7 @@ export const CompanyFields: React.FC = () => {
                     <FloatingLabelSelect
                       label="Account Status"
                       placeholder="Select Account Status"
-                      options={[]}
+                      options={accountStatusOptions}
                       value={layoutForm.accountStatus}
                       onValueChange={(value) =>
                         setLayoutForm((prev) => ({ ...prev, accountStatus: value }))
@@ -1289,7 +1366,7 @@ export const CompanyFields: React.FC = () => {
                     <FloatingLabelSelect
                       label="Source"
                       placeholder="Select Source"
-                      options={[]}
+                      options={sourceOptions}
                       value={layoutForm.source}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, source: value }))}
                     />
@@ -1299,7 +1376,7 @@ export const CompanyFields: React.FC = () => {
                   <FloatingLabelSelect
                     label="Billing Terms"
                     placeholder="Select Billing Terms"
-                    options={[]}
+                    options={billingTermsOptions}
                     value={layoutForm.billingTerms}
                     onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, billingTerms: value }))}
                   />
@@ -1326,211 +1403,241 @@ export const CompanyFields: React.FC = () => {
         )}
       </div>
 
-      {/* <LayoutHeader
-        title="Contact Details"
-        collapsed={!layoutOpen.contactDetails}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactDetails: !p.contactDetails }))}
-      />
-      {layoutOpen.contactDetails && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          {isLayoutVisible("contactDetails", "firstName") && (
-            <FloatingLabelInput
-              label="First Name"
-              placeholder="e.g., Maria"
-              value={layoutForm.contactFirstName}
-              onChange={handleLayoutChange("contactFirstName")}
+      <div style={{ order: getSectionOrder("contactDetails") }}>
+        {isSectionEnabled("contactDetails") && (
+          <>
+            <LayoutHeader
+              title="Contact Details"
+              collapsed={!layoutOpen.contactDetails}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, contactDetails: !p.contactDetails }))}
             />
-          )}
-          {isLayoutVisible("contactDetails", "lastName") && (
-            <FloatingLabelInput
-              label="Last Name"
-              placeholder="e.g., Lopez"
-              value={layoutForm.contactLastName}
-              onChange={handleLayoutChange("contactLastName")}
-            />
-          )}
-          {isLayoutVisible("contactDetails", "title") && (
-            <FloatingLabelInput
-              label="Title"
-              placeholder="e.g., HR Director"
-              value={layoutForm.contactTitle}
-              onChange={handleLayoutChange("contactTitle")}
-            />
-          )}
-          {isLayoutVisible("contactDetails", "contactType") && (
-            <FloatingLabelSelect
-              label="Contact Type"
-              placeholder="Select Contact Type"
-              options={[]}
-              value={layoutForm.contactType}
-              onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactType: value }))}
-            />
-          )}
-          {isLayoutVisible("contactDetails", "contactStage") && (
-            <FloatingLabelSelect
-              label="Contact Stage"
-              placeholder="Lead"
-              options={[]}
-              value={layoutForm.contactStage}
-              onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactStage: value }))}
-            />
-          )}
-        </div>
-      )}
+            {layoutOpen.contactDetails && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("contactDetails", "firstName") && (
+                  <FloatingLabelInput
+                    label="First Name"
+                    placeholder="e.g., Maria"
+                    value={layoutForm.contactFirstName}
+                    onChange={handleLayoutChange("contactFirstName")}
+                  />
+                )}
+                {isLayoutVisible("contactDetails", "lastName") && (
+                  <FloatingLabelInput
+                    label="Last Name"
+                    placeholder="e.g., Lopez"
+                    value={layoutForm.contactLastName}
+                    onChange={handleLayoutChange("contactLastName")}
+                  />
+                )}
+                {isLayoutVisible("contactDetails", "title") && (
+                  <FloatingLabelInput
+                    label="Title"
+                    placeholder="e.g., HR Director"
+                    value={layoutForm.contactTitle}
+                    onChange={handleLayoutChange("contactTitle")}
+                  />
+                )}
+                {isLayoutVisible("contactDetails", "contactType") && (
+                  <FloatingLabelSelect
+                    label="Contact Type"
+                    placeholder="Select Contact Type"
+                    options={contactTypeOptions}
+                    value={layoutForm.contactType}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactType: value }))}
+                  />
+                )}
+                {isLayoutVisible("contactDetails", "contactStage") && (
+                  <FloatingLabelSelect
+                    label="Contact Stage"
+                    placeholder="Select Contact Stage"
+                    options={contactStageOptions}
+                    value={layoutForm.contactStage}
+                    onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactStage: value }))}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
-      <LayoutHeader
-        title="Contact Communication"
-        collapsed={!layoutOpen.contactCommunication}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactCommunication: !p.contactCommunication }))}
-      />
-      {layoutOpen.contactCommunication && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          {isLayoutVisible("contactCommunication", "email") && (
-            <FloatingLabelInput
-              label="Email"
-              placeholder="e.g., maria.lopez@example.com"
-              value={layoutForm.contactEmail}
-              onChange={handleLayoutChange("contactEmail")}
+      <div style={{ order: getSectionOrder("contactCommunication") }}>
+        {isSectionEnabled("contactCommunication") && (
+          <>
+            <LayoutHeader
+              title="Contact Communication"
+              collapsed={!layoutOpen.contactCommunication}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, contactCommunication: !p.contactCommunication }))}
             />
-          )}
-          {isLayoutVisible("contactCommunication", "phone") && (
-            <FloatingLabelInput
-              label="Phone Number"
-              placeholder="e.g., +1 555-0123"
-              value={layoutForm.contactPhone}
-              onChange={handleLayoutChange("contactPhone")}
-            />
-          )}
-          {isLayoutVisible("contactCommunication", "altEmail") && (
-            <FloatingLabelInput
-              label="Alt. Email"
-              placeholder="e.g., maria.lopez@example.com"
-              value={layoutForm.contactAltEmail}
-              onChange={handleLayoutChange("contactAltEmail")}
-            />
-          )}
-        </div>
-      )}
+            {layoutOpen.contactCommunication && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("contactCommunication", "email") && (
+                  <FloatingLabelInput
+                    label="Email"
+                    placeholder="e.g., maria.lopez@example.com"
+                    value={layoutForm.contactEmail}
+                    onChange={handleLayoutChange("contactEmail")}
+                  />
+                )}
+                {isLayoutVisible("contactCommunication", "phone") && (
+                  <FloatingLabelInput
+                    label="Phone Number"
+                    placeholder="e.g., +1 555-0123"
+                    value={layoutForm.contactPhone}
+                    onChange={handleLayoutChange("contactPhone")}
+                  />
+                )}
+                {isLayoutVisible("contactCommunication", "altEmail") && (
+                  <FloatingLabelInput
+                    label="Alt. Email"
+                    placeholder="e.g., maria.lopez@example.com"
+                    value={layoutForm.contactAltEmail}
+                    onChange={handleLayoutChange("contactAltEmail")}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
-      <LayoutHeader
-        title="Contact Social Links"
-        collapsed={!layoutOpen.contactSocial}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactSocial: !p.contactSocial }))}
-      />
-      {layoutOpen.contactSocial && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          {isLayoutVisible("contactSocial", "linkedin") && (
-            <FloatingLabelInput
-              label="LinkedIn Profile"
-              placeholder="www.linkedin.com/marialopez"
-              value={layoutForm.contactLinkedin}
-              onChange={handleLayoutChange("contactLinkedin")}
+      <div style={{ order: getSectionOrder("contactSocial") }}>
+        {isSectionEnabled("contactSocial") && (
+          <>
+            <LayoutHeader
+              title="Contact Social Links"
+              collapsed={!layoutOpen.contactSocial}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, contactSocial: !p.contactSocial }))}
             />
-          )}
-          {isLayoutVisible("contactSocial", "xprofile") && (
-            <FloatingLabelInput
-              label="X Profile"
-              placeholder="www.x.com/marialopez"
-              value={layoutForm.contactX}
-              onChange={handleLayoutChange("contactX")}
-            />
-          )}
-          {isLayoutVisible("contactSocial", "facebook") && (
-            <FloatingLabelInput
-              label="Facebook Profile"
-              placeholder="www.facebook.com/marialopez"
-              value={layoutForm.contactFacebook}
-              onChange={handleLayoutChange("contactFacebook")}
-            />
-          )}
-          {isLayoutVisible("contactSocial", "website") && (
-            <FloatingLabelInput
-              label="Website"
-              placeholder="http://www.example.com"
-              value={layoutForm.contactWebsite}
-              onChange={handleLayoutChange("contactWebsite")}
-            />
-          )}
-        </div>
-      )} */}
+            {layoutOpen.contactSocial && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("contactSocial", "linkedin") && (
+                  <FloatingLabelInput
+                    label="LinkedIn Profile"
+                    placeholder="www.linkedin.com/marialopez"
+                    value={layoutForm.contactLinkedin}
+                    onChange={handleLayoutChange("contactLinkedin")}
+                  />
+                )}
+                {isLayoutVisible("contactSocial", "xprofile") && (
+                  <FloatingLabelInput
+                    label="X Profile"
+                    placeholder="www.x.com/marialopez"
+                    value={layoutForm.contactX}
+                    onChange={handleLayoutChange("contactX")}
+                  />
+                )}
+                {isLayoutVisible("contactSocial", "facebook") && (
+                  <FloatingLabelInput
+                    label="Facebook Profile"
+                    placeholder="www.facebook.com/marialopez"
+                    value={layoutForm.contactFacebook}
+                    onChange={handleLayoutChange("contactFacebook")}
+                  />
+                )}
+                {isLayoutVisible("contactSocial", "website") && (
+                  <FloatingLabelInput
+                    label="Website"
+                    placeholder="http://www.example.com"
+                    value={layoutForm.contactWebsite}
+                    onChange={handleLayoutChange("contactWebsite")}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
-      {/* <LayoutHeader
-        title="Contact Address Info"
-        collapsed={!layoutOpen.contactAddress}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactAddress: !p.contactAddress }))}
-      />
-      {layoutOpen.contactAddress && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          {isLayoutVisible("contactAddress", "fullAddress") && (
-            <div className="md:col-span-2">
-              <FloatingLabelInput
-                label="Full Address"
-                placeholder="e.g., 123 Wall St, Apt 4B"
-                value={layoutForm.contactAddress}
-                onChange={handleLayoutChange("contactAddress")}
-              />
-            </div>
-          )}
-          {isLayoutVisible("contactAddress", "city") && (
-            <FloatingLabelInput
-              label="City"
-              placeholder="Search or Enter City"
-              value={layoutForm.contactCity}
-              onChange={handleLayoutChange("contactCity")}
+      <div style={{ order: getSectionOrder("contactAddress") }}>
+        {isSectionEnabled("contactAddress") && (
+          <>
+            <LayoutHeader
+              title="Contact Address Info"
+              collapsed={!layoutOpen.contactAddress}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, contactAddress: !p.contactAddress }))}
             />
-          )}
-          {isLayoutVisible("contactAddress", "state") && (
-            <FloatingLabelInput
-              label="State / Province"
-              placeholder="Search or Enter State"
-              value={layoutForm.contactState}
-              onChange={handleLayoutChange("contactState")}
-            />
-          )}
-          {isLayoutVisible("contactAddress", "country") && (
-            <FloatingLabelInput
-              label="Country"
-              placeholder="Search or Enter Country"
-              value={layoutForm.contactCountry}
-              onChange={handleLayoutChange("contactCountry")}
-            />
-          )}
-          {isLayoutVisible("contactAddress", "postal") && (
-            <FloatingLabelInput
-              label="Postal Code"
-              placeholder="Search or Enter Postal Code"
-              value={layoutForm.contactPostalCode}
-              onChange={handleLayoutChange("contactPostalCode")}
-            />
-          )}
-        </div>
-      )}
+            {layoutOpen.contactAddress && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("contactAddress", "fullAddress") && (
+                  <div className="md:col-span-2">
+                    <FloatingLabelInput
+                      label="Full Address"
+                      placeholder="e.g., 123 Wall St, Apt 4B"
+                      value={layoutForm.contactAddress}
+                      onChange={handleLayoutChange("contactAddress")}
+                    />
+                  </div>
+                )}
+                {isLayoutVisible("contactAddress", "city") && (
+                  <FloatingLabelInput
+                    label="City"
+                    placeholder="Search or Enter City"
+                    value={layoutForm.contactCity}
+                    onChange={handleLayoutChange("contactCity")}
+                  />
+                )}
+                {isLayoutVisible("contactAddress", "state") && (
+                  <FloatingLabelInput
+                    label="State / Province"
+                    placeholder="Search or Enter State"
+                    value={layoutForm.contactState}
+                    onChange={handleLayoutChange("contactState")}
+                  />
+                )}
+                {isLayoutVisible("contactAddress", "country") && (
+                  <FloatingLabelInput
+                    label="Country"
+                    placeholder="Search or Enter Country"
+                    value={layoutForm.contactCountry}
+                    onChange={handleLayoutChange("contactCountry")}
+                  />
+                )}
+                {isLayoutVisible("contactAddress", "postal") && (
+                  <FloatingLabelInput
+                    label="Postal Code"
+                    placeholder="Search or Enter Postal Code"
+                    value={layoutForm.contactPostalCode}
+                    onChange={handleLayoutChange("contactPostalCode")}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
-      <LayoutHeader
-        title="Contact Relationship"
-        collapsed={!layoutOpen.contactRelationship}
-        onToggle={() => setLayoutOpen((p) => ({ ...p, contactRelationship: !p.contactRelationship }))}
-      />
-      {layoutOpen.contactRelationship && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-          {isLayoutVisible("contactRelationship", "department") && (
-            <FloatingLabelInput
-              label="Department"
-              placeholder="e.g., Human Resources"
-              value={layoutForm.contactDepartment}
-              onChange={handleLayoutChange("contactDepartment")}
+      <div style={{ order: getSectionOrder("contactRelationship") }}>
+        {isSectionEnabled("contactRelationship") && (
+          <>
+            <LayoutHeader
+              title="Contact Relationship"
+              collapsed={!layoutOpen.contactRelationship}
+              onToggle={() => setLayoutOpen((p) => ({ ...p, contactRelationship: !p.contactRelationship }))}
             />
-          )}
-          {isLayoutVisible("contactRelationship", "manager") && (
-            <FloatingLabelInput
-              label="Manager"
-              placeholder="e.g., John Doe - COO"
-              value={layoutForm.contactManager}
-              onChange={handleLayoutChange("contactManager")}
-            />
-          )}
-        </div>
-      )} */}
+            {layoutOpen.contactRelationship && (
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                {isLayoutVisible("contactRelationship", "department") && (
+                  <FloatingLabelInput
+                    label="Department"
+                    placeholder="e.g., Human Resources"
+                    value={layoutForm.contactDepartment}
+                    onChange={handleLayoutChange("contactDepartment")}
+                  />
+                )}
+                {isLayoutVisible("contactRelationship", "manager") && (
+                  <FloatingLabelInput
+                    label="Manager"
+                    placeholder="e.g., John Doe - COO"
+                    value={layoutForm.contactManager}
+                    onChange={handleLayoutChange("contactManager")}
+                  />
+                )}
+              </div>
+            )}
+          </>
+        )}
+      </div>
 
       {/* <div className="flex justify-end gap-3 pt-2">
         <Button

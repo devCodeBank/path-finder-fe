@@ -59,6 +59,36 @@ type Section = {
   rows: FieldRow[];
 };
 
+const contactTypeOptions = [
+  { value: "decision-maker", label: "Decision Maker" },
+  { value: "influencer", label: "Influencer" },
+  { value: "advocate", label: "Advocate" }
+];
+
+const contactStageOptions = [
+  { value: "lead", label: "Lead" },
+  { value: "engaged", label: "Engaged" },
+  { value: "qualified", label: "Qualified" }
+];
+
+const contactOwnerOptions = [
+  { value: "john-doe", label: "John Doe" }
+];
+
+const contactSourceOptions = [
+  { value: "website-organic", label: "Website / Organic" },
+  { value: "paid-advertising", label: "Paid Advertising" },
+  { value: "social-media", label: "Social Media" },
+  { value: "trade-show-event", label: "Trade Show / Event" },
+  { value: "webinar-digital-event", label: "Webinar / Digital Event" },
+  { value: "email-marketing", label: "Email Marketing" },
+  { value: "cold-outreach", label: "Cold Outreach" },
+  { value: "referral-customer", label: "Referral - Customer" },
+  { value: "referral-partner", label: "Referral - Partner" },
+  { value: "other", label: "Other" },
+  { value: "unknown", label: "Unknown" }
+];
+
 
 const Toggle = ({
   enabled,
@@ -938,7 +968,7 @@ export const ContactFields: React.FC = () => {
                     <FloatingLabelSelect
                       label="Contact Type"
                       placeholder="Select Contact Type"
-                      options={[]}
+                      options={contactTypeOptions}
                       value={layoutForm.contactType}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactType: value }))}
                       className={cn(
@@ -957,8 +987,8 @@ export const ContactFields: React.FC = () => {
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelSelect
                       label="Contact Stage"
-                      placeholder="Lead"
-                      options={[]}
+                      placeholder="Select Contact Stage"
+                      options={contactStageOptions}
                       value={layoutForm.contactStage}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactStage: value }))}
                       className={cn(
@@ -993,8 +1023,8 @@ export const ContactFields: React.FC = () => {
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelSelect
                       label="Contact Owner"
-                      placeholder="John Doe"
-                      options={[]}
+                      placeholder="Select Contact Owner"
+                      options={contactOwnerOptions}
                       value={layoutForm.contactOwner}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, contactOwner: value }))}
                       className={cn(
@@ -1013,8 +1043,8 @@ export const ContactFields: React.FC = () => {
                   <div className="relative flex flex-col pb-[14px]">
                     <FloatingLabelSelect
                       label="Source"
-                      placeholder="Added by user"
-                      options={[]}
+                      placeholder="Select Contact Source"
+                      options={contactSourceOptions}
                       value={layoutForm.source}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, source: value }))}
                       className={cn(
