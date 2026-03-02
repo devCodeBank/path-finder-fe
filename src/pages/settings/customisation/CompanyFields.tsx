@@ -59,7 +59,7 @@ type Section = {
 };
 
 const companyTypeOptions = [
-  { value: "direct-company-hire", label: "Direct Company Hire" },
+
   { value: "direct-employee", label: "Direct Employee" },
   { value: "recruitment-agency-partner", label: "Recruitment Agency / Partner" },
   { value: "msp-managed-service-provider", label: "MSP (Managed Service Provider)" },
@@ -111,7 +111,8 @@ const sourceOptions = [
   { value: "cold-outreach", label: "Cold Outreach" },
   { value: "referral-customer", label: "Referral - Customer" },
   { value: "referral-partner", label: "Referral - Partner" },
-  { value: "unknown", label: "Unknown" }
+  { value: "unknown", label: "Unknown" },
+  { value: "others", label: "Others" }
 ];
 
 const billingTermsOptions = [
