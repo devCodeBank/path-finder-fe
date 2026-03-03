@@ -111,7 +111,7 @@ const sourceOptions = [
   { value: "cold-outreach", label: "Cold Outreach" },
   { value: "referral-customer", label: "Referral - Customer" },
   { value: "referral-partner", label: "Referral - Partner" },
-  { value: "others", label: "Others" }
+  { value: "others", label: "Others" },
   { value: "unknown", label: "Unknown" }
 
 ];
