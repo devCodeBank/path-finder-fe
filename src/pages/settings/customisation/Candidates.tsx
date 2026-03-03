@@ -1729,7 +1729,7 @@ export const SettingCandidates: React.FC = () => {
                 {educationEntries.map((entry) => {
                   const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
                   return (
-                    <div key={entry.id} className="flex flex-col gap-4  border-[#E6E6E6] rounded-[4px] p-4 bg-white">
+                    <div key={entry.id} className="flex flex-col mt-6 md:grid-cols-2 gap-y-4 gap-x-10">
                       {isLayoutVisible("education", "institute") && (
                         <div className="relative flex flex-col pb-[14px]">
                           <FloatingLabelInput
@@ -1921,7 +1921,7 @@ export const SettingCandidates: React.FC = () => {
                 {workEntries.map((entry) => {
                   const durationValue = `${entry.fromMonth}${entry.fromYear}${entry.toMonth}${entry.toYear}`;
                   return (
-                    <div key={entry.id} className="flex flex-col gap-4  border-[#E6E6E6] rounded-[4px] p-4 bg-white">
+                    <div key={entry.id} className="flex flex-col mt-6 md:grid-cols-2 gap-y-4 gap-x-10">
                       {isLayoutVisible("workHistory", "job") && (
                         <div className="relative flex flex-col pb-[14px]">
                           <FloatingLabelInput

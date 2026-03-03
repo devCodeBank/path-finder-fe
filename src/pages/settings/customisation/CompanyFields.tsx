@@ -60,7 +60,7 @@ type Section = {
 
 const companyTypeOptions = [
 
-  { value: "direct-employee", label: "Direct Employee" },
+  { value: "direct-employer", label: "Direct Employer" },
   { value: "recruitment-agency-partner", label: "Recruitment Agency / Partner" },
   { value: "msp-managed-service-provider", label: "MSP (Managed Service Provider)" },
   { value: "rpo-recruitment-process-outsourcing", label: "RPO (Recruitment Process Outsourcing)" },
@@ -111,8 +111,9 @@ const sourceOptions = [
   { value: "cold-outreach", label: "Cold Outreach" },
   { value: "referral-customer", label: "Referral - Customer" },
   { value: "referral-partner", label: "Referral - Partner" },
-  { value: "unknown", label: "Unknown" },
   { value: "others", label: "Others" }
+  { value: "unknown", label: "Unknown" }
+
 ];
 
 const billingTermsOptions = [
