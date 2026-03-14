@@ -123,7 +123,7 @@ export const Profile: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-1.5">
-          <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">{label}</label>
+          <label className="text-[#333333]/70 text-[13px] leading-[18px] font-[400]">{label}</label>
           <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
@@ -197,7 +197,7 @@ export const Profile: React.FC = () => {
 
           {/* Info */}
           <div className="flex flex-col gap-1 justify-center mt-5">
-            <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
+            <h2 className="text-[13px] font-[400] text-[#333333] leading-tight">
               {formData.firstName} {formData.lastName}
             </h2>
             <p className="text-[13px] font-[400] text-[#333333]/70">

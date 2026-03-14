@@ -108,7 +108,7 @@ export const CompanyDetails: React.FC = () => {
 
       return (
         <div className="flex flex-col gap-1.5">
-          <label className="text-[14px] text-[#333333]/70 leading-[18px] font-[500]">{label}</label>
+          <label className="text-[13px] text-[#333333]/70 leading-[18px] font-[400]">{label}</label>
           <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{displayValue || "-"}</div>
         </div>
       );
@@ -178,7 +178,7 @@ export const CompanyDetails: React.FC = () => {
             </div>
           </div>
           <div className="flex flex-col gap-1 justify-center mt-5">
-            <h2 className="text-[14px] font-[500] text-[#333333] leading-tight">
+            <h2 className="text-[13px] font-[400] text-[#333333] leading-tight">
               {formData.companyName}
             </h2>
             <p className="text-[13px] font-[400] text-[#333333]/70">

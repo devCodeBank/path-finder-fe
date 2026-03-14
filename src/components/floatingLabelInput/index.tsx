@@ -10,7 +10,7 @@ type FloatingLabelInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 };
 
 const baseInputClass =
-  "h-[36px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none disabled:text-[#9E9E9E] disabled:border-[#DDDDDD] disabled:cursor-not-allowed disabled:opacity-100 disabled:bg-[#EAEAEA]/25";
+  "h-[36px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none disabled:text-[#333333] disabled:border-[#DDDDDD] disabled:cursor-not-allowed disabled:opacity-100 disabled:bg-[#EAEAEA]/25";
 
 const FloatingLabelInput = React.forwardRef<HTMLInputElement, FloatingLabelInputProps>(
   ({ id, label, required, floatLabel: _floatLabel, className, ...props }, ref) => {

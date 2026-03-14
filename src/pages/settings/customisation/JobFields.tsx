@@ -1431,7 +1431,7 @@ export const JobFields: React.FC = () => {
 
                 {isLayoutVisible("jobDetails", "jobApplicationQuestions") && (
                   <div className="relative flex flex-col gap-6 pb-[14px]">
-                    <div className="rounded-[4px] border border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
+                    <div className="rounded-[4px]  border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
                       <span className="text-[13px] font-[500] text-[#333333]">Job Application Questions for Candidates</span>
                     </div>
                     <FloatingLabelSelect
@@ -1460,7 +1460,7 @@ export const JobFields: React.FC = () => {
 
                 {isLayoutVisible("jobDetails", "enableJobApplication") && (
                   <div className="relative flex flex-col gap-5 pb-[14px]">
-                    <div className="rounded-[4px] border border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
+                    <div className="rounded-[4px]  border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
                       <span className="text-[13px] font-[500] text-[#333333]">Job Application Form</span>
                     </div>
                     <div className="flex items-center gap-4">
@@ -1802,7 +1802,7 @@ export const JobFields: React.FC = () => {
 
                 {isLayoutVisible("admin", "hiringTeamMembers") && (
                   <div className="relative flex flex-col gap-6 pb-[14px]">
-                    <div className="rounded-[4px] border border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px]">
+                    <div className="rounded-[4px]  border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px]">
                       <span className="text-[13px] font-[500] text-[#333333]">Add Hiring Team Members</span>
                     </div>
                     <FloatingLabelSelect
