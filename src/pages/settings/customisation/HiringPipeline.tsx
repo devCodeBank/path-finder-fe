@@ -320,7 +320,7 @@ const HiringPipeline: React.FC = () => {
           type="button"
           className={[
             "h-[24px] w-[24px] rounded-full flex items-center justify-center",
-            canScrollLeft ? "bg-[#5C5C5C] text-white" : "bg-[#EAEAEA]/30 text-[#AAAAAA] cursor-not-allowed"
+            canScrollLeft ? "bg-[#5C5C5C] text-white" : "bg-[#EAEAEA]/25 text-[#AAAAAA] cursor-not-allowed"
           ].join(" ")}
           aria-label="Scroll left"
           onClick={() => scrollByAmount(-240)}
@@ -343,7 +343,7 @@ const HiringPipeline: React.FC = () => {
                   className={[
                     "h-[36px] px-4 w-[auto] rounded-[6px] border text-[13px] flex items-center gap-2 whitespace-nowrap",
                     stage.locked
-                      ? "bg-[#EAEAEA] border-[#D8D8D8] text-[#333333]"
+                      ? "bg-[#EAEAEA]/25 border-[#D8D8D8] text-[#333333]"
                       : "bg-white border-[#D8D8D8] text-[#333333]"
                   ].join(" ")}
                 >

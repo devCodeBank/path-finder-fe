@@ -376,10 +376,9 @@ const SectionCard = ({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr_0.8fr] gap-2 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
+          <div className="grid grid-cols-[32px_minmax(0,1fr)_110px_110px_110px] gap-4 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
             <span />
-            <span></span>
-            <span>Fields Type</span>
+            <span />
             <span className="text-center">Visibility</span>
             <span className="text-center">Required</span>
             <span className="text-center">Extension</span>
@@ -388,7 +387,7 @@ const SectionCard = ({
             {section.rows.map((row) => (
               <div
                 key={row.id}
-                className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr_0.8fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
+                className="grid grid-cols-[32px_minmax(0,1fr)_110px_110px_110px] gap-4 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
                 data-drag-row="true"
                 onDragOver={(event) => onDragOverRow(section.id, event)}
                 onDrop={(event) => onDropRow(section.id, row.id, event)}
@@ -408,7 +407,6 @@ const SectionCard = ({
                   </button>
                 </div>
                 <span className="font-[500] text-[13px]">{row.label}</span>
-                <span className="text-[13px] font-[400] text-[#333333]/70">{row.type}</span>
                 <div className="flex justify-center">
                   <Toggle
                     enabled={row.visibility}

@@ -1,11 +1,13 @@
 import React, { useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
-import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
+import { currencyOptions } from "@/constants/currencyOptions";
 import { cn } from "@/lib/utils";
-import { Button, Checkbox, Tooltip } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
@@ -48,6 +50,59 @@ const CalendarIcon = () => (
     <path d="M6 3V6M14 3V6M3 8.5H17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
+
+const jobLocationTypeOptions = [
+  { value: "remote", label: "Remote" },
+  { value: "hybrid", label: "Hybrid" },
+  { value: "on-site", label: "On-Site" }
+];
+
+const jobTypeOptions = [
+  { value: "part-time", label: "Part Time" },
+  { value: "full-time", label: "Full Time" },
+  { value: "contract", label: "Contract" }
+];
+
+const salaryFrequencyOptions = [
+  { value: "hourly", label: "Hourly" },
+  { value: "monthly", label: "Monthly" },
+  { value: "yearly", label: "Yearly" }
+];
+
+const cityOptions = [
+  { value: "auckland", label: "Auckland" },
+  { value: "wellington", label: "Wellington" },
+  { value: "christchurch", label: "Christchurch" },
+  { value: "hamilton", label: "Hamilton" },
+  { value: "sydney", label: "Sydney" },
+  { value: "melbourne", label: "Melbourne" }
+];
+
+const suburbOptions = [
+  { value: "ponsonby", label: "Ponsonby" },
+  { value: "parnell", label: "Parnell" },
+  { value: "newmarket", label: "Newmarket" },
+  { value: "mount-eden", label: "Mount Eden" },
+  { value: "grey-lynn", label: "Grey Lynn" }
+];
+
+const stateOptions = [
+  { value: "auckland", label: "Auckland" },
+  { value: "wellington", label: "Wellington" },
+  { value: "canterbury", label: "Canterbury" },
+  { value: "waikato", label: "Waikato" },
+  { value: "new-south-wales", label: "New South Wales" },
+  { value: "victoria", label: "Victoria" }
+];
+
+const countryOptions = [
+  { value: "nz", label: "New Zealand" },
+  { value: "au", label: "Australia" },
+  { value: "us", label: "United States" },
+  { value: "ca", label: "Canada" },
+  { value: "gb", label: "United Kingdom" },
+  { value: "sg", label: "Singapore" }
+];
 type FieldRow = {
   id: string;
   label: string;
@@ -306,10 +361,9 @@ const SectionCard = ({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr] gap-2 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
+          <div className="grid grid-cols-[32px_minmax(0,2.8fr)_0.9fr_0.8fr] gap-2 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
             <span />
-            <span></span>
-            <span>Fields Type</span>
+            <span />
             <span className="text-center">Visibility</span>
             <span className="text-center">Required</span>
           </div>
@@ -317,7 +371,7 @@ const SectionCard = ({
             {section.rows.map((row) => (
               <div
                 key={row.id}
-                className="grid grid-cols-[32px_2.2fr_1.4fr_0.8fr_0.7fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
+                className="grid grid-cols-[32px_minmax(0,2.8fr)_0.9fr_0.8fr] gap-2 px-4 h-[44px] text-[13px] text-[#333333] items-center border border-[#E6E6E6] rounded-[4px] bg-white"
                 data-drag-row="true"
                 onDragOver={(event) => onDragOverRow(section.id, event)}
                 onDrop={(event) => onDropRow(section.id, row.id, event)}
@@ -337,7 +391,6 @@ const SectionCard = ({
                   </button>
                 </div>
                 <span className="font-[500] text-[13px]">{row.label}</span>
-                <span className="text-[13px] font-[400] text-[#333333]/70">{row.type}</span>
                 <div className="flex justify-center">
                   <Toggle
                     enabled={row.visibility}
@@ -974,7 +1027,7 @@ export const JobFields: React.FC = () => {
                       <FloatingLabelSelect
                         label="Job Type"
                         placeholder="Select Job Type"
-                        options={[]}
+                        options={jobTypeOptions}
                         value={layoutForm.jobType}
                         onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobType: value }))}
                         className={cn(
@@ -992,12 +1045,12 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "jobCategory") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelSelect
+                      <FloatingLabelInput
                         label="Job Category"
-                        placeholder="Select Job Category"
-                        options={[]}
+                        required={isLayoutRequired("jobDetails", "jobCategory")}
+                        placeholder="Search or Enter Job Category"
                         value={layoutForm.jobCategory}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobCategory: value }))}
+                        onChange={handleLayoutChange("jobCategory")}
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "jobCategory") &&
@@ -1013,12 +1066,12 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "jobIndustry") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelSelect
+                      <FloatingLabelInput
                         label="Job Industry"
-                        placeholder="Select Job Industry"
-                        options={[]}
+                        required={isLayoutRequired("jobDetails", "jobIndustry")}
+                        placeholder="Search or Enter Job Industry"
                         value={layoutForm.jobIndustry}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobIndustry: value }))}
+                        onChange={handleLayoutChange("jobIndustry")}
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "jobIndustry") &&
@@ -1037,7 +1090,7 @@ export const JobFields: React.FC = () => {
                       <FloatingLabelSelect
                         label="Job Location Type"
                         placeholder="Select Job Location Type"
-                        options={[]}
+                        options={jobLocationTypeOptions}
                         value={layoutForm.jobLocationType}
                         onValueChange={(value) =>
                           setLayoutForm((prev) => ({ ...prev, jobLocationType: value }))
@@ -1057,12 +1110,12 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "jobLevel") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelSelect
+                      <FloatingLabelInput
                         label="Job Level"
-                        placeholder="Select Job Level"
-                        options={[]}
+                        required={isLayoutRequired("jobDetails", "jobLevel")}
+                        placeholder="Search or Enter Job Level"
                         value={layoutForm.jobLevel}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, jobLevel: value }))}
+                        onChange={handleLayoutChange("jobLevel")}
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "jobLevel") &&
@@ -1078,12 +1131,15 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "city") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelInput
+                      <SearchableFloatingLabelSelect
                         label="City"
                         required={isLayoutRequired("jobDetails", "city")}
-                        placeholder="Search or Enter City"
+                        placeholder="Select City"
                         value={layoutForm.city}
-                        onChange={handleLayoutChange("city")}
+                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, city: value }))}
+                        options={cityOptions}
+                        searchPlaceholder="Search city"
+                        clearAriaLabel="Clear selected city"
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "city") &&
@@ -1099,12 +1155,15 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "suburb") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelInput
+                      <SearchableFloatingLabelSelect
                         label="Suburb"
                         required={isLayoutRequired("jobDetails", "suburb")}
-                        placeholder="Search or Enter Suburb"
+                        placeholder="Select Suburb"
                         value={layoutForm.suburb}
-                        onChange={handleLayoutChange("suburb")}
+                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, suburb: value }))}
+                        options={suburbOptions}
+                        searchPlaceholder="Search suburb"
+                        clearAriaLabel="Clear selected suburb"
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "suburb") &&
@@ -1120,12 +1179,15 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "state") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelInput
+                      <SearchableFloatingLabelSelect
                         label="State / Province"
                         required={isLayoutRequired("jobDetails", "state")}
-                        placeholder="Search or Enter State / Province"
+                        placeholder="Select State / Province"
                         value={layoutForm.state}
-                        onChange={handleLayoutChange("state")}
+                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, state: value }))}
+                        options={stateOptions}
+                        searchPlaceholder="Search state or province"
+                        clearAriaLabel="Clear selected state"
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "state") &&
@@ -1141,12 +1203,15 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "country") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelInput
+                      <SearchableFloatingLabelSelect
                         label="Country"
                         required={isLayoutRequired("jobDetails", "country")}
-                        placeholder="Search or Enter Country"
+                        placeholder="Select Country"
                         value={layoutForm.country}
-                        onChange={handleLayoutChange("country")}
+                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, country: value }))}
+                        options={countryOptions}
+                        searchPlaceholder="Search country"
+                        clearAriaLabel="Clear selected country"
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "country") &&
@@ -1225,12 +1290,14 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "frequency") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelSelect
+                      <SearchableFloatingLabelSelect
                         label="Frequency"
                         placeholder="Select Salary Frequency"
-                        options={[]}
+                        options={salaryFrequencyOptions}
                         value={layoutForm.frequency}
                         onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, frequency: value }))}
+                        searchPlaceholder="Search frequency"
+                        clearAriaLabel="Clear selected frequency"
                         className={cn(
                           showLayoutErrors &&
                           isFieldMissing("jobDetails", "frequency") &&
@@ -1249,7 +1316,7 @@ export const JobFields: React.FC = () => {
                       <FloatingLabelSelect
                         label="Currency"
                         placeholder="Select Salary Currency Type"
-                        options={[]}
+                        options={currencyOptions}
                         value={layoutForm.currency}
                         onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, currency: value }))}
                         className={cn(
@@ -1364,8 +1431,10 @@ export const JobFields: React.FC = () => {
                 )}
 
                 {isLayoutVisible("jobDetails", "jobApplicationQuestions") && (
-                  <div className="relative flex flex-col gap-2 pb-[14px]">
-                    <span className="text-[13px] font-[500] text-[#333333]">Job Application Questions for Candidates</span>
+                  <div className="relative flex flex-col gap-6 pb-[14px]">
+                    <div className="rounded-[4px] border border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
+                      <span className="text-[13px] font-[500] text-[#333333]">Job Application Questions for Candidates</span>
+                    </div>
                     <FloatingLabelSelect
                       label="Select Questions"
                       placeholder="Do you have experience in a sales role?"
@@ -1378,7 +1447,7 @@ export const JobFields: React.FC = () => {
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    <div className="flex items-center justify-between text-[13px] text-[#333333]">
+                    <div className="hidden items-center justify-between text-[13px] text-[#333333]">
                       <span>What is your expected annual salary?</span>
                       {/* <button type="button" className="text-[#999999]">�</button> */}
                     </div>
@@ -1386,7 +1455,31 @@ export const JobFields: React.FC = () => {
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *Job Application Questions is required.
                       </span>
-                    )}            </div>
+                    )}
+                  </div>
+                )}
+
+                {isLayoutVisible("jobDetails", "enableJobApplication") && (
+                  <div className="relative flex flex-col gap-5 pb-[14px]">
+                    <div className="rounded-[4px] border border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
+                      <span className="text-[13px] font-[500] text-[#333333]">Job Application Form</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-[13px] text-[#4A4A4A]">Enable Job Application Form</span>
+                      <Toggle
+                        enabled={layoutForm.enableJobApplication}
+                        onChange={(value) =>
+                          setLayoutForm((prev) => ({ ...prev, enableJobApplication: value }))
+                        }
+                        ariaLabel="Enable Job Application Form"
+                      />
+                    </div>
+                    {showLayoutErrors && isFieldMissing("admin", "enableJobApplication") && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Enable Job Application is required.
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
             )}
@@ -1707,42 +1800,15 @@ export const JobFields: React.FC = () => {
                   )}
                 </div>
 
-                {isLayoutVisible("admin", "enableJobApplication") && (
-                  <div className="relative flex flex-col gap-2 pb-[14px]">
-                    <span className="text-[13px] border-b border-[#CCCCCC80] pb-2 font-[500] text-[#333333]">Job Application Form</span>
-                    <div className="flex items-center gap-3 pt-2">
-                      <Checkbox
-                        checked={layoutForm.enableJobApplication}
-                        onChange={(event) =>
-                          setLayoutForm((prev) => ({ ...prev, enableJobApplication: event.target.checked }))
-                        }
-                        size="small"
-                        sx={{
-                          padding: 0,
-                          "& .MuiSvgIcon-root": { fontSize: 18 },
-                          "&.Mui-checked": { color: "#22C55E" },
-                          "&.Mui-checked:hover": { backgroundColor: "transparent" },
-                          "&:hover": { backgroundColor: "transparent" },
-                        }}
-                        inputProps={{ "aria-label": "Enable Job Application Form" }}
-                      />
-                      <span className="text-[13px] text-[#333333]">Enable Job Application Form</span>
-                    </div>
-                    {showLayoutErrors && isFieldMissing("admin", "enableJobApplication") && (
-                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *Enable Job Application is required.
-                      </span>
-                    )}
-                  </div>
-                )}
 
                 {isLayoutVisible("admin", "hiringTeamMembers") && (
-                  <div className="relative flex flex-col gap-2 pb-[14px]">
-                    <span className="text-[13px] border-b border-[#CCCCCC80] font-[500] text-[#333333]  pb-2">Add Hiring Team Members</span>
-                    <div className="text-[12px]  pt-2 text-[#666666]">Manage the hiring team involved with this position</div>
+                  <div className="relative flex flex-col gap-6 pb-[14px]">
+                    <div className="rounded-[4px] border border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px]">
+                      <span className="text-[13px] font-[500] text-[#333333]">Add Hiring Team Members</span>
+                    </div>
                     <FloatingLabelSelect
                       label="User / Team"
-                      placeholder="Select a User or Team"
+                      placeholder="Search or Enter User / Team to Manage the Hiring Team Involved with This Position"
                       options={[]}
                       value={layoutForm.hiringTeam}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, hiringTeam: value }))}

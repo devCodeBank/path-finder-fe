@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 
 type FloatingLabelInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string;
@@ -17,7 +17,7 @@ const FloatingLabelInput = React.forwardRef<HTMLInputElement, FloatingLabelInput
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={id} className="text-[14px] font-medium text-[#333333]/70 pointer-events-none">
+          <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
             {label}
             {required && <span className="text-[#333333]/70"> *</span>}
           </label>
@@ -55,6 +55,12 @@ export interface FloatingLabelSelectHandle {
   toggle: () => void;
 }
 
+export interface SearchableSelectProps extends SelectProps {
+  searchPlaceholder?: string;
+  noOptionsText?: string;
+  clearAriaLabel?: string;
+}
+
 const FloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SelectProps>(({
   label,
   options,
@@ -79,7 +85,7 @@ const FloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SelectPr
       const target = event.target as Node;
       if (wrapperRef.current?.contains(target)) return;
       if (listRef.current?.contains(target)) return;
-        setIsOpen(false);
+      setIsOpen(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -128,7 +134,7 @@ const FloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SelectPr
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[14px] font-medium text-[#333333]/70 pointer-events-none">
+        <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
           {label}
           {required && <span className="text-[#333333]/70"> *</span>}
         </label>
@@ -218,4 +224,223 @@ const FloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SelectPr
 
 FloatingLabelSelect.displayName = "FloatingLabelSelect";
 
-export { FloatingLabelInput, FloatingLabelSelect };
+const SearchableFloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SearchableSelectProps>(({
+  label,
+  options,
+  id,
+  value,
+  onValueChange,
+  disabled,
+  placeholder,
+  className,
+  required,
+  hideChevron = false,
+  searchPlaceholder = "Search...",
+  noOptionsText = "No options found",
+  clearAriaLabel = "Clear selected option",
+}: SearchableSelectProps, ref) => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [dropdownStyle, setDropdownStyle] = React.useState<React.CSSProperties>({});
+  const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+  const triggerRef = React.useRef<HTMLButtonElement | null>(null);
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+  const searchRef = React.useRef<HTMLInputElement | null>(null);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+      if (wrapperRef.current?.contains(target)) return;
+      if (listRef.current?.contains(target)) return;
+      setIsOpen(false);
+      setSearchTerm("");
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  React.useLayoutEffect(() => {
+    if (!isOpen || !triggerRef.current) return;
+    const updatePosition = () => {
+      const rect = triggerRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setDropdownStyle({
+        position: "fixed",
+        left: rect.left,
+        top: rect.bottom + 4,
+        width: rect.width,
+        zIndex: 2400,
+      });
+    };
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+    requestAnimationFrame(() => searchRef.current?.focus());
+  }, [isOpen]);
+
+  const selectedOption = options.find((option) => option.value === value);
+  const displayValue = selectedOption?.label ?? "";
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filteredOptions = normalizedSearch
+    ? options.filter((option) => option.label.toLowerCase().includes(normalizedSearch))
+    : options;
+
+  const openDropdown = () => {
+    if (disabled) return;
+    setIsOpen(true);
+  };
+  const closeDropdown = () => {
+    setIsOpen(false);
+    setSearchTerm("");
+  };
+  const toggleDropdown = () => {
+    if (disabled) return;
+    setIsOpen((prev) => {
+      if (prev) {
+        setSearchTerm("");
+      }
+      return !prev;
+    });
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    open: openDropdown,
+    close: closeDropdown,
+    toggle: toggleDropdown,
+  }));
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      {label && (
+        <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
+          {label}
+          {required && <span className="text-[#333333]/70"> *</span>}
+        </label>
+      )}
+      <div className="relative" ref={wrapperRef}>
+        <button
+          id={id}
+          type="button"
+          ref={triggerRef}
+          className={cn(
+            baseInputClass,
+            "flex items-center justify-between text-left",
+            hideChevron ? "pr-3" : value ? "pr-8" : "pr-8",
+            disabled && "cursor-not-allowed",
+            className
+          )}
+          onClick={toggleDropdown}
+          disabled={disabled}
+          aria-haspopup="listbox"
+          aria-expanded={isOpen}
+        >
+          <span className={cn(!displayValue && placeholder ? "text-[#9E9E9E]" : "")}>
+            {displayValue || placeholder || ""}
+          </span>
+        </button>
+
+        {value && !disabled && (
+          <button
+            type="button"
+            aria-label={clearAriaLabel}
+            className="absolute right-8 top-1/2 -translate-y-1/2 text-[#999999] hover:text-[#666666]"
+            onClick={(event) => {
+              event.stopPropagation();
+              onValueChange?.("");
+              setSearchTerm("");
+            }}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
+
+        {!hideChevron && (
+          <ChevronDown
+            className={cn(
+              "pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]",
+              disabled && "text-[#9E9E9E]"
+            )}
+          />
+        )}
+
+        {isOpen && !disabled && typeof document !== "undefined" &&
+          createPortal(
+            <div
+              ref={listRef}
+              style={dropdownStyle}
+              className="overflow-hidden rounded-[4px] border border-[#CCCCCC80] bg-white text-[13px] text-[#333333] shadow-[0px_6px_16px_0px_#0000001A]"
+            >
+              <div className="border-b border-[#EEEEEE] p-2">
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#999999]" />
+                  <input
+                    ref={searchRef}
+                    type="text"
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    placeholder={searchPlaceholder}
+                    className="h-[34px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white pl-9 pr-3 text-[13px] text-[#333333] outline-none focus:border-[#333333]"
+                  />
+                </div>
+              </div>
+              <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
+                {placeholder && (
+                  <li
+                    role="option"
+                    aria-selected={!value}
+                    className={cn(
+                      "cursor-pointer px-3 py-2 text-[#9E9E9E] hover:bg-[#F3F4F6]",
+                      !value && !searchTerm && "bg-[#F3F4F6]"
+                    )}
+                    onClick={() => {
+                      onValueChange?.("");
+                      closeDropdown();
+                    }}
+                  >
+                    {placeholder}
+                  </li>
+                )}
+                {filteredOptions.length === 0 && (
+                  <li className="px-3 py-2 text-[#9E9E9E]">{noOptionsText}</li>
+                )}
+                {filteredOptions.map((option) => {
+                  const isSelected = option.value === value;
+                  return (
+                    <li
+                      key={option.value}
+                      role="option"
+                      aria-selected={isSelected}
+                      className={cn(
+                        "cursor-pointer px-3 py-2 hover:bg-[#F3F4F6]",
+                        isSelected && "bg-[#F3F4F6]"
+                      )}
+                      onClick={() => {
+                        onValueChange?.(option.value);
+                        closeDropdown();
+                      }}
+                    >
+                      {option.label}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>,
+            document.body
+          )}
+      </div>
+    </div>
+  );
+});
+
+SearchableFloatingLabelSelect.displayName = "SearchableFloatingLabelSelect";
+
+export { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect };

@@ -71,8 +71,8 @@ const dangerButtonSx = {
 
 const fieldWrapperClass = "flex flex-col gap-1.5";
 const fieldWrapperWithErrorClass = "relative flex flex-col pb-[14px]";
-const fieldInputClass = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#F3F4F6] disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
-const fieldInputClassInner = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] font-[400]focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#F3F4F6] disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
+const fieldInputClass = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#EAEAEA]/25 disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
+const fieldInputClassInner = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] font-[400]focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#EAEAEA]/25 disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
 const fieldSelectClass = `${fieldInputClass} peer appearance-none pr-8`;
 
 const VisaIcon = ({ className = "" }: { className?: string }) => (

@@ -8,7 +8,7 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import React, { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect } from "@/components/floatingLabelInput";
 import { cn } from "@/lib/utils";
 import resetFilterIcon from "@/assets/icons/Icon_filter-reset.svg";
 import filterIcon from "@/assets/icons/filter01.svg";
@@ -120,6 +120,22 @@ const countryOptions = [
   { value: "nz", label: "New Zealand" },
   { value: "au", label: "Australia" },
   { value: "us", label: "United States" },
+  { value: "ca", label: "Canada" },
+  { value: "gb", label: "United Kingdom" },
+  { value: "in", label: "India" },
+  { value: "pk", label: "Pakistan" },
+  { value: "sg", label: "Singapore" },
+  { value: "ae", label: "United Arab Emirates" },
+  { value: "de", label: "Germany" },
+  { value: "fr", label: "France" },
+  { value: "it", label: "Italy" },
+  { value: "es", label: "Spain" },
+  { value: "nl", label: "Netherlands" },
+  { value: "za", label: "South Africa" },
+  { value: "jp", label: "Japan" },
+  { value: "cn", label: "China" },
+  { value: "br", label: "Brazil" },
+  { value: "mx", label: "Mexico" },
 ];
 
 const systemRoles = ["Super Admin", "Administrator", "Standard User", "Collaborator"];
@@ -1329,35 +1345,38 @@ export const Users: React.FC = () => {
                   maxVisibleOptions={10}
                   placeholder="Select Time Zone"
                 />
-                <FloatingLabelSelect
+                <SearchableFloatingLabelSelect
                   id="invite-city"
                   label="City"
                   className="text-[#333333]"
-
                   value={inviteForm.city}
                   onValueChange={handleInviteSelectChange("city")}
                   options={cityOptions}
                   placeholder="Select City"
+                  searchPlaceholder="Search city"
+                  clearAriaLabel="Clear selected city"
                 />
-                <FloatingLabelSelect
+                <SearchableFloatingLabelSelect
                   id="invite-state"
                   label="State"
                   className="text-[#333333]"
-
                   value={inviteForm.state}
                   onValueChange={handleInviteSelectChange("state")}
                   options={stateOptions}
                   placeholder="Select State"
+                  searchPlaceholder="Search state"
+                  clearAriaLabel="Clear selected state"
                 />
-                <FloatingLabelSelect
+                <SearchableFloatingLabelSelect
                   id="invite-country"
                   label="Country"
                   className="text-[#333333]"
-
                   value={inviteForm.country}
                   onValueChange={handleInviteSelectChange("country")}
                   options={countryOptions}
                   placeholder="Select Country"
+                  searchPlaceholder="Search country"
+                  clearAriaLabel="Clear selected country"
                 />
               </div>
 
