@@ -15,7 +15,7 @@ const baseInputClass =
 const FloatingLabelInput = React.forwardRef<HTMLInputElement, FloatingLabelInputProps>(
   ({ id, label, required, floatLabel: _floatLabel, className, ...props }, ref) => {
     return (
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         {label && (
           <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
             {label}
@@ -574,15 +574,7 @@ const SearchCommitFloatingLabelInput = React.forwardRef<HTMLInputElement, Search
             </div>
           )}
         </div>
-        <span
-          className={cn(
-            "text-[8px]",
-            errorMessage ? "text-[#E53935]" : "text-[#666666]",
-            !errorMessage && !isLoading && "invisible"
-          )}
-        >
-          {errorMessage || (isLoading ? "Searching online..." : ".")}
-        </span>
+
       </div>
     );
   }
