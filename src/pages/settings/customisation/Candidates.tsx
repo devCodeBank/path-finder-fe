@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
-import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchCommitFloatingLabelInput } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@mui/material";
@@ -86,6 +86,95 @@ type WorkEntry = {
   toMonth: string;
   toYear: string;
   currentHere: boolean;
+};
+
+type LocationField = "country" | "state" | "city" | "suburb";
+
+type NominatimAddress = {
+  country?: string;
+  state?: string;
+  region?: string;
+  county?: string;
+  state_district?: string;
+  city?: string;
+  town?: string;
+  village?: string;
+  municipality?: string;
+  suburb?: string;
+  neighbourhood?: string;
+  quarter?: string;
+  city_district?: string;
+  hamlet?: string;
+};
+
+type NominatimResult = {
+  place_id: number;
+  display_name: string;
+  address?: NominatimAddress;
+};
+
+type PhotonFeature = {
+  properties?: {
+    osm_id?: number;
+    country?: string;
+    state?: string;
+    city?: string;
+    district?: string;
+    county?: string;
+    suburb?: string;
+    name?: string;
+    street?: string;
+    postcode?: string;
+  };
+};
+
+type PhotonResponse = {
+  features?: PhotonFeature[];
+};
+
+type LocationSuggestion = {
+  value: string;
+  label: string;
+  result: NominatimResult;
+};
+
+const getAddressState = (address?: NominatimAddress) =>
+  address?.state || address?.region || address?.state_district || address?.county || "";
+const getAddressCity = (address?: NominatimAddress) =>
+  address?.city || address?.town || address?.village || address?.municipality || "";
+const getAddressSuburb = (address?: NominatimAddress) =>
+  address?.suburb || address?.neighbourhood || address?.quarter || address?.city_district || address?.hamlet || "";
+
+const LOCATION_API_URL = "https://photon.komoot.io/api";
+
+const normalizePhotonFeature = (feature: PhotonFeature, index: number): LocationSuggestion | null => {
+  const properties = feature.properties;
+  if (!properties) return null;
+
+  const country = properties.country?.trim() ?? "";
+  const state = properties.state?.trim() ?? properties.county?.trim() ?? "";
+  const city = properties.city?.trim() ?? properties.district?.trim() ?? "";
+  const suburb = properties.suburb?.trim() ?? "";
+  const label = [properties.name, city, state, country].filter(Boolean).join(", ");
+
+  if (!label && !country && !state && !city && !suburb) {
+    return null;
+  }
+
+  return {
+    value: String(properties.osm_id ?? index),
+    label: label || country || state || city || suburb,
+    result: {
+      place_id: Number(properties.osm_id ?? index),
+      display_name: label || country || state || city || suburb,
+      address: {
+        country: country || undefined,
+        state: state || undefined,
+        city: city || undefined,
+        suburb: suburb || undefined,
+      },
+    },
+  };
 };
 
 const Toggle = ({
@@ -660,6 +749,38 @@ export const SettingCandidates: React.FC = () => {
     website: "",
     candidateSummary: ""
   });
+  const [locationSearchErrors, setLocationSearchErrors] = useState<Record<LocationField, string>>({
+    country: "",
+    state: "",
+    city: "",
+    suburb: ""
+  });
+  const [locationSearchLoading, setLocationSearchLoading] = useState<Record<LocationField, boolean>>({
+    country: false,
+    state: false,
+    city: false,
+    suburb: false
+  });
+  const [locationSuggestions, setLocationSuggestions] = useState<Record<LocationField, LocationSuggestion[]>>({
+    country: [],
+    state: [],
+    city: [],
+    suburb: []
+  });
+  const locationSearchAbortRef = useRef<Record<LocationField, AbortController | null>>({
+    country: null,
+    state: null,
+    city: null,
+    suburb: null
+  });
+  React.useEffect(() => {
+    const abortControllers = locationSearchAbortRef.current;
+    return () => {
+      (Object.keys(abortControllers) as LocationField[]).forEach((field) => {
+        abortControllers[field]?.abort();
+      });
+    };
+  }, []);
   const [educationEntries, setEducationEntries] = useState<EducationEntry[]>([
     {
       id: "edu-1",
@@ -1005,6 +1126,190 @@ export const SettingCandidates: React.FC = () => {
       (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const value = event.target.value;
         setLayoutForm((prev) => ({ ...prev, [key]: value }));
+      };
+
+  const handleLocationInputChange =
+    (field: LocationField) =>
+      (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setLayoutForm((prev) => {
+          if (!value) {
+            if (field === "country") {
+              return { ...prev, country: "", state: "", city: "", suburb: "" };
+            }
+            if (field === "state") {
+              return { ...prev, state: "", city: "", suburb: "" };
+            }
+            if (field === "city") {
+              return { ...prev, city: "", suburb: "" };
+            }
+            return { ...prev, suburb: "" };
+          }
+
+          return { ...prev, [field]: value };
+        });
+        setLocationSearchErrors((prev) => ({ ...prev, [field]: "" }));
+        if (!value.trim()) {
+          locationSearchAbortRef.current[field]?.abort();
+          setLocationSearchLoading((prev) => ({ ...prev, [field]: false }));
+          setLocationSuggestions((prev) => ({ ...prev, [field]: [] }));
+          return;
+        }
+        void fetchLocationSuggestions(field, value);
+      };
+
+  const applyLocationResult = (field: LocationField, result: NominatimResult, fallbackValue = "") => {
+    const address = result.address;
+    if (!address) return;
+
+    const nextCountry = address.country ?? "";
+    const nextState = getAddressState(address);
+    const nextCity = getAddressCity(address);
+    const nextSuburb = getAddressSuburb(address);
+
+    setLayoutForm((prev) => {
+      if (field === "country") {
+        return {
+          ...prev,
+          country: nextCountry || fallbackValue || prev.country,
+          state: "",
+          city: "",
+          suburb: ""
+        };
+      }
+
+      if (field === "state") {
+        return {
+          ...prev,
+          country: nextCountry || prev.country,
+          state: nextState || fallbackValue || prev.state,
+          city: "",
+          suburb: ""
+        };
+      }
+
+      if (field === "city") {
+        return {
+          ...prev,
+          country: nextCountry || prev.country,
+          state: nextState || prev.state,
+          city: nextCity || fallbackValue || prev.city,
+          suburb: ""
+        };
+      }
+
+      return {
+        ...prev,
+        country: nextCountry || prev.country,
+        state: nextState || prev.state,
+        city: nextCity || prev.city,
+        suburb: nextSuburb || fallbackValue || prev.suburb
+      };
+    });
+  };
+
+  const fetchLocationSuggestions = async (field: LocationField, rawValue: string): Promise<LocationSuggestion[]> => {
+    const trimmedValue = rawValue.trim();
+    if (!trimmedValue) {
+      setLocationSuggestions((prev) => ({ ...prev, [field]: [] }));
+      setLocationSearchErrors((prev) => ({ ...prev, [field]: "" }));
+      return [];
+    }
+
+    locationSearchAbortRef.current[field]?.abort();
+    const controller = new AbortController();
+    locationSearchAbortRef.current[field] = controller;
+    setLocationSearchErrors((prev) => ({ ...prev, [field]: "" }));
+    setLocationSearchLoading((prev) => ({ ...prev, [field]: true }));
+
+    const queryParts =
+      field === "country"
+        ? [trimmedValue]
+        : field === "state"
+          ? [trimmedValue, layoutForm.country]
+          : field === "city"
+            ? [trimmedValue, layoutForm.state, layoutForm.country]
+            : [trimmedValue, layoutForm.city, layoutForm.state, layoutForm.country];
+
+    const query = queryParts.filter(Boolean).join(", ");
+
+    try {
+      const params = new URLSearchParams({
+        q: query,
+        limit: "8",
+      });
+
+      const response = await fetch(`${LOCATION_API_URL}?${params.toString()}`, {
+        method: "GET",
+        signal: controller.signal,
+        headers: {
+          Accept: "application/json",
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Location lookup failed with status ${response.status}`);
+      }
+
+      const payload = (await response.json()) as PhotonResponse;
+      const extractedSuggestions = (payload.features ?? [])
+        .map(normalizePhotonFeature)
+        .filter((item): item is LocationSuggestion => Boolean(item));
+      const filteredResults = extractedSuggestions.filter((suggestion) => {
+        const address = suggestion.result.address;
+        if (!address) return false;
+        if (field === "country") return Boolean(address.country);
+        if (field === "state") return Boolean(getAddressState(address));
+        if (field === "city") return Boolean(getAddressCity(address));
+        return Boolean(getAddressSuburb(address));
+      });
+
+      const suggestions = filteredResults.map((suggestion) => ({
+        value: suggestion.value,
+        label:
+          field === "country"
+            ? suggestion.result.address?.country || suggestion.result.display_name
+            : suggestion.label,
+        result: suggestion.result,
+      }));
+
+      setLocationSuggestions((prev) => ({
+        ...prev,
+        [field]: suggestions
+      }));
+      return suggestions;
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        return [];
+      }
+      setLocationSuggestions((prev) => ({ ...prev, [field]: [] }));
+      setLocationSearchErrors((prev) => ({ ...prev, [field]: "Unable to load online data." }));
+      return [];
+    } finally {
+      setLocationSearchLoading((prev) => ({ ...prev, [field]: false }));
+      if (locationSearchAbortRef.current[field] === controller) {
+        locationSearchAbortRef.current[field] = null;
+      }
+    }
+  };
+
+  const handleLocationSearch =
+    (field: LocationField) =>
+      async (rawValue: string) => {
+        const suggestions = await fetchLocationSuggestions(field, rawValue);
+        const firstSuggestion = suggestions[0];
+        if (firstSuggestion) {
+          applyLocationResult(field, firstSuggestion.result, rawValue.trim());
+        }
+      };
+
+  const handleLocationSuggestionSelect =
+    (field: LocationField) =>
+      (value: string) => {
+        const selectedSuggestion = locationSuggestions[field].find((suggestion) => suggestion.value === value);
+        if (!selectedSuggestion) return;
+        setLocationSearchErrors((prev) => ({ ...prev, [field]: "" }));
+        applyLocationResult(field, selectedSuggestion.result);
       };
 
   const updateEducationEntry = (entryId: string, key: keyof EducationEntry, value: string | boolean) => {
@@ -1398,18 +1703,26 @@ export const SettingCandidates: React.FC = () => {
                 )}
                 {isLayoutVisible("personal", "city") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
+                      id="candidate-city"
                       label="City"
                       required={isLayoutRequired("personal", "city")}
-                      placeholder="e.g., New York"
+                      placeholder="Search or Enter City"
                       value={layoutForm.city}
-                      onChange={handleLayoutChange("city")}
+                      onChange={handleLocationInputChange("city")}
+                      onSearch={handleLocationSearch("city")}
+                      clearAriaLabel="Clear selected city"
+                      errorMessage={locationSearchErrors.city}
+                      isLoading={locationSearchLoading.city}
+                      suggestions={locationSuggestions.city}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={handleLocationSuggestionSelect("city")}
                       className={cn(
-                        showFieldError("personal", "city") &&
+                        (showFieldError("personal", "city") || locationSearchErrors.city) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("personal", "city") && (
+                    {showFieldError("personal", "city") && !locationSearchErrors.city && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *City is required.
                       </span>
@@ -1418,18 +1731,26 @@ export const SettingCandidates: React.FC = () => {
                 )}
                 {isLayoutVisible("personal", "suburb") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
+                      id="candidate-suburb"
                       label="Suburb"
                       required={isLayoutRequired("personal", "suburb")}
-                      placeholder="e.g., Brooklyn"
+                      placeholder="Search or Enter Suburb"
                       value={layoutForm.suburb}
-                      onChange={handleLayoutChange("suburb")}
+                      onChange={handleLocationInputChange("suburb")}
+                      onSearch={handleLocationSearch("suburb")}
+                      clearAriaLabel="Clear selected suburb"
+                      errorMessage={locationSearchErrors.suburb}
+                      isLoading={locationSearchLoading.suburb}
+                      suggestions={locationSuggestions.suburb}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={handleLocationSuggestionSelect("suburb")}
                       className={cn(
-                        showFieldError("personal", "suburb") &&
+                        (showFieldError("personal", "suburb") || locationSearchErrors.suburb) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("personal", "suburb") && (
+                    {showFieldError("personal", "suburb") && !locationSearchErrors.suburb && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *Suburb is required.
                       </span>
@@ -1438,18 +1759,26 @@ export const SettingCandidates: React.FC = () => {
                 )}
                 {isLayoutVisible("personal", "state") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
+                      id="candidate-state"
                       label="State/Province"
                       required={isLayoutRequired("personal", "state")}
-                      placeholder="e.g., NY"
+                      placeholder="Search or Enter State/Province"
                       value={layoutForm.state}
-                      onChange={handleLayoutChange("state")}
+                      onChange={handleLocationInputChange("state")}
+                      onSearch={handleLocationSearch("state")}
+                      clearAriaLabel="Clear selected state"
+                      errorMessage={locationSearchErrors.state}
+                      isLoading={locationSearchLoading.state}
+                      suggestions={locationSuggestions.state}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={handleLocationSuggestionSelect("state")}
                       className={cn(
-                        showFieldError("personal", "state") &&
+                        (showFieldError("personal", "state") || locationSearchErrors.state) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("personal", "state") && (
+                    {showFieldError("personal", "state") && !locationSearchErrors.state && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *State/Province is required.
                       </span>
@@ -1458,18 +1787,26 @@ export const SettingCandidates: React.FC = () => {
                 )}
                 {isLayoutVisible("personal", "country") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
+                      id="candidate-country"
                       label="Country"
                       required={isLayoutRequired("personal", "country")}
-                      placeholder="Search or Add Country"
+                      placeholder="Search or Enter Country"
                       value={layoutForm.country}
-                      onChange={handleLayoutChange("country")}
+                      onChange={handleLocationInputChange("country")}
+                      onSearch={handleLocationSearch("country")}
+                      clearAriaLabel="Clear selected country"
+                      errorMessage={locationSearchErrors.country}
+                      isLoading={locationSearchLoading.country}
+                      suggestions={locationSuggestions.country}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={handleLocationSuggestionSelect("country")}
                       className={cn(
-                        showFieldError("personal", "country") &&
+                        (showFieldError("personal", "country") || locationSearchErrors.country) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("personal", "country") && (
+                    {showFieldError("personal", "country") && !locationSearchErrors.country && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *Country is required.
                       </span>

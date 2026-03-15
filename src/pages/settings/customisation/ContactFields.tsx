@@ -2,7 +2,8 @@ import React, { useMemo, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
-import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchCommitFloatingLabelInput } from "@/components/floatingLabelInput";
+import { useOnlineAddressSearch } from "@/hooks/useOnlineAddressSearch";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Button, Tooltip } from "@mui/material";
@@ -513,6 +514,15 @@ export const ContactFields: React.FC = () => {
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
   const [dragRow, setDragRow] = useState<{ sectionId: string; rowId: string } | null>(null);
+  const contactAddressSearch = useOnlineAddressSearch({
+    form: layoutForm,
+    setForm: setLayoutForm,
+    keyMap: {
+      country: "country",
+      state: "state",
+      city: "city",
+    },
+  });
 
   const handleToggleSection = (sectionId: string, enabled: boolean) => {
     setSections((prev) =>
@@ -1095,18 +1105,25 @@ export const ContactFields: React.FC = () => {
                 )}
                 {isLayoutVisible("contactAddressInfo", "city") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
                       label="City"
                       required={isLayoutRequired("contactAddressInfo", "city")}
                       placeholder="Search or Enter City"
                       value={layoutForm.city}
-                      onChange={handleLayoutChange("city")}
+                      onChange={contactAddressSearch.handleInputChange("city")}
+                      onSearch={contactAddressSearch.handleSearch("city")}
+                      clearAriaLabel="Clear selected city"
+                      errorMessage={contactAddressSearch.errors.city}
+                      isLoading={contactAddressSearch.loading.city}
+                      suggestions={contactAddressSearch.suggestions.city}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("city")}
                       className={cn(
-                        showFieldError("contactAddressInfo", "city") &&
+                        (showFieldError("contactAddressInfo", "city") || contactAddressSearch.errors.city) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("contactAddressInfo", "city") && (
+                    {showFieldError("contactAddressInfo", "city") && !contactAddressSearch.errors.city && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *City is required.
                       </span>
@@ -1115,18 +1132,25 @@ export const ContactFields: React.FC = () => {
                 )}
                 {isLayoutVisible("contactAddressInfo", "state") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
                       label="State / Province"
                       required={isLayoutRequired("contactAddressInfo", "state")}
                       placeholder="Search or Enter State / Province"
                       value={layoutForm.state}
-                      onChange={handleLayoutChange("state")}
+                      onChange={contactAddressSearch.handleInputChange("state")}
+                      onSearch={contactAddressSearch.handleSearch("state")}
+                      clearAriaLabel="Clear selected state"
+                      errorMessage={contactAddressSearch.errors.state}
+                      isLoading={contactAddressSearch.loading.state}
+                      suggestions={contactAddressSearch.suggestions.state}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("state")}
                       className={cn(
-                        showFieldError("contactAddressInfo", "state") &&
+                        (showFieldError("contactAddressInfo", "state") || contactAddressSearch.errors.state) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("contactAddressInfo", "state") && (
+                    {showFieldError("contactAddressInfo", "state") && !contactAddressSearch.errors.state && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *State / Province is required.
                       </span>
@@ -1135,18 +1159,25 @@ export const ContactFields: React.FC = () => {
                 )}
                 {isLayoutVisible("contactAddressInfo", "country") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
                       label="Country"
                       required={isLayoutRequired("contactAddressInfo", "country")}
                       placeholder="Search or Enter Country"
                       value={layoutForm.country}
-                      onChange={handleLayoutChange("country")}
+                      onChange={contactAddressSearch.handleInputChange("country")}
+                      onSearch={contactAddressSearch.handleSearch("country")}
+                      clearAriaLabel="Clear selected country"
+                      errorMessage={contactAddressSearch.errors.country}
+                      isLoading={contactAddressSearch.loading.country}
+                      suggestions={contactAddressSearch.suggestions.country}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("country")}
                       className={cn(
-                        showFieldError("contactAddressInfo", "country") &&
+                        (showFieldError("contactAddressInfo", "country") || contactAddressSearch.errors.country) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("contactAddressInfo", "country") && (
+                    {showFieldError("contactAddressInfo", "country") && !contactAddressSearch.errors.country && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *Country is required.
                       </span>

@@ -2,7 +2,8 @@ import React, { useMemo, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
-import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchCommitFloatingLabelInput } from "@/components/floatingLabelInput";
+import { useOnlineAddressSearch } from "@/hooks/useOnlineAddressSearch";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { cn } from "@/lib/utils";
 import { Tooltip } from "@mui/material";
@@ -621,6 +622,24 @@ export const CompanyFields: React.FC = () => {
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
   const [dragRow, setDragRow] = useState<{ sectionId: string; rowId: string } | null>(null);
+  const companyAddressSearch = useOnlineAddressSearch({
+    form: layoutForm,
+    setForm: setLayoutForm,
+    keyMap: {
+      country: "country",
+      state: "state",
+      city: "city",
+    },
+  });
+  const contactAddressSearch = useOnlineAddressSearch({
+    form: layoutForm,
+    setForm: setLayoutForm,
+    keyMap: {
+      country: "contactCountry",
+      state: "contactState",
+      city: "contactCity",
+    },
+  });
 
   const handleToggleSection = (sectionId: string, enabled: boolean) => {
     setSections((prev) =>
@@ -1248,39 +1267,61 @@ export const CompanyFields: React.FC = () => {
                   </div>
                 )}
                 {isLayoutVisible("location", "city") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="City"
                     placeholder="Search or Enter City"
                     value={layoutForm.city}
-                    onChange={handleLayoutChange("city")}
+                    onChange={companyAddressSearch.handleInputChange("city")}
+                    onSearch={companyAddressSearch.handleSearch("city")}
+                    clearAriaLabel="Clear selected city"
+                    errorMessage={companyAddressSearch.errors.city}
+                    isLoading={companyAddressSearch.loading.city}
+                    suggestions={companyAddressSearch.suggestions.city}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={companyAddressSearch.handleSuggestionSelect("city")}
                   />
                 )}
                 {isLayoutVisible("location", "state") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="State / Province"
-                    placeholder="Search or Add State / Province"
+                    placeholder="Search or Enter State / Province"
                     value={layoutForm.state}
-                    onChange={handleLayoutChange("state")}
+                    onChange={companyAddressSearch.handleInputChange("state")}
+                    onSearch={companyAddressSearch.handleSearch("state")}
+                    clearAriaLabel="Clear selected state"
+                    errorMessage={companyAddressSearch.errors.state}
+                    isLoading={companyAddressSearch.loading.state}
+                    suggestions={companyAddressSearch.suggestions.state}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={companyAddressSearch.handleSuggestionSelect("state")}
                   />
                 )}
                 {isLayoutVisible("location", "country") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
                       label="Country"
                       required={isLayoutRequired("location", "country")}
                       placeholder="Search or Enter Country"
                       value={layoutForm.country}
-                      onChange={handleLayoutChange("country")}
+                      onChange={companyAddressSearch.handleInputChange("country")}
+                      onSearch={companyAddressSearch.handleSearch("country")}
+                      clearAriaLabel="Clear selected country"
+                      errorMessage={companyAddressSearch.errors.country}
+                      isLoading={companyAddressSearch.loading.country}
+                      suggestions={companyAddressSearch.suggestions.country}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={companyAddressSearch.handleSuggestionSelect("country")}
                       className={cn(
-                        showLayoutErrors &&
+                        ((showLayoutErrors &&
                         isLayoutRequired("location", "country") &&
-                        !layoutForm.country.trim() &&
+                        !layoutForm.country.trim()) || companyAddressSearch.errors.country) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
                     {showLayoutErrors &&
                       isLayoutRequired("location", "country") &&
-                      !layoutForm.country.trim() && (
+                      !layoutForm.country.trim() &&
+                      !companyAddressSearch.errors.country && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                           *Country is required.
                         </span>
@@ -1570,27 +1611,48 @@ export const CompanyFields: React.FC = () => {
                   </div>
                 )}
                 {isLayoutVisible("contactAddress", "city") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="City"
                     placeholder="Search or Enter City"
                     value={layoutForm.contactCity}
-                    onChange={handleLayoutChange("contactCity")}
+                    onChange={contactAddressSearch.handleInputChange("city")}
+                    onSearch={contactAddressSearch.handleSearch("city")}
+                    clearAriaLabel="Clear selected city"
+                    errorMessage={contactAddressSearch.errors.city}
+                    isLoading={contactAddressSearch.loading.city}
+                    suggestions={contactAddressSearch.suggestions.city}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("city")}
                   />
                 )}
                 {isLayoutVisible("contactAddress", "state") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="State / Province"
-                    placeholder="Search or Enter State"
+                    placeholder="Search or Enter State / Province"
                     value={layoutForm.contactState}
-                    onChange={handleLayoutChange("contactState")}
+                    onChange={contactAddressSearch.handleInputChange("state")}
+                    onSearch={contactAddressSearch.handleSearch("state")}
+                    clearAriaLabel="Clear selected state"
+                    errorMessage={contactAddressSearch.errors.state}
+                    isLoading={contactAddressSearch.loading.state}
+                    suggestions={contactAddressSearch.suggestions.state}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("state")}
                   />
                 )}
                 {isLayoutVisible("contactAddress", "country") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="Country"
                     placeholder="Search or Enter Country"
                     value={layoutForm.contactCountry}
-                    onChange={handleLayoutChange("contactCountry")}
+                    onChange={contactAddressSearch.handleInputChange("country")}
+                    onSearch={contactAddressSearch.handleSearch("country")}
+                    clearAriaLabel="Clear selected country"
+                    errorMessage={contactAddressSearch.errors.country}
+                    isLoading={contactAddressSearch.loading.country}
+                    suggestions={contactAddressSearch.suggestions.country}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("country")}
                   />
                 )}
                 {isLayoutVisible("contactAddress", "postal") && (

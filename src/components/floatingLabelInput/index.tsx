@@ -61,6 +61,18 @@ export interface SearchableSelectProps extends SelectProps {
   clearAriaLabel?: string;
 }
 
+type SearchCommitInputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "onSearch"> & {
+  label?: string;
+  required?: boolean;
+  clearAriaLabel?: string;
+  onSearch?: (value: string) => void;
+  errorMessage?: string;
+  isLoading?: boolean;
+  suggestions?: { value: string; label: string }[];
+  noOptionsText?: string;
+  onSuggestionSelect?: (value: string) => void;
+};
+
 const FloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SelectProps>(({
   label,
   options,
@@ -387,6 +399,14 @@ const SearchableFloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle
                     type="text"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key !== "Enter") return;
+                      event.preventDefault();
+                      const nextOption = filteredOptions[0];
+                      if (!nextOption) return;
+                      onValueChange?.(nextOption.value);
+                      closeDropdown();
+                    }}
                     placeholder={searchPlaceholder}
                     className="h-[34px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white pl-9 pr-3 text-[13px] text-[#333333] outline-none focus:border-[#333333]"
                   />
@@ -443,4 +463,131 @@ const SearchableFloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle
 
 SearchableFloatingLabelSelect.displayName = "SearchableFloatingLabelSelect";
 
-export { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect };
+const SearchCommitFloatingLabelInput = React.forwardRef<HTMLInputElement, SearchCommitInputProps>(
+  (
+    {
+      id,
+      label,
+      required,
+      className,
+      clearAriaLabel = "Clear input",
+      onSearch,
+      errorMessage,
+      isLoading = false,
+      suggestions = [],
+      noOptionsText = "No Results Found",
+      onSuggestionSelect,
+      value,
+      onChange,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    const hasValue = typeof value === "string" ? value.length > 0 : Boolean(value);
+    const [isOpen, setIsOpen] = React.useState(false);
+    const wrapperRef = React.useRef<HTMLDivElement | null>(null);
+
+    React.useEffect(() => {
+      if (!isOpen) return;
+      const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as Node;
+        if (wrapperRef.current?.contains(target)) return;
+        setIsOpen(false);
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isOpen]);
+
+    return (
+      <div className="flex flex-col gap-1.5">
+        {label && (
+          <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
+            {label}
+            {required && <span className="text-[#333333]/70"> *</span>}
+          </label>
+        )}
+        <div className="relative" ref={wrapperRef}>
+          <input
+            ref={ref}
+            id={id}
+            value={value}
+            onChange={onChange}
+            disabled={disabled}
+            onFocus={() => setIsOpen(true)}
+            onKeyDown={(event) => {
+              props.onKeyDown?.(event);
+              if (event.defaultPrevented || event.key !== "Enter") return;
+              event.preventDefault();
+              if (suggestions[0]) {
+                onSuggestionSelect?.(suggestions[0].value);
+                setIsOpen(false);
+                return;
+              }
+              onSearch?.(String(value ?? "").trim());
+            }}
+            className={cn(baseInputClass, "pl-9", hasValue ? "pr-9" : "", className)}
+            {...props}
+          />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#666666]" />
+          {hasValue && !disabled && !isLoading && (
+            <button
+              type="button"
+              aria-label={clearAriaLabel}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999999] hover:text-[#666666]"
+              onClick={() => {
+                onChange?.({
+                  target: { value: "" },
+                } as React.ChangeEvent<HTMLInputElement>);
+                setIsOpen(true);
+              }}
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
+          {isLoading && (
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[11px] text-[#666666]">
+              Loading...
+            </span>
+          )}
+          {isOpen && !disabled && (
+            <div className="absolute left-0 top-[calc(100%+2px)] z-[2400] max-h-64 w-full overflow-y-auto rounded-[4px] border border-[#CCCCCC80] bg-white py-1 text-[13px] text-[#333333] shadow-[0px_6px_16px_0px_#0000001A]">
+              {isLoading ? (
+                <div className="px-3 py-2 text-[#666666]">Loading...</div>
+              ) : suggestions.length > 0 ? (
+                suggestions.map((suggestion) => (
+                  <button
+                    key={suggestion.value}
+                    type="button"
+                    className="block w-full px-3 py-2 text-left hover:bg-[#F3F4F6]"
+                    onClick={() => {
+                      onSuggestionSelect?.(suggestion.value);
+                      setIsOpen(false);
+                    }}
+                  >
+                    {suggestion.label}
+                  </button>
+                ))
+              ) : (
+                <div className="px-3 py-2 text-[#333333]">{noOptionsText}</div>
+              )}
+            </div>
+          )}
+        </div>
+        <span
+          className={cn(
+            "text-[8px]",
+            errorMessage ? "text-[#E53935]" : "text-[#666666]",
+            !errorMessage && !isLoading && "invisible"
+          )}
+        >
+          {errorMessage || (isLoading ? "Searching online..." : ".")}
+        </span>
+      </div>
+    );
+  }
+);
+
+SearchCommitFloatingLabelInput.displayName = "SearchCommitFloatingLabelInput";
+
+export { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect, SearchCommitFloatingLabelInput };

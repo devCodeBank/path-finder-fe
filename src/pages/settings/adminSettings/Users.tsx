@@ -8,7 +8,8 @@ import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
 import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
 import React, { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchCommitFloatingLabelInput } from "@/components/floatingLabelInput";
+import { useOnlineAddressSearch } from "@/hooks/useOnlineAddressSearch";
 import { cn } from "@/lib/utils";
 import resetFilterIcon from "@/assets/icons/Icon_filter-reset.svg";
 import filterIcon from "@/assets/icons/filter01.svg";
@@ -100,42 +101,6 @@ const timeZoneOptions = (() => {
 const teamOptions = [
   { value: "sales", label: "Sales" },
   { value: "default", label: "Default" },
-];
-
-const cityOptions = [
-  { value: "auckland", label: "Auckland" },
-  { value: "wellington", label: "Wellington" },
-  { value: "christchurch", label: "Christchurch" },
-  { value: "hamilton", label: "Hamilton" },
-];
-
-const stateOptions = [
-  { value: "auckland", label: "Auckland" },
-  { value: "wellington", label: "Wellington" },
-  { value: "christchurch", label: "Christchurch" },
-  { value: "hamilton", label: "Hamilton" },
-];
-
-const countryOptions = [
-  { value: "nz", label: "New Zealand" },
-  { value: "au", label: "Australia" },
-  { value: "us", label: "United States" },
-  { value: "ca", label: "Canada" },
-  { value: "gb", label: "United Kingdom" },
-  { value: "in", label: "India" },
-  { value: "pk", label: "Pakistan" },
-  { value: "sg", label: "Singapore" },
-  { value: "ae", label: "United Arab Emirates" },
-  { value: "de", label: "Germany" },
-  { value: "fr", label: "France" },
-  { value: "it", label: "Italy" },
-  { value: "es", label: "Spain" },
-  { value: "nl", label: "Netherlands" },
-  { value: "za", label: "South Africa" },
-  { value: "jp", label: "Japan" },
-  { value: "cn", label: "China" },
-  { value: "br", label: "Brazil" },
-  { value: "mx", label: "Mexico" },
 ];
 
 const systemRoles = ["Super Admin", "Administrator", "Standard User", "Collaborator"];
@@ -357,6 +322,15 @@ export const Users: React.FC = () => {
     customRoles: [],
   });
   const [inviteForm, setInviteForm] = useState<InviteUserForm>(createDefaultInviteForm);
+  const inviteAddressSearch = useOnlineAddressSearch({
+    form: inviteForm,
+    setForm: setInviteForm,
+    keyMap: {
+      country: "country",
+      state: "state",
+      city: "city",
+    },
+  });
 
   const handleOpenRowMenu = (rowId: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorByRowId((prev) => ({ ...prev, [rowId]: event.currentTarget }));
@@ -408,9 +382,9 @@ export const Users: React.FC = () => {
       email: row.email,
       jobTitle: row.jobTitle ?? "",
       timeZone: row.timeZone,
-      city: row.city.toLowerCase(),
-      state: row.state.toLowerCase(),
-      country: row.country === "New Zealand" ? "nz" : row.country === "Australia" ? "au" : "us",
+      city: row.city,
+      state: row.state,
+      country: row.country,
       roles: assignedRoles,
     }));
     setShowInviteErrors(false);
@@ -431,9 +405,9 @@ export const Users: React.FC = () => {
       team: row.teams?.toLowerCase() ?? "",
       jobTitle: row.jobTitle ?? "",
       timeZone: row.timeZone,
-      city: row.city.toLowerCase(),
-      state: row.state.toLowerCase(),
-      country: row.country === "New Zealand" ? "nz" : row.country === "Australia" ? "au" : "us",
+      city: row.city,
+      state: row.state,
+      country: row.country,
       roles: assignedRoles,
     }));
     setShowInviteErrors(false);
@@ -1345,38 +1319,50 @@ export const Users: React.FC = () => {
                   maxVisibleOptions={10}
                   placeholder="Select Time Zone"
                 />
-                <SearchableFloatingLabelSelect
+                <SearchCommitFloatingLabelInput
                   id="invite-city"
                   label="City"
                   className="text-[#333333]"
                   value={inviteForm.city}
-                  onValueChange={handleInviteSelectChange("city")}
-                  options={cityOptions}
-                  placeholder="Select City"
-                  searchPlaceholder="Search city"
+                  onChange={inviteAddressSearch.handleInputChange("city")}
+                  onSearch={inviteAddressSearch.handleSearch("city")}
+                  placeholder="Search or Enter City"
                   clearAriaLabel="Clear selected city"
+                  errorMessage={inviteAddressSearch.errors.city}
+                  isLoading={inviteAddressSearch.loading.city}
+                  suggestions={inviteAddressSearch.suggestions.city}
+                  noOptionsText="No Results Found"
+                  onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("city")}
                 />
-                <SearchableFloatingLabelSelect
+                <SearchCommitFloatingLabelInput
                   id="invite-state"
                   label="State"
                   className="text-[#333333]"
                   value={inviteForm.state}
-                  onValueChange={handleInviteSelectChange("state")}
-                  options={stateOptions}
-                  placeholder="Select State"
-                  searchPlaceholder="Search state"
+                  onChange={inviteAddressSearch.handleInputChange("state")}
+                  onSearch={inviteAddressSearch.handleSearch("state")}
+                  placeholder="Search or Enter State"
                   clearAriaLabel="Clear selected state"
+                  errorMessage={inviteAddressSearch.errors.state}
+                  isLoading={inviteAddressSearch.loading.state}
+                  suggestions={inviteAddressSearch.suggestions.state}
+                  noOptionsText="No Results Found"
+                  onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("state")}
                 />
-                <SearchableFloatingLabelSelect
+                <SearchCommitFloatingLabelInput
                   id="invite-country"
                   label="Country"
                   className="text-[#333333]"
                   value={inviteForm.country}
-                  onValueChange={handleInviteSelectChange("country")}
-                  options={countryOptions}
-                  placeholder="Select Country"
-                  searchPlaceholder="Search country"
+                  onChange={inviteAddressSearch.handleInputChange("country")}
+                  onSearch={inviteAddressSearch.handleSearch("country")}
+                  placeholder="Search or Enter Country"
                   clearAriaLabel="Clear selected country"
+                  errorMessage={inviteAddressSearch.errors.country}
+                  isLoading={inviteAddressSearch.loading.country}
+                  suggestions={inviteAddressSearch.suggestions.country}
+                  noOptionsText="No Results Found"
+                  onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("country")}
                 />
               </div>
 

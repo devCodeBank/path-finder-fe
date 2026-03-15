@@ -2,9 +2,10 @@ import React, { useMemo, useRef, useState } from "react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
-import { FloatingLabelInput, FloatingLabelSelect, SearchableFloatingLabelSelect } from "@/components/floatingLabelInput";
+import { FloatingLabelInput, FloatingLabelSelect, SearchCommitFloatingLabelInput, SearchableFloatingLabelSelect } from "@/components/floatingLabelInput";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import { currencyOptions } from "@/constants/currencyOptions";
+import { useOnlineAddressSearch } from "@/hooks/useOnlineAddressSearch";
 import { cn } from "@/lib/utils";
 import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
@@ -68,40 +69,6 @@ const salaryFrequencyOptions = [
   { value: "yearly", label: "Yearly" }
 ];
 
-const cityOptions = [
-  { value: "auckland", label: "Auckland" },
-  { value: "wellington", label: "Wellington" },
-  { value: "christchurch", label: "Christchurch" },
-  { value: "hamilton", label: "Hamilton" },
-  { value: "sydney", label: "Sydney" },
-  { value: "melbourne", label: "Melbourne" }
-];
-
-const suburbOptions = [
-  { value: "ponsonby", label: "Ponsonby" },
-  { value: "parnell", label: "Parnell" },
-  { value: "newmarket", label: "Newmarket" },
-  { value: "mount-eden", label: "Mount Eden" },
-  { value: "grey-lynn", label: "Grey Lynn" }
-];
-
-const stateOptions = [
-  { value: "auckland", label: "Auckland" },
-  { value: "wellington", label: "Wellington" },
-  { value: "canterbury", label: "Canterbury" },
-  { value: "waikato", label: "Waikato" },
-  { value: "new-south-wales", label: "New South Wales" },
-  { value: "victoria", label: "Victoria" }
-];
-
-const countryOptions = [
-  { value: "nz", label: "New Zealand" },
-  { value: "au", label: "Australia" },
-  { value: "us", label: "United States" },
-  { value: "ca", label: "Canada" },
-  { value: "gb", label: "United Kingdom" },
-  { value: "sg", label: "Singapore" }
-];
 type FieldRow = {
   id: string;
   label: string;
@@ -573,6 +540,16 @@ export const JobFields: React.FC = () => {
   const [editingSectionId, setEditingSectionId] = useState<string | null>(null);
   const [editingSectionTitle, setEditingSectionTitle] = useState("");
   const [dragRow, setDragRow] = useState<{ sectionId: string; rowId: string } | null>(null);
+  const jobAddressSearch = useOnlineAddressSearch({
+    form: layoutForm,
+    setForm: setLayoutForm,
+    keyMap: {
+      country: "country",
+      state: "state",
+      city: "city",
+      suburb: "suburb",
+    },
+  });
 
   const handleToggleSection = (sectionId: string, enabled: boolean) => {
     setSections((prev) =>
@@ -1130,22 +1107,26 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "city") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <SearchableFloatingLabelSelect
+                      <SearchCommitFloatingLabelInput
                         label="City"
                         required={isLayoutRequired("jobDetails", "city")}
-                        placeholder="Select City"
+                        placeholder="Search or Enter City"
                         value={layoutForm.city}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, city: value }))}
-                        options={cityOptions}
-                        searchPlaceholder="Search city"
+                        onChange={jobAddressSearch.handleInputChange("city")}
+                        onSearch={jobAddressSearch.handleSearch("city")}
                         clearAriaLabel="Clear selected city"
+                        errorMessage={jobAddressSearch.errors.city}
+                        isLoading={jobAddressSearch.loading.city}
+                        suggestions={jobAddressSearch.suggestions.city}
+                        noOptionsText="No Results Found"
+                        onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("city")}
                         className={cn(
-                          showLayoutErrors &&
-                          isFieldMissing("jobDetails", "city") &&
+                          ((showLayoutErrors &&
+                          isFieldMissing("jobDetails", "city")) || jobAddressSearch.errors.city) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
-                      {showLayoutErrors && isFieldMissing("jobDetails", "city") && (
+                      {showLayoutErrors && isFieldMissing("jobDetails", "city") && !jobAddressSearch.errors.city && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                           *City is required.
                         </span>
@@ -1154,22 +1135,26 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "suburb") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <SearchableFloatingLabelSelect
+                      <SearchCommitFloatingLabelInput
                         label="Suburb"
                         required={isLayoutRequired("jobDetails", "suburb")}
-                        placeholder="Select Suburb"
+                        placeholder="Search or Enter Suburb"
                         value={layoutForm.suburb}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, suburb: value }))}
-                        options={suburbOptions}
-                        searchPlaceholder="Search suburb"
+                        onChange={jobAddressSearch.handleInputChange("suburb")}
+                        onSearch={jobAddressSearch.handleSearch("suburb")}
                         clearAriaLabel="Clear selected suburb"
+                        errorMessage={jobAddressSearch.errors.suburb}
+                        isLoading={jobAddressSearch.loading.suburb}
+                        suggestions={jobAddressSearch.suggestions.suburb}
+                        noOptionsText="No Results Found"
+                        onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("suburb")}
                         className={cn(
-                          showLayoutErrors &&
-                          isFieldMissing("jobDetails", "suburb") &&
+                          ((showLayoutErrors &&
+                          isFieldMissing("jobDetails", "suburb")) || jobAddressSearch.errors.suburb) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
-                      {showLayoutErrors && isFieldMissing("jobDetails", "suburb") && (
+                      {showLayoutErrors && isFieldMissing("jobDetails", "suburb") && !jobAddressSearch.errors.suburb && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                           *Suburb is required.
                         </span>
@@ -1178,22 +1163,26 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "state") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <SearchableFloatingLabelSelect
+                      <SearchCommitFloatingLabelInput
                         label="State / Province"
                         required={isLayoutRequired("jobDetails", "state")}
-                        placeholder="Select State / Province"
+                        placeholder="Search or Enter State / Province"
                         value={layoutForm.state}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, state: value }))}
-                        options={stateOptions}
-                        searchPlaceholder="Search state or province"
+                        onChange={jobAddressSearch.handleInputChange("state")}
+                        onSearch={jobAddressSearch.handleSearch("state")}
                         clearAriaLabel="Clear selected state"
+                        errorMessage={jobAddressSearch.errors.state}
+                        isLoading={jobAddressSearch.loading.state}
+                        suggestions={jobAddressSearch.suggestions.state}
+                        noOptionsText="No Results Found"
+                        onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("state")}
                         className={cn(
-                          showLayoutErrors &&
-                          isFieldMissing("jobDetails", "state") &&
+                          ((showLayoutErrors &&
+                          isFieldMissing("jobDetails", "state")) || jobAddressSearch.errors.state) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
-                      {showLayoutErrors && isFieldMissing("jobDetails", "state") && (
+                      {showLayoutErrors && isFieldMissing("jobDetails", "state") && !jobAddressSearch.errors.state && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                           *State / Province is required.
                         </span>
@@ -1202,22 +1191,26 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "country") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <SearchableFloatingLabelSelect
+                      <SearchCommitFloatingLabelInput
                         label="Country"
                         required={isLayoutRequired("jobDetails", "country")}
-                        placeholder="Select Country"
+                        placeholder="Search or Enter Country"
                         value={layoutForm.country}
-                        onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, country: value }))}
-                        options={countryOptions}
-                        searchPlaceholder="Search country"
+                        onChange={jobAddressSearch.handleInputChange("country")}
+                        onSearch={jobAddressSearch.handleSearch("country")}
                         clearAriaLabel="Clear selected country"
+                        errorMessage={jobAddressSearch.errors.country}
+                        isLoading={jobAddressSearch.loading.country}
+                        suggestions={jobAddressSearch.suggestions.country}
+                        noOptionsText="No Results Found"
+                        onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("country")}
                         className={cn(
-                          showLayoutErrors &&
-                          isFieldMissing("jobDetails", "country") &&
+                          ((showLayoutErrors &&
+                          isFieldMissing("jobDetails", "country")) || jobAddressSearch.errors.country) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
-                      {showLayoutErrors && isFieldMissing("jobDetails", "country") && (
+                      {showLayoutErrors && isFieldMissing("jobDetails", "country") && !jobAddressSearch.errors.country && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                           *Country is required.
                         </span>
