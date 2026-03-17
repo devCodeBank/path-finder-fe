@@ -178,7 +178,7 @@ const SkillSet: React.FC = () => {
             return (
               <div key={category.id} className="flex flex-col gap-2">
                 <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#F9FAFB] flex items-center justify-between">
-                  <span className="text-[14px] font-[500] text-[#333333]">{category.title}</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">{category.title}</span>
                   <div className="flex items-center gap-5 text-[#888888]" data-skill-search-zone="true">
                     {searchOpenByCategory[category.id] && (
                       <input
@@ -256,11 +256,11 @@ const SkillSet: React.FC = () => {
                   ) : (
                     <button
                       type="button"
-                      className="h-[52px] cursor-pointer border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-center gap-2 text-[#6E41E2] text-[14px] font-[500]"
+                      className="h-[52px] cursor-pointer border border-[#CCCCCC80] rounded-[4px] bg-white flex items-center justify-center gap-2 text-[#6E41E2] text-[13px] font-[400]"
                       onClick={() => openAddSkill(category.id)}
                     >
                       <span className="text-[20px] leading-none">+</span>
-                      <span className="text-[14px]">Add New Skill</span>
+                      <span className="text-[13px] font-[400]">Add New Skill</span>
                     </button>
                   )}
                 </div>
@@ -302,7 +302,7 @@ const SkillSet: React.FC = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") saveAddCategory();
                 }}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[13px] font-[400] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Category Name"
               />
             </div>
@@ -358,7 +358,7 @@ const SkillSet: React.FC = () => {
                 onKeyDown={(event) => {
                   if (event.key === "Enter") saveEditCategory();
                 }}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[13px] font-[400] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Category Name"
               />
             </div>

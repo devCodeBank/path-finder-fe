@@ -40,7 +40,7 @@ const PreferenceCard = ({
   return (
     <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-6 flex items-center justify-between">
       <div className="flex flex-col gap-1 max-w-[70%]">
-        <h4 className="text-[14px] font-[500] text-[#333333]">{title}</h4>
+        <h4 className="text-[13px] font-[400] text-[#333333]">{title}</h4>
         <p className="text-[13px] font-[400] text-[#333333] leading-relaxed">{description}</p>
       </div>
       {children}

@@ -632,7 +632,7 @@ export const Users: React.FC = () => {
             <span>{filteredRows.length} total users</span>
           </div>
         </div>
-        <div className="grid h-[52px] grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
+        <div className="grid h-[52px] grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[13px] font-[400] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
           <span>User</span>
           <span>Role</span>
           <span>Status</span>
@@ -652,7 +652,7 @@ export const Users: React.FC = () => {
                   {row.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
                 </div>
                 <div className=" flex flex-col ">
-                  <span className="text-[13px] font-[500]">{row.name}</span>
+                  <span className="text-[13px] font-[400]">{row.name}</span>
                   <span className="text-[13px] font-[400] text-[#333333]/70">{row.email}</span>
                 </div>
               </div>
@@ -895,12 +895,12 @@ export const Users: React.FC = () => {
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-6 text-[#333333]">
               <div>
-                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Roles & Permissions</p>
+                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Roles & Permissions</p>
                 <div className="space-y-5">
                   {roleFilterOptions.map((role) => (
                     <div key={role} className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-[14px] font-[500]  leading-[20px]">{role}</p>
+                        <p className="text-[13px] font-[400] leading-[20px]">{role}</p>
                         <p className="text-[12px] text-[#666666] mt-1">
                           {systemRoles.includes(role) ? "System Role" : "Custom Role"}
                         </p>
@@ -943,11 +943,11 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-8">
-                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Status</p>
+                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Status</p>
                 <div className="space-y-8">
                   {statusFilterOptions.map((status) => (
                     <div key={status} className="flex items-center justify-between gap-3">
-                      <p className="text-[14px] font-[500] leading-[20px]">{status}</p>
+                      <p className="text-[13px] font-[400] leading-[20px]">{status}</p>
                       <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
                         <input
                           type="checkbox"
@@ -986,11 +986,11 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-8">
-                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Teams</p>
+                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Teams</p>
                 <div className="space-y-8">
                   {teamFilterOptions.map((team) => (
                     <div key={team} className="flex items-center justify-between gap-3">
-                      <p className="text-[14px] font-[500] leading-[20px]">{team}</p>
+                      <p className="text-[13px] font-[400] leading-[20px]">{team}</p>
                       <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
                         <input
                           type="checkbox"
@@ -1029,7 +1029,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-8">
-                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Activity</p>
+                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Activity</p>
                 <div className="grid grid-cols-3 mt-6 gap-2 border-b border-[#CCCCCC80]">
                   {[
                     { id: "any-time", label: "Any Time" },
@@ -1040,7 +1040,7 @@ export const Users: React.FC = () => {
                       key={item.id}
                       type="button"
                       className={cn(
-                        "pb-2 text-[14px] font-[500] text-[#333333] border-b-2 transition-colors",
+                        "pb-2 text-[13px] font-[400] text-[#333333] border-b-2 transition-colors",
                         draftFilters.activityOperator === item.id ? "border-[#6E41E2]" : "border-transparent"
                       )}
                       onClick={() =>
@@ -1068,7 +1068,7 @@ export const Users: React.FC = () => {
                         }))
                       }
                       className={cn(
-                        "w-full h-[44px] rounded-[4px] border bg-[#F9FAFB] px-3 text-[14px] text-[#333333] focus:outline-none focus:ring-0",
+                        "w-full h-[44px] rounded-[4px] border bg-[#F9FAFB] px-3 text-[13px] font-[400] text-[#333333] focus:outline-none focus:ring-0",
                         hasInvalidDateSelection ? "border-[#E15555]" : "border-[#CCCCCC80]"
                       )}
                     />
@@ -1082,7 +1082,7 @@ export const Users: React.FC = () => {
               </div>
             </div>
             <div className="px-5 py-4 border-t border-[#CCCCCC80]">
-              <div className="flex items-center justify-between text-[14px] font-[500] text-[#666666] mb-4">
+              <div className="flex items-center justify-between text-[13px] font-[400] text-[#666666] mb-4">
                 <span>Total Matches</span>
                 <span className="text-[#333333]">{draftMatchCount} {draftMatchCount === 1 ? "User" : "Users"}</span>
               </div>
@@ -1367,7 +1367,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[14px] font-[500] text-[#333333]/70 mb-2">System Roles &amp; Permissions</div>
+                <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">System Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
                   {systemRoles.map((role) => {
                     const roleId = `system-role-${role.toLowerCase().replace(/\s+/g, "-")}`;
@@ -1418,9 +1418,9 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[14px] font-[500] text-[#333333]/70 mb-2">Custom Roles &amp; Permissions</div>
+                <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">Custom Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80]">
-                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[14px] font-[500] text-[#333333]">
+                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[13px] font-[400] text-[#333333]">
                     <span>Role Name</span>
                     <span>Description</span>
                   </div>
@@ -1472,7 +1472,7 @@ export const Users: React.FC = () => {
               </div>
 
               <div className="mt-6">
-                <div className="text-[14px] font-[500] text-[#333333]/70 mb-2">User Email*</div>
+                <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">User Email*</div>
                 <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[13px] font-[400] text-[#333333]">
                   {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
                 </div>
@@ -1592,7 +1592,7 @@ export const Users: React.FC = () => {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1 justify-center mt-5">
-                    <span className="text-[14px] font-[600] text-[#333333]">{detailsUser.name}</span>
+                    <span className="text-[13px] font-[400] text-[#333333]">{detailsUser.name}</span>
                     <span className="text-[13px] text-[#333333]/70">{detailsUser.jobTitle}</span>
                   </div>
                 </div>
@@ -1629,51 +1629,51 @@ export const Users: React.FC = () => {
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">First Name</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">First Name</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ")[0]}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Last Name</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Last Name</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ").slice(1).join(" ")}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Email</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Email</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.email}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Job Title</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Job Title</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.jobTitle}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Company Name</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Company Name</label>
                     <div className="text-[#333333]/ text-[13px] leading-[18px] font-[400]">{detailsUser.companyName}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Role</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Role</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.role}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Contact Number</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Contact Number</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.contactNumber}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Time Zone</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Time Zone</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.timeZone}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">City</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">City</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.city}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">State</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">State</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.state}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Country</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Country</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.country}</div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[14px] leading-[18px] font-[500]">Currency</label>
+                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Currency</label>
                     <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.currency}</div>
                   </div>
                 </div>

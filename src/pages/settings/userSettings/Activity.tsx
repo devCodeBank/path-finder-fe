@@ -84,7 +84,7 @@ const initialActivityHistory: SessionRow[] = [
 const Section = ({ title, headerAction, children }: { title: string; headerAction?: React.ReactNode; children: React.ReactNode }) => (
   <section className="overflow-hidden rounded-[4px] border border-[#D6D6D6] bg-white">
     <div className="flex h-[52px] items-center justify-between border-b border-[#D6D6D6] bg-[#F9FAFB] px-4">
-      <h2 className="text-[14px] font-[500] text-[#2C2C2C]">{title}</h2>
+      <h2 className="text-[13px] font-[400] text-[#2C2C2C]">{title}</h2>
       {headerAction}
     </div>
     <div className="px-4 py-5">{children}</div>
@@ -145,7 +145,7 @@ const SessionItem = ({
         <ImacIcon width={25} height={25} />
       )}
       <div className="leading-tight">
-        <p className="text-[14px] font-[500] text-[#333333]">{row.title}</p>
+        <p className="text-[13px] font-[400] text-[#333333]">{row.title}</p>
         <p className="text-[10px] text-[#7A7A7A]">{row.timeAgo}</p>
       </div>
     </div>
@@ -349,7 +349,7 @@ export const Activity: React.FC = () => {
             <div className="px-4 pt-12 text-center">
               <button
                 type="button"
-                className="cursor-pointer text-[14px] font-[400] text-[#E24A4A] hover:underline"
+                className="cursor-pointer text-[13px] font-[400] text-[#E24A4A] hover:underline"
                 onClick={() => setIsTerminateOtherModalOpen(true)}
               >
                 Terminate all other sessions
@@ -390,7 +390,7 @@ export const Activity: React.FC = () => {
           <div className="mb-3 flex h-[72px] w-[72px] items-center justify-center rounded-full bg-[#F3F3F3]">
             <ConnectedAppsEmptyIcon width={78} height={77} />
           </div>
-          <p className="text-[14px] font-[500] text-[#333333]">There are no apps connected to this account</p>
+          <p className="text-[13px] font-[400] text-[#333333]">There are no apps connected to this account</p>
         </div>
       </Section>
 
@@ -401,7 +401,7 @@ export const Activity: React.FC = () => {
               <div className="flex items-center gap-3">
                 <BrandLogo2Icon width={28} height={28} />
                 <div>
-                  <p className="text-[14px] font-[500] text-[#333333]">{selectedCurrentSession.sessionName ?? "pathfinder ats crm"}</p>
+                  <p className="text-[13px] font-[400] text-[#333333]">{selectedCurrentSession.sessionName ?? "pathfinder ats crm"}</p>
                   <p className="text-[10px] text-[#7A7A7A]">{selectedCurrentSession.timeAgo}</p>
                 </div>
               </div>
@@ -418,29 +418,29 @@ export const Activity: React.FC = () => {
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               <div className="space-y-7">
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Started Time</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Started Time</p>
                   <p className="text-[13px] font-[400] mt-2 text-[#333333]">{selectedCurrentSession.startedTime ?? "-"}</p>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">IP Address</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">IP Address</p>
                   <p className="text-[13px] font-[400] mt-2 text-[#333333]">{selectedCurrentSession.ipAddress ?? "-"}</p>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Location</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Location</p>
                   <p className="text-[13px] font-[400] mt-2 text-[#333333]">{selectedCurrentSession.location}</p>
                 </div>
               </div>
 
               <div className="space-y-7">
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Operating System</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Operating System</p>
                   <div className="flex items-center  mt-2 gap-2 text-[13px] text-[#333333]">
                     <MacIcon width={24} height={24} />
                     <span>{selectedCurrentSession.operatingSystem ?? "macOS"}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">App</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">App</p>
                   <div className="flex items-center gap-2 font-[400] mt-2 text-[13px] text-[#333333]">
                     <ChromeIcon width={24} height={24} />
                     <span>{selectedCurrentSession.appVersion ?? "Google Chrome 123.0.0"}</span>
@@ -459,7 +459,7 @@ export const Activity: React.FC = () => {
               <div className="flex items-center gap-3">
                 <BrandLogo2Icon width={28} height={28} />
                 <div>
-                  <p className="text-[14px] font-[500] text-[#333333]">{selectedHistorySession.sessionName ?? "pathfinder ats crm"}</p>
+                  <p className="text-[13px] font-[400] text-[#333333]">{selectedHistorySession.sessionName ?? "pathfinder ats crm"}</p>
                   <p className="text-[10px] text-[#7A7A7A]">{selectedHistorySession.timeAgo}</p>
                 </div>
               </div>
@@ -476,43 +476,43 @@ export const Activity: React.FC = () => {
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               <div className="space-y-7">
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Sign-in-time</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Sign-in-time</p>
                   <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedHistorySession.signInTime ?? "-"}</p>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Device</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Device</p>
                   <div className="mt-2 flex items-center gap-2 text-[13px] text-[#333333]">
                     <ImacIcon width={20} height={20} />
                     <span>{selectedHistorySession.deviceName ?? "iMac"}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Referrer</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Referrer</p>
                   <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedHistorySession.referrer ?? "-"}</p>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Location</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Location</p>
                   <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedHistorySession.location}</p>
                 </div>
               </div>
 
               <div className="space-y-7">
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">Operating System</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">Operating System</p>
                   <div className="mt-2 flex items-center gap-2 text-[13px] text-[#333333]">
                     <MacIcon width={24} height={24} />
                     <span>{selectedHistorySession.operatingSystem ?? "macOS"}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">App</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">App</p>
                   <div className="mt-2 flex items-center gap-2 text-[13px] text-[#333333]">
                     <ChromeIcon width={24} height={24} />
                     <span>{selectedHistorySession.appVersion ?? "Google Chrome 123.0.0"}</span>
                   </div>
                 </div>
                 <div>
-                  <p className="text-[14px] font-[500] text-[#666666]">IP Address</p>
+                  <p className="text-[13px] font-[400] text-[#666666]">IP Address</p>
                   <p className="mt-2 text-[13px] font-[400] text-[#333333]">{selectedHistorySession.ipAddress ?? "-"}</p>
                 </div>
               </div>
@@ -528,7 +528,7 @@ export const Activity: React.FC = () => {
               <div className="flex items-center gap-3">
                 <BrandLogo2Icon width={28} height={28} />
                 <div>
-                  <p className="text-[14px] font-[500] text-[#333333]">{selectedExpiredSession.sessionName ?? "pathfinder ats crm"}</p>
+                  <p className="text-[13px] font-[400] text-[#333333]">{selectedExpiredSession.sessionName ?? "pathfinder ats crm"}</p>
                   <p className="text-[10px] text-[#7A7A7A]">{selectedExpiredSession.timeAgo}</p>
                 </div>
               </div>

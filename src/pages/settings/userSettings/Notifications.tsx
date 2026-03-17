@@ -144,7 +144,7 @@ export const Notifications: React.FC = () => {
       {/* Do Not Disturb Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px] w-full">
         <div className="px-4 h-[52px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Do Not Disturb</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Do Not Disturb</h3>
         </div>
 
         <div className="px-4 min-h-[95px] flex items-center">
@@ -257,7 +257,7 @@ export const Notifications: React.FC = () => {
       {/* Days Off Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
         <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Do not disturb me on my days off</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Do not disturb me on my days off</h3>
         </div>
 
         <div className="p-4 min-h-[95px] flex items-center">
@@ -283,7 +283,7 @@ export const Notifications: React.FC = () => {
       {/* Email Notifications Section */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden min-h-[135px]">
         <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Email Notifications</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Email Notifications</h3>
         </div>
 
         <div className="p-4 min-h-[95px] flex items-center">
@@ -302,7 +302,7 @@ export const Notifications: React.FC = () => {
       {/* List Preferences Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
         <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <p className="text-[14px] font-[500] text-[#333333]">
+          <p className="text-[13px] font-[400] text-[#333333]">
             Send email and push notifications for:
           </p>
         </div>

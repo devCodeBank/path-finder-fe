@@ -164,7 +164,7 @@ const DealsPipeline: React.FC = () => {
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
         <div className="h-[52px] px-4 flex bg-[#EAEAEA]/15 items-center justify-between border-b border-[#CCCCCC80]">
-          <span className="text-[14px] font-[500] text-[#333333]">Deals Pipeline</span>
+          <span className="text-[13px] font-[400] text-[#333333]">Deals Pipeline</span>
         </div>
 
         <div className="px-4 py-4">

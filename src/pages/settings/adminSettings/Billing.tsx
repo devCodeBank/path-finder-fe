@@ -150,9 +150,9 @@ export const Billing: React.FC = () => {
     <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
         <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80] ">
-          <span className="text-[14px] font-[500] text-[#333333]">All Invoices</span>
+          <span className="text-[13px] font-[400] text-[#333333]">All Invoices</span>
         </div>
-        <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[500] text-[#333333] border-b border-[#CCCCCC80]">
+        <div className="grid grid-cols-[1.2fr_1.2fr_1fr_1fr_48px] gap-2 px-4 py-3 text-[13px] font-[400] text-[#333333] border-b border-[#CCCCCC80]">
           <span>Invoice Number</span>
           <span>Invoice Date</span>
           <span>Amount</span>
@@ -199,7 +199,7 @@ export const Billing: React.FC = () => {
     <div className="flex flex-col gap-6 pt-4">
       <div className="bg-white border border-[#CCCCCC80]  overflow-hidden">
         <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-          <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
+          <span className="text-[13px] font-[400] text-[#333333]">Pricing Plan</span>
 
           <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
             Currency: USD
@@ -208,10 +208,10 @@ export const Billing: React.FC = () => {
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80] flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <div className="text-[13px] font-[500] text-[#333333]">Starter</div>
+            <div className="text-[13px] font-[400] text-[#333333]">Starter</div>
             <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
           </div>
-          <div className="text-[14px] text-[#333333]">
+          <div className="text-[13px] text-[#333333]">
             <span className="text-[16px] font-[600]">$69</span> <span className="text-[13px]">per user / month</span>
           </div>
           <Button
@@ -227,13 +227,13 @@ export const Billing: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-          <div className="text-[14px] text-[#333333]/70 font-[500]">Account Activation Date</div>
+          <div className="text-[13px] text-[#333333]/70 font-[400]">Account Activation Date</div>
           <div className="text-[13px] text-[#333333] font-[400]">21 / 08 / 2025</div>
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80] flex items-center justify-between gap-4">
           <div>
-            <div className="text-[14px] text-[#333333]/70 font-[500]">Account Owner</div>
+            <div className="text-[13px] text-[#333333]/70 font-[400]">Account Owner</div>
             <div className="text-[13px] text-[#333333] font-[400]">John Doe</div>
           </div>
           <Button
@@ -250,24 +250,24 @@ export const Billing: React.FC = () => {
         </div>
 
         <div className="px-4 py-4 border-b border-[#CCCCCC80]">
-          <div className="text-[14px] text-[#333333]/70 font-[500]">Active User(s)</div>
+          <div className="text-[13px] text-[#333333]/70 font-[400]">Active User(s)</div>
           <div className="text-[13px] text-[#333333] font-[400]">10</div>
         </div>
 
         <div className="px-4 py-4">
-          <div className="text-[14px] text-[#333333]/70 font-[500]">Account ID</div>
+          <div className="text-[13px] text-[#333333]/70 font-[400]">Account ID</div>
           <div className="text-[13px] text-[#333333] font-[400]">PFAC1057</div>
         </div>
       </div>
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
         <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-          <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
+          <span className="text-[13px] font-[400] text-[#333333]">Payment Details</span>
         </div>
         <div className="p-4">
           <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-4">
             <div className={fieldWrapperClass}>
-              <label className="text-[14px] text-[#333333]/70 font-[500]">Card Number</label>
+              <label className="text-[13px] text-[#333333]/70 font-[400]">Card Number</label>
               <div className="relative">
                 <input className={fieldInputClassInner} value="1234 1234 1234 1234" disabled />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -277,19 +277,19 @@ export const Billing: React.FC = () => {
               </div>
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[14px] text-[#333333]/70 font-[500]">Expiry Date</label>
+              <label className="text-[13px] text-[#333333]/70 font-[400]">Expiry Date</label>
               <input className={fieldInputClassInner} value="01 / 27" disabled />
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[14px] text-[#333333]/70 font-[500]">Security Code</label>
+              <label className="text-[13px] text-[#333333]/70 font-[400]">Security Code</label>
               <input className={fieldInputClassInner} value="123" disabled />
             </div>
             <div className={fieldWrapperClass}>
-              <label className="text-[14px] text-[#333333]/70 font-[500]">Name on the Card</label>
+              <label className="text-[13px] text-[#333333]/70 font-[400]">Name on the Card</label>
               <input className={fieldInputClassInner} value="John D" disabled />
             </div>
             <div className={fieldWrapperClass + " md:col-span-2"}>
-              <label className="text-[14px] text-[#333333]/70">Country</label>
+              <label className="text-[13px] text-[#333333]/70">Country</label>
               <div className="relative">
                 <select className={fieldSelectClass} defaultValue="New Zealand" disabled>
                   <option>New Zealand</option>
@@ -321,12 +321,12 @@ export const Billing: React.FC = () => {
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
         <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-          <span className="text-[14px] font-[500] text-[#333333]">Billing Details</span>
+          <span className="text-[13px] font-[400] text-[#333333]">Billing Details</span>
         </div>
         <div className="divide-y divide-[#CCCCCC80]">
           <div className="px-4 py-4 flex items-center justify-between gap-4">
             <div>
-              <div className="text-[13px] text-[#333333]/70 font-[500]">Company Legal Name</div>
+              <div className="text-[13px] text-[#333333]/70 font-[400]">Company Legal Name</div>
               <div className="text-[13px] text-[#333333] font-[400]">Acme Limited</div>
             </div>
             <Button
@@ -343,7 +343,7 @@ export const Billing: React.FC = () => {
           </div>
           <div className="px-4 py-4 flex items-center justify-between gap-4">
             <div>
-              <div className="text-[13px] text-[#333333]/70 font-[500]">Billing Email</div>
+              <div className="text-[13px] text-[#333333]/70 font-[400]">Billing Email</div>
               <div className="text-[13px] text-[#333333] font-[400]">Not available</div>
             </div>
             <Button
@@ -371,10 +371,10 @@ export const Billing: React.FC = () => {
   return (
     <div className="flex flex-col w-full">
       <div className="flex items-center justify-end gap-3 mb-6 mt-2">
-        <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
+        <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[400] text-white">
           Active
         </span>
-        {/* <span className="rounded-[4px] bg-[#F06B61] px-4 py-2 text-[12px] font-[500] text-white">
+        {/* <span className="rounded-[4px] bg-[#F06B61] px-4 py-2 text-[12px] font-[400] text-white">
           Cancel Subscription
         </span> */}
         <Button variant="contained" sx={dangerButtonSx}>Cancel Subscription</Button>
@@ -401,7 +401,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">Transfer Account Ownership</span>
+              <span className="text-[16px] font-[400] text-[#333333]">Transfer Account Ownership</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -427,19 +427,19 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">Current Account Owner</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">Current Account Owner</span>
                 </div>
                 <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
-                  <div className="font-[500]">John Doe</div>
+                  <div className="font-[400]">John Doe</div>
                   <div className="text-[#333333]/70 mt-1">john.doe@example.com</div>
                 </div>
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">New Account Owner</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">New Account Owner</span>
                 </div>
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[14px] mb-1 text-[#333333]/70 font-[500]">Account Owner</label>
+                      <label className="text-[13px] mb-1 text-[#333333]/70 font-[400]">Account Owner</label>
                       <input
                         className={fieldInputClass}
                         placeholder="Add Name"
@@ -451,7 +451,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[14px] mb-1 text-[#333333]/70 font-[500]">Email</label>
+                      <label className="text-[13px] mb-1 text-[#333333]/70 font-[400]">Email</label>
                       <input
                         className={fieldInputClass}
                         placeholder="Add Email"
@@ -503,7 +503,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">Upgrade Subscription Plan</span>
+              <span className="text-[16px] font-[400] text-[#333333]">Upgrade Subscription Plan</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -529,7 +529,7 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">Pricing Plan</span>
                   <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
                     Currency: USD
                   </div>
@@ -538,23 +538,23 @@ export const Billing: React.FC = () => {
                 <div className="divide-y divide-[#CCCCCC80]">
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col gap-2">
-                      <div className="text-[13px] font-[500] text-[#333333]">Starter</div>
+                      <div className="text-[13px] font-[400] text-[#333333]">Starter</div>
                       <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
                     </div>
-                    <div className="text-[14px] text-[#333333] ">
+                    <div className="text-[13px] text-[#333333] ">
                       <span className="text-[16px] font-[600]">$69</span> <span className="text-[12px]">per user / month</span>
                     </div>
-                    <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white text-center">
+                    <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[400] text-white text-center">
                       Active
                     </span>
                   </div>
 
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col gap-2">
-                      <div className="text-[13px] font-[500] text-[#333333]">Growth</div>
+                      <div className="text-[13px] font-[400] text-[#333333]">Growth</div>
                       <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
                     </div>
-                    <div className="text-[14px] text-[#333333]">
+                    <div className="text-[13px] text-[#333333]">
                       <span className="text-[16px] font-[600]">$129</span> <span className="text-[12px]">per user / month</span>
                     </div>
                     <Button variant="contained" sx={popButtonSx}>Upgrade</Button>
@@ -562,10 +562,10 @@ export const Billing: React.FC = () => {
 
                   <div className="px-4 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col gap-2">
-                      <div className="text-[13px] font-[500] text-[#333333]">Professional</div>
+                      <div className="text-[13px] font-[400] text-[#333333]">Professional</div>
                       <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">Plan Features</button>
                     </div>
-                    <div className="text-[14px] text-[#333333]">
+                    <div className="text-[13px] text-[#333333]">
                       <span className="text-[16px] font-[600]">$249</span> <span className="text-[12px]">per user / month</span>
                     </div>
                     <Button variant="contained" sx={popButtonSx}>Upgrade</Button>
@@ -604,7 +604,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">Update Company Legal Name</span>
+              <span className="text-[16px] font-[400] text-[#333333]">Update Company Legal Name</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -630,20 +630,20 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">Company Name</span>
-                  <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white text-center">
+                  <span className="text-[13px] font-[400] text-[#333333]">Company Name</span>
+                  <span className="rounded-[4px] w-[90px] bg-[#2FB344] px-4 py-2 text-[12px] font-[400] text-white text-center">
                     Current
                   </span>
                 </div>
-                <div className="px-4 py-4 font-[500]  text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
+                <div className="px-4 py-4 font-[400]  text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="text-[#333333]" >Acme Corporation Limited</div>
                 </div>
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">New Company Name</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">New Company Name</span>
                 </div>
                 <div className="p-4">
                   <div className={fieldWrapperWithErrorClass}>
-                    <label className="text-[14px] mb-1 text-[#333333]/70 font-[500]">Company Name</label>
+                    <label className="text-[13px] mb-1 text-[#333333]/70 font-[400]">Company Name</label>
                     <input
                       className={fieldInputClass}
                       placeholder="Add New Company Name"
@@ -694,7 +694,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">Update Billing Email</span>
+              <span className="text-[16px] font-[400] text-[#333333]">Update Billing Email</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -720,17 +720,17 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">Billing Email</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">Billing Email</span>
                 </div>
                 <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="text-[#333333]/70">Not available</div>
                 </div>
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">New Billing Email</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">New Billing Email</span>
                 </div>
                 <div className="p-4">
                   <div className={fieldWrapperWithErrorClass}>
-                    <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Email</label>
+                    <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Email</label>
                     <input
                       className={fieldInputClass}
                       placeholder="Add Billing Email"
@@ -781,7 +781,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333]">Update Credit Card Details</span>
+              <span className="text-[16px] font-[400] text-[#333333]">Update Credit Card Details</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -807,12 +807,12 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
+                  <span className="text-[13px] font-[400] text-[#333333]">Payment Details</span>
                 </div>
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-3">
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Card Number</label>
+                      <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Card Number</label>
                       <div className="relative">
                         <input
                           className={fieldInputClass}
@@ -829,7 +829,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Expiry Date</label>
+                      <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Expiry Date</label>
                       <input
                         className={fieldInputClass}
                         value={cardExpiry}
@@ -840,7 +840,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Security Code</label>
+                      <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Security Code</label>
                       <input
                         className={fieldInputClass}
                         value={cardCvc}
@@ -851,7 +851,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass}>
-                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Name on the Card</label>
+                      <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Name on the Card</label>
                       <input
                         className={fieldInputClass}
                         value={cardName}
@@ -862,7 +862,7 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass + " md:col-span-2"}>
-                      <label className="text-[14px] mb-1 font-[500] text-[#333333]/70">Country</label>
+                      <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Country</label>
                       <div className="relative">
                         <select
                           className={fieldSelectClass}

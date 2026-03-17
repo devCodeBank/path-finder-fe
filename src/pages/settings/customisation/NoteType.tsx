@@ -72,7 +72,7 @@ const NoteType: React.FC = () => {
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
         <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#F9FAFB]">
-          <span className="text-[14px] font-[500] text-[#333333]">Note Type</span>
+          <span className="text-[13px] font-[400] text-[#333333]">Note Type</span>
         </div>
 
         <div className="px-4 py-4">

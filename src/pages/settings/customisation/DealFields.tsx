@@ -139,7 +139,7 @@ const SectionCard = ({
       <div
         className="h-[52px] px-4 flex items-center justify-between rounded-[6px]  border-[#CCCCCC80] bg-[#F9FAFB]"
       >
-        <div className="flex items-center gap-2 text-[14px] text-[#333333] font-[500]">
+        <div className="flex items-center gap-2 text-[13px] font-[400] text-[#333333]">
           <span className="text-[#333333] ">{section.title}</span>
         </div>
         <div className="flex items-center gap-10">
@@ -184,7 +184,7 @@ const SectionCard = ({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-[32px_minmax(0,2.8fr)_0.9fr_0.8fr] gap-2 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
+          <div className="grid grid-cols-[32px_minmax(0,2.8fr)_0.9fr_0.8fr] gap-2 px-4 py-2 text-[13px] font-[400] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
             <span />
             <span />
             <span className="text-center">Visibility</span>
@@ -213,7 +213,7 @@ const SectionCard = ({
                     <GripIcon />
                   </button>
                 </div>
-                <span className="font-[500] text-[13px]">{row.label}</span>
+                <span className="font-[400] text-[13px]">{row.label}</span>
                 <div className="flex justify-center">
                   <Toggle
                     enabled={row.visibility}
@@ -441,7 +441,7 @@ const DealFields: React.FC = () => {
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#333333] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[13px] font-[400] text-[#333333] focus:border-[#333333] focus:outline-none"
                 placeholder="Section name"
               />
             </div>

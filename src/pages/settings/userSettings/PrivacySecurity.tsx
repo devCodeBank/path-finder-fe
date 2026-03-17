@@ -21,7 +21,7 @@ const Toggle = ({
   return (
     <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080] last:border-0">
       <div className="flex flex-col gap-1 pr-4">
-        <span className="text-[14px] font-[500] text-[#333333]">{label}</span>
+        <span className="text-[13px] font-[400] text-[#333333]">{label}</span>
         {description && (
           <p className="text-[13px] font-[400] text-[#333333]/70 leading-relaxed">
             {description}
@@ -93,14 +93,14 @@ export const PrivacySecurity: React.FC = () => {
       {/* Default Security Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] w-full">
         <div className="px-4 h-[52px] w-full border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Default Security</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Default Security</h3>
         </div>
 
         <div className="px-5">
           {/* Email Row */}
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
-              <span className="text-[14px] font-[500] text-[#333333]">Primary Email</span>
+              <span className="text-[13px] font-[400] text-[#333333]">Primary Email</span>
               <span className="text-[13px] font-[400] text-[#333333]/70">{primaryEmail}</span>
             </div>
           </div>
@@ -108,7 +108,7 @@ export const PrivacySecurity: React.FC = () => {
           {/* Password Row */}
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
-              <span className="text-[14px] font-[500] text-[#333333]">Password</span>
+              <span className="text-[13px] font-[400] text-[#333333]">Password</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">*#0!x%&</p>
             </div>
             <Button variant="contained" sx={outlineButtonSx}>
@@ -119,7 +119,7 @@ export const PrivacySecurity: React.FC = () => {
           {/* Recovery Codes Row */}
           <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1 max-w-[70%]">
-              <span className="text-[14px] font-[500] text-[#333333]">Recovery Codes</span>
+              <span className="text-[13px] font-[400] text-[#333333]">Recovery Codes</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">
                 If you lose access to your password or verification methods, you will be able to log in with a recovery code.
               </p>
@@ -135,7 +135,7 @@ export const PrivacySecurity: React.FC = () => {
       {/* Login Security Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Login Security</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Login Security</h3>
         </div>
         <div className="px-5">
           <Toggle
@@ -158,13 +158,13 @@ export const PrivacySecurity: React.FC = () => {
       {/* Verification Methods Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Verification Methods</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Verification Methods</h3>
         </div>
         <div className="px-5">
           {/* Phone Number */}
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
-              <span className="text-[14px] font-[500] text-[#333333]">Phone Number</span>
+              <span className="text-[13px] font-[400] text-[#333333]">Phone Number</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">Require additional verification step for logins from a new device or browser.</p>
               {phoneNumber ? (
                 <div className="flex items-center gap-4 mt-2">
@@ -214,7 +214,7 @@ export const PrivacySecurity: React.FC = () => {
           {/* Alternate Emails */}
           <div className="flex items-center justify-between py-4 border-b border-[#F0F0F080]">
             <div className="flex flex-col gap-1">
-              <span className="text-[14px] font-[500] text-[#333333]">Alternate Emails</span>
+              <span className="text-[13px] font-[400] text-[#333333]">Alternate Emails</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">Add alternate emails in addition to your default email to receive a verification code.</p>
               {alternateEmail ? (
                 <div className="flex items-center gap-4 mt-2">
@@ -264,7 +264,7 @@ export const PrivacySecurity: React.FC = () => {
           {/* Authenticator App */}
           <div className="flex items-center justify-between py-4">
             <div className="flex flex-col gap-1">
-              <span className="text-[14px] font-[500] text-[#333333]">Authenticator App</span>
+              <span className="text-[13px] font-[400] text-[#333333]">Authenticator App</span>
               <p className="text-[13px] font-[400] text-[#333333]/70">Set up an authenticator on your mobile device to receive verification code.</p>
             </div>
             <Button variant="contained" sx={outlineButtonSx}>
@@ -277,7 +277,7 @@ export const PrivacySecurity: React.FC = () => {
       {/* Notifications Card */}
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px]">
         <div className="px-4 h-[52px] border-b border-[#CCCCCC80] flex items-center bg-[#F9FAFB]">
-          <h3 className="text-[14px] font-[500] text-[#333333]">Notifications</h3>
+          <h3 className="text-[13px] font-[400] text-[#333333]">Notifications</h3>
         </div>
         <div className="px-5">
           <Toggle

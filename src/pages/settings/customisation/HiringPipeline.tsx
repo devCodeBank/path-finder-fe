@@ -423,7 +423,7 @@ const HiringPipeline: React.FC = () => {
         {pipelines.map((pipeline) => (
           <div key={pipeline.id} className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
             <div className="h-[52px] px-4 bg-[#F9FAFB] flex items-center justify-between border-b border-[#CCCCCC80]">
-              <span className="text-[14px] font-[500] text-[#333333]">{pipeline.name}</span>
+              <span className="text-[13px] font-[400] text-[#333333]">{pipeline.name}</span>
               <Tooltip
                 title="Edit"
                 arrow
@@ -510,7 +510,7 @@ const HiringPipeline: React.FC = () => {
                     <span className="text-[11px] text-[#E53935]">*Pipeline Name required.</span>
                   )}
 
-                  <div className="text-[14px] text-[#333333]">Add Custom Stages</div>
+                  <div className="text-[13px] font-[400] text-[#333333]">Add Custom Stages</div>
 
                   <div className="flex flex-col gap-3">
                     {stageOrder.map((stageId) => {

@@ -204,7 +204,7 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <div className="w-full h-[52px] px-4 flex items-center justify-between  border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[13px] font-[400] text-[#333333]">
     <span>{title}</span>
     <button
       type="button"
@@ -263,7 +263,7 @@ const SectionCard = ({
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
-        <div className="flex items-center gap-2 text-[14px] text-[#333333] font-[500]">
+        <div className="flex items-center gap-2 text-[13px] font-[400] text-[#333333]">
           {draggableTitle && (
             <button
               type="button"
@@ -327,7 +327,7 @@ const SectionCard = ({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-[32px_minmax(0,2.8fr)_0.9fr_0.8fr] gap-2 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
+          <div className="grid grid-cols-[32px_minmax(0,2.8fr)_0.9fr_0.8fr] gap-2 px-4 py-2 text-[13px] font-[400] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
             <span />
             <span />
             <span className="text-center">Visibility</span>
@@ -356,7 +356,7 @@ const SectionCard = ({
                     <GripIcon />
                   </button>
                 </div>
-                <span className="font-[500] text-[13px]">{row.label}</span>
+                <span className="font-[400] text-[13px]">{row.label}</span>
                 <div className="flex justify-center">
                   <Toggle
                     enabled={row.visibility}
@@ -854,7 +854,7 @@ export const JobFields: React.FC = () => {
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
         <div className="px-4 h-[52px]  border-[#CCCCCC80] flex items-center justify-between bg-[White]">
           <div className="flex flex-col">
-            <span className="text-[14px] text-[#333333] font-[500]">Enforce required fields on extension</span>
+            <span className="text-[13px] font-[400] text-[#333333]">Enforce required fields on extension</span>
             <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">
               Learn more
             </button>
@@ -943,7 +943,7 @@ export const JobFields: React.FC = () => {
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[13px] font-[400] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
                 placeholder="Section name"
               />
             </div>
@@ -1123,7 +1123,7 @@ export const JobFields: React.FC = () => {
                         onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("city")}
                         className={cn(
                           ((showLayoutErrors &&
-                          isFieldMissing("jobDetails", "city")) || jobAddressSearch.errors.city) &&
+                            isFieldMissing("jobDetails", "city")) || jobAddressSearch.errors.city) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
@@ -1151,7 +1151,7 @@ export const JobFields: React.FC = () => {
                         onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("suburb")}
                         className={cn(
                           ((showLayoutErrors &&
-                          isFieldMissing("jobDetails", "suburb")) || jobAddressSearch.errors.suburb) &&
+                            isFieldMissing("jobDetails", "suburb")) || jobAddressSearch.errors.suburb) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
@@ -1179,7 +1179,7 @@ export const JobFields: React.FC = () => {
                         onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("state")}
                         className={cn(
                           ((showLayoutErrors &&
-                          isFieldMissing("jobDetails", "state")) || jobAddressSearch.errors.state) &&
+                            isFieldMissing("jobDetails", "state")) || jobAddressSearch.errors.state) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
@@ -1207,7 +1207,7 @@ export const JobFields: React.FC = () => {
                         onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("country")}
                         className={cn(
                           ((showLayoutErrors &&
-                          isFieldMissing("jobDetails", "country")) || jobAddressSearch.errors.country) &&
+                            isFieldMissing("jobDetails", "country")) || jobAddressSearch.errors.country) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
@@ -1236,7 +1236,7 @@ export const JobFields: React.FC = () => {
                         onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("postal")}
                         className={cn(
                           ((showLayoutErrors &&
-                          isFieldMissing("jobDetails", "postalCode")) || jobAddressSearch.errors.postal) &&
+                            isFieldMissing("jobDetails", "postalCode")) || jobAddressSearch.errors.postal) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
@@ -1358,7 +1358,7 @@ export const JobFields: React.FC = () => {
 
                 {isLayoutVisible("jobDetails", "jobDescription") && (
                   <div className="relative flex flex-col gap-3 pt-2">
-                    <span className="text-[13px] font-[500] text-[#333333]">Job Description</span>
+                    <span className="text-[13px] font-[400] text-[#333333]">Job Description</span>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
                       <FloatingLabelSelect
                         label="Template"
@@ -1434,7 +1434,7 @@ export const JobFields: React.FC = () => {
                 {isLayoutVisible("jobDetails", "jobApplicationQuestions") && (
                   <div className="relative flex flex-col gap-6 pb-[14px]">
                     <div className="rounded-[4px]  border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
-                      <span className="text-[13px] font-[500] text-[#333333]">Job Application Questions for Candidates</span>
+                      <span className="text-[13px] font-[400] text-[#333333]">Job Application Questions for Candidates</span>
                     </div>
                     <FloatingLabelSelect
                       label="Select Questions"
@@ -1463,7 +1463,7 @@ export const JobFields: React.FC = () => {
                 {isLayoutVisible("jobDetails", "enableJobApplication") && (
                   <div className="relative flex flex-col gap-5 pb-[14px]">
                     <div className="rounded-[4px]  border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px] h-[52px] flex items-center ">
-                      <span className="text-[13px] font-[500] text-[#333333]">Job Application Form</span>
+                      <span className="text-[13px] font-[400] text-[#333333]">Job Application Form</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="text-[13px] text-[#4A4A4A]">Enable Job Application Form</span>
@@ -1805,7 +1805,7 @@ export const JobFields: React.FC = () => {
                 {isLayoutVisible("admin", "hiringTeamMembers") && (
                   <div className="relative flex flex-col gap-6 pb-[14px]">
                     <div className="rounded-[4px]  border-[#D9D9D9] bg-[#F9FAFB] px-4 py-[14px]">
-                      <span className="text-[13px] font-[500] text-[#333333]">Add Hiring Team Members</span>
+                      <span className="text-[13px] font-[400] text-[#333333]">Add Hiring Team Members</span>
                     </div>
                     <FloatingLabelSelect
                       label="User / Team"

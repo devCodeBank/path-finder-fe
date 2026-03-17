@@ -783,7 +783,7 @@ const CollapsibleSection = ({
                       {getInitials(row.name)}
                     </Box>
                     <Box display="flex" flexDirection="column">
-                      <Box component="span" className="text-[13px] font-[500]">
+                      <Box component="span" className="text-[13px] font-[400]">
                         {row.name}
                       </Box>
                       <Box component="span" className="text-[13px] text-[#333333]/70">

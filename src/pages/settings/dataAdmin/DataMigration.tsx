@@ -32,7 +32,7 @@ const DataMigration: React.FC = () => {
           </div>
           <button
             type="button"
-            className="inline-flex items-center gap-1 text-[14px] text-[#6E41E2] hover:underline cursor-pointer"
+            className="inline-flex items-center gap-1 text-[13px] font-[400] text-[#6E41E2] hover:underline cursor-pointer"
             onClick={() => setIsKnowledgeBaseOpen(true)}
           >
             Learn more
@@ -42,7 +42,7 @@ const DataMigration: React.FC = () => {
 
         <button
           type="button"
-          className="mt-4 ml-9 h-[36px] rounded-[4px] bg-[#6E41E2] px-4 text-[14px] font-[500] text-white hover:bg-[#7B52F4] cursor-pointer"
+          className="mt-4 ml-9 h-[36px] rounded-[4px] bg-[#6E41E2] px-4 text-[13px] font-[400] text-white hover:bg-[#7B52F4] cursor-pointer"
           onClick={() => setIsSupportOpen(true)}
         >
           Need help? Contact Us
@@ -142,7 +142,7 @@ const DataMigration: React.FC = () => {
                 <SearchOutlinedIcon sx={{ fontSize: 20, color: "#777777" }} />
                 <input
                   type="text"
-                  className="w-full bg-transparent text-[14px] text-[#333333] outline-none "
+                  className="w-full bg-transparent text-[13px] font-[400] text-[#333333] outline-none "
                   placeholder="Search articles"
                 />
               </div>
@@ -362,7 +362,7 @@ const DataMigration: React.FC = () => {
                   />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="mb-2 block text-[14px] text-[#666666]">Specific Requirements / Description</label>
+                  <label className="mb-2 block text-[13px] font-[400] text-[#666666]">Specific Requirements / Description</label>
                   <textarea
                     rows={6}
                     placeholder="Describe any custom field concerns or specific data needs..."

@@ -254,7 +254,7 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <div className="w-full h-[52px] px-4 flex items-center justify-between  border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[13px] font-[400] text-[#333333]">
     <span>{title}</span>
     <button
       type="button"
@@ -313,7 +313,7 @@ const SectionCard = ({
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
-        <div className="flex items-center gap-2 text-[14px] text-[#333333] font-[500]">
+        <div className="flex items-center gap-2 text-[13px] font-[400] text-[#333333]">
           {draggableTitle && (
             <button
               type="button"
@@ -377,7 +377,7 @@ const SectionCard = ({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-[32px_minmax(0,1fr)_110px_110px_110px] gap-4 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
+          <div className="grid grid-cols-[32px_minmax(0,1fr)_110px_110px_110px] gap-4 px-4 py-2 text-[13px] font-[400] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
             <span />
             <span />
             <span className="text-center">Visibility</span>
@@ -407,7 +407,7 @@ const SectionCard = ({
                     <GripIcon />
                   </button>
                 </div>
-                <span className="font-[500] text-[13px]">{row.label}</span>
+                <span className="font-[400] text-[13px]">{row.label}</span>
                 <div className="flex justify-center">
                   <Toggle
                     enabled={row.visibility}
@@ -958,7 +958,7 @@ export const CompanyFields: React.FC = () => {
       <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
         <div className="px-4 h-[52px]  border-[#CCCCCC80] flex items-center justify-between bg-[white]">
           <div className="flex flex-col">
-            <span className="text-[14px] text-[#333333] font-[500]">Enforce required fields on extension</span>
+            <span className="text-[13px] font-[400] text-[#333333]">Enforce required fields on extension</span>
             <button type="button" className="text-[13px] text-[#6E41E2] font-[400] hover:underline w-fit">
               Learn more
             </button>
@@ -1047,7 +1047,7 @@ export const CompanyFields: React.FC = () => {
                 type="text"
                 value={editingSectionTitle}
                 onChange={(event) => setEditingSectionTitle(event.target.value)}
-                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[14px] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
+                className="h-[44px] w-full rounded-[6px] border border-[#D6D6D6] px-4 text-[13px] font-[400] text-[#333333] focus:border-[#6E41E2] focus:outline-none"
                 placeholder="Section name"
               />
             </div>
@@ -1315,8 +1315,8 @@ export const CompanyFields: React.FC = () => {
                       onSuggestionSelect={companyAddressSearch.handleSuggestionSelect("country")}
                       className={cn(
                         ((showLayoutErrors &&
-                        isLayoutRequired("location", "country") &&
-                        !layoutForm.country.trim()) || companyAddressSearch.errors.country) &&
+                          isLayoutRequired("location", "country") &&
+                          !layoutForm.country.trim()) || companyAddressSearch.errors.country) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
@@ -1344,7 +1344,7 @@ export const CompanyFields: React.FC = () => {
                     noOptionsText="No Results Found"
                     onSuggestionSelect={companyAddressSearch.handleSuggestionSelect("postal")}
                   />
-                
+
                 )}
               </div>
             )}
@@ -1679,7 +1679,7 @@ export const CompanyFields: React.FC = () => {
                     noOptionsText="No Results Found"
                     onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("postal")}
                   />
-                
+
                 )}
               </div>
             )}
