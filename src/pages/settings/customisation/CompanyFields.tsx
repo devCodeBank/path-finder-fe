@@ -629,6 +629,7 @@ export const CompanyFields: React.FC = () => {
       country: "country",
       state: "state",
       city: "city",
+      postal: "postalCode",
     },
   });
   const contactAddressSearch = useOnlineAddressSearch({
@@ -638,6 +639,7 @@ export const CompanyFields: React.FC = () => {
       country: "contactCountry",
       state: "contactState",
       city: "contactCity",
+      postal: "contactPostalCode",
     },
   });
 
@@ -1329,12 +1331,20 @@ export const CompanyFields: React.FC = () => {
                   </div>
                 )}
                 {isLayoutVisible("location", "postal") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="Postal Code"
-                    placeholder="Search or Enter Postal Code"
+                    placeholder="Search or Add Postal Code"
                     value={layoutForm.postalCode}
-                    onChange={handleLayoutChange("postalCode")}
+                    onChange={companyAddressSearch.handleInputChange("postal")}
+                    onSearch={companyAddressSearch.handleSearch("postal")}
+                    clearAriaLabel="Clear selected postal code"
+                    errorMessage={companyAddressSearch.errors.postal}
+                    isLoading={companyAddressSearch.loading.postal}
+                    suggestions={companyAddressSearch.suggestions.postal}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={companyAddressSearch.handleSuggestionSelect("postal")}
                   />
+                
                 )}
               </div>
             )}
@@ -1656,12 +1666,20 @@ export const CompanyFields: React.FC = () => {
                   />
                 )}
                 {isLayoutVisible("contactAddress", "postal") && (
-                  <FloatingLabelInput
+                  <SearchCommitFloatingLabelInput
                     label="Postal Code"
-                    placeholder="Search or Enter Postal Code"
+                    placeholder="Search or Add Postal Code"
                     value={layoutForm.contactPostalCode}
-                    onChange={handleLayoutChange("contactPostalCode")}
+                    onChange={contactAddressSearch.handleInputChange("postal")}
+                    onSearch={contactAddressSearch.handleSearch("postal")}
+                    clearAriaLabel="Clear selected postal code"
+                    errorMessage={contactAddressSearch.errors.postal}
+                    isLoading={contactAddressSearch.loading.postal}
+                    suggestions={contactAddressSearch.suggestions.postal}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("postal")}
                   />
+                
                 )}
               </div>
             )}

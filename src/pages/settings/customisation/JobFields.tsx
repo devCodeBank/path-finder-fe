@@ -548,6 +548,7 @@ export const JobFields: React.FC = () => {
       state: "state",
       city: "city",
       suburb: "suburb",
+      postal: "postalCode",
     },
   });
 
@@ -1219,19 +1220,27 @@ export const JobFields: React.FC = () => {
                   )}
                   {isLayoutVisible("jobDetails", "postalCode") && (
                     <div className="relative flex flex-col pb-[14px]">
-                      <FloatingLabelInput
+                      <SearchCommitFloatingLabelInput
+                        id="job-postal-code"
                         label="Postal Code"
                         required={isLayoutRequired("jobDetails", "postalCode")}
-                        placeholder="Search or Enter Postal Code"
+                        placeholder="Search or Add Postal Code"
                         value={layoutForm.postalCode}
-                        onChange={handleLayoutChange("postalCode")}
+                        onChange={jobAddressSearch.handleInputChange("postal")}
+                        onSearch={jobAddressSearch.handleSearch("postal")}
+                        clearAriaLabel="Clear selected postal code"
+                        errorMessage={jobAddressSearch.errors.postal}
+                        isLoading={jobAddressSearch.loading.postal}
+                        suggestions={jobAddressSearch.suggestions.postal}
+                        noOptionsText="No Results Found"
+                        onSuggestionSelect={jobAddressSearch.handleSuggestionSelect("postal")}
                         className={cn(
-                          showLayoutErrors &&
-                          isFieldMissing("jobDetails", "postalCode") &&
+                          ((showLayoutErrors &&
+                          isFieldMissing("jobDetails", "postalCode")) || jobAddressSearch.errors.postal) &&
                           "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                         )}
                       />
-                      {showLayoutErrors && isFieldMissing("jobDetails", "postalCode") && (
+                      {showLayoutErrors && isFieldMissing("jobDetails", "postalCode") && !jobAddressSearch.errors.postal && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                           *Postal Code is required.
                         </span>

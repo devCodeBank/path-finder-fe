@@ -88,7 +88,7 @@ type WorkEntry = {
   currentHere: boolean;
 };
 
-type LocationField = "country" | "state" | "city" | "suburb";
+type LocationField = "country" | "state" | "city" | "suburb" | "postal";
 
 type NominatimAddress = {
   country?: string;
@@ -105,6 +105,7 @@ type NominatimAddress = {
   quarter?: string;
   city_district?: string;
   hamlet?: string;
+  postcode?: string;
 };
 
 type NominatimResult = {
@@ -147,6 +148,40 @@ const getAddressSuburb = (address?: NominatimAddress) =>
 
 const LOCATION_API_URL = "https://photon.komoot.io/api";
 
+const employmentStatusOptions = [
+  { value: "employee", label: "Employee" },
+  { value: "unemployed", label: "Unemployed" },
+  { value: "freelancer", label: "Freelancer" }
+];
+
+const genderOptions = [
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "non-binary", label: "Non Binary" },
+  { value: "prefer-not-to-say", label: "Prefer Not To Say" },
+  { value: "not-available", label: "Not Available" }
+];
+
+const employmentTypeOptions = [
+  { value: "part-time", label: "Part Time" },
+  { value: "full-time", label: "Full Time" },
+  { value: "contract", label: "Contract" },
+  { value: "internship", label: "Internship" }
+];
+
+const candidateIndustryOptions = [
+  { value: "technology-software", label: "Technology & Software" },
+  { value: "finance-legal", label: "Finance & Legal" },
+  { value: "manufacturing-heavy-industry", label: "Manufacturing & Heavy Industry" },
+  { value: "healthcare-science", label: "Healthcare & Science" },
+  { value: "media-entertainment", label: "Media & Entertainment" },
+  { value: "service-industry", label: "Service Industry" },
+  { value: "public-sector-government", label: "Public Sector & Government" },
+  { value: "energy-utilities", label: "Energy & Utilities" },
+  { value: "retail-e-commerce", label: "Retail & E-Commerce" },
+  { value: "transportation-logistics", label: "Transportation & Logistics" }
+];
+
 const normalizePhotonFeature = (feature: PhotonFeature, index: number): LocationSuggestion | null => {
   const properties = feature.properties;
   if (!properties) return null;
@@ -155,23 +190,26 @@ const normalizePhotonFeature = (feature: PhotonFeature, index: number): Location
   const state = properties.state?.trim() ?? properties.county?.trim() ?? "";
   const city = properties.city?.trim() ?? properties.district?.trim() ?? "";
   const suburb = properties.suburb?.trim() ?? "";
+  const postcode = properties.postcode?.trim() ?? "";
   const label = [properties.name, city, state, country].filter(Boolean).join(", ");
+  const postalLabel = [postcode, city, state, country].filter(Boolean).join(", ");
 
-  if (!label && !country && !state && !city && !suburb) {
+  if (!label && !postalLabel && !country && !state && !city && !suburb && !postcode) {
     return null;
   }
 
   return {
     value: String(properties.osm_id ?? index),
-    label: label || country || state || city || suburb,
+    label: postalLabel || label || postcode || country || state || city || suburb,
     result: {
       place_id: Number(properties.osm_id ?? index),
-      display_name: label || country || state || city || suburb,
+      display_name: postalLabel || label || postcode || country || state || city || suburb,
       address: {
         country: country || undefined,
         state: state || undefined,
         city: city || undefined,
         suburb: suburb || undefined,
+        postcode: postcode || undefined,
       },
     },
   };
@@ -753,25 +791,29 @@ export const SettingCandidates: React.FC = () => {
     country: "",
     state: "",
     city: "",
-    suburb: ""
+    suburb: "",
+    postal: ""
   });
   const [locationSearchLoading, setLocationSearchLoading] = useState<Record<LocationField, boolean>>({
     country: false,
     state: false,
     city: false,
-    suburb: false
+    suburb: false,
+    postal: false
   });
   const [locationSuggestions, setLocationSuggestions] = useState<Record<LocationField, LocationSuggestion[]>>({
     country: [],
     state: [],
     city: [],
-    suburb: []
+    suburb: [],
+    postal: []
   });
   const locationSearchAbortRef = useRef<Record<LocationField, AbortController | null>>({
     country: null,
     state: null,
     city: null,
-    suburb: null
+    suburb: null,
+    postal: null
   });
   React.useEffect(() => {
     const abortControllers = locationSearchAbortRef.current;
@@ -1135,15 +1177,22 @@ export const SettingCandidates: React.FC = () => {
         setLayoutForm((prev) => {
           if (!value) {
             if (field === "country") {
-              return { ...prev, country: "", state: "", city: "", suburb: "" };
+              return { ...prev, country: "", state: "", city: "", suburb: "", postalCode: "" };
             }
             if (field === "state") {
-              return { ...prev, state: "", city: "", suburb: "" };
+              return { ...prev, state: "", city: "", suburb: "", postalCode: "" };
             }
             if (field === "city") {
-              return { ...prev, city: "", suburb: "" };
+              return { ...prev, city: "", suburb: "", postalCode: "" };
             }
-            return { ...prev, suburb: "" };
+            if (field === "suburb") {
+              return { ...prev, suburb: "", postalCode: "" };
+            }
+            return { ...prev, postalCode: "" };
+          }
+
+          if (field === "postal") {
+            return { ...prev, postalCode: value };
           }
 
           return { ...prev, [field]: value };
@@ -1166,6 +1215,7 @@ export const SettingCandidates: React.FC = () => {
     const nextState = getAddressState(address);
     const nextCity = getAddressCity(address);
     const nextSuburb = getAddressSuburb(address);
+    const nextPostalCode = address.postcode ?? "";
 
     setLayoutForm((prev) => {
       if (field === "country") {
@@ -1174,7 +1224,8 @@ export const SettingCandidates: React.FC = () => {
           country: nextCountry || fallbackValue || prev.country,
           state: "",
           city: "",
-          suburb: ""
+          suburb: "",
+          postalCode: ""
         };
       }
 
@@ -1184,7 +1235,8 @@ export const SettingCandidates: React.FC = () => {
           country: nextCountry || prev.country,
           state: nextState || fallbackValue || prev.state,
           city: "",
-          suburb: ""
+          suburb: "",
+          postalCode: ""
         };
       }
 
@@ -1194,7 +1246,19 @@ export const SettingCandidates: React.FC = () => {
           country: nextCountry || prev.country,
           state: nextState || prev.state,
           city: nextCity || fallbackValue || prev.city,
-          suburb: ""
+          suburb: "",
+          postalCode: nextPostalCode || prev.postalCode
+        };
+      }
+
+      if (field === "suburb") {
+        return {
+          ...prev,
+          country: nextCountry || prev.country,
+          state: nextState || prev.state,
+          city: nextCity || prev.city,
+          suburb: nextSuburb || fallbackValue || prev.suburb,
+          postalCode: nextPostalCode || prev.postalCode
         };
       }
 
@@ -1203,7 +1267,8 @@ export const SettingCandidates: React.FC = () => {
         country: nextCountry || prev.country,
         state: nextState || prev.state,
         city: nextCity || prev.city,
-        suburb: nextSuburb || fallbackValue || prev.suburb
+        suburb: nextSuburb || prev.suburb,
+        postalCode: nextPostalCode || fallbackValue || prev.postalCode
       };
     });
   };
@@ -1229,7 +1294,9 @@ export const SettingCandidates: React.FC = () => {
           ? [trimmedValue, layoutForm.country]
           : field === "city"
             ? [trimmedValue, layoutForm.state, layoutForm.country]
-            : [trimmedValue, layoutForm.city, layoutForm.state, layoutForm.country];
+            : field === "suburb"
+              ? [trimmedValue, layoutForm.city, layoutForm.state, layoutForm.country]
+              : [trimmedValue, layoutForm.city, layoutForm.state, layoutForm.country];
 
     const query = queryParts.filter(Boolean).join(", ");
 
@@ -1261,7 +1328,8 @@ export const SettingCandidates: React.FC = () => {
         if (field === "country") return Boolean(address.country);
         if (field === "state") return Boolean(getAddressState(address));
         if (field === "city") return Boolean(getAddressCity(address));
-        return Boolean(getAddressSuburb(address));
+        if (field === "suburb") return Boolean(getAddressSuburb(address));
+        return Boolean(address.postcode);
       });
 
       const suggestions = filteredResults.map((suggestion) => ({
@@ -1269,6 +1337,8 @@ export const SettingCandidates: React.FC = () => {
         label:
           field === "country"
             ? suggestion.result.address?.country || suggestion.result.display_name
+            : field === "postal"
+              ? suggestion.result.address?.postcode || suggestion.result.display_name
             : suggestion.label,
         result: suggestion.result,
       }));
@@ -1634,11 +1704,7 @@ export const SettingCandidates: React.FC = () => {
                     <FloatingLabelSelect
                       label="Gender"
                       placeholder="Select Gender"
-                      options={[
-                        { value: "male", label: "Male" },
-                        { value: "female", label: "Female" },
-                        { value: "other", label: "Other" }
-                      ]}
+                      options={genderOptions}
                       value={layoutForm.gender}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, gender: value }))}
                       className={cn(
@@ -1815,18 +1881,26 @@ export const SettingCandidates: React.FC = () => {
                 )}
                 {isLayoutVisible("personal", "postal") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
+                      id="candidate-postal-code"
                       label="Postal Code"
                       required={isLayoutRequired("personal", "postal")}
-                      placeholder="e.g., 10001"
+                      placeholder="Search or Add Postal Code"
                       value={layoutForm.postalCode}
-                      onChange={handleLayoutChange("postalCode")}
+                      onChange={handleLocationInputChange("postal")}
+                      onSearch={handleLocationSearch("postal")}
+                      clearAriaLabel="Clear selected postal code"
+                      errorMessage={locationSearchErrors.postal}
+                      isLoading={locationSearchLoading.postal}
+                      suggestions={locationSuggestions.postal}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={handleLocationSuggestionSelect("postal")}
                       className={cn(
-                        showFieldError("personal", "postal") &&
+                        (showFieldError("personal", "postal") || locationSearchErrors.postal) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("personal", "postal") && (
+                    {showFieldError("personal", "postal") && !locationSearchErrors.postal && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *Postal Code is required.
                       </span>
@@ -1971,11 +2045,7 @@ export const SettingCandidates: React.FC = () => {
                     <FloatingLabelSelect
                       label="Employment Status"
                       placeholder="Select Status"
-                      options={[
-                        { value: "full-time", label: "Full Time" },
-                        { value: "part-time", label: "Part Time" },
-                        { value: "contract", label: "Contract" }
-                      ]}
+                      options={employmentStatusOptions}
                       value={layoutForm.employmentStatus}
                       onValueChange={(value) => setLayoutForm((prev) => ({ ...prev, employmentStatus: value }))}
                       className={cn(
@@ -2306,11 +2376,7 @@ export const SettingCandidates: React.FC = () => {
                                 <FloatingLabelSelect
                                   label="Employment Type"
                                   placeholder="Select Employment Type"
-                                  options={[
-                                    { value: "full-time", label: "Full Time" },
-                                    { value: "part-time", label: "Part Time" },
-                                    { value: "contract", label: "Contract" }
-                                  ]}
+                                  options={employmentTypeOptions}
                                   value={entry.employmentType}
                                   onValueChange={(value) => updateWorkEntry(entry.id, "employmentType", value)}
                                   className={cn(
@@ -2335,7 +2401,7 @@ export const SettingCandidates: React.FC = () => {
                                 <FloatingLabelSelect
                                   label="Industry"
                                   placeholder="Select Industry"
-                                  options={[]}
+                                  options={candidateIndustryOptions}
                                   value={entry.industry}
                                   onValueChange={(value) => updateWorkEntry(entry.id, "industry", value)}
                                   className={cn(

@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export type LocationField = "country" | "state" | "city" | "suburb";
+export type LocationField = "country" | "state" | "city" | "suburb" | "postal";
 
 type NominatimAddress = {
   country?: string;
@@ -17,6 +17,7 @@ type NominatimAddress = {
   quarter?: string;
   city_district?: string;
   hamlet?: string;
+  postcode?: string;
 };
 
 type NominatimResult = {
@@ -35,6 +36,7 @@ type PhotonFeature = {
     county?: string;
     suburb?: string;
     name?: string;
+    postcode?: string;
   };
 };
 
@@ -53,6 +55,7 @@ type AddressKeyMap<TForm> = {
   state: keyof TForm;
   city: keyof TForm;
   suburb?: keyof TForm;
+  postal?: keyof TForm;
 };
 
 type UseOnlineAddressSearchArgs<TForm extends object> = {
@@ -78,23 +81,26 @@ const normalizePhotonFeature = (feature: PhotonFeature, index: number): Location
   const state = properties.state?.trim() ?? properties.county?.trim() ?? "";
   const city = properties.city?.trim() ?? properties.district?.trim() ?? "";
   const suburb = properties.suburb?.trim() ?? "";
+  const postcode = properties.postcode?.trim() ?? "";
   const label = [properties.name, city, state, country].filter(Boolean).join(", ");
+  const postalLabel = [postcode, city, state, country].filter(Boolean).join(", ");
 
-  if (!label && !country && !state && !city && !suburb) {
+  if (!label && !postalLabel && !country && !state && !city && !suburb && !postcode) {
     return null;
   }
 
   return {
     value: String(properties.osm_id ?? index),
-    label: label || country || state || city || suburb,
+    label: postalLabel || label || postcode || country || state || city || suburb,
     result: {
       place_id: Number(properties.osm_id ?? index),
-      display_name: label || country || state || city || suburb,
+      display_name: postalLabel || label || postcode || country || state || city || suburb,
       address: {
         country: country || undefined,
         state: state || undefined,
         city: city || undefined,
         suburb: suburb || undefined,
+        postcode: postcode || undefined,
       },
     },
   };
@@ -110,24 +116,28 @@ export function useOnlineAddressSearch<TForm extends object>({
     state: "",
     city: "",
     suburb: "",
+    postal: "",
   });
   const [loading, setLoading] = React.useState<Record<LocationField, boolean>>({
     country: false,
     state: false,
     city: false,
     suburb: false,
+    postal: false,
   });
   const [suggestions, setSuggestions] = React.useState<Record<LocationField, LocationSuggestion[]>>({
     country: [],
     state: [],
     city: [],
     suburb: [],
+    postal: [],
   });
   const abortRef = React.useRef<Record<LocationField, AbortController | null>>({
     country: null,
     state: null,
     city: null,
     suburb: null,
+    postal: null,
   });
 
   React.useEffect(() => {
@@ -146,6 +156,7 @@ export function useOnlineAddressSearch<TForm extends object>({
       const nextState = getAddressState(address);
       const nextCity = getAddressCity(address);
       const nextSuburb = getAddressSuburb(address);
+      const nextPostal = address.postcode ?? "";
 
       setForm((prev) => {
         const next = { ...prev };
@@ -158,6 +169,16 @@ export function useOnlineAddressSearch<TForm extends object>({
             field === "country" || field === "state" || field === "city"
               ? ""
               : nextSuburb || fallbackValue || prev[keyMap.suburb]
+          ) as TForm[keyof TForm];
+        }
+
+        if (keyMap.postal) {
+          next[keyMap.postal] = (
+            field === "country" || field === "state"
+              ? ""
+              : field === "postal"
+                ? nextPostal || fallbackValue || prev[keyMap.postal]
+                : nextPostal || prev[keyMap.postal]
           ) as TForm[keyof TForm];
         }
 
@@ -190,7 +211,9 @@ export function useOnlineAddressSearch<TForm extends object>({
             ? [trimmedValue, getString(keyMap.country)]
             : field === "city"
               ? [trimmedValue, getString(keyMap.state), getString(keyMap.country)]
-              : [trimmedValue, getString(keyMap.city), getString(keyMap.state), getString(keyMap.country)];
+              : field === "suburb"
+                ? [trimmedValue, getString(keyMap.city), getString(keyMap.state), getString(keyMap.country)]
+                : [trimmedValue, getString(keyMap.city), getString(keyMap.state), getString(keyMap.country)];
 
       try {
         const params = new URLSearchParams({
@@ -219,7 +242,8 @@ export function useOnlineAddressSearch<TForm extends object>({
           if (field === "country") return Boolean(address.country);
           if (field === "state") return Boolean(getAddressState(address));
           if (field === "city") return Boolean(getAddressCity(address));
-          return Boolean(getAddressSuburb(address));
+          if (field === "suburb") return Boolean(getAddressSuburb(address));
+          return Boolean(address.postcode);
         });
 
         const nextSuggestions = filtered.map((suggestion) => ({
@@ -227,7 +251,9 @@ export function useOnlineAddressSearch<TForm extends object>({
           label:
             field === "country"
               ? suggestion.result.address?.country || suggestion.result.display_name
-              : suggestion.label,
+              : field === "postal"
+                ? suggestion.result.address?.postcode || suggestion.result.display_name
+                : suggestion.label,
           result: suggestion.result,
         }));
 
@@ -261,6 +287,7 @@ export function useOnlineAddressSearch<TForm extends object>({
             next[keyMap.state] = "" as TForm[keyof TForm];
             next[keyMap.city] = "" as TForm[keyof TForm];
             if (keyMap.suburb) next[keyMap.suburb] = "" as TForm[keyof TForm];
+            if (keyMap.postal) next[keyMap.postal] = "" as TForm[keyof TForm];
             return next;
           }
           if (field === "state") {
@@ -272,14 +299,28 @@ export function useOnlineAddressSearch<TForm extends object>({
           if (field === "city") {
             next[keyMap.city] = "" as TForm[keyof TForm];
             if (keyMap.suburb) next[keyMap.suburb] = "" as TForm[keyof TForm];
+            if (keyMap.postal) next[keyMap.postal] = "" as TForm[keyof TForm];
             return next;
           }
-          if (keyMap.suburb) next[keyMap.suburb] = "" as TForm[keyof TForm];
+          if (field === "suburb") {
+            if (keyMap.suburb) next[keyMap.suburb] = "" as TForm[keyof TForm];
+            if (keyMap.postal) next[keyMap.postal] = "" as TForm[keyof TForm];
+            return next;
+          }
+          if (keyMap.postal) next[keyMap.postal] = "" as TForm[keyof TForm];
           return next;
         }
 
         const targetKey =
-          field === "country" ? keyMap.country : field === "state" ? keyMap.state : field === "city" ? keyMap.city : keyMap.suburb;
+          field === "country"
+            ? keyMap.country
+            : field === "state"
+              ? keyMap.state
+              : field === "city"
+                ? keyMap.city
+                : field === "suburb"
+                  ? keyMap.suburb
+                  : keyMap.postal;
         if (targetKey) {
           next[targetKey] = value as TForm[keyof TForm];
         }

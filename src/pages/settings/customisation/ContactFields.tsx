@@ -521,6 +521,7 @@ export const ContactFields: React.FC = () => {
       country: "country",
       state: "state",
       city: "city",
+      postal: "postalCode",
     },
   });
 
@@ -1186,18 +1187,26 @@ export const ContactFields: React.FC = () => {
                 )}
                 {isLayoutVisible("contactAddressInfo", "postalCode") && (
                   <div className="relative flex flex-col pb-[14px]">
-                    <FloatingLabelInput
+                    <SearchCommitFloatingLabelInput
+                      id="contact-postal-code"
                       label="Postal Code"
                       required={isLayoutRequired("contactAddressInfo", "postalCode")}
-                      placeholder="Search or Enter Postal Code"
+                      placeholder="Search or Add Postal Code"
                       value={layoutForm.postalCode}
-                      onChange={handleLayoutChange("postalCode")}
+                      onChange={contactAddressSearch.handleInputChange("postal")}
+                      onSearch={contactAddressSearch.handleSearch("postal")}
+                      clearAriaLabel="Clear selected postal code"
+                      errorMessage={contactAddressSearch.errors.postal}
+                      isLoading={contactAddressSearch.loading.postal}
+                      suggestions={contactAddressSearch.suggestions.postal}
+                      noOptionsText="No Results Found"
+                      onSuggestionSelect={contactAddressSearch.handleSuggestionSelect("postal")}
                       className={cn(
-                        showFieldError("contactAddressInfo", "postalCode") &&
+                        (showFieldError("contactAddressInfo", "postalCode") || contactAddressSearch.errors.postal) &&
                         "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
                       )}
                     />
-                    {showFieldError("contactAddressInfo", "postalCode") && (
+                    {showFieldError("contactAddressInfo", "postalCode") && !contactAddressSearch.errors.postal && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
                         *Postal Code is required.
                       </span>
