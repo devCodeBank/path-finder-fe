@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from "react";
 import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
+import PlusIcon from "@assets/icons/plus.svg?react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Button, Tooltip } from "@mui/material";
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
@@ -7,29 +8,32 @@ import { FloatingLabelInput, FloatingLabelSelect } from "@/components/floatingLa
 import TrashIcon from "@/components/icons/TrashIcon";
 
 const primaryButtonSx = {
+
   height: "36px",
+  width: "auto",
   backgroundColor: "#6E41E2",
   textTransform: "none",
   fontSize: "12px",
   fontWeight: 500,
+  minWidth: "121px",
   borderRadius: "4px",
   boxShadow: "none",
-  width: "auto",
   color: "#FFFFFF",
   "&:hover": {
     backgroundColor: "#7B52F4",
     boxShadow: "none",
-  },
+  }
+
 };
 
 const GripIcon = ({ color = "rgba(51, 51, 51, 0.7)" }: { color?: string }) => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <circle cx="2" cy="2" r="1" fill={color} />
-    <circle cx="6" cy="2" r="1" fill={color} />
-    <circle cx="2" cy="6" r="1" fill={color} />
-    <circle cx="6" cy="6" r="1" fill={color} />
-    <circle cx="2" cy="10" r="1" fill={color} />
-    <circle cx="6" cy="10" r="1" fill={color} />
+    <circle cx="4" cy="2" r="1" fill={color} />
+    <circle cx="10" cy="2" r="1" fill={color} />
+    <circle cx="4" cy="6" r="1" fill={color} />
+    <circle cx="10" cy="6" r="1" fill={color} />
+    <circle cx="4" cy="10" r="1" fill={color} />
+    <circle cx="10" cy="10" r="1" fill={color} />
   </svg>
 );
 
@@ -230,7 +234,7 @@ const JobStatus: React.FC = () => {
         <Button
           variant="contained"
           sx={primaryButtonSx}
-          startIcon={<span className="text-[16px]">+</span>}
+          startIcon={<PlusIcon width={16} height={16} />}
           onClick={openPanel}
         >
           Custom Job Status
@@ -253,7 +257,7 @@ const JobStatus: React.FC = () => {
                 onDragOver={handleDragOver(status.id)}
                 onDrop={handleDrop(status.id)}
               >
-                <div className="pt-6 text-[#333333]">
+                <div className="self-center text-[#333333]">
                   <button
                     type="button"
                     draggable={canDrag}
@@ -262,7 +266,7 @@ const JobStatus: React.FC = () => {
                     className={[
                       "flex h-[22px] w-[22px] items-center justify-center rounded-[4px]",
                       canDrag
-                        ? "text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+                        ? "text-[#666666] hover:bg-[#F3F4F6] hover:text-[#DC2626] cursor-grab active:cursor-grabbing"
                         : "cursor-not-allowed opacity-70"
                     ].join(" ")}
                     onDragStart={canDrag ? handleDragStart(status.id) : undefined}

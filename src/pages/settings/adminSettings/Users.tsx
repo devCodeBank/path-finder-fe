@@ -315,9 +315,9 @@ export const Users: React.FC = () => {
     jobTitle: "",
     contactNumber: "",
     timeZone: "Pacific/Auckland",
-    city: "auckland",
-    state: "auckland",
-    country: "nz",
+    city: "",
+    state: "",
+    country: "",
     roles: [],
     customRoles: [],
   });
@@ -632,7 +632,7 @@ export const Users: React.FC = () => {
             <span>{filteredRows.length} total users</span>
           </div>
         </div>
-        <div className="grid h-[52px] grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[13px] font-[400] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
+        <div className="grid h-[52px] grid-cols-[2.2fr_1.5fr_1.2fr_1.6fr_1.2fr_1.4fr_0.6fr] gap-2 px-4 text-[14px] font-[500] text-[#333333] border-b border-[#CCCCCC80] bg-[#FAFAFA] items-center justify-items-start text-left">
           <span>User</span>
           <span>Role</span>
           <span>Status</span>
@@ -1420,7 +1420,7 @@ export const Users: React.FC = () => {
               <div className="mt-6">
                 <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">Custom Roles &amp; Permissions</div>
                 <div className="border-t border-[#CCCCCC80]">
-                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[13px] font-[400] text-[#333333]">
+                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[13px] font-[500] text-[#333333]">
                     <span>Role Name</span>
                     <span>Description</span>
                   </div>

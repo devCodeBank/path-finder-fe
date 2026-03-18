@@ -103,13 +103,13 @@ const Flag = ({
 };
 
 const GripIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <rect x="1" y="1" width="2" height="2" fill="#666666" />
-    <rect x="5" y="1" width="2" height="2" fill="#666666" />
-    <rect x="1" y="5" width="2" height="2" fill="#666666" />
-    <rect x="5" y="5" width="2" height="2" fill="#666666" />
-    <rect x="1" y="9" width="2" height="2" fill="#666666" />
-    <rect x="5" y="9" width="2" height="2" fill="#666666" />
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <circle cx="4" cy="2" r="1" fill="#666666" />
+    <circle cx="10" cy="2" r="1" fill="#666666" />
+    <circle cx="4" cy="6" r="1" fill="#666666" />
+    <circle cx="10" cy="6" r="1" fill="#666666" />
+    <circle cx="4" cy="10" r="1" fill="#666666" />
+    <circle cx="10" cy="10" r="1" fill="#666666" />
   </svg>
 );
 

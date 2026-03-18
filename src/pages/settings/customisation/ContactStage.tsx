@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
+import PlusIcon from "@assets/icons/plus.svg?react";
 import TrashIcon from "@/components/icons/TrashIcon";
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
@@ -20,13 +21,13 @@ const primaryButtonSx = {
 };
 
 const GripIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <circle cx="2" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="6" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="2" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="6" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="2" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
-    <circle cx="6" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <circle cx="4" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
+    <circle cx="10" cy="2" r="1" fill="rgba(51, 51, 51, 0.7)" />
+    <circle cx="4" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
+    <circle cx="10" cy="6" r="1" fill="rgba(51, 51, 51, 0.7)" />
+    <circle cx="4" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
+    <circle cx="10" cy="10" r="1" fill="rgba(51, 51, 51, 0.7)" />
   </svg>
 );
 
@@ -118,7 +119,7 @@ const ContactStage: React.FC = () => {
         <Button
           variant="contained"
           sx={primaryButtonSx}
-          startIcon={<span className="inline-flex items-center justify-center text-[16px] leading-none -translate-y-[1px]">+</span>}
+          startIcon={<PlusIcon width={16} height={16} />}
           onClick={handleAddStage}
         >
           Add Contact Stage

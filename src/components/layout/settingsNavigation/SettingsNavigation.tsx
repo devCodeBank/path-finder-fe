@@ -165,12 +165,12 @@ export const SettingsNavigation: React.FC = () => {
                   className={`
                     cursor-pointer transition-all duration-200 rounded-md
                     ${isSelected
-                      ? 'bg-[#EAEAEA]/25 text-[#666666]'
-                      : 'bg-transparent text-[#666666] hover:bg-[#EAEAEA]/25 hover:text-[#666666]'
+                      ? 'bg-[#EAEAEA]/40 text-[#666666]'
+                      : 'bg-transparent text-[#666666] hover:bg-[#EAEAEA]/40 hover:text-[#666666]'
                     }
                   `}
                 >
-                  <div className="text-[13px] font-[400] leading-[18px] py-[10px] px-[10px] text-[#333333]">
+                  <div className="text-[14px] font-[400] leading-[18px] py-[10px] px-[10px] text-[#333333]">
                     {item.label}
                   </div>
                 </div>

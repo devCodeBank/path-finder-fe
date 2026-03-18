@@ -84,7 +84,7 @@ const initialActivityHistory: SessionRow[] = [
 const Section = ({ title, headerAction, children }: { title: string; headerAction?: React.ReactNode; children: React.ReactNode }) => (
   <section className="overflow-hidden rounded-[4px] border border-[#D6D6D6] bg-white">
     <div className="flex h-[52px] items-center justify-between border-b border-[#D6D6D6] bg-[#F9FAFB] px-4">
-      <h2 className="text-[13px] font-[400] text-[#2C2C2C]">{title}</h2>
+      <h2 className="text-[14px] font-[500] text-[#2C2C2C]">{title}</h2>
       {headerAction}
     </div>
     <div className="px-4 py-5">{children}</div>

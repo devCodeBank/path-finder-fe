@@ -146,7 +146,7 @@ const FloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle, SelectPr
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
+        <label htmlFor={id} className="text-[13px] font-[400] text-[#333333]/70 pointer-events-none">
           {label}
           {required && <span className="text-[#333333]/70"> *</span>}
         </label>
@@ -333,7 +333,7 @@ const SearchableFloatingLabelSelect = React.forwardRef<FloatingLabelSelectHandle
   return (
     <div className="flex flex-col gap-1.5">
       {label && (
-        <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
+        <label htmlFor={id} className="text-[13px] font-[400] text-[#333333]/70 pointer-events-none">
           {label}
           {required && <span className="text-[#333333]/70"> *</span>}
         </label>
@@ -502,7 +502,7 @@ const SearchCommitFloatingLabelInput = React.forwardRef<HTMLInputElement, Search
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
+          <label htmlFor={id} className="text-[13px] font-[400] text-[#333333]/70 pointer-events-none">
             {label}
             {required && <span className="text-[#333333]/70"> *</span>}
           </label>

@@ -228,16 +228,13 @@ const Flag = ({
 };
 
 const GripIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <rect x="1" y="1" width="2" height="2" fill="#666666" />
-    <rect x="5" y="1" width="2" height="2" fill="#666666" />
-    {/* <rect x="9" y="1" width="2" height="2" fill="#666666" /> */}
-    <rect x="1" y="5" width="2" height="2" fill="#666666" />
-    <rect x="5" y="5" width="2" height="2" fill="#666666" />
-    {/* <rect x="9" y="5" width="2" height="2" fill="#666666" /> */}
-    <rect x="1" y="9" width="2" height="2" fill="#666666" />
-    <rect x="5" y="9" width="2" height="2" fill="#666666" />
-    {/* <rect x="9" y="9" width="2" height="2" fill="#666666" /> */}
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <circle cx="4" cy="2" r="1" fill="#666666" />
+    <circle cx="10" cy="2" r="1" fill="#666666" />
+    <circle cx="4" cy="6" r="1" fill="#666666" />
+    <circle cx="10" cy="6" r="1" fill="#666666" />
+    <circle cx="4" cy="10" r="1" fill="#666666" />
+    <circle cx="10" cy="10" r="1" fill="#666666" />
   </svg>
 );
 
@@ -254,7 +251,7 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <div className="w-full h-[52px] px-4 flex items-center justify-between border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[13px] font-[400] text-[#333333]">
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
     <button
       type="button"
@@ -313,7 +310,7 @@ const SectionCard = ({
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
-        <div className="flex items-center gap-2 text-[13px] font-[400] text-[#333333]">
+        <div className="flex items-center gap-2 text-[14px] font-[500] text-[#333333]">
           {draggableTitle && (
             <button
               type="button"
@@ -377,7 +374,7 @@ const SectionCard = ({
       </div>
       {!collapsed && (
         <>
-          <div className="grid grid-cols-[32px_minmax(0,1fr)_110px_110px_110px] gap-4 px-4 py-2 text-[13px] font-[400] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
+          <div className="grid grid-cols-[32px_minmax(0,1fr)_110px_110px_110px] gap-4 px-4 py-2 text-[13px] font-[500] text-[#333333] border-[#CCCCCC80] bg-[#FFFFFF]">
             <span />
             <span />
             <span className="text-center">Visibility</span>
@@ -1333,7 +1330,7 @@ export const CompanyFields: React.FC = () => {
                 {isLayoutVisible("location", "postal") && (
                   <SearchCommitFloatingLabelInput
                     label="Postal Code"
-                    placeholder="Search or Add Postal Code"
+                    placeholder="Search or Enter Postal Code"
                     value={layoutForm.postalCode}
                     onChange={companyAddressSearch.handleInputChange("postal")}
                     onSearch={companyAddressSearch.handleSearch("postal")}

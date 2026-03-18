@@ -1,5 +1,5 @@
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
-import AddIcon from "@mui/icons-material/Add";
+import PlusIcon from "@assets/icons/plus.svg?react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
@@ -308,7 +308,7 @@ const Tags: React.FC = () => {
           <div key={group.id} className="flex flex-col gap-2">
             <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#F9FAFB] flex items-center justify-between">
               <div className="flex items-center gap-3 min-w-0">
-                <span className="text-[13px] font-[400] text-[#333333] truncate">{group.title}</span>
+                <span className="text-[14px] font-[500] text-[#333333] truncate">{group.title}</span>
               </div>
               <div className="flex items-center gap-6 text-[#888888]" data-tag-search-zone="true">
                 {searchOpenByGroup[group.id] && (
@@ -514,7 +514,7 @@ const Tags: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 pt-2">
       <div className="flex items-center justify-end">
-        <Button variant="contained" sx={primaryButtonSx} startIcon={<AddIcon />} onClick={() => setIsAddCategoryOpen(true)}>
+        <Button variant="contained" sx={primaryButtonSx} startIcon={<PlusIcon width={16} height={16} />} onClick={() => setIsAddCategoryOpen(true)}>
           Add Tag Category
         </Button>
       </div>

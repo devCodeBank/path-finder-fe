@@ -304,16 +304,13 @@ const Flag = ({
 };
 
 const GripIcon = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <rect x="1" y="1" width="2" height="2" fill="#666666" />
-    <rect x="5" y="1" width="2" height="2" fill="#666666" />
-    {/* <rect x="9" y="1" width="2" height="2" fill="#666666" /> */}
-    <rect x="1" y="5" width="2" height="2" fill="#666666" />
-    <rect x="5" y="5" width="2" height="2" fill="#666666" />
-    {/* <rect x="9" y="5" width="2" height="2" fill="#666666" /> */}
-    <rect x="1" y="9" width="2" height="2" fill="#666666" />
-    <rect x="5" y="9" width="2" height="2" fill="#666666" />
-    {/* <rect x="9" y="9" width="2" height="2" fill="#666666" /> */}
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <circle cx="4" cy="2" r="1" fill="#666666" />
+    <circle cx="10" cy="2" r="1" fill="#666666" />
+    <circle cx="4" cy="6" r="1" fill="#666666" />
+    <circle cx="10" cy="6" r="1" fill="#666666" />
+    <circle cx="4" cy="10" r="1" fill="#666666" />
+    <circle cx="10" cy="10" r="1" fill="#666666" />
   </svg>
 );
 
@@ -337,7 +334,7 @@ const LayoutHeader = ({
 
   onToggle: () => void;
 }) => (
-  <div className="w-full h-[52px] px-4 flex items-center justify-between border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[13px] font-[400] text-[#333333]">
+  <div className="w-full h-[52px] px-4 flex items-center justify-between border-[#E6E6E6] rounded-[4px] bg-[#F9FAFB] text-[14px] font-[500] text-[#333333]">
     <span>{title}</span>
     <button
       type="button"
@@ -426,7 +423,7 @@ const SectionCard = ({
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
-        <div className="flex items-center gap-2 text-[13px] font-[400] text-[#333333]">
+        <div className="flex items-center gap-2 text-[14px] font-[500] text-[#333333]">
           {draggableTitle && (
             <button
               type="button"
@@ -1827,9 +1824,9 @@ export const SettingCandidates: React.FC = () => {
                   <div className="relative flex flex-col pb-[14px]">
                     <SearchCommitFloatingLabelInput
                       id="candidate-state"
-                      label="State/Province"
+                      label="State"
                       required={isLayoutRequired("personal", "state")}
-                      placeholder="Search or Enter State/Province"
+                      placeholder="Search or Enter State"
                       value={layoutForm.state}
                       onChange={handleLocationInputChange("state")}
                       onSearch={handleLocationSearch("state")}
@@ -1846,7 +1843,7 @@ export const SettingCandidates: React.FC = () => {
                     />
                     {showFieldError("personal", "state") && !locationSearchErrors.state && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *State/Province is required.
+                        *State is required.
                       </span>
                     )}
                   </div>
@@ -2424,7 +2421,7 @@ export const SettingCandidates: React.FC = () => {
                                   options={[
                                     { value: "remote", label: "Remote" },
                                     { value: "hybrid", label: "Hybrid" },
-                                    { value: "onsite", label: "Onsite" }
+                                    { value: "On-Site", label: "On-Site" }
                                   ]}
                                   value={entry.arrangementType}
                                   onValueChange={(value) => updateWorkEntry(entry.id, "arrangementType", value)}

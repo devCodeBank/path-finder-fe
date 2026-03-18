@@ -1,5 +1,5 @@
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
-import AddIcon from "@mui/icons-material/Add";
+import PlusIcon from "@assets/icons/plus.svg?react";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Button, Tooltip } from "@mui/material";
@@ -162,7 +162,7 @@ const SkillSet: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 pt-2">
       <div className="flex items-center justify-end">
-        <Button variant="contained" sx={primaryButtonSx} startIcon={<AddIcon />} onClick={() => setIsAddCategoryOpen(true)}>
+        <Button variant="contained" sx={primaryButtonSx} startIcon={<PlusIcon width={16} height={16} />} onClick={() => setIsAddCategoryOpen(true)}>
           Add Skill Category
         </Button>
       </div>
@@ -178,7 +178,7 @@ const SkillSet: React.FC = () => {
             return (
               <div key={category.id} className="flex flex-col gap-2">
                 <div className="h-[54px] px-4 border border-[#CCCCCC80] rounded-[4px] bg-[#F9FAFB] flex items-center justify-between">
-                  <span className="text-[13px] font-[400] text-[#333333]">{category.title}</span>
+                  <span className="text-[14px] font-[500] text-[#333333]">{category.title}</span>
                   <div className="flex items-center gap-5 text-[#888888]" data-skill-search-zone="true">
                     {searchOpenByCategory[category.id] && (
                       <input

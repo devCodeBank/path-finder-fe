@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Button, Tooltip } from "@mui/material";
 import InfoTooltipIcon from "@assets/icons/InfoTooltipIcon.svg?react";
+import PlusIcon from "@assets/icons/plus.svg?react";
 import TrashIcon from "@/components/icons/TrashIcon";
 import { FloatingLabelInput } from "@/components/floatingLabelInput";
 
@@ -63,7 +64,7 @@ const TaskType: React.FC = () => {
         <Button
           variant="contained"
           sx={primaryButtonSx}
-          startIcon={<span className="inline-flex items-center justify-center text-[16px] leading-none -translate-y-[1px]">+</span>}
+          startIcon={<PlusIcon width={16} height={16} />}
           onClick={handleAddType}
         >
           Add Task Type
@@ -72,7 +73,7 @@ const TaskType: React.FC = () => {
 
       <div className="bg-white border border-[#CCCCCC80] rounded-[6px] overflow-hidden">
         <div className="h-[52px] px-4 flex items-center justify-between border-b border-[#CCCCCC80] bg-[#F9FAFB]">
-          <span className="text-[13px] font-[400] text-[#333333]">Task Type</span>
+          <span className="text-[14px] font-[500] text-[#333333]">Task Type</span>
         </div>
 
         <div className="px-4 py-4">

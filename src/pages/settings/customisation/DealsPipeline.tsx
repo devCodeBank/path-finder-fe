@@ -21,13 +21,13 @@ const primaryButtonSx = {
 };
 
 const GripIcon = ({ color = "rgba(51, 51, 51, 0.7)" }: { color?: string }) => (
-  <svg width="14" height="14" viewBox="0 0 12 12" fill="none" aria-hidden="true">
-    <circle cx="2" cy="2" r="1" fill={color} />
-    <circle cx="6" cy="2" r="1" fill={color} />
-    <circle cx="2" cy="6" r="1" fill={color} />
-    <circle cx="6" cy="6" r="1" fill={color} />
-    <circle cx="2" cy="10" r="1" fill={color} />
-    <circle cx="6" cy="10" r="1" fill={color} />
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+    <circle cx="4" cy="2" r="1" fill={color} />
+    <circle cx="10" cy="2" r="1" fill={color} />
+    <circle cx="4" cy="6" r="1" fill={color} />
+    <circle cx="10" cy="6" r="1" fill={color} />
+    <circle cx="4" cy="10" r="1" fill={color} />
+    <circle cx="10" cy="10" r="1" fill={color} />
   </svg>
 );
 
