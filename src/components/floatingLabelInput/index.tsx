@@ -17,7 +17,7 @@ const FloatingLabelInput = React.forwardRef<HTMLInputElement, FloatingLabelInput
     return (
       <div className="flex flex-col gap-1">
         {label && (
-          <label htmlFor={id} className="text-[13px] font-medium text-[#333333]/70 pointer-events-none">
+          <label htmlFor={id} className="text-[13px] font-[400] text-[#333333]/70 pointer-events-none">
             {label}
             {required && <span className="text-[#333333]/70"> *</span>}
           </label>
