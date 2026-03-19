@@ -5,14 +5,13 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import PersonAddAltOutlinedIcon from "@mui/icons-material/PersonAddAltOutlined";
-import { Box, Button, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
+import { Box, Button, IconButton, Menu, MenuItem, SvgIcon, Tooltip } from "@mui/material";
 import React, { useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { FloatingLabelInput, FloatingLabelSelect, SearchCommitFloatingLabelInput } from "@/components/floatingLabelInput";
 import { useOnlineAddressSearch } from "@/hooks/useOnlineAddressSearch";
 import { cn } from "@/lib/utils";
 import resetFilterIcon from "@/assets/icons/Icon_filter-reset.svg";
-import filterIcon from "@/assets/icons/filter01.svg";
 
 const Container = styled(Box)`
   display: flex;
@@ -563,7 +562,20 @@ export const Users: React.FC = () => {
         <Button
           variant="outlined"
           onClick={handleFilterClick}
-          startIcon={<img src={filterIcon} alt="" className="h-[14px] w-[14px]" aria-hidden="true" />}
+          startIcon={(
+            <SvgIcon
+              fontSize="small"
+              viewBox="0 0 20 20"
+              sx={{ stroke: "currentColor", fill: "none", color: "#666666", opacity: "50%" }}
+            >
+              <path
+                d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </SvgIcon>
+          )}
           sx={{
             minWidth: "94px",
             px: appliedFilterCount > 0 ? "10px" : "14px",
