@@ -559,59 +559,60 @@ export const Users: React.FC = () => {
 
 
       <Toolbar>
-        <Button
-          variant="outlined"
-          onClick={handleFilterClick}
-          startIcon={(
-            <SvgIcon
-              fontSize="small"
-              viewBox="0 0 20 20"
-              sx={{ stroke: "currentColor", fill: "none", color: "#666666", opacity: "50%" }}
-            >
-              <path
-                d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </SvgIcon>
-          )}
-          sx={{
-            minWidth: "94px",
-            px: appliedFilterCount > 0 ? "10px" : "14px",
-            height: "36px",
-            borderColor: "#CCCCCC80",
-            color: appliedFilterCount > 0 ? "#3730A3" : "#333333",
-            backgroundColor: appliedFilterCount > 0 ? "#EEF0FA" : "#FFFFFF",
-            textTransform: "none",
-            fontSize: "12px",
-            fontWeight: 400,
-
-            boxShadow: "none",
-            width: "100px",
-            borderRadius: "4px",
-
-            "& .MuiButton-startIcon": {
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outlined"
+            onClick={handleFilterClick}
+            startIcon={
+              <SvgIcon
+                fontSize="small"
+                viewBox="0 0 20 20"
+                sx={{
+                  stroke: "currentColor",
+                  fill: "none",
+                  color: appliedFilterCount > 0 ? "#6E41E2" : "#666666",
+                  opacity: appliedFilterCount > 0 ? 1 : 0.5,
+                }}
+              >
+                <path
+                  d="M3.5 4.5H16.5L12 9.5V14.25L8 16V9.5L3.5 4.5Z"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </SvgIcon>
+            }
+            sx={{
+              width: "auto",
+              height: "36px",
+              borderColor: appliedFilterCount > 0 ? "#6E41E2" : "#CCCCCC80",
+              color: appliedFilterCount > 0 ? "#6E41E2" : "#333333",
+              backgroundColor: appliedFilterCount > 0 ? "rgba(110, 65, 226, 0.08)" : "#FFFFFF",
+              textTransform: "none",
+              fontSize: "12px",
+              fontWeight: 400,
               borderRadius: "4px",
-              marginRight: "6px",
-              opacity: appliedFilterCount > 0 ? 1 : 0.5,
-            },
-            "&:hover": {
-              borderColor: "#CCCCCC80",
-              backgroundColor: appliedFilterCount > 0 ? "#E8EAFE" : "#F3F4F6",
               boxShadow: "none",
-            },
-          }}
-        >
-          <span className="flex items-center gap-2">
-            <span>Filter</span>
-            {appliedFilterCount > 0 && (
-              <span className="inline-flex h-[24px] min-w-[24px] items-center justify-center rounded-full bg-[#6E41E2] px-1 text-[12px] font-[600] text-white">
-                {appliedFilterCount}
-              </span>
-            )}
-          </span>
-        </Button>
+              "& .MuiButton-startIcon": {
+                borderRadius: "4px",
+              },
+              "&:hover": {
+                borderColor: "#CCCCCC80",
+                backgroundColor: "#F3F4F6",
+                boxShadow: "none",
+              },
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <span>Filters</span>
+              {appliedFilterCount > 0 && (
+                <span className="inline-flex h-[24px] min-w-[24px] items-center justify-center rounded-full bg-[#6E41E2] px-1 text-[12px] font-[600] text-white">
+                  {appliedFilterCount}
+                </span>
+              )}
+            </span>
+          </Button>
+        </div>
         <Button
           variant="contained"
           onClick={handleAddUser}
@@ -850,340 +851,28 @@ export const Users: React.FC = () => {
         </div>
       </div>
 
-      {isFilterOpen && (
-        <div
-          className={[
-            "fixed inset-0 z-[1900] flex justify-start bg-[#00000066] transition-opacity duration-300",
-            isFilterVisible ? "opacity-100" : "opacity-0 pointer-events-none",
-          ].join(" ")}
-          onClick={closeFilterPanel}
-        >
+      {
+        isFilterOpen && (
           <div
             className={[
-              "h-full w-[400px] max-w-[400vw] bg-white flex flex-col transition-transform duration-300 ease-out",
-              isFilterVisible ? "translate-x-0" : "-translate-x-full",
+              "fixed inset-0 z-[1900] flex justify-start bg-[#00000066] transition-opacity duration-300",
+              isFilterVisible ? "opacity-100" : "opacity-0 pointer-events-none",
             ].join(" ")}
-            onClick={(event) => event.stopPropagation()}
+            onClick={closeFilterPanel}
           >
-            <div className="h-[69px] px-5  border-b border-[#CCCCCC80] flex items-center justify-between">
-              <div>
-                <p className="text-[16px] font-[500] text-[#333333] leading-[10px]">Advanced Filter</p>
-                <p className="text-[13px] text-[#333333]/70 mt-1">Users</p>
-              </div>
-
-              <Tooltip
-                title="Close"
-                arrow
-                componentsProps={{
-                  tooltip: { sx: { bgcolor: "#797979" } },
-                  arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } },
-                }}
-              >
-                <button
-                  type="button"
-                  aria-label="Close"
-                  className="inline-flex h-[24px] w-[24px] items-center  justify-center transition-opacity hover:opacity-80"
-                  onClick={closeFilterPanel}
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M4 4L12 12M12 4L4 12"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              </Tooltip>
-            </div>
-            <div className="flex-1 overflow-y-auto px-5 py-6 text-[#333333]">
-              <div>
-                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Roles & Permissions</p>
-                <div className="space-y-5">
-                  {roleFilterOptions.map((role) => (
-                    <div key={role} className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[13px] font-[400] leading-[20px]">{role}</p>
-                        <p className="text-[12px] text-[#666666] mt-1">
-                          {systemRoles.includes(role) ? "System Role" : "Custom Role"}
-                        </p>
-                      </div>
-                      <label className="mt-1 flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={draftFilters.roles.includes(role)}
-                          onChange={() => toggleDraftStringFilter("roles", role)}
-                        />
-                        <span
-                          className={cn(
-                            "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
-                            draftFilters.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
-                          )}
-                        >
-                          <svg
-                            viewBox="0 0 12 12"
-                            className={cn(
-                              "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
-                              draftFilters.roles.includes(role) ? "opacity-100" : "opacity-0"
-                            )}
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M2.2 6.2L4.9 8.9L9.8 3.8"
-                              stroke="#FFFFFF"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </label>
-                    </div>
-                  ))}
+            <div
+              className={[
+                "h-full w-[400px] max-w-[400vw] bg-white flex flex-col transition-transform duration-300 ease-out",
+                isFilterVisible ? "translate-x-0" : "-translate-x-full",
+              ].join(" ")}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="h-[69px] px-5  border-b border-[#CCCCCC80] flex items-center justify-between">
+                <div>
+                  <p className="text-[16px] font-[500] text-[#333333] leading-[10px]">Advanced Filter</p>
+                  <p className="text-[13px] text-[#333333]/70 mt-1">Users</p>
                 </div>
-              </div>
 
-              <div className="mt-8">
-                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Status</p>
-                <div className="space-y-8">
-                  {statusFilterOptions.map((status) => (
-                    <div key={status} className="flex items-center justify-between gap-3">
-                      <p className="text-[13px] font-[400] leading-[20px]">{status}</p>
-                      <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={draftFilters.statuses.includes(status)}
-                          onChange={() => toggleDraftStatusFilter(status)}
-                        />
-                        <span
-                          className={cn(
-                            "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
-                            draftFilters.statuses.includes(status) && "bg-[#57CC4D] border-[#57CC4D]"
-                          )}
-                        >
-                          <svg
-                            viewBox="0 0 12 12"
-                            className={cn(
-                              "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
-                              draftFilters.statuses.includes(status) ? "opacity-100" : "opacity-0"
-                            )}
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M2.2 6.2L4.9 8.9L9.8 3.8"
-                              stroke="#FFFFFF"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Teams</p>
-                <div className="space-y-8">
-                  {teamFilterOptions.map((team) => (
-                    <div key={team} className="flex items-center justify-between gap-3">
-                      <p className="text-[13px] font-[400] leading-[20px]">{team}</p>
-                      <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
-                        <input
-                          type="checkbox"
-                          className="sr-only"
-                          checked={draftFilters.teams.includes(team)}
-                          onChange={() => toggleDraftStringFilter("teams", team)}
-                        />
-                        <span
-                          className={cn(
-                            "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
-                            draftFilters.teams.includes(team) && "bg-[#57CC4D] border-[#57CC4D]"
-                          )}
-                        >
-                          <svg
-                            viewBox="0 0 12 12"
-                            className={cn(
-                              "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
-                              draftFilters.teams.includes(team) ? "opacity-100" : "opacity-0"
-                            )}
-                            fill="none"
-                            aria-hidden="true"
-                          >
-                            <path
-                              d="M2.2 6.2L4.9 8.9L9.8 3.8"
-                              stroke="#FFFFFF"
-                              strokeWidth="1.7"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Activity</p>
-                <div className="grid grid-cols-3 mt-6 gap-2 border-b border-[#CCCCCC80]">
-                  {[
-                    { id: "any-time", label: "Any Time" },
-                    { id: "on-or-after", label: "On or After" },
-                    { id: "on-or-before", label: "On or Before" },
-                  ].map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={cn(
-                        "pb-2 text-[13px] font-[400] text-[#333333] border-b-2 transition-colors",
-                        draftFilters.activityOperator === item.id ? "border-[#6E41E2]" : "border-transparent"
-                      )}
-                      onClick={() =>
-                        setDraftFilters((prev) => ({
-                          ...prev,
-                          activityOperator: item.id as ActivityOperator,
-                          activityDate: item.id === "any-time" ? "" : prev.activityDate,
-                        }))
-                      }
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-                {draftFilters.activityOperator !== "any-time" && (
-                  <div className="mt-5">
-                    <input
-                      type="date"
-                      placeholder="MM/DD/YYYY"
-                      value={draftFilters.activityDate}
-                      onChange={(event) =>
-                        setDraftFilters((prev) => ({
-                          ...prev,
-                          activityDate: event.target.value,
-                        }))
-                      }
-                      className={cn(
-                        "w-full h-[44px] rounded-[4px] border bg-[#F9FAFB] px-3 text-[13px] font-[400] text-[#333333] focus:outline-none focus:ring-0",
-                        hasInvalidDateSelection ? "border-[#E15555]" : "border-[#CCCCCC80]"
-                      )}
-                    />
-                    {hasInvalidDateSelection && (
-                      <p className="mt-2 text-[11px] text-[#E15555]">
-                        Select a date for this activity filter.
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="px-5 py-4 border-t border-[#CCCCCC80]">
-              <div className="flex items-center justify-between text-[13px] font-[400] text-[#666666] mb-4">
-                <span>Total Matches</span>
-                <span className="text-[#333333]">{draftMatchCount} {draftMatchCount === 1 ? "User" : "Users"}</span>
-              </div>
-              <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
-                <Button
-                  variant="outlined"
-                  onClick={handleResetFilters}
-                  startIcon={<img src={resetFilterIcon} alt="" className="h-[14px] w-[14px]" aria-hidden="true" />}
-                  sx={{
-                    height: "36px",
-                    borderColor: "#CCCCCC80",
-                    color: "#333333",
-                    textTransform: "none",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    borderRadius: "4px",
-                    boxShadow: "none",
-                    "&:hover": {
-                      borderColor: "#CCCCCC80",
-                      backgroundColor: "#F3F4F6",
-                      boxShadow: "none",
-                    },
-                    "& .MuiButton-startIcon": {
-                      marginRight: "6px",
-                    },
-                  }}
-                >
-                  Reset All Filters
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleApplyFilters}
-                  disabled={hasInvalidDateSelection}
-                  sx={{
-                    height: "36px",
-                    backgroundColor: "#6E41E2",
-                    textTransform: "none",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    borderRadius: "4px",
-                    boxShadow: "none",
-                    color: "#FFFFFF",
-                    "&:hover": {
-                      backgroundColor: "#7B52F4",
-                      boxShadow: "none",
-                    },
-                    "&.Mui-disabled": {
-                      backgroundColor: "#C9B6F7",
-                      color: "#FFFFFF",
-                    },
-                  }}
-
-                >
-                  Apply & View
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isInviteOpen && (
-        <div
-          className={[
-            "fixed inset-0 z-[2000] flex justify-end bg-[#00000066] transition-opacity duration-300",
-            isInviteVisible ? "opacity-100" : "opacity-0 pointer-events-none",
-          ].join(" ")}
-        >
-          <div
-            className={[
-              "w-[60vw] max-w-[60vw] h-full bg-white flex flex-col transition-transform duration-300 ease-out",
-              isInviteVisible ? "translate-x-0" : "translate-x-full",
-            ].join(" ")}
-          >
-            <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333] pt-3 ">
-                {editingUser ? "Edit User" : "Invite User"}
-              </span>
-              <div className="flex items-center gap-3 padding-right-50px pr-[20px]">
-                {editingUser?.status === "Active" && (
-                  <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
-                    Active User
-                  </span>
-                )}
-                {editingUser?.status === "Link Expired" && (
-                  <span className="rounded-[4px] bg-[#E15555] px-4 py-2 text-[12px] font-[500] text-white">
-                    Activation Link Expired
-                  </span>
-                )}
                 <Tooltip
                   title="Close"
                   arrow
@@ -1197,12 +886,7 @@ export const Users: React.FC = () => {
                     type="button"
                     aria-label="Close"
                     className="inline-flex h-[24px] w-[24px] items-center  justify-center transition-opacity hover:opacity-80"
-                    onClick={() => {
-                      closeInvitePanel();
-                      setShowInviteErrors(false);
-                      setEditingUser(null);
-                      setInviteMode("invite");
-                    }}
+                    onClick={closeFilterPanel}
                   >
                     <svg
                       width="15"
@@ -1223,501 +907,824 @@ export const Users: React.FC = () => {
                   </button>
                 </Tooltip>
               </div>
-            </div>
-            <div className="px-4 py-6 overflow-y-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    id="invite-first-name"
-                    label="First Name"
-
-                    floatLabel
-                    required
-                    placeholder="Add First Name"
-                    value={inviteForm.firstName}
-                    onChange={handleInviteInputChange("firstName")}
-                    className={cn(
-                      "w-full h-[36px]",
-                      isInviteMissing(inviteForm.firstName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {isInviteMissing(inviteForm.firstName) && (
-                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *First name is required.
-                    </span>
-                  )}
+              <div className="flex-1 overflow-y-auto px-5 py-6 text-[#333333]">
+                <div>
+                  <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Roles & Permissions</p>
+                  <div className="space-y-5">
+                    {roleFilterOptions.map((role) => (
+                      <div key={role} className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[13px] font-[400] leading-[20px]">{role}</p>
+                          <p className="text-[12px] text-[#666666] mt-1">
+                            {systemRoles.includes(role) ? "System Role" : "Custom Role"}
+                          </p>
+                        </div>
+                        <label className="mt-1 flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={draftFilters.roles.includes(role)}
+                            onChange={() => toggleDraftStringFilter("roles", role)}
+                          />
+                          <span
+                            className={cn(
+                              "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
+                              draftFilters.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
+                            )}
+                          >
+                            <svg
+                              viewBox="0 0 12 12"
+                              className={cn(
+                                "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
+                                draftFilters.roles.includes(role) ? "opacity-100" : "opacity-0"
+                              )}
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M2.2 6.2L4.9 8.9L9.8 3.8"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.7"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    id="invite-last-name"
-                    label="Last Name"
 
-                    floatLabel
-                    required
-                    placeholder="Add Last Name"
-                    value={inviteForm.lastName}
-                    onChange={handleInviteInputChange("lastName")}
-                    className={cn(
-                      "w-full h-[36px]",
-                      isInviteMissing(inviteForm.lastName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {isInviteMissing(inviteForm.lastName) && (
-                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Last name is required.
-                    </span>
-                  )}
+                <div className="mt-8">
+                  <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Status</p>
+                  <div className="space-y-8">
+                    {statusFilterOptions.map((status) => (
+                      <div key={status} className="flex items-center justify-between gap-3">
+                        <p className="text-[13px] font-[400] leading-[20px]">{status}</p>
+                        <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={draftFilters.statuses.includes(status)}
+                            onChange={() => toggleDraftStatusFilter(status)}
+                          />
+                          <span
+                            className={cn(
+                              "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
+                              draftFilters.statuses.includes(status) && "bg-[#57CC4D] border-[#57CC4D]"
+                            )}
+                          >
+                            <svg
+                              viewBox="0 0 12 12"
+                              className={cn(
+                                "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
+                                draftFilters.statuses.includes(status) ? "opacity-100" : "opacity-0"
+                              )}
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M2.2 6.2L4.9 8.9L9.8 3.8"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.7"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="relative flex flex-col pb-[14px]">
-                  <FloatingLabelInput
-                    id="invite-email"
-                    label="Email"
 
-                    floatLabel
-                    required
-                    placeholder="Add Email"
-                    value={inviteForm.email}
-                    onChange={handleInviteInputChange("email")}
-                    className={cn(
-                      "w-full h-[36px]",
-                      isInviteMissing(inviteForm.email) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
-                    )}
-                  />
-                  {isInviteMissing(inviteForm.email) && (
-                    <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                      *Email is required.
-                    </span>
-                  )}
+                <div className="mt-8">
+                  <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Teams</p>
+                  <div className="space-y-8">
+                    {teamFilterOptions.map((team) => (
+                      <div key={team} className="flex items-center justify-between gap-3">
+                        <p className="text-[13px] font-[400] leading-[20px]">{team}</p>
+                        <label className="flex h-[18px] w-[18px] shrink-0 cursor-pointer items-center justify-center">
+                          <input
+                            type="checkbox"
+                            className="sr-only"
+                            checked={draftFilters.teams.includes(team)}
+                            onChange={() => toggleDraftStringFilter("teams", team)}
+                          />
+                          <span
+                            className={cn(
+                              "relative block h-[18px] w-[18px] rounded-[5px] border border-[#CCCCCC]",
+                              draftFilters.teams.includes(team) && "bg-[#57CC4D] border-[#57CC4D]"
+                            )}
+                          >
+                            <svg
+                              viewBox="0 0 12 12"
+                              className={cn(
+                                "absolute left-1/2 top-1/2 h-[10px] w-[10px] -translate-x-1/2 -translate-y-1/2",
+                                draftFilters.teams.includes(team) ? "opacity-100" : "opacity-0"
+                              )}
+                              fill="none"
+                              aria-hidden="true"
+                            >
+                              <path
+                                d="M2.2 6.2L4.9 8.9L9.8 3.8"
+                                stroke="#FFFFFF"
+                                strokeWidth="1.7"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <FloatingLabelSelect
-                  id="invite-team"
-                  label="Team"
-                  className="text-[#333333]"
 
-                  value={inviteForm.team}
-                  onValueChange={handleInviteSelectChange("team")}
-                  options={teamOptions}
-                  placeholder="Select Team"
-                />
-                <FloatingLabelInput
-                  id="invite-job-title"
-                  label="Job Title"
-
-
-                  floatLabel
-                  placeholder="Add Job Title"
-                  value={inviteForm.jobTitle}
-                  onChange={handleInviteInputChange("jobTitle")}
-                  className={cn("w-full h-[36px]")}
-                />
-                <FloatingLabelInput
-                  id="invite-contact-number"
-                  label="Contact Number"
-
-                  floatLabel
-                  placeholder="Add Contact Number"
-                  value={inviteForm.contactNumber}
-                  onChange={handleInviteInputChange("contactNumber")}
-                  className={cn("w-full h-[36px]")}
-                />
-                <FloatingLabelSelect
-                  id="invite-time-zone"
-                  label="Time Zone"
-                  className="text-[#333333]"
-
-                  value={inviteForm.timeZone}
-                  onValueChange={handleInviteSelectChange("timeZone")}
-                  options={timeZoneOptions}
-                  maxVisibleOptions={10}
-                  placeholder="Select Time Zone"
-                />
-                <SearchCommitFloatingLabelInput
-                  id="invite-city"
-                  label="City"
-                  className="text-[#333333]"
-                  value={inviteForm.city}
-                  onChange={inviteAddressSearch.handleInputChange("city")}
-                  onSearch={inviteAddressSearch.handleSearch("city")}
-                  placeholder="Search or Enter City"
-                  clearAriaLabel="Clear selected city"
-                  errorMessage={inviteAddressSearch.errors.city}
-                  isLoading={inviteAddressSearch.loading.city}
-                  suggestions={inviteAddressSearch.suggestions.city}
-                  noOptionsText="No Results Found"
-                  onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("city")}
-                />
-                <SearchCommitFloatingLabelInput
-                  id="invite-state"
-                  label="State"
-                  className="text-[#333333]"
-                  value={inviteForm.state}
-                  onChange={inviteAddressSearch.handleInputChange("state")}
-                  onSearch={inviteAddressSearch.handleSearch("state")}
-                  placeholder="Search or Enter State"
-                  clearAriaLabel="Clear selected state"
-                  errorMessage={inviteAddressSearch.errors.state}
-                  isLoading={inviteAddressSearch.loading.state}
-                  suggestions={inviteAddressSearch.suggestions.state}
-                  noOptionsText="No Results Found"
-                  onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("state")}
-                />
-                <SearchCommitFloatingLabelInput
-                  id="invite-country"
-                  label="Country"
-                  className="text-[#333333]"
-                  value={inviteForm.country}
-                  onChange={inviteAddressSearch.handleInputChange("country")}
-                  onSearch={inviteAddressSearch.handleSearch("country")}
-                  placeholder="Search or Enter Country"
-                  clearAriaLabel="Clear selected country"
-                  errorMessage={inviteAddressSearch.errors.country}
-                  isLoading={inviteAddressSearch.loading.country}
-                  suggestions={inviteAddressSearch.suggestions.country}
-                  noOptionsText="No Results Found"
-                  onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("country")}
-                />
-              </div>
-
-              <div className="mt-6">
-                <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">System Roles &amp; Permissions</div>
-                <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
-                  {systemRoles.map((role) => {
-                    const roleId = `system-role-${role.toLowerCase().replace(/\s+/g, "-")}`;
-                    return (
-                      <div
-                        key={role}
-                        className="flex items-center gap-3 text-[13px] text-[#333333] select-none"
+                <div className="mt-8">
+                  <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Activity</p>
+                  <div className="grid grid-cols-3 mt-6 gap-2 border-b border-[#CCCCCC80]">
+                    {[
+                      { id: "any-time", label: "Any Time" },
+                      { id: "on-or-after", label: "On or After" },
+                      { id: "on-or-before", label: "On or Before" },
+                    ].map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={cn(
+                          "pb-2 text-[13px] font-[400] text-[#333333] border-b-2 transition-colors",
+                          draftFilters.activityOperator === item.id ? "border-[#6E41E2]" : "border-transparent"
+                        )}
+                        onClick={() =>
+                          setDraftFilters((prev) => ({
+                            ...prev,
+                            activityOperator: item.id as ActivityOperator,
+                            activityDate: item.id === "any-time" ? "" : prev.activityDate,
+                          }))
+                        }
                       >
-                        <label htmlFor={roleId} className="cursor-pointer">
-                          <input
-                            id={roleId}
-                            type="checkbox"
-                            checked={inviteForm.roles.includes(role)}
-                            onChange={() => toggleRole(role)}
-                            className="sr-only"
-                          />
-
-                          <span
-                            className={cn(
-                              "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
-                              inviteForm.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
-                            )}
-                          >
-                            {inviteForm.roles.includes(role) && (
-                              <svg
-                                width="12"
-                                height="10"
-                                viewBox="0 0 12 10"
-                                fill="none"
-                              >
-                                <path
-                                  d="M1 5L4.5 8.5L11 1.5"
-                                  stroke="#FFFFFF"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            )}
-                          </span>
-                        </label>
-
-                        <span className="cursor-default">{role}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">Custom Roles &amp; Permissions</div>
-                <div className="border-t border-[#CCCCCC80]">
-                  <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[13px] font-[500] text-[#333333]">
-                    <span>Role Name</span>
-                    <span>Description</span>
+                        {item.label}
+                      </button>
+                    ))}
                   </div>
-                  {customRoles.map((role) => (
-                    <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 border-t border-[#CCCCCC80]">
-                      <div className="flex items-center gap-3 text-[13px] font-[400] text-[#333333] select-none">
-                        <label htmlFor={role.id} className="cursor-pointer">
-                          <input
-                            id={role.id}
-                            type="checkbox"
-                            checked={inviteForm.customRoles.includes(role.id)}
-                            onChange={() => toggleCustomRole(role.id)}
-                            className="sr-only"
-                          />
-
-                          <span
-                            className={cn(
-                              "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
-                              inviteForm.customRoles.includes(role.id) &&
-                              "bg-[#57CC4D] border-[#57CC4D]"
-                            )}
-                          >
-                            {inviteForm.customRoles.includes(role.id) && (
-                              <svg
-                                width="12"
-                                height="10"
-                                viewBox="0 0 12 10"
-                                fill="none"
-                              >
-                                <path
-                                  d="M1 5L4.5 8.5L11 1.5"
-                                  stroke="#FFFFFF"
-                                  strokeWidth="2"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            )}
-                          </span>
-                        </label>
-
-                        <span className="cursor-default">{role.name}</span>
-                      </div>
-
-                      <div className="text-[13px] text-[#333333]">{role.description}</div>
+                  {draftFilters.activityOperator !== "any-time" && (
+                    <div className="mt-5">
+                      <input
+                        type="date"
+                        placeholder="MM/DD/YYYY"
+                        value={draftFilters.activityDate}
+                        onChange={(event) =>
+                          setDraftFilters((prev) => ({
+                            ...prev,
+                            activityDate: event.target.value,
+                          }))
+                        }
+                        className={cn(
+                          "w-full h-[44px] rounded-[4px] border bg-[#F9FAFB] px-3 text-[13px] font-[400] text-[#333333] focus:outline-none focus:ring-0",
+                          hasInvalidDateSelection ? "border-[#E15555]" : "border-[#CCCCCC80]"
+                        )}
+                      />
+                      {hasInvalidDateSelection && (
+                        <p className="mt-2 text-[11px] text-[#E15555]">
+                          Select a date for this activity filter.
+                        </p>
+                      )}
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
-
-              <div className="mt-6">
-                <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">User Email*</div>
-                <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[13px] font-[400] text-[#333333]">
-                  {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
+              <div className="px-5 py-4 border-t border-[#CCCCCC80]">
+                <div className="flex items-center justify-between text-[13px] font-[400] text-[#666666] mb-4">
+                  <span>Total Matches</span>
+                  <span className="text-[#333333]">{draftMatchCount} {draftMatchCount === 1 ? "User" : "Users"}</span>
                 </div>
-                <div className="mt-2 text-[12px] text-[#333333]">
-                  A link will be sent to the above email to complete the login process. For security reasons, the link to sign in will expire after 72 hours.
-                </div>
-              </div>
-            </div>
-
-            <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  closeInvitePanel();
-                  setShowInviteErrors(false);
-                  setEditingUser(null);
-                  setInviteMode("invite");
-                }}
-                sx={{
-                  height: "36px",
-                  borderColor: "#CCCCCC80",
-                  color: "#333333",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  "&:hover": {
-                    borderColor: "#CCCCCC80",
-                    backgroundColor: "#F3F4F6",
-                    boxShadow: "none",
-                  },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                sx={{
-                  height: "36px",
-                  backgroundColor: "#6E41E2",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  color: "#FFFFFF",
-                  "&:hover": {
-                    backgroundColor: "#7B52F4",
-                    boxShadow: "none",
-                  },
-                }}
-                onClick={() => setShowInviteErrors(true)}
-              >
-                {inviteMode === "resend" ? "Resend Invite" : inviteMode === "edit" ? "Save Changes" : "Send Invite"}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {isDetailsOpen && detailsUser && (
-        <div
-          className={[
-            "fixed inset-0 z-[2200] flex justify-end bg-[#00000066] transition-opacity duration-300",
-            isDetailsVisible ? "opacity-100" : "opacity-0 pointer-events-none",
-          ].join(" ")}
-        >
-          <div
-            className={[
-              "w-[60vw] max-w-[720px] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
-              isDetailsVisible ? "translate-x-0" : "translate-x-full",
-            ].join(" ")}
-          >
-            <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] pr-[20px] flex items-center justify-between">
-              <span className="text-[16px] font-[500] text-[#333333] pt-3">User Details</span>
-              <Tooltip
-                title="Close"
-                arrow
-                componentsProps={{
-                  tooltip: { sx: { bgcolor: "#797979" } },
-                  arrow: { sx: { color: "#797979" } },
-                  popper: { sx: { zIndex: 2400 } },
-                }}
-              >
-                <button
-                  type="button"
-                  aria-label="Close details"
-                  className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
-                  onClick={closeDetailsPanel}
-                >
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
-                    aria-hidden="true"
+                <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
+                  <Button
+                    variant="outlined"
+                    onClick={handleResetFilters}
+                    startIcon={<img src={resetFilterIcon} alt="" className="h-[14px] w-[14px]" aria-hidden="true" />}
+                    sx={{
+                      height: "36px",
+                      borderColor: "#CCCCCC80",
+                      color: "#333333",
+                      textTransform: "none",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      borderRadius: "4px",
+                      boxShadow: "none",
+                      "&:hover": {
+                        borderColor: "#CCCCCC80",
+                        backgroundColor: "#F3F4F6",
+                        boxShadow: "none",
+                      },
+                      "& .MuiButton-startIcon": {
+                        marginRight: "6px",
+                      },
+                    }}
                   >
-                    <path
-                      d="M4 4L12 12M12 4L4 12"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              </Tooltip>
-            </div>
-            <div className="px-4 py-4">
-              <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center">
-                    <div className="text-[#333333] bg-white flex items-center justify-center rounded-full w-[47px] h-[47px] text-center text-[16px] font-[600]">
-                      {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1 justify-center mt-5">
-                    <span className="text-[13px] font-[400] text-[#333333]">{detailsUser.name}</span>
-                    <span className="text-[13px] text-[#333333]/70">{detailsUser.jobTitle}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-6">
-                  <div className="text-[13px] text-[#333333]/70">
-                    <div className="text-[13px] font-[600] text-[#333333]">Last Activity</div>
-                    <div>{detailsUser.lastActivity}</div>
-                    <div>{detailsUser.lastActivityDate}</div>
-                  </div>
+                    Reset All Filters
+                  </Button>
                   <Button
                     variant="contained"
+                    onClick={handleApplyFilters}
+                    disabled={hasInvalidDateSelection}
                     sx={{
-                      height: "32px",
-                      backgroundColor: "#31C24D",
+                      height: "36px",
+                      backgroundColor: "#6E41E2",
                       textTransform: "none",
                       fontSize: "12px",
                       fontWeight: 500,
                       borderRadius: "4px",
                       boxShadow: "none",
                       color: "#FFFFFF",
-                      cursor: "not-allowed",
                       "&:hover": {
-                        backgroundColor: "#31C24D",
+                        backgroundColor: "#7B52F4",
                         boxShadow: "none",
                       },
+                      "&.Mui-disabled": {
+                        backgroundColor: "#C9B6F7",
+                        color: "#FFFFFF",
+                      },
                     }}
+
                   >
-                    View Only
+                    Apply & View
                   </Button>
                 </div>
               </div>
             </div>
-            <div className="px-4 pb-6">
-              <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">First Name</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ")[0]}</div>
+          </div>
+        )
+      }
+
+      {
+        isInviteOpen && (
+          <div
+            className={[
+              "fixed inset-0 z-[2000] flex justify-end bg-[#00000066] transition-opacity duration-300",
+              isInviteVisible ? "opacity-100" : "opacity-0 pointer-events-none",
+            ].join(" ")}
+          >
+            <div
+              className={[
+                "w-[60vw] max-w-[60vw] h-full bg-white flex flex-col transition-transform duration-300 ease-out",
+                isInviteVisible ? "translate-x-0" : "translate-x-full",
+              ].join(" ")}
+            >
+              <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] flex items-center justify-between">
+                <span className="text-[16px] font-[500] text-[#333333] pt-3 ">
+                  {editingUser ? "Edit User" : "Invite User"}
+                </span>
+                <div className="flex items-center gap-3 padding-right-50px pr-[20px]">
+                  {editingUser?.status === "Active" && (
+                    <span className="rounded-[4px] bg-[#2FB344] px-4 py-2 text-[12px] font-[500] text-white">
+                      Active User
+                    </span>
+                  )}
+                  {editingUser?.status === "Link Expired" && (
+                    <span className="rounded-[4px] bg-[#E15555] px-4 py-2 text-[12px] font-[500] text-white">
+                      Activation Link Expired
+                    </span>
+                  )}
+                  <Tooltip
+                    title="Close"
+                    arrow
+                    componentsProps={{
+                      tooltip: { sx: { bgcolor: "#797979" } },
+                      arrow: { sx: { color: "#797979" } },
+                      popper: { sx: { zIndex: 2400 } },
+                    }}
+                  >
+                    <button
+                      type="button"
+                      aria-label="Close"
+                      className="inline-flex h-[24px] w-[24px] items-center  justify-center transition-opacity hover:opacity-80"
+                      onClick={() => {
+                        closeInvitePanel();
+                        setShowInviteErrors(false);
+                        setEditingUser(null);
+                        setInviteMode("invite");
+                      }}
+                    >
+                      <svg
+                        width="15"
+                        height="15"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M4 4L12 12M12 4L4 12"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    </button>
+                  </Tooltip>
+                </div>
+              </div>
+              <div className="px-4 py-6 overflow-y-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      id="invite-first-name"
+                      label="First Name"
+
+                      floatLabel
+                      required
+                      placeholder="Add First Name"
+                      value={inviteForm.firstName}
+                      onChange={handleInviteInputChange("firstName")}
+                      className={cn(
+                        "w-full h-[36px]",
+                        isInviteMissing(inviteForm.firstName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {isInviteMissing(inviteForm.firstName) && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *First name is required.
+                      </span>
+                    )}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Last Name</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ").slice(1).join(" ")}</div>
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      id="invite-last-name"
+                      label="Last Name"
+
+                      floatLabel
+                      required
+                      placeholder="Add Last Name"
+                      value={inviteForm.lastName}
+                      onChange={handleInviteInputChange("lastName")}
+                      className={cn(
+                        "w-full h-[36px]",
+                        isInviteMissing(inviteForm.lastName) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {isInviteMissing(inviteForm.lastName) && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Last name is required.
+                      </span>
+                    )}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Email</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.email}</div>
+                  <div className="relative flex flex-col pb-[14px]">
+                    <FloatingLabelInput
+                      id="invite-email"
+                      label="Email"
+
+                      floatLabel
+                      required
+                      placeholder="Add Email"
+                      value={inviteForm.email}
+                      onChange={handleInviteInputChange("email")}
+                      className={cn(
+                        "w-full h-[36px]",
+                        isInviteMissing(inviteForm.email) && "border-[#E53935] focus-visible:border-[#E53935] hover:border-[#E53935]"
+                      )}
+                    />
+                    {isInviteMissing(inviteForm.email) && (
+                      <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
+                        *Email is required.
+                      </span>
+                    )}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Job Title</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.jobTitle}</div>
+                  <FloatingLabelSelect
+                    id="invite-team"
+                    label="Team"
+                    className="text-[#333333]"
+
+                    value={inviteForm.team}
+                    onValueChange={handleInviteSelectChange("team")}
+                    options={teamOptions}
+                    placeholder="Select Team"
+                  />
+                  <FloatingLabelInput
+                    id="invite-job-title"
+                    label="Job Title"
+
+
+                    floatLabel
+                    placeholder="Add Job Title"
+                    value={inviteForm.jobTitle}
+                    onChange={handleInviteInputChange("jobTitle")}
+                    className={cn("w-full h-[36px]")}
+                  />
+                  <FloatingLabelInput
+                    id="invite-contact-number"
+                    label="Contact Number"
+
+                    floatLabel
+                    placeholder="Add Contact Number"
+                    value={inviteForm.contactNumber}
+                    onChange={handleInviteInputChange("contactNumber")}
+                    className={cn("w-full h-[36px]")}
+                  />
+                  <FloatingLabelSelect
+                    id="invite-time-zone"
+                    label="Time Zone"
+                    className="text-[#333333]"
+
+                    value={inviteForm.timeZone}
+                    onValueChange={handleInviteSelectChange("timeZone")}
+                    options={timeZoneOptions}
+                    maxVisibleOptions={10}
+                    placeholder="Select Time Zone"
+                  />
+                  <SearchCommitFloatingLabelInput
+                    id="invite-city"
+                    label="City"
+                    className="text-[#333333]"
+                    value={inviteForm.city}
+                    onChange={inviteAddressSearch.handleInputChange("city")}
+                    onSearch={inviteAddressSearch.handleSearch("city")}
+                    placeholder="Search or Enter City"
+                    clearAriaLabel="Clear selected city"
+                    errorMessage={inviteAddressSearch.errors.city}
+                    isLoading={inviteAddressSearch.loading.city}
+                    suggestions={inviteAddressSearch.suggestions.city}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("city")}
+                  />
+                  <SearchCommitFloatingLabelInput
+                    id="invite-state"
+                    label="State"
+                    className="text-[#333333]"
+                    value={inviteForm.state}
+                    onChange={inviteAddressSearch.handleInputChange("state")}
+                    onSearch={inviteAddressSearch.handleSearch("state")}
+                    placeholder="Search or Enter State"
+                    clearAriaLabel="Clear selected state"
+                    errorMessage={inviteAddressSearch.errors.state}
+                    isLoading={inviteAddressSearch.loading.state}
+                    suggestions={inviteAddressSearch.suggestions.state}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("state")}
+                  />
+                  <SearchCommitFloatingLabelInput
+                    id="invite-country"
+                    label="Country"
+                    className="text-[#333333]"
+                    value={inviteForm.country}
+                    onChange={inviteAddressSearch.handleInputChange("country")}
+                    onSearch={inviteAddressSearch.handleSearch("country")}
+                    placeholder="Search or Enter Country"
+                    clearAriaLabel="Clear selected country"
+                    errorMessage={inviteAddressSearch.errors.country}
+                    isLoading={inviteAddressSearch.loading.country}
+                    suggestions={inviteAddressSearch.suggestions.country}
+                    noOptionsText="No Results Found"
+                    onSuggestionSelect={inviteAddressSearch.handleSuggestionSelect("country")}
+                  />
+                </div>
+
+                <div className="mt-6">
+                  <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">System Roles &amp; Permissions</div>
+                  <div className="border-t border-[#CCCCCC80] pt-3 flex flex-col gap-3">
+                    {systemRoles.map((role) => {
+                      const roleId = `system-role-${role.toLowerCase().replace(/\s+/g, "-")}`;
+                      return (
+                        <div
+                          key={role}
+                          className="flex items-center gap-3 text-[13px] text-[#333333] select-none"
+                        >
+                          <label htmlFor={roleId} className="cursor-pointer">
+                            <input
+                              id={roleId}
+                              type="checkbox"
+                              checked={inviteForm.roles.includes(role)}
+                              onChange={() => toggleRole(role)}
+                              className="sr-only"
+                            />
+
+                            <span
+                              className={cn(
+                                "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
+                                inviteForm.roles.includes(role) && "bg-[#57CC4D] border-[#57CC4D]"
+                              )}
+                            >
+                              {inviteForm.roles.includes(role) && (
+                                <svg
+                                  width="12"
+                                  height="10"
+                                  viewBox="0 0 12 10"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M1 5L4.5 8.5L11 1.5"
+                                    stroke="#FFFFFF"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              )}
+                            </span>
+                          </label>
+
+                          <span className="cursor-default">{role}</span>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Company Name</label>
-                    <div className="text-[#333333]/ text-[13px] leading-[18px] font-[400]">{detailsUser.companyName}</div>
+                </div>
+
+                <div className="mt-6">
+                  <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">Custom Roles &amp; Permissions</div>
+                  <div className="border-t border-[#CCCCCC80]">
+                    <div className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 text-[13px] font-[500] text-[#333333]">
+                      <span>Role Name</span>
+                      <span>Description</span>
+                    </div>
+                    {customRoles.map((role) => (
+                      <div key={role.id} className="grid grid-cols-[1.2fr_2fr] gap-2 py-2 border-t border-[#CCCCCC80]">
+                        <div className="flex items-center gap-3 text-[13px] font-[400] text-[#333333] select-none">
+                          <label htmlFor={role.id} className="cursor-pointer">
+                            <input
+                              id={role.id}
+                              type="checkbox"
+                              checked={inviteForm.customRoles.includes(role.id)}
+                              onChange={() => toggleCustomRole(role.id)}
+                              className="sr-only"
+                            />
+
+                            <span
+                              className={cn(
+                                "h-[16px] w-[16px] rounded-[4px] border border-[#CCCCCC80] flex items-center justify-center",
+                                inviteForm.customRoles.includes(role.id) &&
+                                "bg-[#57CC4D] border-[#57CC4D]"
+                              )}
+                            >
+                              {inviteForm.customRoles.includes(role.id) && (
+                                <svg
+                                  width="12"
+                                  height="10"
+                                  viewBox="0 0 12 10"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M1 5L4.5 8.5L11 1.5"
+                                    stroke="#FFFFFF"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              )}
+                            </span>
+                          </label>
+
+                          <span className="cursor-default">{role.name}</span>
+                        </div>
+
+                        <div className="text-[13px] text-[#333333]">{role.description}</div>
+                      </div>
+                    ))}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Role</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.role}</div>
+                </div>
+
+                <div className="mt-6">
+                  <div className="text-[13px] font-[400] text-[#333333]/70 mb-2">User Email*</div>
+                  <div className="border border-[#CCCCCC80] rounded-[4px] px-3 py-2 text-[13px] font-[400] text-[#333333]">
+                    {inviteForm.email || "The user's email address will be displayed here once it is entered above."}
                   </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Contact Number</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.contactNumber}</div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Time Zone</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.timeZone}</div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">City</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.city}</div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">State</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.state}</div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Country</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.country}</div>
-                  </div>
-                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Currency</label>
-                    <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.currency}</div>
+                  <div className="mt-2 text-[12px] text-[#333333]">
+                    A link will be sent to the above email to complete the login process. For security reasons, the link to sign in will expire after 72 hours.
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="px-4 pb-6 flex justify-end">
-              <Button
-                variant="outlined"
-                onClick={closeDetailsPanel}
-                sx={{
-                  height: "32px",
-                  borderColor: "#CCCCCC80",
-                  color: "#333333",
-                  textTransform: "none",
-                  fontSize: "12px",
-                  fontWeight: 500,
-                  borderRadius: "4px",
-                  boxShadow: "none",
-                  "&:hover": {
+
+              <div className="px-4 py-4 border-t border-[#CCCCCC80] flex justify-end gap-3">
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    closeInvitePanel();
+                    setShowInviteErrors(false);
+                    setEditingUser(null);
+                    setInviteMode("invite");
+                  }}
+                  sx={{
+                    height: "36px",
                     borderColor: "#CCCCCC80",
-                    backgroundColor: "#F3F4F6",
+                    color: "#333333",
+                    textTransform: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    borderRadius: "4px",
                     boxShadow: "none",
-                  },
-                }}
-              >
-                Close
-              </Button>
+                    "&:hover": {
+                      borderColor: "#CCCCCC80",
+                      backgroundColor: "#F3F4F6",
+                      boxShadow: "none",
+                    },
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="contained"
+                  sx={{
+                    height: "36px",
+                    backgroundColor: "#6E41E2",
+                    textTransform: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    borderRadius: "4px",
+                    boxShadow: "none",
+                    color: "#FFFFFF",
+                    "&:hover": {
+                      backgroundColor: "#7B52F4",
+                      boxShadow: "none",
+                    },
+                  }}
+                  onClick={() => setShowInviteErrors(true)}
+                >
+                  {inviteMode === "resend" ? "Resend Invite" : inviteMode === "edit" ? "Save Changes" : "Send Invite"}
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </Container>
+        )
+      }
+
+      {
+        isDetailsOpen && detailsUser && (
+          <div
+            className={[
+              "fixed inset-0 z-[2200] flex justify-end bg-[#00000066] transition-opacity duration-300",
+              isDetailsVisible ? "opacity-100" : "opacity-0 pointer-events-none",
+            ].join(" ")}
+          >
+            <div
+              className={[
+                "w-[60vw] max-w-[720px] h-full rounded-l-[6px] bg-white shadow-[0px_10px_30px_0px_#00000024] overflow-y-auto transition-transform duration-300 ease-out",
+                isDetailsVisible ? "translate-x-0" : "translate-x-full",
+              ].join(" ")}
+            >
+              <div className="h-[52px] px-5 py-8.5 border-b border-[#CCCCCC80] pr-[20px] flex items-center justify-between">
+                <span className="text-[16px] font-[500] text-[#333333] pt-3">User Details</span>
+                <Tooltip
+                  title="Close"
+                  arrow
+                  componentsProps={{
+                    tooltip: { sx: { bgcolor: "#797979" } },
+                    arrow: { sx: { color: "#797979" } },
+                    popper: { sx: { zIndex: 2400 } },
+                  }}
+                >
+                  <button
+                    type="button"
+                    aria-label="Close details"
+                    className="inline-flex h-[24px] w-[24px] items-center justify-center transition-opacity hover:opacity-80"
+                    onClick={closeDetailsPanel}
+                  >
+                    <svg
+                      width="15"
+                      height="15"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-[15px] w-[15px] transition-[filter] group-hover:filter group-hover:invert group-hover:brightness-[-2]"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 4L12 12M12 4L4 12"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </button>
+                </Tooltip>
+              </div>
+              <div className="px-4 py-4">
+                <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4 flex items-center justify-between">
+                  <div className="flex items-start gap-4">
+                    <div className="h-[79px] w-[93px] bg-[#CCCCCC26] rounded-[4px] flex items-center justify-center">
+                      <div className="text-[#333333] bg-white flex items-center justify-center rounded-full w-[47px] h-[47px] text-center text-[16px] font-[600]">
+                        {detailsUser.name.split(" ").map((part) => part[0]).join("").slice(0, 2)}
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-1 justify-center mt-5">
+                      <span className="text-[13px] font-[400] text-[#333333]">{detailsUser.name}</span>
+                      <span className="text-[13px] text-[#333333]/70">{detailsUser.jobTitle}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    <div className="text-[13px] text-[#333333]/70">
+                      <div className="text-[13px] font-[600] text-[#333333]">Last Activity</div>
+                      <div>{detailsUser.lastActivity}</div>
+                      <div>{detailsUser.lastActivityDate}</div>
+                    </div>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        height: "32px",
+                        backgroundColor: "#31C24D",
+                        textTransform: "none",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        borderRadius: "4px",
+                        boxShadow: "none",
+                        color: "#FFFFFF",
+                        cursor: "not-allowed",
+                        "&:hover": {
+                          backgroundColor: "#31C24D",
+                          boxShadow: "none",
+                        },
+                      }}
+                    >
+                      View Only
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              <div className="px-4 pb-6">
+                <div className="bg-white border border-[#CCCCCC80] rounded-[4px] p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-10">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">First Name</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ")[0]}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Last Name</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.name.split(" ").slice(1).join(" ")}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Email</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.email}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Job Title</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.jobTitle}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Company Name</label>
+                      <div className="text-[#333333]/ text-[13px] leading-[18px] font-[400]">{detailsUser.companyName}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Role</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.role}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Contact Number</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.contactNumber}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Time Zone</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.timeZone}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">City</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.city}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">State</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.state}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Country</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.country}</div>
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[#333333]/70 text-[13px] font-[400] leading-[18px]">Currency</label>
+                      <div className="text-[#333333] text-[13px] leading-[18px] font-[400]">{detailsUser.currency}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="px-4 pb-6 flex justify-end">
+                <Button
+                  variant="outlined"
+                  onClick={closeDetailsPanel}
+                  sx={{
+                    height: "32px",
+                    borderColor: "#CCCCCC80",
+                    color: "#333333",
+                    textTransform: "none",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    borderRadius: "4px",
+                    boxShadow: "none",
+                    "&:hover": {
+                      borderColor: "#CCCCCC80",
+                      backgroundColor: "#F3F4F6",
+                      boxShadow: "none",
+                    },
+                  }}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+    </Container >
   );
 };
 
