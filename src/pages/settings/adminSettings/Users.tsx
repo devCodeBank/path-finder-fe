@@ -895,7 +895,7 @@ export const Users: React.FC = () => {
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-6 text-[#333333]">
               <div>
-                <p className="text-[13px] font-[400] text-[#6E41E2] mb-5">Roles & Permissions</p>
+                <p className="text-[14px] font-[500] text-[#6E41E2] mb-5">Roles & Permissions</p>
                 <div className="space-y-5">
                   {roleFilterOptions.map((role) => (
                     <div key={role} className="flex items-start justify-between gap-3">

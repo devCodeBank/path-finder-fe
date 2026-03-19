@@ -378,7 +378,7 @@ export const CustomRoleContent: React.FC = () => {
           <div key={section.title}>
             <div
               className={[
-                "bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[13px] font-[400] text-[#333333]",
+                "bg-[#FAFAFA] h-[40px] px-4 flex items-center text-[14px] font-[500] text-[#333333]",
                 index > 0 ? "mt-6" : "",
               ].join(" ")}
             >

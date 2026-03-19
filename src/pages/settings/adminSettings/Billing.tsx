@@ -1,5 +1,5 @@
+import { SearchCommitFloatingLabelInput } from "@/components/floatingLabelInput";
 import { Button, Tooltip } from "@mui/material";
-import { ChevronDown } from "lucide-react";
 import TabsComponent from "@/components/tabs/TabsComponent";
 import React, { useState } from "react";
 import CloseXIcon from "@assets/icons/close-pop-up.svg";
@@ -73,7 +73,19 @@ const fieldWrapperClass = "flex flex-col gap-1.5";
 const fieldWrapperWithErrorClass = "relative flex flex-col pb-[14px]";
 const fieldInputClass = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] hover:border-[#666666] focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#EAEAEA]/25 disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
 const fieldInputClassInner = "h-[40px] w-full rounded-[4px] border border-[#CCCCCC80] bg-white px-3 text-[13px] text-[#333333] font-[400]focus:border-[#333333] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#EAEAEA]/25 disabled:text-[#999999] disabled:hover:border-[#CCCCCC80]";
-const fieldSelectClass = `${fieldInputClass} peer appearance-none pr-8`;
+const cardCountryOptions = [
+  { label: "New Zealand" },
+  { label: "Australia" },
+  { label: "United States" },
+];
+
+const getCardCountrySuggestions = (input: string) => {
+  const query = input.trim().toLowerCase();
+
+  return cardCountryOptions
+    .filter((option) => query === "" || option.label.toLowerCase().includes(query))
+    .map((option) => ({ value: option.label, label: option.label }));
+};
 
 const VisaIcon = ({ className = "" }: { className?: string }) => (
   <svg
@@ -125,6 +137,7 @@ export const Billing: React.FC = () => {
   const [cardCvc, setCardCvc] = useState("123");
   const [cardName, setCardName] = useState("John D");
   const [cardCountry, setCardCountry] = useState("New Zealand");
+  const [cardCountrySuggestions, setCardCountrySuggestions] = useState(() => getCardCountrySuggestions("New Zealand"));
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [isTransferModalVisible, setIsTransferModalVisible] = useState(false);
   const [showTransferErrors, setShowTransferErrors] = useState(false);
@@ -290,14 +303,7 @@ export const Billing: React.FC = () => {
             </div>
             <div className={fieldWrapperClass + " md:col-span-2"}>
               <label className="text-[13px] text-[#333333]/70">Country</label>
-              <div className="relative">
-                <select className={fieldSelectClass} defaultValue="New Zealand" disabled>
-                  <option>New Zealand</option>
-                  <option>Australia</option>
-                  <option>United States</option>
-                </select>
-                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666] peer-disabled:text-[#999999]" />
-              </div>
+              <input className={fieldInputClassInner} value={cardCountry} disabled />
             </div>
           </div>
           <div className="mt-2 text-[12px] text-[#333333]/70">
@@ -401,7 +407,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[400] text-[#333333]">Transfer Account Ownership</span>
+              <span className="text-[16px] font-[500] text-[#333333]">Transfer Account Ownership</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -427,14 +433,14 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[13px] font-[400] text-[#333333]">Current Account Owner</span>
+                  <span className="text-[14px] font-[500] text-[#333333]">Current Account Owner</span>
                 </div>
                 <div className="px-4 py-4 text-[13px] text-[#333333] border-b border-[#CCCCCC80]">
                   <div className="font-[400]">John Doe</div>
                   <div className="text-[#333333]/70 mt-1">john.doe@example.com</div>
                 </div>
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[13px] font-[400] text-[#333333]">New Account Owner</span>
+                  <span className="text-[14px] font-[500] text-[#333333]">New Account Owner</span>
                 </div>
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -503,7 +509,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[400] text-[#333333]">Upgrade Subscription Plan</span>
+              <span className="text-[16px] font-[500] text-[#333333]">Upgrade Subscription Plan</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -529,7 +535,7 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center justify-between bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[13px] font-[400] text-[#333333]">Pricing Plan</span>
+                  <span className="text-[14px] font-[500] text-[#333333]">Pricing Plan</span>
                   <div className="h-[32px] px-3 rounded-[4px] border border-[#CCCCCC80] text-[12px] text-[#333333] flex items-center">
                     Currency: USD
                   </div>
@@ -604,7 +610,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[400] text-[#333333]">Update Company Legal Name</span>
+              <span className="text-[16px] font-[500] text-[#333333]">Update Company Legal Name</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -694,7 +700,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[400] text-[#333333]">Update Billing Email</span>
+              <span className="text-[16px] font-[500] text-[#333333]">Update Billing Email</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -781,7 +787,7 @@ export const Billing: React.FC = () => {
             ].join(" ")}
           >
             <div className="h-[52px] px-5 border-b border-[#CCCCCC80] flex items-center justify-between">
-              <span className="text-[16px] font-[400] text-[#333333]">Update Credit Card Details</span>
+              <span className="text-[16px] font-[500] text-[#333333]">Update Credit Card Details</span>
               <Tooltip
                 title="Close"
                 arrow
@@ -807,7 +813,7 @@ export const Billing: React.FC = () => {
             <div className="p-4">
               <div className="bg-white border border-[#CCCCCC80] rounded-[4px] overflow-hidden">
                 <div className="h-[46px] px-4 flex items-center bg-[#F9FAFB] border-b border-[#CCCCCC80]">
-                  <span className="text-[13px] font-[400] text-[#333333]">Payment Details</span>
+                  <span className="text-[14px] font-[500] text-[#333333]">Payment Details</span>
                 </div>
                 <div className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-[2.2fr_1fr_1fr] gap-3">
@@ -862,19 +868,29 @@ export const Billing: React.FC = () => {
                       )}
                     </div>
                     <div className={fieldWrapperWithErrorClass + " md:col-span-2"}>
-                      <label className="text-[13px] mb-1 font-[400] text-[#333333]/70">Country</label>
-                      <div className="relative">
-                        <select
-                          className={fieldSelectClass}
-                          value={cardCountry}
-                          onChange={(event) => setCardCountry(event.target.value)}
-                        >
-                          <option>New Zealand</option>
-                          <option>Australia</option>
-                          <option>United States</option>
-                        </select>
-                        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#666666]" />
-                      </div>
+                      <SearchCommitFloatingLabelInput
+                        id="card-country"
+                        label="Country"
+                        className="text-[#333333]"
+                        value={cardCountry}
+                        onChange={(event) => {
+                          const nextValue = event.target.value;
+                          setCardCountry(nextValue);
+                          setCardCountrySuggestions(getCardCountrySuggestions(nextValue));
+                        }}
+                        onSearch={(value) => {
+                          setCardCountrySuggestions(getCardCountrySuggestions(value));
+                        }}
+                        placeholder="Search or Enter Country"
+                        clearAriaLabel="Clear selected country"
+                        isLoading={false}
+                        suggestions={cardCountrySuggestions}
+                        noOptionsText="No matching country"
+                        onSuggestionSelect={(value) => {
+                          setCardCountry(value);
+                          setCardCountrySuggestions(getCardCountrySuggestions(value));
+                        }}
+                      />
                       {showCardErrors && cardCountry.trim() === "" && (
                         <span className="absolute left-0 bottom-0 text-[11px] text-[#E4554A]">Required field</span>
                       )}
