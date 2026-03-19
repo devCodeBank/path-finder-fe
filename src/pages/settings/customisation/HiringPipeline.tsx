@@ -555,7 +555,7 @@ const HiringPipeline: React.FC = () => {
                               }}
                             >
                               <div className="flex items-center gap-3 text-[13px] text-[#333333]">
-                                <span>
+                                <span className="flex h-[20px] w-[20px] items-center justify-center text-[#999999]">
                                   <GripIcon locked />
                                 </span>
                                 <span>{stage.label}</span>
@@ -566,13 +566,17 @@ const HiringPipeline: React.FC = () => {
                               "flex items-center gap-3 text-[13px]",
                               isDraggingRow ? "text-[#8CA1B3]" : "text-[#333333]"
                             )}>
-                              <span className={cn(
-                                "group/drag flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] hover:border-[#D7D7D7] cursor-grab",
-                                isDraggingRow && "text-[#B7C5D3]"
-                              )}>
-
+                              <button
+                                type="button"
+                                tabIndex={-1}
+                                aria-hidden="true"
+                                className={cn(
+                                  "group/drag flex h-[20px] w-[20px] items-center justify-center rounded-[4px] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing",
+                                  isDraggingRow && "text-[#B7C5D3]"
+                                )}
+                              >
                                 <GripIcon />
-                              </span>
+                              </button>
 
                               <span>{stage.label}</span>
                             </div>
