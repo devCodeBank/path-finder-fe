@@ -476,7 +476,7 @@ export const CompanyFields: React.FC = () => {
         rows: [
           { id: "fullAddress", label: "Full Address", type: "Text", visibility: true, required: false, extension: false },
           { id: "city", label: "City", type: "Text", visibility: true, required: false, extension: false },
-          { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: false },
+          { id: "state", label: "State", type: "Text", visibility: true, required: false, extension: false },
           { id: "country", label: "Country*", type: "Searchable Dropdown", visibility: true, required: true, extension: true, visibilityLocked: true, requiredLocked: true, extensionLocked: true },
           { id: "postal", label: "Postal Code", type: "Text", visibility: true, required: false, extension: false }
         ]
@@ -534,7 +534,7 @@ export const CompanyFields: React.FC = () => {
         rows: [
           { id: "fullAddress", label: "Full Address", type: "Text", visibility: true, required: false, extension: false },
           { id: "city", label: "City", type: "Text", visibility: true, required: false, extension: false },
-          { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: false },
+          { id: "state", label: "State", type: "Text", visibility: true, required: false, extension: false },
           { id: "country", label: "Country", type: "Text", visibility: true, required: false, extension: false },
           { id: "postal", label: "Postal Code", type: "Text", visibility: true, required: false, extension: false }
         ]
@@ -1286,8 +1286,8 @@ export const CompanyFields: React.FC = () => {
                 )}
                 {isLayoutVisible("location", "state") && (
                   <SearchCommitFloatingLabelInput
-                    label="State / Province"
-                    placeholder="Search or Enter State / Province"
+                    label="State"
+                    placeholder="Search or Enter State"
                     value={layoutForm.state}
                     onChange={companyAddressSearch.handleInputChange("state")}
                     onSearch={companyAddressSearch.handleSearch("state")}
@@ -1638,8 +1638,8 @@ export const CompanyFields: React.FC = () => {
                 )}
                 {isLayoutVisible("contactAddress", "state") && (
                   <SearchCommitFloatingLabelInput
-                    label="State / Province"
-                    placeholder="Search or Enter State / Province"
+                    label="State"
+                    placeholder="Search or Enter State"
                     value={layoutForm.contactState}
                     onChange={contactAddressSearch.handleInputChange("state")}
                     onSearch={contactAddressSearch.handleSearch("state")}

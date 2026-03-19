@@ -656,7 +656,7 @@ export const SettingCandidates: React.FC = () => {
           { id: "address", label: "Full Address", type: "Text", visibility: true, required: false, extension: false },
           { id: "city", label: "City", type: "Text", visibility: true, required: true, extension: false },
           { id: "suburb", label: "Suburb", type: "Text", visibility: true, required: false, extension: true, extensionLocked: true },
-          { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: false },
+          { id: "state", label: "State", type: "Text", visibility: true, required: false, extension: false },
           { id: "country", label: "Country", type: "Searchable Dropdown", visibility: true, required: false, extension: false },
           { id: "postal", label: "Postal Code", type: "Text (String)", visibility: true, required: false, extension: false },
           { id: "relocate", label: "Willing to Relocate", type: "Toggle", visibility: true, required: false, extension: false }

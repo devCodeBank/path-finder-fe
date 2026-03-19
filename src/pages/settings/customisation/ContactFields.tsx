@@ -425,7 +425,7 @@ export const ContactFields: React.FC = () => {
         rows: [
           { id: "fullAddress", label: "Full Address", type: "Text", visibility: true, required: false, extension: true, extensionLocked: true },
           { id: "city", label: "City", type: "Text", visibility: true, required: false, extension: false },
-          { id: "state", label: "State / Province", type: "Text", visibility: true, required: false, extension: true, extensionLocked: true },
+          { id: "state", label: "State", type: "Text", visibility: true, required: false, extension: true, extensionLocked: true },
           { id: "country", label: "Country", type: "Single-Select Dropdown", visibility: true, required: false, extension: false },
           { id: "postalCode", label: "Postal Code", type: "Text (String)", visibility: true, required: false, extension: false }
         ]
@@ -1135,9 +1135,9 @@ export const ContactFields: React.FC = () => {
                 {isLayoutVisible("contactAddressInfo", "state") && (
                   <div className="relative flex flex-col pb-[14px]">
                     <SearchCommitFloatingLabelInput
-                      label="State / Province"
+                      label="State"
                       required={isLayoutRequired("contactAddressInfo", "state")}
-                      placeholder="Search or Enter State / Province"
+                      placeholder="Search or Enter State"
                       value={layoutForm.state}
                       onChange={contactAddressSearch.handleInputChange("state")}
                       onSearch={contactAddressSearch.handleSearch("state")}
@@ -1154,7 +1154,7 @@ export const ContactFields: React.FC = () => {
                     />
                     {showFieldError("contactAddressInfo", "state") && !contactAddressSearch.errors.state && (
                       <span className="absolute left-0 bottom-0 text-[11px] text-[#E53935]">
-                        *State / Province is required.
+                        *State is required.
                       </span>
                     )}
                   </div>
