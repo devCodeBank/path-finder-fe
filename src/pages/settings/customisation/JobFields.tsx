@@ -260,7 +260,7 @@ const SectionCard = ({
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
-        <div className="flex items-center text-[14px] font-[500] text-[#333333]">
+        <div className="grid grid-cols-[32px_minmax(0,1fr)] items-center gap-4 text-[14px] font-[500] text-[#333333]">
           {draggableTitle ? (
             <div className="flex w-[32px] items-center justify-center">
               <button
@@ -279,7 +279,7 @@ const SectionCard = ({
           ) : (
             <div className="w-[32px]" />
           )}
-          <span className="text-[#333333] ">{section.title}</span>
+          <span className="text-[#333333]">{section.title}</span>
         </div>
         <div className="flex items-center gap-10">
           <Toggle
