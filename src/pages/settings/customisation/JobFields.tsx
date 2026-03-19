@@ -179,12 +179,12 @@ const Flag = ({
 
 const GripIcon = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <circle cx="4" cy="2" r="1" fill="#666666" />
-    <circle cx="10" cy="2" r="1" fill="#666666" />
-    <circle cx="4" cy="6" r="1" fill="#666666" />
-    <circle cx="10" cy="6" r="1" fill="#666666" />
-    <circle cx="4" cy="10" r="1" fill="#666666" />
-    <circle cx="10" cy="10" r="1" fill="#666666" />
+    <circle cx="3.5" cy="2" r="1" fill="#666666" />
+    <circle cx="9.5" cy="2" r="1" fill="#666666" />
+    <circle cx="3.5" cy="6" r="1" fill="#666666" />
+    <circle cx="9.5" cy="6" r="1" fill="#666666" />
+    <circle cx="3.5" cy="10" r="1" fill="#666666" />
+    <circle cx="9.5" cy="10" r="1" fill="#666666" />
   </svg>
 );
 
@@ -260,20 +260,24 @@ const SectionCard = ({
         onDragOver={onDragOverSection}
         onDrop={(event) => onDropSection(section.id, event)}
       >
-        <div className="flex items-center gap-2 text-[14px] font-[500] text-[#333333]">
-          {draggableTitle && (
-            <button
-              type="button"
-              draggable
-              aria-label={`Reorder ${section.title}`}
-              className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px]  border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
-              onDragStart={(event) => onDragStartTitle(section.id, event)}
-              onDragEnd={onDragEndTitle}
-              onClick={(event) => event.stopPropagation()}
-              onMouseDown={(event) => event.stopPropagation()}
-            >
-              <GripIcon />
-            </button>
+        <div className="flex items-center text-[14px] font-[500] text-[#333333]">
+          {draggableTitle ? (
+            <div className="flex w-[32px] items-center justify-center">
+              <button
+                type="button"
+                draggable
+                aria-label={`Reorder ${section.title}`}
+                className="flex h-[20px] w-[20px] items-center justify-center rounded-[4px] border-[#CCCCCC80] text-[#666666] hover:bg-[#F3F4F6] cursor-grab active:cursor-grabbing"
+                onDragStart={(event) => onDragStartTitle(section.id, event)}
+                onDragEnd={onDragEndTitle}
+                onClick={(event) => event.stopPropagation()}
+                onMouseDown={(event) => event.stopPropagation()}
+              >
+                <GripIcon />
+              </button>
+            </div>
+          ) : (
+            <div className="w-[32px]" />
           )}
           <span className="text-[#333333] ">{section.title}</span>
         </div>

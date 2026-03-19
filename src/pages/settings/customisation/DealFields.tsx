@@ -104,12 +104,12 @@ const Flag = ({
 
 const GripIcon = () => (
   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-    <circle cx="4" cy="2" r="1" fill="#666666" />
-    <circle cx="10" cy="2" r="1" fill="#666666" />
-    <circle cx="4" cy="6" r="1" fill="#666666" />
-    <circle cx="10" cy="6" r="1" fill="#666666" />
-    <circle cx="4" cy="10" r="1" fill="#666666" />
-    <circle cx="10" cy="10" r="1" fill="#666666" />
+    <circle cx="3.5" cy="2" r="1" fill="#666666" />
+    <circle cx="9.5" cy="2" r="1" fill="#666666" />
+    <circle cx="3.5" cy="6" r="1" fill="#666666" />
+    <circle cx="9.5" cy="6" r="1" fill="#666666" />
+    <circle cx="3.5" cy="10" r="1" fill="#666666" />
+    <circle cx="9.5" cy="10" r="1" fill="#666666" />
   </svg>
 );
 
