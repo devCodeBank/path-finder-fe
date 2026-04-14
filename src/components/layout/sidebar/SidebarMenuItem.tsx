@@ -29,9 +29,22 @@ const SidebarMenuItem = memo<MenuItemProps>(({ item, isSelected, isExpanded, onI
       title={item.label}
       placement="right"
       arrow
-      disableHoverListener={isExpanded || isSelected}
-      disableFocusListener={isSelected}
-      disableTouchListener={isSelected}
+      disableHoverListener={isExpanded}
+      disableFocusListener={isExpanded}
+      disableTouchListener={isExpanded}
+      slotProps={{
+        tooltip: {
+          sx: {
+            backgroundColor: "#666666",
+            color: "#FFFFFF",
+          },
+        },
+        arrow: {
+          sx: {
+            color: "#666666",
+          },
+        },
+      }}
     >
       <button
         onClick={handleClick}
